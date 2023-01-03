@@ -9,7 +9,7 @@ public class ItbookShopApplication {
     public static void main(String[] args) {
         System.out.println("테스트");
         System.out.println("hi2");
-        System.out.println("남꺼 변경");
+        System.out.println("남꺼 변경 ForkFork");
         SpringApplication.run(ItbookShopApplication.class, args);
     }
 
