@@ -7,9 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ItbookShopApplication {
 
     public static void main(String[] args) {
-        System.out.println("테스트");
-        System.out.println("hi2");
-        System.out.println("남꺼 변경 ForkFork");
+        System.out.println("메인 브랜치에서 jenkins");
         SpringApplication.run(ItbookShopApplication.class, args);
     }
 
