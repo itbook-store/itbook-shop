@@ -15,7 +15,7 @@ public class ItbookShopApplication {
 
     public static void main(String[] args) {
         System.out.println("젠킨스 테스트");
-        System.out.println("젠킨스 연동 테스트");
+        System.out.println("젠킨스 연동 테스트2");
         SpringApplication.run(ItbookShopApplication.class, args);
     }
 }
