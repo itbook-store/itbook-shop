@@ -11,7 +11,7 @@ import javax.persistence.MapsId;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.categori.entity.Category;
+import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.product.entity.Product;
 
 /**
@@ -35,6 +35,12 @@ public class ProductCategory {
     @JoinColumn(name = "category_no")
     private Category category;
 
+    /**
+     * ProductCategory entity를 식별하기 위한 PK 클래스입니다.
+     *
+     * @author 최겸준
+     * @since 1.0
+     */
     @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
