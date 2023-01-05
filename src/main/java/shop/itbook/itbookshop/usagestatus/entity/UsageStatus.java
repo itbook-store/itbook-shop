@@ -1,7 +1,9 @@
-package shop.itbook.itbookshop.coupon.entity;
+package shop.itbook.itbookshop.usagestatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 쿠폰 적용 범위 에 대한 엔터티 입니다
+ *
  * @author 송다혜
  * @since 1.0
  */
@@ -22,11 +26,13 @@ import lombok.Setter;
 @Table(name = "usage_status")
 @Entity
 public class UsageStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usage_status_no ", nullable = false)
     private Integer usageStatusNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "usage_status_name", nullable = false, columnDefinition = "varchar(20)")
-    private String usageStatusName;
+    private UsageStatusEnum usageStatusName;
 }
