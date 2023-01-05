@@ -39,15 +39,15 @@ public class CouponIssue {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
-    private Member memberNo;
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private Coupon couponNo;
+    private Coupon coupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usage_status_no")
-    private UsageStatus usageStatusNo;
+    private UsageStatus usageStatus;
 
     @Column(name = "coupon_issue_created_at", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private LocalDateTime couponIssueCreatedAt;
