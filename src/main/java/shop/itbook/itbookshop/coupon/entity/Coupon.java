@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import shop.itbook.itbookshop.couponcoverage.entity.CouponCoverage;
-import shop.itbook.itbookshop.couponcoverage.entity.CouponCoverageEnum;
 
 /**
  * 쿠폰에 대한 엔터티입니다.
@@ -34,21 +33,21 @@ public class Coupon {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_no ", nullable = false)
+    @Column(name = "coupon_no", nullable = false)
     private Long couponNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "couponCoverageNo")
     private CouponCoverage couponCoverageNo;
 
-    @Column(name = "name ", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
     private String name;
 
     @Column(name = "amount", nullable = false)
     @ColumnDefault("0")
     private Long amount;
 
-    @Column(name = "percent ", nullable = false)
+    @Column(name = "percent", nullable = false)
     @ColumnDefault("0")
     private Integer percent;
 
@@ -56,19 +55,19 @@ public class Coupon {
     @ColumnDefault("0")
     private Long point;
 
-    @Column(name = "standard_amount ")
+    @Column(name = "standard_amount")
     private Long standardAmount;
 
     @Column(name = "max_discount_amount")
     private Long maxDiscountAmount;
 
-    @Column(name = "coupon_created_at ", nullable = false)
+    @Column(name = "coupon_created_at", nullable = false)
     private LocalDateTime couponCreatedAt;
 
     @Column(name = "coupon_expired_at", nullable = false)
     private LocalDateTime couponExpiredAt;
 
-    @Column(name = "coupon_modified_at ", nullable = false)
+    @Column(name = "coupon_modified_at", nullable = false)
     private LocalDateTime couponModifiedAt;
 
     @Column(name = "image")
@@ -77,7 +76,7 @@ public class Coupon {
     @Column(name = "code", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String code;
 
-    @Column(name = "is_reserved ", nullable = false)
+    @Column(name = "is_reserved", nullable = false)
     @ColumnDefault("false")
     private boolean isReserved;
 }
