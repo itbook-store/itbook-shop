@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.payment.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +31,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "payment")
+@Builder
 @Entity
 public class Payment {
 
@@ -37,16 +40,16 @@ public class Payment {
     @Column(name = "payment_no", nullable = false)
     private Long paymentNo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_status_no", nullable = false, columnDefinition = "varchar(255)")
     private PaymentStatus paymentStatusNo;
 
     @Column(name = "order_no", nullable = false)
     private Long orderNo;
 
-//    @OneToOne
-//    @JoinColumn(name = "card_no", nullable = false, columnDefinition = "varchar(20)")
-//    private Card cardNo;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_no", nullable = false, columnDefinition = "varchar(20)")
+    private Card cardNo;
 
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
@@ -63,13 +66,13 @@ public class Payment {
     @Column(name = "success_url", nullable = false, columnDefinition = "varchar(255)")
     private String successUrl;
 
-    @Column(name="fail_url", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "fail_url", nullable = false, columnDefinition = "varchar(255)")
     private String failUrl;
 
     @Column(name = "requested_at", nullable = false)
     private LocalDateTime requestedAt;
 
-    @Column(name="receipt_url", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "receipt_url", nullable = false, columnDefinition = "varchar(255)")
     private String receiptUrl;
 
     @Column(name = "approved_at", nullable = false)
@@ -81,6 +84,6 @@ public class Payment {
     @Column(name = "checkout_url", nullable = false, columnDefinition = "varchar(255)")
     private String checkoutUrl;
 
-    @Column(name="vat", nullable = false)
+    @Column(name = "vat", nullable = false)
     private Long vat;
 }
