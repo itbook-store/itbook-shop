@@ -33,9 +33,6 @@ public class PaymentStatus {
     @Column(name = "payment_status_no", nullable = false)
     private Integer paymentStatusNo;
 
-//    @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
-//    private String name;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "name")
     private PaymentStatusEnum paymentStatusEnum;
