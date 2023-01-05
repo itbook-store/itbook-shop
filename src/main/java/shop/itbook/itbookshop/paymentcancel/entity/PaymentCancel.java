@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.payment.entity;
+package shop.itbook.itbookshop.paymentcancel.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.payment.entity.Payment;
 
 /**
  * 결제취소에 대한 엔티티입니다.

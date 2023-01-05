@@ -3,14 +3,14 @@ package shop.itbook.itbookshop.payment.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -18,6 +18,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.card.entity.Card;
+import shop.itbook.itbookshop.paymentstatus.entity.PaymentStatus;
 
 /**
  * 결제에 대한 엔티티 입니다.
@@ -43,6 +45,7 @@ public class Payment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_status_no", nullable = false, columnDefinition = "varchar(255)")
     private PaymentStatus paymentStatus;
+
 
     @Column(name = "order_no", nullable = false)
     private Long orderNo;
