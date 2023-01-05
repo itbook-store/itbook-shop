@@ -28,14 +28,15 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "Coupon")
 @Entity
 public class Coupon {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coupon_no ", nullable = false)
     private Long couponNo;
 
-    @Column(name = "coupon_coverage_no", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private CouponCoverage couponCoverageNo;
+    //@Column(name = "coupon_coverage_no", nullable = false)
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //private CouponCoverage couponCoverageNo;
 
     @Column(name = "name ", nullable = false, columnDefinition = "varchar(20)")
     private String name;
