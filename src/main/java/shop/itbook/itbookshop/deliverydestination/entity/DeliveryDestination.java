@@ -26,7 +26,7 @@ import lombok.Setter;
 public class DeliveryDestination {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "delivery_destination_no", nullable = false)
+    @Column(name = "delivery_destination_no", nullable = false, columnDefinition = "varchar(255)")
     private Integer deliveryDestinationNo;
 
     @Column(name = "postcode", nullable = false)
