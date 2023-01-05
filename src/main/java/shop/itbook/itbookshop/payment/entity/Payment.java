@@ -42,14 +42,14 @@ public class Payment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_status_no", nullable = false, columnDefinition = "varchar(255)")
-    private PaymentStatus paymentStatusNo;
+    private PaymentStatus paymentStatus;
 
     @Column(name = "order_no", nullable = false)
     private Long orderNo;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_no", nullable = false, columnDefinition = "varchar(20)")
-    private Card cardNo;
+    private Card card;
 
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;

@@ -42,7 +42,7 @@ public class Card {
     @Column(name = "acquire_code", nullable = false, columnDefinition = "varchar(20)")
     private String acquireCode;
 
-    @Column(name = "approve_number", nullable = false)
+    @Column(name = "installment_plan_months", nullable = false)
     private Integer installmentPlanMonths;
 
     @Column(name = "approve_number", nullable = false, columnDefinition = "varchar(20)")
