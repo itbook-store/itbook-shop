@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupon.entity;
+package shop.itbook.itbookshop.servicetype.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,21 +12,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * @author 송다혜
+ * 서비스유형에 관한 엔티티입니다.
+ *
+ * @author 노수연
  * @since 1.0
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "coupon_coverage")
+@Table(name = "service_type")
 @Entity
-public class CouponCoverage {
+public class ServiceType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_coverage_no ", nullable = false)
-    private Integer couponCoverageNo;
+    @Column(name = "service_type_no", nullable = false)
+    private Integer serviceTypeNo;
 
-    @Column(name = "coverage_name", nullable = false, columnDefinition = "varchar(20)")
-    private String CoverageName;
+    @Column(name = "service_type_name", nullable = false, columnDefinition = "varchar(20)")
+    private String serviceTypeName;
 }
