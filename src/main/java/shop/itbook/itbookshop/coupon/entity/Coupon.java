@@ -7,6 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import shop.itbook.itbookshop.couponcoverage.entity.CouponCoverage;
+import shop.itbook.itbookshop.couponcoverage.entity.CouponCoverageEnum;
 
 /**
  * 쿠폰에 대한 엔터티입니다.
@@ -34,9 +37,9 @@ public class Coupon {
     @Column(name = "coupon_no ", nullable = false)
     private Long couponNo;
 
-    //@Column(name = "coupon_coverage_no", nullable = false)
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //private CouponCoverage couponCoverageNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "couponCoverageNo")
+    private CouponCoverage couponCoverageNo;
 
     @Column(name = "name ", nullable = false, columnDefinition = "varchar(20)")
     private String name;
@@ -71,7 +74,7 @@ public class Coupon {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "code ", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "code", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String code;
 
     @Column(name = "is_reserved ", nullable = false)
