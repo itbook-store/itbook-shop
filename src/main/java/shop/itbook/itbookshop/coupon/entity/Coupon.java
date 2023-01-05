@@ -74,7 +74,7 @@ public class Coupon {
     @Column(name = "image")
     private String image;
 
-    @Column(name = "code ", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "code", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String code;
 
     @Column(name = "is_reserved ", nullable = false)
