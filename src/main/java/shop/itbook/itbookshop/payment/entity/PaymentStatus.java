@@ -17,7 +17,6 @@ import lombok.Setter;
  * @author 이하늬
  * @since 1.0
  */
-
 @Getter
 @Setter
 @AllArgsConstructor
