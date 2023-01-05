@@ -8,7 +8,13 @@ package shop.itbook.itbookshop.couponcoverage.entity;
  */
 public enum CouponCoverageEnum {
 
-    전체,
-    카테고리,
-    개별상품
+    ALL("전체"),
+    CATEGORY("카테고리"),
+    INDIVIDUAL_PRODUCTS("개별상품");
+
+    private String couponCoverage;
+
+    CouponCoverageEnum(String couponCoverage) {
+        this.couponCoverage = couponCoverage;
+    }
 }

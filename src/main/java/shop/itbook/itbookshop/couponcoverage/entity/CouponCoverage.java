@@ -29,7 +29,7 @@ public class CouponCoverage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "coupon_coverage_no ", nullable = false)
+    @Column(name = "coupon_coverage_no", nullable = false)
     private Integer couponCoverageNo;
 
     @Enumerated(EnumType.STRING)

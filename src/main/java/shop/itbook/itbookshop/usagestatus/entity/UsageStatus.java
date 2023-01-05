@@ -29,7 +29,7 @@ public class UsageStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "usage_status_no ", nullable = false)
+    @Column(name = "usage_status_no", nullable = false)
     private Integer usageStatusNo;
 
     @Enumerated(EnumType.STRING)
