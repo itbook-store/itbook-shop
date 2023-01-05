@@ -38,12 +38,12 @@ public class MemberRole {
     @MapsId("memberNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
-    private Member memberNo;
+    private Member member;
 
     @MapsId("roleNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "roleNo")
-    private Role roleNo;
+    private Role role;
 
     /**
      * The type Pk. 회원 권한테이블의 복합키를 주키로 하기위한 클래스입니다.
