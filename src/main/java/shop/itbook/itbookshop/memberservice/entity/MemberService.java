@@ -36,10 +36,10 @@ public class MemberService {
     private Long memberServiceNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member memberNo;
+    @JoinColumn(name = "member_no", nullable = false)
+    private Member member;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, columnDefinition = "varchar(100)")
     private String title;
 
     @Column(name = "content", nullable = false)
@@ -49,6 +49,6 @@ public class MemberService {
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_type_no")
-    private ServiceType serviceTypeNo;
+    @JoinColumn(name = "service_type_no", nullable = false)
+    private ServiceType serviceType;
 }

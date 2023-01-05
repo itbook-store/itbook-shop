@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.payment.entity;
+package shop.itbook.itbookshop.orderstatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +12,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 결제상태에 대한 엔티티입니다.
+ * 주문상태에 대한 엔티티입니다.
  *
- * @author 이하늬
+ * @author 노수연
  * @since 1.0
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "payment_status")
+@Table(name = "order_status")
 @Entity
-public class PaymentStatus {
-
+public class OrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_status_no", nullable = false)
-    private Integer paymentStatusNo;
+    @Column(name = "order_status_no", nullable = false)
+    private Integer orderStatusNo;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
-    private String name;
-
+    @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(20)")
+    private String orderStatusName;
 }
+
