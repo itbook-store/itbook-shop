@@ -38,12 +38,12 @@ public class Member {
     private Long memberNo;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "membership_no")
-    private Membership membershipNo;
+    @JoinColumn(name = "membership_no", nullable = false)
+    private Membership membership;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_status_no")
-    private MemberStatus memberStatusNo;
+    @JoinColumn(name = "member_status_no", nullable = false)
+    private MemberStatus memberStatus;
 
     @Column(name = "id", nullable = false, columnDefinition = "varchar(15)", unique = true)
     private String id;

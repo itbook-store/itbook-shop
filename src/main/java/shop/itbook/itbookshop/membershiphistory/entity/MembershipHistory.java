@@ -37,12 +37,12 @@ public class MembershipHistory {
     private Long membershipHistoryNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member memberNo;
+    @JoinColumn(name = "member_no", nullable = false)
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "membership_no")
-    private Membership membershipNo;
+    @JoinColumn(name = "membership_no", nullable = false)
+    private Membership membership;
 
     @Column(name = "monthly_usage_amount", nullable = false)
     private Long monthlyUsageAmount;

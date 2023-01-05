@@ -1,5 +1,6 @@
-package shop.itbook.itbookshop.memberdestination.entity;
+package shop.itbook.itbookshop.bookmark.entity;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,11 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.deliverydestination.entity.DeliveryDestination;
 import shop.itbook.itbookshop.member.entity.Member;
+import shop.itbook.itbookshop.product.entity.Product;
 
 /**
- * 회원 배송지에 대한 엔티티 입니다.
+ * 장바구니 테이블에 대한 엔티티입니다.
  *
  * @author 강명관
  * @since 1.0
@@ -27,29 +28,23 @@ import shop.itbook.itbookshop.member.entity.Member;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "member_destination")
-public class MemberDestination {
+@Table(name = "bookmark")
+public class Bookmark {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recipient_destination_no")
-    private Long recipientDestinationNo;
+    @Column(name = "bookmark_no")
+    private Long bookmarkNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_destination_no", nullable = false)
-    private DeliveryDestination deliveryDestination;
+    @JoinColumn(name = "product_no", nullable = false)
+    private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "recipient_name", columnDefinition = "varchar(20)")
-    private String recipientName;
-
-    @Column(name = "recipient_phone_number", columnDefinition = "varchar(14)")
-    private String recipientPhoneNumber;
-
-    @Column(name = "recipient_address_details", columnDefinition = "varchar(255)")
-    private String recipientAddressDetails;
+    @Column(name = "bookmark_cerated_at")
+    private LocalDateTime bookmarkCreatedAt;
 
 }
