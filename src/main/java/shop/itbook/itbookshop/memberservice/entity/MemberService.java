@@ -37,9 +37,9 @@ public class MemberService {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
-    private Member memberNo;
+    private Member member;
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", nullable = false, columnDefinition = "varchar(100)")
     private String title;
 
     @Column(name = "content", nullable = false)
@@ -50,5 +50,5 @@ public class MemberService {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_type_no")
-    private ServiceType serviceTypeNo;
+    private ServiceType serviceType;
 }
