@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.categori.entity;
+package shop.itbook.itbookshop.category.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,12 +34,13 @@ public class Category {
     private Integer categoryNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_no")
+    @JoinColumn(name = "parent_category_no", nullable = false)
     private Category parentCategoryNo;
 
-    @Column(name = "category_name")
+    @Column(name = "category_name", columnDefinition = "varchar(20)",
+        unique = true, nullable = false)
     private String categoryName;
 
-    @Column(name = "is_hidden")
+    @Column(name = "is_hidden", nullable = false)
     private boolean isHidden;
 }
