@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +12,16 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 /**
- * @author
+ * 상품에 대한 엔티티 입니다.
+ *
+ * @author 노수연
  * @since 1.0
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "product")
 @Entity
 public class Product {
     @Id
