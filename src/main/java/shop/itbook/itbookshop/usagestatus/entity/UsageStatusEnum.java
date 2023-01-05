@@ -8,6 +8,12 @@ package shop.itbook.itbookshop.usagestatus.entity;
  */
 public enum UsageStatusEnum {
 
-    사용완료,
-    사용가능
+    COMPLETED("사용완료"),
+    AVAILABLE("사용가능");
+
+    private String usageStatus;
+
+    UsageStatusEnum(String usageStatus) {
+        this.usageStatus = usageStatus;
+    }
 }
