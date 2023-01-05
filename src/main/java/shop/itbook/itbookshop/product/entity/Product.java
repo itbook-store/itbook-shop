@@ -3,6 +3,8 @@ package shop.itbook.itbookshop.product.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_no", nullable = false)
     private Long productNo;
 
