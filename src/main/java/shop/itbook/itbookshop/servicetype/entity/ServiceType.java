@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.servicetype.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ import lombok.Setter;
 @Entity
 public class ServiceType {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_type_no", nullable = false)
     private Integer serviceTypeNo;
 
