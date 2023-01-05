@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.producttype.entity;
+package shop.itbook.itbookshop.servicetype.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 상품유형에 대한 엔티티 입니다.
+ * 서비스유형에 관한 엔티티입니다.
  *
  * @author 노수연
  * @since 1.0
@@ -21,14 +21,14 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "product_type")
+@Table(name = "service_type")
 @Entity
-public class ProductType {
+public class ServiceType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_type_no", nullable = false)
-    private Integer productTypeNo;
+    @Column(name = "service_type_no", nullable = false)
+    private Integer serviceTypeNo;
 
-    @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(20)")
-    private String productTypeName;
+    @Column(name = "service_type_name", nullable = false, columnDefinition = "varchar(20)")
+    private String serviceTypeName;
 }
