@@ -3,9 +3,11 @@ package shop.itbook.itbookshop.coupon.entity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +34,8 @@ public class Coupon {
     private Long couponNo;
 
     @Column(name = "coupon_coverage_no", nullable = false)
-    private Integer couponCoverageNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private CouponCoverage couponCoverageNo;
 
     @Column(name = "name ", nullable = false, columnDefinition = "varchar(20)")
     private String name;
@@ -69,7 +72,7 @@ public class Coupon {
 
     @Column(name = "code ", nullable = false, columnDefinition = "varchar(255)")
     private String code;
-    
+
     @Column(name = "is_reserved ", nullable = false)
     @ColumnDefault("false")
     private boolean isReserved;
