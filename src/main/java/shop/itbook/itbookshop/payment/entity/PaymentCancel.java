@@ -1,6 +1,13 @@
 package shop.itbook.itbookshop.payment.entity;
 
+import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,4 +27,24 @@ import lombok.Setter;
 @Table(name = "payment_cancel")
 @Entity
 public class PaymentCancel {
+
+    @Id
+    private Long paymentNo;
+
+    @MapsId("paymentNo")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_no", nullable = false)
+    private Payment payment;
+
+    @Column(name = "payment_cancel_created_at", nullable = false)
+    private LocalDateTime paymentCancelCreatedAt;
+
+    @Column(name = "amount", nullable = false)
+    private Long amount;
+
+    @Column(name = "cancel_reason", nullable = false, columnDefinition = "varchar(255)")
+    private String cancelReason;
+
+    @Column(name = "refundable_amount", nullable = false)
+    private Long refundableAmount;
 }
