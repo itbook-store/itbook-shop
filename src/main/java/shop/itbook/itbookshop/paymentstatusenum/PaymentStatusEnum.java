@@ -14,7 +14,7 @@ public enum PaymentStatusEnum {
     PARTIAL_CANCELED("결제부분취소"), ABORTED("결제승인실패"), EXPIRED("결제유효시간만료");
 
 
-    public String paymentStatus;
+    private String paymentStatus;
 
     PaymentStatusEnum(String paymentStatus) {
         this.paymentStatus = paymentStatus;
