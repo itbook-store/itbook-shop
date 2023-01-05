@@ -32,5 +32,5 @@ public class Role {
     private Integer roleNo;
 
     @Column(name = "role_type", columnDefinition = "varchar(20)")
-    private String role_type;
+    private String roleType;
 }
