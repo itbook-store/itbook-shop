@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.recentlyviewedproduct.entity;
+package shop.itbook.itbookshop.productgroup.productimage.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,27 +16,28 @@ import lombok.Setter;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
- * 최근 본 상품 테이블에 대한 엔티티 입니다.
+ * 상품 이미지 테이블에 대한 엔티티 입니다.
  *
  * @author 강명관
  * @since 1.0
  */
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "recently_viewed_product")
-public class RecentlyViewedProduct {
+@Table(name = "product_image")
+public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recently_viewed_product_no")
-    private Long recentlyViewedProductNo;
+    @Column(name = "product_image_no")
+    private Long productImageNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
+    @Column(name = "image_url", nullable = false, columnDefinition = "text")
+    private String imageUrl;
 }

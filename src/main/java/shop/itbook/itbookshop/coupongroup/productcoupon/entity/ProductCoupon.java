@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * 쿠폰이 개별 상품에 사용할 수 있는 쿠폰 인지를 구별하기 위한 테이블의 엔터티 입니다.

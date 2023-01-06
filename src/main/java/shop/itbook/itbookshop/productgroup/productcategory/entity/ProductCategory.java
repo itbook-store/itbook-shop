@@ -1,7 +1,6 @@
-package shop.itbook.itbookshop.cart.entity;
+package shop.itbook.itbookshop.productgroup.productcategory.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,56 +14,50 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
- * 장바구니 테이블에 대한 엔티티 입니다.
+ * 상품과 카테고리의 관계테이블입니다.
  *
- * @author 강명관
+ * @author 최겸준
  * @since 1.0
  */
+@Entity
+@Table(name = "product_category")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "cart")
-public class Cart {
+public class ProductCategory {
 
     @EmbeddedId
     private Pk pk;
 
-    @MapsId("memberNo")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
-
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "product_count", columnDefinition = "integer default 1")
-    private Integer productCount;
+    @MapsId("categoryNo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_no", nullable = false)
+    private Category category;
 
     /**
-     * The type Pk. 회원과 상품에 대한 복합키 설정을 위한 클래스 입니다.
+     * ProductCategory entity를 식별하기 위한 PK 클래스입니다.
      *
-     * @author 강명관
+     * @author 최겸준
      * @since 1.0
      */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     @EqualsAndHashCode
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Embeddable
     public static class Pk implements Serializable {
 
-        private Long memberNo;
-
         private Long productNo;
 
+        private Integer categoryNo;
     }
 }
-
