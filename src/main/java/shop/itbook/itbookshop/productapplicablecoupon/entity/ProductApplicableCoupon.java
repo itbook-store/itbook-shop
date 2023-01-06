@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.productapplicablecoupon.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -37,12 +36,12 @@ public class ProductApplicableCoupon {
 
     @MapsId("orderProductNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_product_no")
+    @JoinColumn(name = "order_product_no", nullable = false)
     private OrderProduct orderProduct;
 
     @MapsId("couponNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_no")
+    @JoinColumn(name = "coupon_no", nullable = false)
     private ProductCoupon productCoupon;
 
     /**
@@ -59,6 +58,6 @@ public class ProductApplicableCoupon {
 
         private Long orderProductNo;
 
-        private Integer couponNo;
+        private Long couponNo;
     }
 }
