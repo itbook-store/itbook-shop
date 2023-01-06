@@ -96,6 +96,7 @@ public class Coupon {
      * @param isReserved        the is reserved
      * @author 송다혜
      */
+    @SuppressWarnings("java:S107") // 쿠폰 클레스의 필수 생성자 값들을 넣기 위함
     @Builder
     public Coupon(CouponCoverage couponCoverage, String name, Integer percent,
                   Long standardAmount, Long maxDiscountAmount, LocalDateTime couponExpiredAt,
@@ -124,7 +125,7 @@ public class Coupon {
      * @param isReserved       the is reserved
      * @author 송다혜
      */
-
+    @SuppressWarnings("java:S107") // 쿠폰 클레스의 필수 생성자 값들을 넣기 위함
     @Builder
     public Coupon(CouponCoverage couponCoverage, String name, Long amount,
                   Long standardAmount, LocalDateTime couponExpiredAt,
