@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +20,8 @@ import shop.itbook.itbookshop.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverystatus.entity.DeliveryStatus;
 
 /**
+ * The type Delivery status history.
+ *
  * @author 노수연
  * @since 1.0
  */
@@ -50,4 +53,23 @@ public class DeliveryStatusHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_status_no", nullable = false)
     private DeliveryStatus deliveryStatus;
+
+
+    /**
+     * 배송상태이력 엔티티의 생성자입니다.
+     *
+     * @param delivery                the delivery
+     * @param deliveryStatusCreatedAt the delivery status created at
+     * @param historyLocation         the history location
+     * @param deliveryStatus          the delivery status
+     * @author 노수연
+     */
+    @Builder
+    public DeliveryStatusHistory(Delivery delivery, LocalDateTime deliveryStatusCreatedAt,
+                                 String historyLocation, DeliveryStatus deliveryStatus) {
+        this.delivery = delivery;
+        this.deliveryStatusCreatedAt = deliveryStatusCreatedAt;
+        this.historyLocation = historyLocation;
+        this.deliveryStatus = deliveryStatus;
+    }
 }
