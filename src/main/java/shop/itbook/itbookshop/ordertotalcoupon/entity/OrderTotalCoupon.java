@@ -30,6 +30,11 @@ public class OrderTotalCoupon {
     @JoinColumn(name = "coupon_no")
     private Coupon coupon;
 
+    /**
+     * OrderTotalCoupon 엔터티의 pk 클레스 입니다.
+     *
+     * @author 송다혜
+     */
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
