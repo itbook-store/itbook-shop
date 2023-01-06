@@ -51,7 +51,7 @@ public class MemberInquiry {
     @Column(name = "title", nullable = false, columnDefinition = "varchar(20)")
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     /**
