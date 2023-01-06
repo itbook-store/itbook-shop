@@ -38,7 +38,7 @@ public class Coupon {
     private Long couponNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "couponCoverageNo")
+    @JoinColumn(name = "couponCoverage_no")
     private CouponCoverage couponCoverage;
 
     @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
