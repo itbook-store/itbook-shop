@@ -44,13 +44,13 @@ public class MemberDestination {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "recipient_name", columnDefinition = "varchar(20)")
+    @Column(name = "recipient_name", columnDefinition = "varchar(20)", nullable = false)
     private String recipientName;
 
-    @Column(name = "recipient_phone_number", columnDefinition = "varchar(14)")
+    @Column(name = "recipient_phone_number", columnDefinition = "varchar(14)", nullable = false)
     private String recipientPhoneNumber;
 
-    @Column(name = "recipient_address_details", columnDefinition = "varchar(255)")
+    @Column(name = "recipient_address_details", columnDefinition = "varchar(255)", nullable = false)
     private String recipientAddressDetails;
 
 

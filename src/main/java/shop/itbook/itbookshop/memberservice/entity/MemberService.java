@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,23 +33,31 @@ import shop.itbook.itbookshop.servicetype.entity.ServiceType;
 public class MemberService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_service_no", nullable = false)
+    @Column(name = "member_service_no")
     private Long memberServiceNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "title", nullable = false, columnDefinition = "varchar(100)")
-    private String title;
-
-    @Column(name = "content", nullable = false)
-    private String content;
-
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_type_no", nullable = false)
     private ServiceType serviceType;
+
+    @Column(name = "title", nullable = false, columnDefinition = "varchar(100)")
+    private String title;
+
+    @Column(name = "content", nullable = false, columnDefinition = "text")
+    private String content;
+
+    @Column(name = "created_at", nullable = false, columnDefinition = "default now()")
+    private LocalDateTime createdAt;
+
+    @Builder
+    public MemberService(Member member, ServiceType serviceType, String title, String content) {
+        this.member = member;
+        this.serviceType = serviceType;
+        this.title = title;
+        this.content = content;
+    }
 }
