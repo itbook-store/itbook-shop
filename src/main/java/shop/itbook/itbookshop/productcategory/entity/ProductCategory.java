@@ -3,14 +3,17 @@ package shop.itbook.itbookshop.productcategory.entity;
 import java.io.Serializable;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.product.entity.Product;
 
@@ -20,6 +23,12 @@ import shop.itbook.itbookshop.product.entity.Product;
  * @author 최겸준
  * @since 1.0
  */
+@Entity
+@Table(name = "product_category")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductCategory {
 
     @EmbeddedId
@@ -46,10 +55,9 @@ public class ProductCategory {
     @AllArgsConstructor
     @Embeddable
     public static class Pk implements Serializable {
-        @Id
+
         private Long productNo;
 
-        @Id
         private Integer categoryNo;
     }
 }

@@ -33,7 +33,8 @@ public class PointSavingPlace {
     @Column(name = "point_saving_place_no")
     private Integer pointSavingPlaceNo;
 
-    @Column(name = "point_saving_place_name", columnDefinition = "varchar(20)", nullable = false, unique = true)
+    @Column(name = "point_saving_place_name", columnDefinition = "varchar(20)",
+        nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
     private PointSavingPlaceEnum pointSavingPlaceEnum;
 }

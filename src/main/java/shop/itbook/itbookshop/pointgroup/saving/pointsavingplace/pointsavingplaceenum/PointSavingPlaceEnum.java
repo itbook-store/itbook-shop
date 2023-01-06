@@ -8,9 +8,9 @@ package shop.itbook.itbookshop.pointgroup.saving.pointsavingplace.pointsavingpla
  */
 public enum PointSavingPlaceEnum {
 
-    ORDER("주문"), ORDER_CANCLE("주문취소"), GIFT("선물"), COUPON("쿠폰");
+    ORDER("주문"), ORDER_CANCEL("주문취소"), GIFT("선물"), COUPON("쿠폰");
 
-    private String statusName;
+    private final String statusName;
 
     PointSavingPlaceEnum(String statusName) {
         this.statusName = statusName;

@@ -11,7 +11,7 @@ public enum PointUsagePlaceEnum {
 
     ORDER("주문"), GIFT("선물");
 
-    private String statusName;
+    private final String statusName;
 
     PointUsagePlaceEnum(String statusName) {
         this.statusName = statusName;

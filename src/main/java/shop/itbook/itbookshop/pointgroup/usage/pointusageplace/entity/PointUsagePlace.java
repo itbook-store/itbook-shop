@@ -20,7 +20,6 @@ import shop.itbook.itbookshop.pointgroup.usage.pointusageplace.pointusageplaceen
  * @author 최겸준
  * @since 1.0
  */
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -34,7 +33,8 @@ public class PointUsagePlace {
     @Column(name = "point_usage_place_no")
     private Integer pointUsagePlaceNo;
 
-    @Column(name = "point_usage_place_name", nullable = false, unique = true, columnDefinition = "varchar(20)")
+    @Column(name = "point_usage_place_name", nullable = false, unique = true,
+        columnDefinition = "varchar(20)")
     @Enumerated(EnumType.STRING)
     private PointUsagePlaceEnum pointUsagePlaceEnum;
 }
