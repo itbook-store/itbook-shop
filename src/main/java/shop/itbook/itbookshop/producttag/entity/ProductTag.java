@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.cart.entity;
+package shop.itbook.itbookshop.producttag.entity;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -14,11 +14,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.member.entity.Member;
 import shop.itbook.itbookshop.product.entity.Product;
+import shop.itbook.itbookshop.tag.entity.Tag;
 
 /**
- * 장바구니 테이블에 대한 엔티티 입니다.
+ * 상품과 태그 관계 테이블에 대한 엔티티 입니다.
  *
  * @author 강명관
  * @since 1.0
@@ -28,27 +28,25 @@ import shop.itbook.itbookshop.product.entity.Product;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "cart")
-public class Cart {
+@Table(name = "product_tag")
+public class ProductTag {
 
     @EmbeddedId
     private Pk pk;
 
-    @MapsId("memberNo")
+    @MapsId("tagNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
+    @JoinColumn(name = "tag_no")
+    private Tag tag;
 
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
     private Product product;
 
+
     /**
-     * The type Pk. 회원과 상품에 대한 복합키 설정을 위한 클래스 입니다.
-     *
-     * @author 강명관
-     * @since 1.0
+     * The type Pk. 관계 테이블의 복합키를 주키로 하기 위한 클래스 입니다.
      */
     @Getter
     @AllArgsConstructor
@@ -57,7 +55,7 @@ public class Cart {
     @Embeddable
     public static class Pk implements Serializable {
 
-        private Long memberNo;
+        private Integer tagNo;
 
         private Long productNo;
 

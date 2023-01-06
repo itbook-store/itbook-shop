@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.memberrole.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -58,10 +57,8 @@ public class MemberRole {
     @Embeddable
     public static class Pk implements Serializable {
 
-        @Column(name = "member_no")
         private Long memberNo;
 
-        @Column(name = "role_no")
         private Integer roleNo;
 
     }
