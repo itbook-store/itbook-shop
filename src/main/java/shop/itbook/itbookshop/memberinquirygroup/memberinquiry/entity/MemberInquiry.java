@@ -14,8 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.memberinquirygroup.inquirytype.entity.InquiryType;
 import shop.itbook.itbookshop.member.entity.Member;
+import shop.itbook.itbookshop.memberinquirygroup.inquirytype.entity.InquiryType;
 
 /**
  * 고객문의에 대한 엔티티입니다.
@@ -33,19 +33,19 @@ public class MemberInquiry {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "")
+    @Column(name = "member_inquiry_no", nullable = false)
     private Long memberInquiryNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_member_inquiry_no")
+    @JoinColumn(name = "parent_member_inquiry_no", nullable = false)
     private MemberInquiry parentMemberInquiry;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "inquiry_type_no")
+    @JoinColumn(name = "inquiry_type_no", nullable = false)
     private InquiryType inquiryType;
 
     @Column(name = "title", nullable = false, columnDefinition = "varchar(20)")

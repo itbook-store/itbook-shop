@@ -3,7 +3,7 @@ package shop.itbook.itbookshop.memberinquirygroup.inquirytypeenum;
 import lombok.Getter;
 
 /**
- * 문의유에 대한 enum입니다.
+ * 문의유형에 대한 enum입니다.
  *
  * @author 이하늬
  * @since 1.0

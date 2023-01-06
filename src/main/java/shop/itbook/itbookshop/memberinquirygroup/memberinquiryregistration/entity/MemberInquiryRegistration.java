@@ -5,7 +5,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -37,12 +36,12 @@ public class MemberInquiryRegistration {
 
     @MapsId("memberNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @MapsId("memberInquiryNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_inquiry_no")
+    @JoinColumn(name = "member_inquiry_no", nullable = false)
     private MemberInquiry memberInquiry;
 
     /**
@@ -51,15 +50,15 @@ public class MemberInquiryRegistration {
      * @author 이하늬
      * @since 1.0
      */
-    @EqualsAndHashCode
+    @Getter
     @AllArgsConstructor
     @NoArgsConstructor
+    @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
-        @Id
+
         private Long memberNo;
 
-        @Id
         private Long memberInquiryNo;
     }
 

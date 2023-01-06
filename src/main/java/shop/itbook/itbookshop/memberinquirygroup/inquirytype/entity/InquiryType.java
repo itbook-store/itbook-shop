@@ -34,6 +34,6 @@ public class InquiryType {
     private Integer inquiryTypeNo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "inquiry_type_no")
-    private InquiryTypeEnum inquiryType;
+    @Column(name = "inquiry_type_name", nullable = false)
+    private InquiryTypeEnum inquiryTypeEnum;
 }
