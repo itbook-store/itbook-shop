@@ -19,6 +19,8 @@ import shop.itbook.itbookshop.product.entity.Product;
 import shop.itbook.itbookshop.producttype.entity.ProductType;
 
 /**
+ * 도서 엔티티입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */
@@ -39,7 +41,7 @@ public class Book {
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "isbn", nullable = false, columnDefinition = "varchar(30)")
+    @Column(name = "isbn", nullable = false, columnDefinition = "varchar(30)", unique = true)
     private String isbn;
 
     @Column(name = "page_count", nullable = false)
@@ -51,10 +53,10 @@ public class Book {
     @Column(name = "is_ebook", nullable = false)
     private boolean isEbook;
 
-    @Column(name = "table_of_contents", nullable = false)
+    @Column(name = "table_of_contents", nullable = true, columnDefinition = "text")
     private String tableOfContents;
 
-    @Column(name = "ebook_url", nullable = false)
+    @Column(name = "ebook_url", nullable = true, columnDefinition = "text")
     private String ebookUrl;
 
     @Column(name = "publisher_name", nullable = false, columnDefinition = "varchar(20)")
