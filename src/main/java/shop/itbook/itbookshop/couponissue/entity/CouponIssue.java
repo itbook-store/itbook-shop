@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,7 @@ import shop.itbook.itbookshop.usagestatus.entity.UsageStatus;
  * @author 송다혜
  * @since 1.0
  */
+@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -49,9 +51,29 @@ public class CouponIssue {
     @JoinColumn(name = "usage_status_no")
     private UsageStatus usageStatus;
 
-    @Column(name = "coupon_issue_created_at", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "coupon_issue_created_at", nullable = false,
+        columnDefinition = "varchar(255)", unique = true)
     private LocalDateTime couponIssueCreatedAt;
 
-    @Column(name = "coupon_usage_created_at", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "coupon_usage_created_at", nullable = false,
+        columnDefinition = "varchar(255)", unique = true)
     private LocalDateTime couponUsageCreatedAt;
+
+    /**
+     * 쿠폰 발급 테이블의 생성자 입니다.
+     *
+     * @param member               the member
+     * @param coupon               the coupon
+     * @param usageStatus          the usage status
+     * @param couponIssueCreatedAt the coupon issue created at
+     * @author 송다혜
+     */
+    @Builder
+    public CouponIssue(Member member, Coupon coupon, UsageStatus usageStatus,
+                       LocalDateTime couponIssueCreatedAt) {
+        this.member = member;
+        this.coupon = coupon;
+        this.usageStatus = usageStatus;
+        this.couponIssueCreatedAt = couponIssueCreatedAt;
+    }
 }
