@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentstatus.entity;
+package shop.itbook.itbookshop.paymentgroup.paymentstatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.paymentstatusenum.PaymentStatusEnum;
+import shop.itbook.itbookshop.paymentgroup.paymentstatusenum.PaymentStatusEnum;
 
 /**
  * 결제상태에 대한 엔티티입니다.
@@ -36,5 +36,4 @@ public class PaymentStatus {
     @Enumerated(EnumType.STRING)
     @Column(name = "name")
     private PaymentStatusEnum paymentStatusEnum;
-
 }

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.payment.entity;
+package shop.itbook.itbookshop.paymentgroup.payment.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -16,8 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.card.entity.Card;
-import shop.itbook.itbookshop.paymentstatus.entity.PaymentStatus;
+import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
+import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
 
 /**
  * 결제에 대한 엔티티 입니다.
@@ -25,13 +25,11 @@ import shop.itbook.itbookshop.paymentstatus.entity.PaymentStatus;
  * @author 이하늬
  * @since 1.0
  */
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "payment")
-@Builder
 @Entity
 public class Payment {
 
@@ -87,4 +85,47 @@ public class Payment {
 
     @Column(name = "vat", nullable = false)
     private Long vat;
+
+    /**
+     * 결제 엔티티 생성자입니다.
+     *
+     * @param paymentStatus the payment status
+     * @param orderNo       the order no
+     * @param card          the card
+     * @param totalAmount   the total amount
+     * @param paymentKey    the payment key
+     * @param orderId       the order id
+     * @param orderName     the order name
+     * @param successUrl    the success url
+     * @param failUrl       the fail url
+     * @param requestedAt   the requested at
+     * @param receiptUrl    the receipt url
+     * @param approvedAt    the approved at
+     * @param country       the country
+     * @param checkoutUrl   the checkout url
+     * @param vat           the vat
+     * @author
+     */
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
+    @Builder
+    public Payment(PaymentStatus paymentStatus, Long orderNo, Card card, Long totalAmount,
+                   String paymentKey, String orderId, String orderName, String successUrl,
+                   String failUrl, LocalDateTime requestedAt, String receiptUrl,
+                   LocalDateTime approvedAt, String country, String checkoutUrl, Long vat) {
+        this.paymentStatus = paymentStatus;
+        this.orderNo = orderNo;
+        this.card = card;
+        this.totalAmount = totalAmount;
+        this.paymentKey = paymentKey;
+        this.orderId = orderId;
+        this.orderName = orderName;
+        this.successUrl = successUrl;
+        this.failUrl = failUrl;
+        this.requestedAt = requestedAt;
+        this.receiptUrl = receiptUrl;
+        this.approvedAt = approvedAt;
+        this.country = country;
+        this.checkoutUrl = checkoutUrl;
+        this.vat = vat;
+    }
 }

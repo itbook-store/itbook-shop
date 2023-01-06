@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentcancel.entity;
+package shop.itbook.itbookshop.paymentgroup.paymentcancel.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -10,10 +10,11 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.payment.entity.Payment;
+import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 
 /**
  * 결제취소에 대한 엔티티입니다.
@@ -26,6 +27,7 @@ import shop.itbook.itbookshop.payment.entity.Payment;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "payment_cancel")
+@Builder
 @Entity
 public class PaymentCancel {
 
