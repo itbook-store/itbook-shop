@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -72,4 +73,35 @@ public class Member {
     @Column(name = "member_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime memberCreatedAt;
 
+    /**
+     * 회원 테이블에 대한 엔티티 생성자 입니다.
+     *
+     * @param membership   the membership
+     * @param memberStatus the member status
+     * @param id           the id
+     * @param nickname     the nickname
+     * @param name         the name
+     * @param isGender     the is gender
+     * @param birth        the birth
+     * @param password     the password
+     * @param phoneNumber  the phone number
+     * @param email        the email
+     * @author 강명관
+     */
+    @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
+    @Builder
+    public Member(Membership membership, MemberStatus memberStatus, String id, String nickname,
+                  String name, boolean isGender, LocalDateTime birth, String password,
+                  String phoneNumber, String email) {
+        this.membership = membership;
+        this.memberStatus = memberStatus;
+        this.id = id;
+        this.nickname = nickname;
+        this.name = name;
+        this.isGender = isGender;
+        this.birth = birth;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
 }
