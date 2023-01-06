@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.pointgroup.saving.savingpointhistory.entity.SavingPointHistory;
 
 /**
