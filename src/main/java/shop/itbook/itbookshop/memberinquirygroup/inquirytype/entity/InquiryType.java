@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentstatus.entity;
+package shop.itbook.itbookshop.memberinquirygroup.inquirytype.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.paymentstatusenum.PaymentStatusEnum;
+import shop.itbook.itbookshop.memberinquirygroup.inquirytypeenum.InquiryTypeEnum;
 
 /**
- * 결제상태에 대한 엔티티입니다.
+ * 문의유형에 대한 엔티티입니다.
  *
  * @author 이하늬
  * @since 1.0
@@ -24,17 +24,16 @@ import shop.itbook.itbookshop.paymentstatusenum.PaymentStatusEnum;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "payment_status")
+@Table(name = "inquiry_type")
 @Entity
-public class PaymentStatus {
+public class InquiryType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_status_no", nullable = false)
-    private Integer paymentStatusNo;
+    @Column(name = "inquiry_type_no", nullable = false)
+    private Integer inquiryTypeNo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name")
-    private PaymentStatusEnum paymentStatusEnum;
-
+    @Column(name = "inquiry_type_name", nullable = false)
+    private InquiryTypeEnum inquiryTypeEnum;
 }
