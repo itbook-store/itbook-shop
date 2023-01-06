@@ -26,6 +26,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "product")
 @Entity
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_no", nullable = false)
@@ -48,13 +49,13 @@ public class Product {
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_selled", nullable = false)
-    private Boolean isSelled;
+    private boolean isSelled;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private boolean isDeleted;
 
     @Column(name = "is_subscription", nullable = false)
-    private Boolean isSubscription;
+    private boolean isSubscription;
 
     @Column(name = "thumnail_url", nullable = false)
     private String thumnailUrl;
