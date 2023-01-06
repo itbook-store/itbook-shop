@@ -24,7 +24,7 @@ import shop.itbook.itbookshop.ordertotalcoupon.entity.OrderTotalCoupon;
 public class ProductCoupon {
 
     @EmbeddedId
-    private OrderTotalCoupon.Pk pk;
+    private Pk pk;
 
     @MapsId("couponNo")
     @ManyToOne(fetch = FetchType.LAZY)
