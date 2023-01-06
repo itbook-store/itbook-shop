@@ -24,7 +24,6 @@ import shop.itbook.itbookshop.couponcoverage.entity.CouponCoverage;
  * @author 송다혜
  * @since 1.0
  */
-@Builder
 @Getter
 @Setter
 @AllArgsConstructor
@@ -63,7 +62,8 @@ public class Coupon {
     @Column(name = "max_discount_amount")
     private Long maxDiscountAmount;
 
-    @Column(name = "coupon_created_at", nullable = false)
+    @Column(name = "coupon_created_at", nullable = false,
+        columnDefinition = "default now()")
     private LocalDateTime couponCreatedAt;
 
     @Column(name = "coupon_expired_at", nullable = false)
