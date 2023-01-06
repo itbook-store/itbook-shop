@@ -11,11 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.order.entity.Order;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
 
@@ -29,7 +31,11 @@ import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "payment")
+@Table(name = "payment",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UniquePaymentStatusNoAndOrderNo", columnNames = {
+            "payment_status_no",
+            "order_no"})})
 @Entity
 public class Payment {
 
@@ -42,9 +48,9 @@ public class Payment {
     @JoinColumn(name = "payment_status_no", nullable = false, columnDefinition = "varchar(255)")
     private PaymentStatus paymentStatus;
 
-
-    @Column(name = "order_no", nullable = false)
-    private Long orderNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_no", nullable = false)
+    private Order order;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_no", nullable = false, columnDefinition = "varchar(20)")
@@ -56,22 +62,22 @@ public class Payment {
     @Column(name = "payment_key", nullable = false, columnDefinition = "varchar(255)")
     private String paymentKey;
 
-    @Column(name = "order_id", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "order_id", nullable = false, columnDefinition = "varchar(100)")
     private String orderId;
 
     @Column(name = "order_name", nullable = false, columnDefinition = "varchar(20)")
     private String orderName;
 
-    @Column(name = "success_url", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "success_url", nullable = false, columnDefinition = "text")
     private String successUrl;
 
-    @Column(name = "fail_url", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "fail_url", nullable = false, columnDefinition = "text")
     private String failUrl;
 
     @Column(name = "requested_at", nullable = false)
     private LocalDateTime requestedAt;
 
-    @Column(name = "receipt_url", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "receipt_url", nullable = false, columnDefinition = "test")
     private String receiptUrl;
 
     @Column(name = "approved_at", nullable = false)
@@ -80,7 +86,7 @@ public class Payment {
     @Column(name = "country", nullable = false, columnDefinition = "varchar(100)")
     private String country;
 
-    @Column(name = "checkout_url", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "checkout_url", nullable = false, columnDefinition = "test")
     private String checkoutUrl;
 
     @Column(name = "vat", nullable = false)
@@ -90,11 +96,11 @@ public class Payment {
      * 결제 엔티티 생성자입니다.
      *
      * @param paymentStatus the payment status
-     * @param orderNo       the order no
+     * @param order         the order id
      * @param card          the card
      * @param totalAmount   the total amount
      * @param paymentKey    the payment key
-     * @param orderId       the order id
+     * @param orderId       the order no
      * @param orderName     the order name
      * @param successUrl    the success url
      * @param failUrl       the fail url
@@ -108,12 +114,12 @@ public class Payment {
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
-    public Payment(PaymentStatus paymentStatus, Long orderNo, Card card, Long totalAmount,
+    public Payment(PaymentStatus paymentStatus, Order order, Card card, Long totalAmount,
                    String paymentKey, String orderId, String orderName, String successUrl,
                    String failUrl, LocalDateTime requestedAt, String receiptUrl,
                    LocalDateTime approvedAt, String country, String checkoutUrl, Long vat) {
         this.paymentStatus = paymentStatus;
-        this.orderNo = orderNo;
+        this.order = order;
         this.card = card;
         this.totalAmount = totalAmount;
         this.paymentKey = paymentKey;

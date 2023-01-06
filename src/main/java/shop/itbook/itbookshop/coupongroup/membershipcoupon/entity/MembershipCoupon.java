@@ -34,7 +34,7 @@ public class MembershipCoupon {
 
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_no")
+    @JoinColumn(name = "coupon_no", nullable = false)
     private MonthlyCoupon monthlyCoupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
