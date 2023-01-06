@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.order.entity;
+package shop.itbook.itbookshop.ordergroup.order.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;

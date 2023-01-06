@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.orderstatusenum;
+package shop.itbook.itbookshop.ordergroup.orderstatusenum;
 
 import lombok.Getter;
 

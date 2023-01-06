@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
 
