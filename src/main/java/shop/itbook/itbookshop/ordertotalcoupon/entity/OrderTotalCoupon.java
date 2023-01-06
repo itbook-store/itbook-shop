@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupon.entity.Coupon;
 
 /**

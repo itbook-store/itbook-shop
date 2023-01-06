@@ -16,8 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupon.entity.Coupon;
-import shop.itbook.itbookshop.member.entity.Member;
-import shop.itbook.itbookshop.role.entity.Role;
 
 /**
  * 쿠폰이 카테고리에 사용할 수 있는 쿠폰 인지를 구별하기 위한 테이블의 엔터티 입니다.
