@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.memberrole.entity;
+package shop.itbook.itbookshop.cart.entity;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -15,10 +15,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.member.entity.Member;
-import shop.itbook.itbookshop.role.entity.Role;
+import shop.itbook.itbookshop.product.entity.Product;
 
 /**
- * 회원 권한 관계 테이블에 대한 엔티티입니다.
+ * 장바구니 테이블에 대한 엔티티 입니다.
  *
  * @author 강명관
  * @since 1.0
@@ -28,8 +28,8 @@ import shop.itbook.itbookshop.role.entity.Role;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "member_role")
-public class MemberRole {
+@Table(name = "cart")
+public class Cart {
 
     @EmbeddedId
     private Pk pk;
@@ -39,13 +39,13 @@ public class MemberRole {
     @JoinColumn(name = "member_no")
     private Member member;
 
-    @MapsId("roleNo")
+    @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleNo")
-    private Role role;
+    @JoinColumn(name = "product_no")
+    private Product product;
 
     /**
-     * The type Pk. 회원 권한테이블의 복합키를 주키로 하기위한 클래스입니다.
+     * The type Pk. 회원과 상품에 대한 복합키 설정을 위한 클래스 입니다.
      *
      * @author 강명관
      * @since 1.0
@@ -59,7 +59,8 @@ public class MemberRole {
 
         private Long memberNo;
 
-        private Integer roleNo;
+        private Long productNo;
 
     }
 }
+
