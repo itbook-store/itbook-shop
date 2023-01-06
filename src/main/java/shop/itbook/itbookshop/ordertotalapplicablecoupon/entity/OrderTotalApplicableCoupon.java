@@ -56,10 +56,7 @@ public class OrderTotalApplicableCoupon {
     @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
-        @Column(name = "order_product_no")
         private Long orderProductNo;
-
-        @Column(name = "coupon_no")
         private Integer couponNo;
     }
 }
