@@ -2,8 +2,6 @@ package shop.itbook.itbookshop.metadata;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,9 +24,8 @@ import lombok.Setter;
 public class MetaData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "key")
-    private Integer key;
+    @Column(name = "key", nullable = false, columnDefinition = "varchar(255)")
+    private String key;
 
     @Column(name = "value", nullable = false, columnDefinition = "varchar(255)")
     private String value;
