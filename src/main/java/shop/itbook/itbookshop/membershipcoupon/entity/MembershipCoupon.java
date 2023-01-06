@@ -19,7 +19,7 @@ import shop.itbook.itbookshop.coupon.entity.Coupon;
 import shop.itbook.itbookshop.membership.entity.Membership;
 
 /**
- * 이달의 쿠폰중 멤버쉽 쿠폰 엔터티 입니다
+ * 이달의 쿠폰중 멤버쉽 쿠폰 엔터티 입니다.
  *
  * @author 송다혜
  * @since 1.0
