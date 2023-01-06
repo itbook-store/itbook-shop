@@ -12,7 +12,7 @@ public enum CouponCoverageEnum {
     CATEGORY("카테고리"),
     INDIVIDUAL_PRODUCTS("개별상품");
 
-    private String couponCoverage;
+    private final String couponCoverage;
 
     CouponCoverageEnum(String couponCoverage) {
         this.couponCoverage = couponCoverage;
