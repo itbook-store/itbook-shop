@@ -31,6 +31,7 @@ public class MonthlyCoupon {
 
     @Id
     private Long couponNo;
+
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")

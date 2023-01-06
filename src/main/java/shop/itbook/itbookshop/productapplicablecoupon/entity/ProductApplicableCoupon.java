@@ -31,6 +31,7 @@ import shop.itbook.itbookshop.productcoupon.entity.ProductCoupon;
 @Table(name = "product_applicable_coupon")
 @Entity
 public class ProductApplicableCoupon {
+
     @EmbeddedId
     private Pk pk;
 
@@ -55,7 +56,9 @@ public class ProductApplicableCoupon {
     @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
+
         private Long orderProductNo;
+
         private Integer couponNo;
     }
 }

@@ -57,7 +57,9 @@ public class CategoryApplicableCoupon {
     @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
+
         private Long orderProductNo;
+        
         private Integer couponNo;
     }
 }
