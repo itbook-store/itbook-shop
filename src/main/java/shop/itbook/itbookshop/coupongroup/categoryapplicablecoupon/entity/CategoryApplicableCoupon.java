@@ -29,15 +29,15 @@ import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
 public class CategoryApplicableCoupon {
 
     @Id
-    private Long orderProductNo;
+    private Long couponIssueNo;
 
-    @MapsId("orderProductNo")
+    @MapsId("couponIssueNo")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_product_no")
-    private OrderProduct orderProduct;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_issue_no", nullable = false)
+    @JoinColumn(name = "coupon_issue_no")
     private CouponIssue couponIssue;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_product_no", nullable = false)
+    private OrderProduct orderProduct;
 
 }

@@ -16,8 +16,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.member.entity.Member;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
+import shop.itbook.itbookshop.member.entity.Member;
 
 /**
  * 쿠폰_발급 이력을 관리하는 엔터티 입니다.
@@ -59,9 +59,9 @@ public class CouponIssue {
     /**
      * 쿠폰 발급 테이블의 생성자 입니다.
      *
-     * @param member               the member
-     * @param coupon               the coupon
-     * @param usageStatus          the usage status
+     * @param member      the member
+     * @param coupon      the coupon
+     * @param usageStatus the usage status
      * @author 송다혜
      */
     @Builder

@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.monthlycoupon.entity.MonthlyCoupon;
 import shop.itbook.itbookshop.membership.entity.Membership;
 
 /**
@@ -35,10 +35,10 @@ public class MembershipCoupon {
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private Coupon coupon;
+    private MonthlyCoupon monthlyCoupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "membership_no")
+    @JoinColumn(name = "membership_no", nullable = false)
     private Membership membership;
 
 }

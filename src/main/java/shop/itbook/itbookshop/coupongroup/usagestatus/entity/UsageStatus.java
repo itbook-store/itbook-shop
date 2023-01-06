@@ -12,9 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.coupongroup.usagestatusenum.UsageStatusEnum;
 
 /**
- * 쿠폰 적용 범위 에 대한 엔터티 입니다
+ * 쿠폰 적용 범위 에 대한 엔터티 입니다.
  *
  * @author 송다혜
  * @since 1.0

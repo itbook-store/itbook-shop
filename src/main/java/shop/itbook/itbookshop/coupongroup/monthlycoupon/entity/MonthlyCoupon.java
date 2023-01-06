@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.coupongroup.membershipcoupon.entity.MembershipCoupon;
+import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 
 /**
  * 예약형 이달의 쿠폰 관련 테이블 입니다.
@@ -35,7 +35,7 @@ public class MonthlyCoupon {
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private MembershipCoupon membershipCoupon;
+    private Coupon coupon;
 
     @Column(name = "coupon_reservation_created_at", nullable = false,
         columnDefinition = "default now()")

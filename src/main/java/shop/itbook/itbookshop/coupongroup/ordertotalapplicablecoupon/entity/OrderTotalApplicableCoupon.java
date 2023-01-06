@@ -1,21 +1,18 @@
 package shop.itbook.itbookshop.coupongroup.ordertotalapplicablecoupon.entity;
 
-import java.io.Serializable;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
+import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
+import shop.itbook.itbookshop.order.entity.Order;
 
 /**
  * 주문총액쿠폰적용 테이블 엔터티 입니다.
@@ -31,33 +28,15 @@ import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoup
 @Table(name = "order_total_applicable_coupon")
 public class OrderTotalApplicableCoupon {
 
-    @EmbeddedId
-    private Pk pk;
+    @Id
+    private Long couponIssueNo;
 
-    @MapsId("orderProductNo")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_product_no")
-    private OrderProduct orderProduct;
+    @MapsId("couponIssueNo")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_issue_no")
+    private CouponIssue couponIssue;
 
-    @MapsId("couponNo")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_no")
-    private OrderTotalCoupon orderTotalCoupon;
-
-    /**
-     * OrderTotalApplicableCoupon의 Pk 클레스 입니다.
-     *
-     * @author 송다혜
-     */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    public static class Pk implements Serializable {
-
-        private Long orderProductNo;
-
-        private Integer couponNo;
-    }
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_no", nullable = false)
+    private Order order;
 }

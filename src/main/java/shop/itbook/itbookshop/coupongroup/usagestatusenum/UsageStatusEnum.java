@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupongroup.usagestatus.entity;
+package shop.itbook.itbookshop.coupongroup.usagestatusenum;
 
 /**
  * 쿠폰 사용 여부와 상태종류를 나타내는 엔터티입니다.
