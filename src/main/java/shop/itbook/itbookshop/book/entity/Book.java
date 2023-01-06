@@ -61,6 +61,6 @@ public class Book {
     private String publisherName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "product_type_no", nullable = false)
+    @JoinColumn(name = "product_type_no", nullable = false)
     private ProductType productType;
 }
