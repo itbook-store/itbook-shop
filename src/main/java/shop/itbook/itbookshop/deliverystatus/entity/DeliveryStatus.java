@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.deliverystatusenum.DeliveryStatusEnum;
 
 /**
  * 배송상태에 대한 엔티티입니다.
@@ -30,5 +31,5 @@ public class DeliveryStatus {
     private Integer deliveryStatusNo;
 
     @Column(name = "delivery_status_name", nullable = false, columnDefinition = "varchar(20)")
-    private String deliveryStatusName;
+    private DeliveryStatusEnum deliveryStatusName;
 }
