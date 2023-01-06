@@ -62,7 +62,7 @@ public class MemberInquiry {
      * @param inquiryType         the inquiry type
      * @param title               the title
      * @param content             the content
-     * @author
+     * @author 이하늬
      */
     @Builder
     public MemberInquiry(MemberInquiry parentMemberInquiry, Member member, InquiryType inquiryType,
