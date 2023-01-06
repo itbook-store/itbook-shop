@@ -53,10 +53,10 @@ public class Book {
     @Column(name = "is_ebook", nullable = false)
     private boolean isEbook;
 
-    @Column(name = "table_of_contents", nullable = true, columnDefinition = "text")
+    @Column(name = "table_of_contents", columnDefinition = "text")
     private String tableOfContents;
 
-    @Column(name = "ebook_url", nullable = true, columnDefinition = "text")
+    @Column(name = "ebook_url", columnDefinition = "text")
     private String ebookUrl;
 
     @Column(name = "publisher_name", nullable = false, columnDefinition = "varchar(20)")
