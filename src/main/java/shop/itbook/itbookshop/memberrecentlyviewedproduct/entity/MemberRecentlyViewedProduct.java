@@ -37,12 +37,12 @@ public class MemberRecentlyViewedProduct {
 
     @MapsId("memberNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @MapsId("recentlyViewedProductNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recentlyViewedProductNo")
+    @JoinColumn(name = "recently_viewed_product_no", nullable = false)
     private RecentlyViewedProduct recentlyViewedProduct;
 
     /**

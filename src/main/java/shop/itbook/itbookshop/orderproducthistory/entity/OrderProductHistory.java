@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,10 +41,16 @@ public class OrderProductHistory {
     @JoinColumn(name = "order_product_no", nullable = false)
     private OrderProduct orderProduct;
 
-    @Column(name = "order_status_created_at", nullable = false, columnDefinition = "default now()")
-    private LocalDateTime orderStatusCreatedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status_no", nullable = false)
     private OrderStatus orderStatus;
+
+    @Column(name = "order_status_created_at", nullable = false, columnDefinition = "default now()")
+    private LocalDateTime orderStatusCreatedAt;
+
+    @Builder
+    public OrderProductHistory(OrderProduct orderProduct, OrderStatus orderStatus) {
+        this.orderProduct = orderProduct;
+        this.orderStatus = orderStatus;
+    }
 }

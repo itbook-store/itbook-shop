@@ -10,7 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,6 @@ import shop.itbook.itbookshop.producttype.entity.ProductType;
  */
 @Getter
 @Setter
-//@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "book")
 @Builder

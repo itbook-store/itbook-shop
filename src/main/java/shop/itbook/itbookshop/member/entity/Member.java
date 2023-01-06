@@ -55,8 +55,8 @@ public class Member {
     @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
     private String name;
 
-    @Column(name = "gender", nullable = false)
-    private boolean isGender;
+    @Column(name = "is_man", nullable = false)
+    private boolean isMan;
 
     @Column(name = "birth", nullable = false)
     private LocalDateTime birth;
@@ -91,14 +91,14 @@ public class Member {
     @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder
     public Member(Membership membership, MemberStatus memberStatus, String id, String nickname,
-                  String name, boolean isGender, LocalDateTime birth, String password,
+                  String name, boolean isMan, LocalDateTime birth, String password,
                   String phoneNumber, String email) {
         this.membership = membership;
         this.memberStatus = memberStatus;
         this.id = id;
         this.nickname = nickname;
         this.name = name;
-        this.isGender = isGender;
+        this.isMan = isMan;
         this.birth = birth;
         this.password = password;
         this.phoneNumber = phoneNumber;

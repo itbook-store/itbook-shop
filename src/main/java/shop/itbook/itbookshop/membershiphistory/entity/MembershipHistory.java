@@ -54,18 +54,15 @@ public class MembershipHistory {
     /**
      * 회원 등급 이력 테이블에 대한 엔티티 생성자 입니다.
      *
-     * @param member                     the member
-     * @param membership                 the membership
-     * @param monthlyUsageAmount         the monthly usage amount
-     * @param membershipHistoryCreatedAt the membership history created at
+     * @param member             the member
+     * @param membership         the membership
+     * @param monthlyUsageAmount the monthly usage amount
      * @author 강명관
      */
     @Builder
-    public MembershipHistory(Member member, Membership membership, Long monthlyUsageAmount,
-                             LocalDateTime membershipHistoryCreatedAt) {
+    public MembershipHistory(Member member, Membership membership, Long monthlyUsageAmount) {
         this.member = member;
         this.membership = membership;
         this.monthlyUsageAmount = monthlyUsageAmount;
-        this.membershipHistoryCreatedAt = membershipHistoryCreatedAt;
     }
 }

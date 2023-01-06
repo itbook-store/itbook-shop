@@ -45,32 +45,27 @@ public class Order {
     @JoinColumn(name = "recipient_destination_no", nullable = false)
     private MemberDestination memberDestination;
 
-    @Column(name = "order_created_at", nullable = false)
+    @Column(name = "order_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime orderCreatedAt;
 
     @Column(name = "is_subscribed", nullable = false)
     private boolean isSubscribed;
 
-    @Column(name = "countspecified_delivery_date", nullable = false)
+    @Column(name = "selected_delivery_date", nullable = false, columnDefinition = "default now()")
     private LocalDateTime countSpecifiedDeliveryDate;
 
     /**
      * 주문 엔티티의 생성자입니다.
      *
-     * @param member                     the member
-     * @param memberDestination          the member destination
-     * @param orderCreatedAt             the order created at
-     * @param isSubscribed               the is subscribed
-     * @param countSpecifiedDeliveryDate the count specified delivery date
+     * @param member            the member
+     * @param memberDestination the member destination
+     * @param isSubscribed      the is subscribed
      * @author 노수연
      */
     @Builder
-    public Order(Member member, MemberDestination memberDestination, LocalDateTime orderCreatedAt,
-                 boolean isSubscribed, LocalDateTime countSpecifiedDeliveryDate) {
+    public Order(Member member, MemberDestination memberDestination, boolean isSubscribed) {
         this.member = member;
         this.memberDestination = memberDestination;
-        this.orderCreatedAt = orderCreatedAt;
         this.isSubscribed = isSubscribed;
-        this.countSpecifiedDeliveryDate = countSpecifiedDeliveryDate;
     }
 }

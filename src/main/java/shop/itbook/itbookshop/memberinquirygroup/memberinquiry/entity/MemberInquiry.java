@@ -48,10 +48,10 @@ public class MemberInquiry {
     @JoinColumn(name = "inquiry_type_no", nullable = false)
     private InquiryType inquiryType;
 
-    @Column(name = "title", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "title", nullable = false, columnDefinition = "varchar(100)")
     private String title;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
     /**

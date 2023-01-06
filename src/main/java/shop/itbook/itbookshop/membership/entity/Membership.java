@@ -31,10 +31,10 @@ public class Membership {
     @Column(name = "membership_no")
     private Integer memberNo;
 
-    @Column(name = "membership_grade", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "membership_grade", nullable = false, columnDefinition = "varchar(20)", unique = true)
     private String membershipGrade;
 
-    @Column(name = "membership_standard_amount", nullable = false)
+    @Column(name = "membership_standard_amount", nullable = false, unique = true)
     private Long membershipStandardAmount;
 
     @Column(name = "membership_point", nullable = false)

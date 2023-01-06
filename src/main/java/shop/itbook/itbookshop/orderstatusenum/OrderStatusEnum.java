@@ -11,14 +11,17 @@ import lombok.Getter;
 @Getter
 public enum OrderStatusEnum {
 
-    ORDER("주문"),
+    WAITING_FOR_PAYMENT("결제대기중"),
     DEPOSIT_COMPLETE("입금완료"),
-    DELIVERY_RECEPTION("배송접수"),
+    DELIVERY_RECEPTION("배송접수중"),
     SHIPPING("배송중"),
     DELIVERY_COMPLETED("배송완료"),
-    EXCHANGE_REQUEST("교환신청"),
-    RETURN("반품"),
-    CANCEL("취소");
+    REQUEST_EXCHANGE("교환신청중"),
+    RETURN("반품신청중"),
+    RETURN_COMPLETED("반품완료"),
+    REQUEST_REFUND("환불신청중"),
+    REFUND_COMPLETED("환불완료"),
+    CANCELED("취소");
 
     private final String orderStatus;
 

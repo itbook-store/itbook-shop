@@ -49,8 +49,7 @@ public class OrderProduct {
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "count", nullable = false)
-    @ColumnDefault("1")
+    @Column(name = "count", nullable = false, columnDefinition = "integer default 1")
     private Integer count;
 
     @Column(name = "is_hidden", nullable = false)
