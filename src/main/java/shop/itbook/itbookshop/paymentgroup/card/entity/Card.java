@@ -31,6 +31,9 @@ public class Card {
     @Column(name = "card_no", nullable = false)
     private Long cardNo;
 
+    @Column(name = "card_serial_no", nullable = false)
+    private String cardSerialNo;
+
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
@@ -58,7 +61,7 @@ public class Card {
     @Column(name = "acquire_status", nullable = false, columnDefinition = "varchar(20)")
     private String acquireStatus;
 
-    @Column(name = "is_interest_free", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "is_interest_free", nullable = false)
     private boolean isInterestFree;
 
     /**
@@ -78,10 +81,11 @@ public class Card {
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
-    public Card(Long totalAmount, String issuerCode, String acquireCode,
+    public Card(String cardSerialNo, Long totalAmount, String issuerCode, String acquireCode,
                 Integer installmentPlanMonths,
                 String approveNumber, boolean isUseCardPoint, String type, String ownerType,
                 String acquireStatus, boolean isInterestFree) {
+        this.cardSerialNo = cardSerialNo;
         this.totalAmount = totalAmount;
         this.issuerCode = issuerCode;
         this.acquireCode = acquireCode;

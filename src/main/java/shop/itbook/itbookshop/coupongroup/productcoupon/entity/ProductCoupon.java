@@ -34,10 +34,10 @@ public class ProductCoupon {
 
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_no")
+    @JoinColumn(name = "coupon_no", nullable = false)
     private Coupon coupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 }

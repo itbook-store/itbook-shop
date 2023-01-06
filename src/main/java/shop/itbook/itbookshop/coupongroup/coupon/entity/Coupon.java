@@ -24,7 +24,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Coupon")
+@Table(name = "coupon")
 @Entity
 public class Coupon {
 
@@ -36,16 +36,13 @@ public class Coupon {
     @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
     private String name;
 
-    @Column(name = "amount", nullable = false)
-    @ColumnDefault("0")
+    @Column(name = "amount", nullable = false, columnDefinition = "bigint default 0")
     private Long amount;
 
-    @Column(name = "percent", nullable = false)
-    @ColumnDefault("0")
+    @Column(name = "percent", nullable = false, columnDefinition = "integer default 0")
     private Integer percent;
 
-    @Column(name = "point", nullable = false)
-    @ColumnDefault("0")
+    @Column(name = "point", nullable = false, columnDefinition = "bigint default 0")
     private Long point;
 
     @Column(name = "standard_amount")
@@ -64,14 +61,13 @@ public class Coupon {
     @Column(name = "coupon_modified_at", nullable = false)
     private LocalDateTime couponModifiedAt;
 
-    @Column(name = "image", columnDefinition = "TEXT")
+    @Column(name = "image", columnDefinition = "text")
     private String image;
 
     @Column(name = "code", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String code;
 
     @Column(name = "is_reserved", nullable = false)
-    @ColumnDefault("false")
     private boolean isReserved;
 
     /**

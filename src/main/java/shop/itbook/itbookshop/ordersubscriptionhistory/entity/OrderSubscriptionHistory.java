@@ -39,11 +39,10 @@ public class OrderSubscriptionHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status_no", nullable = false)
     private OrderStatus orderStatus;
-
-    @Column(name = "order_status_created_at", nullable = false)
-    private LocalDateTime orderStatusCreatedAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_subscription_no", nullable = false)
     private OrderSubscription orderSubscription;
+
+    @Column(name = "order_status_created_at", nullable = false, columnDefinition = "default now()")
+    private LocalDateTime orderStatusCreatedAt;
 }

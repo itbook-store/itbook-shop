@@ -39,21 +39,21 @@ public class CouponIssue {
     private Long couponIssueNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_no")
+    @JoinColumn(name = "coupon_no", nullable = false)
     private Coupon coupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usage_status_no")
+    @JoinColumn(name = "usage_status_no", nullable = false)
     private UsageStatus usageStatus;
 
     @Column(name = "coupon_issue_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime couponIssueCreatedAt;
 
-    @Column(name = "coupon_usage_created_at", nullable = false)
+    @Column(name = "coupon_usage_created_at")
     private LocalDateTime couponUsageCreatedAt;
 
     /**

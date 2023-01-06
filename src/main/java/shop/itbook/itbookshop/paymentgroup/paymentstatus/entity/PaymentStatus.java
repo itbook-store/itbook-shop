@@ -34,6 +34,6 @@ public class PaymentStatus {
     private Integer paymentStatusNo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name")
+    @Column(name = "payment_status_name", columnDefinition = "varchar(255)", unique = true, nullable = false)
     private PaymentStatusEnum paymentStatusEnum;
 }

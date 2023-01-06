@@ -24,10 +24,8 @@ import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "payment_cancel")
-@Builder
 @Entity
 public class PaymentCancel {
 
@@ -50,4 +48,15 @@ public class PaymentCancel {
 
     @Column(name = "refundable_amount", nullable = false)
     private Long refundableAmount;
+
+    @Builder
+    public PaymentCancel(Long paymentNo, Payment payment, LocalDateTime paymentCancelCreatedAt,
+                         Long amount, String cancelReason, Long refundableAmount) {
+        this.paymentNo = paymentNo;
+        this.payment = payment;
+        this.paymentCancelCreatedAt = paymentCancelCreatedAt;
+        this.amount = amount;
+        this.cancelReason = cancelReason;
+        this.refundableAmount = refundableAmount;
+    }
 }
