@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.subscriptionorderstatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,6 +32,7 @@ public class SubscriptionOrderStatus {
     @Column(name = "order_status_no", nullable = false)
     private Integer orderStatusNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(20)")
     private SubscriptionOrderStatusEnum subscriptionOrderStatusEnum;
 }
