@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.inquirytypeenum;
+package shop.itbook.itbookshop.memberinquirygroup.inquirytypeenum;
 
 import lombok.Getter;
 

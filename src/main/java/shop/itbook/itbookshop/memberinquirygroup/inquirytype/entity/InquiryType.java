@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.memberinquirygroup.inquirytypeenum.InquiryTypeEnum;
 
 /**
  * 문의유형에 대한 엔티티입니다.
