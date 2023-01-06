@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,4 +55,26 @@ public class ProductInquiry {
 
     @Column(name = "is_replied", nullable = false)
     private boolean isReplied;
+
+    /**
+     * 상품 문의 엔티티의 생성자입니다.
+     *
+     * @param member    the member
+     * @param product   the product
+     * @param title     the title
+     * @param content   the content
+     * @param isPublic  the is public
+     * @param isReplied the is replied
+     * @author 정재원
+     */
+    @Builder
+    public ProductInquiry(Member member, Product product, String title, String content,
+                          boolean isPublic, boolean isReplied) {
+        this.member = member;
+        this.product = product;
+        this.title = title;
+        this.content = content;
+        this.isPublic = isPublic;
+        this.isReplied = isReplied;
+    }
 }
