@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.chattinghistory.entity;
+package shop.itbook.itbookshop.membergroup.memberservice.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -15,54 +15,49 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.chattingroom.entity.ChattingRoom;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.servicetype.entity.ServiceType;
 
 /**
- * 채팅방 기록 테이블에 대한 엔티티 입니다.
+ * 회원서비스에 대한 엔티티입니다.
  *
- * @author 강명관
+ * @author 노수연
  * @since 1.0
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "member_service")
 @Entity
-@Table(name = "chatting_history")
-public class ChattingHistory {
-
+public class MemberService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chatting_history_no")
-    private Long chattingHistoryNo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chatting_room_no", nullable = false)
-    private ChattingRoom chattingRoom;
+    @Column(name = "member_service_no")
+    private Long memberServiceNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "service_type_no", nullable = false)
+    private ServiceType serviceType;
+
+    @Column(name = "title", nullable = false, columnDefinition = "varchar(100)")
+    private String title;
+
     @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column(name = "chatting_created_at", nullable = false, columnDefinition = "default now()")
-    private LocalDateTime chattingCreatedAt;
+    @Column(name = "created_at", nullable = false, columnDefinition = "default now()")
+    private LocalDateTime createdAt;
 
-    /**
-     * 채팅 기록 엔티티에 대한 생성자 입니다.
-     *
-     * @param chattingRoom the chatting room
-     * @param member       the member
-     * @param content      the content
-     * @author 강명관
-     */
     @Builder
-    public ChattingHistory(ChattingRoom chattingRoom, Member member, String content) {
-        this.chattingRoom = chattingRoom;
+    public MemberService(Member member, ServiceType serviceType, String title, String content) {
         this.member = member;
+        this.serviceType = serviceType;
+        this.title = title;
         this.content = content;
     }
 }

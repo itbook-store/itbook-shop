@@ -15,8 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.member.entity.Member;
-import shop.itbook.itbookshop.memberdestination.entity.MemberDestination;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
 
 /**
  * 주문에 관한 엔티티입니다.
