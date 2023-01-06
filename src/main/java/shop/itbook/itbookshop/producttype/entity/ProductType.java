@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.producttype.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.producttypeenum.ProductTypeEnum;
 
 /**
  * 상품유형에 대한 엔티티 입니다.
@@ -29,6 +32,7 @@ public class ProductType {
     @Column(name = "product_type_no", nullable = false)
     private Integer productTypeNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(20)")
-    private String productTypeName;
+    private ProductTypeEnum productTypeEnum;
 }
