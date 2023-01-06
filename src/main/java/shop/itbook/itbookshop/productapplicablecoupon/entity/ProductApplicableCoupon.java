@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordertotalapplicablecoupon.entity;
+package shop.itbook.itbookshop.productapplicablecoupon.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -16,10 +16,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
-import shop.itbook.itbookshop.ordertotalcoupon.entity.OrderTotalCoupon;
+import shop.itbook.itbookshop.productcoupon.entity.ProductCoupon;
 
 /**
- * 주문총액쿠폰적용 테이블 엔터티 입니다.
+ * 상품쿠폰적용 관련 엔티티입니다.
  *
  * @author 송다혜
  * @since 1.0
@@ -28,10 +28,9 @@ import shop.itbook.itbookshop.ordertotalcoupon.entity.OrderTotalCoupon;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "product_applicable_coupon")
 @Entity
-@Table(name = "category_applicable_coupon")
-public class OrderTotalApplicableCoupon {
-
+public class ProductApplicableCoupon {
     @EmbeddedId
     private Pk pk;
 
@@ -43,10 +42,10 @@ public class OrderTotalApplicableCoupon {
     @MapsId("couponNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private OrderTotalCoupon orderTotalCoupon;
+    private ProductCoupon productCoupon;
 
     /**
-     * OrderTotalApplicableCoupon의 Pk 클레스 입니다.
+     * ProductApplicableCoupon Pk 클레스 입니다.
      *
      * @author 송다혜
      */

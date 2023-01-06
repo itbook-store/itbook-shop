@@ -6,9 +6,11 @@ import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,29 +33,10 @@ import shop.itbook.itbookshop.coupon.entity.Coupon;
 @Table(name = "category_coupon")
 public class CategoryCoupon {
 
-    @EmbeddedId
-    private Pk pk;
-
+    @Id
+    private Long couponNo;
     @MapsId("couponNo")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private Coupon coupon;
-
-    /**
-     * CategoryCoupon 엔터티의 pk 클레스 입니다.
-     *
-     * @author 송다혜
-     */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    public static class Pk implements Serializable {
-
-        @Column(name = "coupon_no")
-        private Integer couponNo;
-
-    }
-
+    private Coupon Coupon;
 }

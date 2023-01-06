@@ -9,13 +9,14 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.coupon.entity.Coupon;
+import shop.itbook.itbookshop.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
 
 /**
@@ -42,9 +43,9 @@ public class CategoryApplicableCoupon {
 
     //todo:copon이 아니라 category_coupon을 받도록 해야함
     @MapsId("couponNo")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private Coupon coupon;
+    private CategoryCoupon categoryCoupon;
 
     /**
      * CategoryApplicableCoupon의 Pk입니다.
