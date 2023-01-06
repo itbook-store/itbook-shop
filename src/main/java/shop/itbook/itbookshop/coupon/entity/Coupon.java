@@ -38,7 +38,7 @@ public class Coupon {
     private Long couponNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "couponCoverageNo")
+    @JoinColumn(name = "couponCoverage_no")
     private CouponCoverage couponCoverage;
 
     @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
@@ -72,7 +72,7 @@ public class Coupon {
     @Column(name = "coupon_modified_at", nullable = false)
     private LocalDateTime couponModifiedAt;
 
-    @Column(name = "image")
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 
     @Column(name = "code", nullable = false, columnDefinition = "varchar(255)", unique = true)

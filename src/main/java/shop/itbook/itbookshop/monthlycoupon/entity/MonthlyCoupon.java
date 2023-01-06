@@ -1,26 +1,22 @@
-package shop.itbook.itbookshop.categorycoupon.entity;
+package shop.itbook.itbookshop.monthlycoupon.entity;
 
-import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.coupon.entity.Coupon;
+import shop.itbook.itbookshop.membershipcoupon.entity.MembershipCoupon;
 
 /**
- * 쿠폰이 카테고리에 사용할 수 있는 쿠폰 인지를 구별하기 위한 테이블의 엔터티 입니다.
+ * 예약형 이달의 쿠폰 관련 테이블 입니다.
  *
  * @author 송다혜
  * @since 1.0
@@ -30,8 +26,8 @@ import shop.itbook.itbookshop.coupon.entity.Coupon;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "category_coupon")
-public class CategoryCoupon {
+@Table(name = "monthly_coupon")
+public class MonthlyCoupon {
 
     @Id
     private Long couponNo;
@@ -39,5 +35,9 @@ public class CategoryCoupon {
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
-    private Coupon Coupon;
+    private MembershipCoupon membershipCoupon;
+
+    @Column(name = "coupon_reservation_created_at", nullable = false,
+        columnDefinition = "default now()")
+    private LocalDateTime couponReservationCreatedAt;
 }
