@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.orderstatus.entity;
+package shop.itbook.itbookshop.ordergroup.orderstatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 
 /**
  * 주문상태에 대한 엔티티입니다.

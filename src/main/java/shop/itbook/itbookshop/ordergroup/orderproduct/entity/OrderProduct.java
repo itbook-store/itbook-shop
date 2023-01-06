@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.orderproduct.entity;
+package shop.itbook.itbookshop.ordergroup.orderproduct.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,8 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import shop.itbook.itbookshop.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.product.entity.Product;
 
 /**

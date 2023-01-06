@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
-import shop.itbook.itbookshop.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
  * 주문총액쿠폰적용 테이블 엔터티 입니다.

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordersubscription.entity;
+package shop.itbook.itbookshop.ordergroup.ordersubscription.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,14 +7,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
  * 주문_구독에 대한 엔티티입니다.
