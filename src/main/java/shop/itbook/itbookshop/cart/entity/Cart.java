@@ -62,7 +62,7 @@ public class Cart {
         @Column(name = "member_no")
         private Long memberNo;
 
-        @Column(name = "productNo")
+        @Column(name = "product_no")
         private Long productNo;
 
     }
