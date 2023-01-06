@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.orderstatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,7 +32,8 @@ public class OrderStatus {
     @Column(name = "order_status_no", nullable = false)
     private Integer orderStatusNo;
 
-    @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Enumerated(EnumType.STRING)
     private OrderStatusEnum orderStatusEnum;
 }
 

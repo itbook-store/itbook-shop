@@ -36,12 +36,12 @@ public class MemberRole {
 
     @MapsId("memberNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
+    @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
     @MapsId("roleNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roleNo")
+    @JoinColumn(name = "role_no", nullable = false)
     private Role role;
 
     /**

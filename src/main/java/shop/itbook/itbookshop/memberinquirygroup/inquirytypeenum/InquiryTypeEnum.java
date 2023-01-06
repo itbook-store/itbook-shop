@@ -12,7 +12,7 @@ import lombok.Getter;
 public enum InquiryTypeEnum {
     GENERAL("일반문의"), COMPLAINT("불만접수");
 
-    private String inquiryType;
+    private final String inquiryType;
 
     InquiryTypeEnum(String inquiryType) {
         this.inquiryType = inquiryType;

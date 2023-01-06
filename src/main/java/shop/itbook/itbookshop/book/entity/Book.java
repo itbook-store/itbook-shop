@@ -26,7 +26,6 @@ import shop.itbook.itbookshop.producttype.entity.ProductType;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "book")
 @Builder
