@@ -30,5 +30,5 @@ public class ProductType {
     private Integer productTypeNo;
 
     @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(20)")
-    private String productTypeName;
+    private String productTypeEnum;
 }

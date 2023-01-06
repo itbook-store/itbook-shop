@@ -45,8 +45,7 @@ public class DeliveryStatusHistory {
     @JoinColumn(name = "delivery_no", nullable = false)
     private Delivery delivery;
 
-    @CreatedDate
-    @Column(name = "delivery_status_created_at", nullable = false)
+    @Column(name = "delivery_status_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime deliveryStatusCreatedAt;
 
     @Column(name = "history_location", nullable = false, columnDefinition = "varchar(100)")
