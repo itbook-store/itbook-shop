@@ -31,6 +31,6 @@ public class OrderStatus {
     private Integer orderStatusNo;
 
     @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(20)")
-    private OrderStatusEnum orderStatusName;
+    private OrderStatusEnum orderStatusEnum;
 }
 

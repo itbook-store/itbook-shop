@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.subscriptionorderstatusenum.SubscriptionOrderStatusEnum;
 
 /**
  * 구독주문 상태에 대한 엔티티입니다.
@@ -30,5 +31,5 @@ public class SubscriptionOrderStatus {
     private Integer orderStatusNo;
 
     @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(20)")
-    private String orderStatusName;
+    private SubscriptionOrderStatusEnum subscriptionOrderStatusEnum;
 }

@@ -31,5 +31,5 @@ public class DeliveryStatus {
     private Integer deliveryStatusNo;
 
     @Column(name = "delivery_status_name", nullable = false, columnDefinition = "varchar(20)")
-    private DeliveryStatusEnum deliveryStatusName;
+    private DeliveryStatusEnum deliveryStatusEnum;
 }
