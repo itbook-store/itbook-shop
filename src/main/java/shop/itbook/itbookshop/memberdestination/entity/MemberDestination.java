@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,4 +53,25 @@ public class MemberDestination {
     @Column(name = "recipient_address_details", columnDefinition = "varchar(255)")
     private String recipientAddressDetails;
 
+
+    /**
+     * 회원 배송지 테이블에 대한 엔티티 생성자 입니다.
+     *
+     * @param deliveryDestination     the delivery destination
+     * @param member                  the member
+     * @param recipientName           the recipient name
+     * @param recipientPhoneNumber    the recipient phone number
+     * @param recipientAddressDetails the recipient address details
+     * @author 강명관
+     */
+    @Builder
+    public MemberDestination(DeliveryDestination deliveryDestination, Member member,
+                             String recipientName, String recipientPhoneNumber,
+                             String recipientAddressDetails) {
+        this.deliveryDestination = deliveryDestination;
+        this.member = member;
+        this.recipientName = recipientName;
+        this.recipientPhoneNumber = recipientPhoneNumber;
+        this.recipientAddressDetails = recipientAddressDetails;
+    }
 }

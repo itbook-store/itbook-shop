@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -61,7 +62,8 @@ public class Coupon {
     @Column(name = "max_discount_amount")
     private Long maxDiscountAmount;
 
-    @Column(name = "coupon_created_at", nullable = false)
+    @Column(name = "coupon_created_at", nullable = false,
+        columnDefinition = "default now()")
     private LocalDateTime couponCreatedAt;
 
     @Column(name = "coupon_expired_at", nullable = false)
@@ -79,5 +81,88 @@ public class Coupon {
     @Column(name = "is_reserved", nullable = false)
     @ColumnDefault("false")
     private boolean isReserved;
+
+    /**
+     * 퍼센트 쿠폰의 생성자입니다.
+     *
+     * @param couponCoverage    the coupon coverage
+     * @param name              the name
+     * @param percent           the percent
+     * @param standardAmount    the standard amount
+     * @param maxDiscountAmount the max discount amount
+     * @param couponExpiredAt   the coupon expired at
+     * @param couponModifiedAt  the coupon modified at
+     * @param code              the code
+     * @param isReserved        the is reserved
+     * @author 송다혜
+     */
+    @SuppressWarnings("java:S107") // 쿠폰 클레스의 필수 생성자 값들을 넣기 위함
+    @Builder
+    public Coupon(CouponCoverage couponCoverage, String name, Integer percent,
+                  Long standardAmount, Long maxDiscountAmount, LocalDateTime couponExpiredAt,
+                  LocalDateTime couponModifiedAt, String code, boolean isReserved) {
+        this.couponCoverage = couponCoverage;
+        this.name = name;
+        this.percent = percent;
+        this.standardAmount = standardAmount;
+        this.maxDiscountAmount = maxDiscountAmount;
+        this.couponExpiredAt = couponExpiredAt;
+        this.couponModifiedAt = couponModifiedAt;
+        this.code = code;
+        this.isReserved = isReserved;
+    }
+
+    /**
+     * 정액쿠폰의 생성자 입니다.
+     *
+     * @param couponCoverage   the coupon coverage
+     * @param name             the name
+     * @param amount           the amount
+     * @param standardAmount   the standard amount
+     * @param couponExpiredAt  the coupon expired at
+     * @param couponModifiedAt the coupon modified at
+     * @param code             the code
+     * @param isReserved       the is reserved
+     * @author 송다혜
+     */
+    @SuppressWarnings("java:S107") // 쿠폰 클레스의 필수 생성자 값들을 넣기 위함
+    @Builder
+    public Coupon(CouponCoverage couponCoverage, String name, Long amount,
+                  Long standardAmount, LocalDateTime couponExpiredAt,
+                  LocalDateTime couponModifiedAt, String code, boolean isReserved) {
+        this.couponCoverage = couponCoverage;
+        this.name = name;
+        this.amount = amount;
+        this.standardAmount = standardAmount;
+        this.couponExpiredAt = couponExpiredAt;
+        this.couponModifiedAt = couponModifiedAt;
+        this.code = code;
+        this.isReserved = isReserved;
+    }
+
+    /**
+     * 포인트 쿠폰의 생성자입니다.
+     *
+     * @param couponCoverage   the coupon coverage
+     * @param name             the name
+     * @param point            the point
+     * @param couponExpiredAt  the coupon expired at
+     * @param couponModifiedAt the coupon modified at
+     * @param code             the code
+     * @param isReserved       the is reserved
+     * @author 송다혜
+     */
+    @Builder
+    public Coupon(CouponCoverage couponCoverage, String name,
+                  Long point, LocalDateTime couponExpiredAt,
+                  LocalDateTime couponModifiedAt, String code, boolean isReserved) {
+        this.couponCoverage = couponCoverage;
+        this.name = name;
+        this.point = point;
+        this.couponExpiredAt = couponExpiredAt;
+        this.couponModifiedAt = couponModifiedAt;
+        this.code = code;
+        this.isReserved = isReserved;
+    }
 }
 

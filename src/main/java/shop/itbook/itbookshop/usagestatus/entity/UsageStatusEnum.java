@@ -11,7 +11,7 @@ public enum UsageStatusEnum {
     COMPLETED("사용완료"),
     AVAILABLE("사용가능");
 
-    private String usageStatus;
+    private final String usageStatus;
 
     UsageStatusEnum(String usageStatus) {
         this.usageStatus = usageStatus;
