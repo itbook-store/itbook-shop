@@ -1,0 +1,81 @@
+package shop.itbook.itbookshop.review.entity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import shop.itbook.itbookshop.member.entity.Member;
+import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.product.entity.Product;
+
+/**
+ * 리뷰에 대한 엔티티입니다.
+ *
+ * @author 노수연
+ * @since 1.0
+ */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "review")
+public class Review {
+
+    @Id
+    private Long orderProductNo;
+
+    @MapsId("orderProductNo")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_product_no", nullable = false)
+    private OrderProduct orderProduct;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_no", nullable = false)
+    private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_no", nullable = false)
+    private Member member;
+
+    @Column(name = "start_point", nullable = false)
+    private Integer starPoint;
+
+    @Column(name = "review_content", nullable = false, columnDefinition = "text")
+    private String reviewContent;
+
+    @Column(name = "image", nullable = true, columnDefinition = "text")
+    private String image;
+
+    /**
+     * 리뷰 엔티티 생성자입니다.
+     *
+     * @param orderProduct  the order product
+     * @param product       the product
+     * @param member        the member
+     * @param starPoint     the star point
+     * @param reviewContent the review content
+     * @param image         the image
+     * @author 노수연
+     */
+    @Builder
+    public Review(OrderProduct orderProduct, Product product, Member member, Integer starPoint,
+                  String reviewContent, String image) {
+        this.orderProduct = orderProduct;
+        this.product = product;
+        this.member = member;
+        this.starPoint = starPoint;
+        this.reviewContent = reviewContent;
+        this.image = image;
+    }
+}
