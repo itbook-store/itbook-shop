@@ -65,4 +65,21 @@ public class Book {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_type_no", nullable = false)
     private ProductType productType;
+
+    @Builder
+    public Book(Long productNo, Product product, String isbn, Integer pageCount,
+                LocalDateTime bookCreatedAt, boolean isEbook, String tableOfContents,
+                String ebookUrl,
+                String publisherName, ProductType productType) {
+        this.productNo = productNo;
+        this.product = product;
+        this.isbn = isbn;
+        this.pageCount = pageCount;
+        this.bookCreatedAt = bookCreatedAt;
+        this.isEbook = isEbook;
+        this.tableOfContents = tableOfContents;
+        this.ebookUrl = ebookUrl;
+        this.publisherName = publisherName;
+        this.productType = productType;
+    }
 }
