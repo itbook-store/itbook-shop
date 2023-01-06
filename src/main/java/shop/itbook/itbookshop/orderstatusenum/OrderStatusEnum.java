@@ -10,6 +10,7 @@ import lombok.Getter;
  */
 @Getter
 public enum OrderStatusEnum {
+
     ORDER("주문"),
     DEPOSIT_COMPLETE("입금완료"),
     DELIVERY_RECEPTION("배송접수"),
@@ -18,6 +19,7 @@ public enum OrderStatusEnum {
     EXCHANGE_REQUEST("교환신청"),
     RETURN("반품"),
     CANCEL("취소");
+
     private final String orderStatus;
 
     OrderStatusEnum(String orderStatus) {
