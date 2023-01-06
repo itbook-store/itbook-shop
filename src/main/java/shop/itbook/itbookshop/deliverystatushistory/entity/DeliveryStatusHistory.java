@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import shop.itbook.itbookshop.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverystatus.entity.DeliveryStatus;
 
@@ -44,6 +45,7 @@ public class DeliveryStatusHistory {
     @JoinColumn(name = "delivery_no", nullable = false)
     private Delivery delivery;
 
+    @CreatedDate
     @Column(name = "delivery_status_created_at", nullable = false)
     private LocalDateTime deliveryStatusCreatedAt;
 
