@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.bookmark.entity;
+package shop.itbook.itbookshop.restocknotification.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import shop.itbook.itbookshop.member.entity.Member;
 import shop.itbook.itbookshop.product.entity.Product;
 
 /**
- * 장바구니 테이블에 대한 엔티티입니다.
+ * 재입고 알림 테이블에 대한 엔티티 입니다.
  *
  * @author 강명관
  * @since 1.0
@@ -30,16 +30,16 @@ import shop.itbook.itbookshop.product.entity.Product;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bookmark", uniqueConstraints = {
+@Table(name = "restock_notification", uniqueConstraints = {
     @UniqueConstraint(name = "UniqueProductNoAndMemberNo",
         columnNames = {"product_no", "member_no"})
 })
-public class Bookmark {
+public class RestockNotification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bookmark_no")
-    private Long bookmarkNo;
+    @Column(name = "restock_notification_no")
+    private Long restockNotificationNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no", nullable = false)
@@ -49,18 +49,18 @@ public class Bookmark {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "bookmark_cerated_at", nullable = false, columnDefinition = "default now()")
-    private LocalDateTime bookmarkCreatedAt;
+    @Column(name = "notification_created_at", nullable = false, columnDefinition = "default now()")
+    private LocalDateTime notificationCreatedAt;
 
     /**
-     * 즐겨찾기 테이블에 대한 엔티티 생성자 입니다.
+     * 재입고 알림 테이블에 대한 엔티티 생성자 입니다.
      *
      * @param product the product
      * @param member  the member
      * @author 강명관
      */
     @Builder
-    public Bookmark(Product product, Member member) {
+    public RestockNotification(Product product, Member member) {
         this.product = product;
         this.member = member;
     }
