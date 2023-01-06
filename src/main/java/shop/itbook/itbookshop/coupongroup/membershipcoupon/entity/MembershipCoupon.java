@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.monthlycoupon.entity.MonthlyCoupon;
-import shop.itbook.itbookshop.membership.entity.Membership;
+import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 
 /**
  * 이달의 쿠폰중 멤버쉽 쿠폰 엔터티 입니다.

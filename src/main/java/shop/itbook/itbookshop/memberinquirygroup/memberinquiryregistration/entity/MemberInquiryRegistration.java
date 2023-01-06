@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.memberinquirygroup.memberinquiry.entity.MemberInquiry;
 
 /**
