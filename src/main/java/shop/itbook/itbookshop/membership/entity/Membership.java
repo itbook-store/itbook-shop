@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,4 +40,19 @@ public class Membership {
     @Column(name = "membership_point", nullable = false)
     private Long membershipPoint;
 
+
+    /**
+     * 회원 등급 테이블에 대한 엔티티 생성자 입니다.
+     *
+     * @param membershipGrade          the membership grade
+     * @param membershipStandardAmount the membership standard amount
+     * @param membershipPoint          the membership point
+     * @author 강명관
+     */
+    @Builder
+    public Membership(String membershipGrade, Long membershipStandardAmount, Long membershipPoint) {
+        this.membershipGrade = membershipGrade;
+        this.membershipStandardAmount = membershipStandardAmount;
+        this.membershipPoint = membershipPoint;
+    }
 }

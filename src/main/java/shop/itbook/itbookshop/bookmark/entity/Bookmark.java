@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +30,10 @@ import shop.itbook.itbookshop.product.entity.Product;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bookmark")
+@Table(name = "bookmark", uniqueConstraints = {
+    @UniqueConstraint(name = "UniqueProductNoAndMemberNo",
+        columnNames = {"product_no", "member_no"})
+})
 public class Bookmark {
 
     @Id
@@ -47,4 +52,18 @@ public class Bookmark {
     @Column(name = "bookmark_cerated_at")
     private LocalDateTime bookmarkCreatedAt;
 
+    /**
+     * 즐겨찾기 테이블에 대한 엔티티 생성자 입니다.
+     *
+     * @param product           the product
+     * @param member            the member
+     * @param bookmarkCreatedAt the bookmark created at
+     * @author 강명관
+     */
+    @Builder
+    public Bookmark(Product product, Member member, LocalDateTime bookmarkCreatedAt) {
+        this.product = product;
+        this.member = member;
+        this.bookmarkCreatedAt = bookmarkCreatedAt;
+    }
 }

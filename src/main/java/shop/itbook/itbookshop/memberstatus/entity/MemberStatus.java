@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.memberstatus.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.java.Log;
+import shop.itbook.itbookshop.memberstatusenum.MemberStatusEnum;
 
 /**
  * Member Status에 관한 코드 테이블입니다.
@@ -32,6 +34,7 @@ public class MemberStatus {
     @Column(name = "member_status_no")
     private Integer memberStatusNo;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "member_status_name", nullable = false, columnDefinition = "varchar(20)")
-    private String memberStatusName;
+    private MemberStatusEnum memberStatusEnum;
 }
