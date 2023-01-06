@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.inquirytype.entity;
+package shop.itbook.itbookshop.memberinquirygroup.inquirytype.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.inquirytypeenum.InquiryTypeEnum;
 
 /**
  * 문의유형에 대한 엔티티입니다.
@@ -27,7 +26,7 @@ import shop.itbook.itbookshop.inquirytypeenum.InquiryTypeEnum;
 @Table(name = "inquiry_type")
 @Entity
 public class InquiryType {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inquiry_type_no", nullable = false)
