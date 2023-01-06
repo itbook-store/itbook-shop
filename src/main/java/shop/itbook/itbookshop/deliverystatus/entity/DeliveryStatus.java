@@ -27,12 +27,13 @@ import shop.itbook.itbookshop.deliverystatusenum.DeliveryStatusEnum;
 @Table(name = "delivery_status")
 @Entity
 public class DeliveryStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_status_no", nullable = false)
     private Integer deliveryStatusNo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "delivery_status_name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "delivery_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private DeliveryStatusEnum deliveryStatusEnum;
 }

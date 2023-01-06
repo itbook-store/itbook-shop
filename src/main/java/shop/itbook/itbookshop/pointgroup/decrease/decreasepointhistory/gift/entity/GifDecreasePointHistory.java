@@ -26,15 +26,17 @@ import shop.itbook.itbookshop.pointgroup.decrease.decreasepointhistory.entity.De
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "gift_used_point_history")
+@Table(name = "gift_decrease_point_history")
 public class GifDecreasePointHistory {
 
     @Id
     private Long pointHistoryNo;
+
     @MapsId("pointHistoryNo")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point_history_no")
+    @JoinColumn(name = "point_history_no", nullable = false)
     private DecreasePointHistory decreasePointHistory;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;

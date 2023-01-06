@@ -38,6 +38,6 @@ public class ProductImage {
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = false, columnDefinition = "text")
     private String imageUrl;
 }

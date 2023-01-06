@@ -36,16 +36,19 @@ public class ProductRelationGroupReservation {
 
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
     @MapsId("productRelationGroupNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_relation_group_reservation_no")
+    @JoinColumn(name = "product_relation_group_reservation_no", nullable = false)
     private ProductRelationGroup productRelationGroup;
 
     /**
      * The type Pk. 관계 테이블의 복합키를 주키로 하기 위한 클래스 입니다.
+     *
+     * @author 강명관
+     * @since 1.0
      */
     @Getter
     @AllArgsConstructor

@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 public enum DeliveryStatusEnum {
     WAIT_DELIVERY("배송대기"),
+    DELIVERY_IN_PROGRESS("배송중"),
     DELIVERY_COMPLETED("배송완료");
     private final String deliveryStatus;
 

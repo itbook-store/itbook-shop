@@ -24,7 +24,6 @@ import shop.itbook.itbookshop.order.entity.Order;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "delivery")
 @Entity
@@ -39,19 +38,20 @@ public class Delivery {
     @JoinColumn(name = "order_no", nullable = false)
     private Order order;
 
-    @Column(name = "receiver_name", columnDefinition = "varchar(20)")
+    @Column(name = "receiver_name", columnDefinition = "varchar(20)", nullable = false)
     private String receiverName;
 
-    @Column(name = "receiver_address", columnDefinition = "varchar(255)")
+    @Column(name = "receiver_address", columnDefinition = "varchar(255)", nullable = false)
     private String receiverAddress;
 
-    @Column(name = "receiver_detail_address", columnDefinition = "varchar(255)")
+    @Column(name = "receiver_detail_address", columnDefinition = "varchar(255)", nullable = false)
     private String receiverDetailAddress;
 
-    @Column(name = "receiver_phone_number", columnDefinition = "varchar(14)")
+    @Column(name = "receiver_phone_number", columnDefinition = "varchar(14)", nullable = false)
     private String receiverPhoneNumber;
 
-    @Column(name = "tracking_no", columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "tracking_no", columnDefinition = "varchar(255)",
+        unique = true, nullable = false)
     private String trackingNo;
 
     /**

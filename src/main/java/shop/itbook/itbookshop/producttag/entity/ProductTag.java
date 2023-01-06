@@ -36,17 +36,20 @@ public class ProductTag {
 
     @MapsId("tagNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tag_no")
+    @JoinColumn(name = "tag_no", nullable = false)
     private Tag tag;
 
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
 
     /**
      * The type Pk. 관계 테이블의 복합키를 주키로 하기 위한 클래스 입니다.
+     *
+     * @author 강명관
+     * @since 1.0
      */
     @Getter
     @AllArgsConstructor

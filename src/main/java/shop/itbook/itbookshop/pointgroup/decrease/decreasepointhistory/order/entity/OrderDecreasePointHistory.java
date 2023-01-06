@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.pointgroup.decrease.decreasepointhistory.entity.De
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order_used_point_history")
+@Table(name = "order_decrease_point_history")
 public class OrderDecreasePointHistory {
 
     @Id
@@ -33,7 +33,7 @@ public class OrderDecreasePointHistory {
 
     @MapsId("pointHistoryNo")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point_history_no")
+    @JoinColumn(name = "point_history_no", nullable = false)
     private DecreasePointHistory decreasePointHistory;
 
     @OneToOne(fetch = FetchType.LAZY)

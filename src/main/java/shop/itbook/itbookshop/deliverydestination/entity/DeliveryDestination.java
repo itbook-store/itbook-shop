@@ -24,14 +24,15 @@ import lombok.Setter;
 @Table(name = "delivery_destination")
 @Entity
 public class DeliveryDestination {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "delivery_destination_no", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "delivery_destination_no")
     private Integer deliveryDestinationNo;
 
     @Column(name = "postcode", nullable = false)
     private Integer postcode;
 
-    @Column(name = "address", nullable = false, unique = true)
+    @Column(name = "address", nullable = false, unique = true, columnDefinition = "varchar(255)")
     private String address;
 }

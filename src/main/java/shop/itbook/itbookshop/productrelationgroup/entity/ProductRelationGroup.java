@@ -30,6 +30,7 @@ public class ProductRelationGroup {
     @Column(name = "product_relation_group_no")
     private Integer productRelationGroupNo;
 
-    @Column(name = "product_relation_group_name", nullable = false, columnDefinition = "varchar(20)", unique = true)
+    @Column(name = "product_relation_group_name", nullable = false,
+        columnDefinition = "varchar(255)", unique = true)
     private String productRelationGroupName;
 }

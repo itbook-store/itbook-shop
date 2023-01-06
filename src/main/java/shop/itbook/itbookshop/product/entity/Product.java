@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -32,20 +33,19 @@ public class Product {
     @Column(name = "product_no", nullable = false)
     private Long productNo;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
     private String name;
 
     @Column(name = "simple_description", nullable = false)
     private String simpleDescription;
 
-    @Column(name = "details_description")
+    @Column(name = "details_description", columnDefinition = "text")
     private String detailsDescription;
 
-    @Column(name = "stock", nullable = false)
-    @ColumnDefault("0")
+    @Column(name = "stock", nullable = false, columnDefinition = "integer default 0")
     private Integer stock;
 
-    @Column(name = "product_created_at", nullable = false)
+    @Column(name = "product_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_selled", nullable = false)
@@ -57,24 +57,43 @@ public class Product {
     @Column(name = "is_subscription", nullable = false)
     private boolean isSubscription;
 
-    @Column(name = "thumnail_url", nullable = false)
-    private String thumnailUrl;
+    @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
+    private String thumbnailUrl;
 
-    @Column(name = "daily_hits", nullable = false)
-    @ColumnDefault("0")
+    @Column(name = "daily_hits", nullable = false, columnDefinition = "bigint default 0")
     private Long dailyHits;
 
     @Column(name = "fixed_price", nullable = false)
     private Long fixedPrice;
 
-    @Column(name = "point_saving_percent", nullable = false)
-    @ColumnDefault("0")
-    private Integer pointSavingPercent;
+    @Column(name = "increase_point_percent", nullable = false, columnDefinition = "integer default 0")
+    private Integer increasePointPercent;
 
-    @Column(name = "discount_percent", nullable = false)
-    @ColumnDefault("0")
+    @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
     private Integer discountPercent;
+
+    @Builder
+    public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
+                   boolean isSelled, boolean isDeleted, boolean isSubscription, String thumbnailUrl,
+                   Long dailyHits, Long fixedPrice, Integer increasePointPercent,
+                   Integer discountPercent, Long rawPrice) {
+        this.name = name;
+        this.simpleDescription = simpleDescription;
+        this.detailsDescription = detailsDescription;
+        this.stock = stock;
+        this.isSelled = isSelled;
+        this.isDeleted = isDeleted;
+        this.isSubscription = isSubscription;
+        this.thumbnailUrl = thumbnailUrl;
+        this.dailyHits = dailyHits;
+        this.fixedPrice = fixedPrice;
+        this.increasePointPercent = increasePointPercent;
+        this.discountPercent = discountPercent;
+        this.rawPrice = rawPrice;
+    }
 
     @Column(name = "raw_price", nullable = false)
     private Long rawPrice;
+
+
 }

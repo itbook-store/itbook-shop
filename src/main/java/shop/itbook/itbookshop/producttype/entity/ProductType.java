@@ -33,6 +33,6 @@ public class ProductType {
     private Integer productTypeNo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private ProductTypeEnum productTypeEnum;
 }

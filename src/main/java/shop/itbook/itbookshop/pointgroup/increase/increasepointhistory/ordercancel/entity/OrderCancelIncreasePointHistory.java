@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.entity.In
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order_cancel_saving_point_history")
+@Table(name = "order_cancel_increase_point_history")
 public class OrderCancelIncreasePointHistory {
 
     @Id

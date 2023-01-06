@@ -36,17 +36,20 @@ public class ProductTypeRegistration {
 
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
     @MapsId("productTypeNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_type_no")
+    @JoinColumn(name = "product_type_no", nullable = false)
     private ProductType productType;
 
 
     /**
      * The type Pk. 상품과 상품타입 복합키를 주키로 하기위한 클래스 입니다.
+     *
+     * @author 강명관
+     * @since 1.0
      */
     @Getter
     @AllArgsConstructor
