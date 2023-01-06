@@ -27,12 +27,12 @@ public class ProductCategory {
 
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
     @MapsId("categoryNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_no")
+    @JoinColumn(name = "category_no", nullable = false)
     private Category category;
 
     /**
