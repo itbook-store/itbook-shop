@@ -59,7 +59,7 @@ public class CategoryApplicableCoupon {
     public static class Pk implements Serializable {
 
         private Long orderProductNo;
-        
+
         private Integer couponNo;
     }
 }
