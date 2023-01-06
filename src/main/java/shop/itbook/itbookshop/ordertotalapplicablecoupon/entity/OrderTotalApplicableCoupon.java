@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.categoryapplicablecoupon.entity;
+package shop.itbook.itbookshop.ordertotalapplicablecoupon.entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -19,7 +19,7 @@ import shop.itbook.itbookshop.coupon.entity.Coupon;
 import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
 
 /**
- * 카테고리쿠폰적용 관련 쿠폰입니다.
+ * 주문총액쿠폰적용 테이블 엔터티 입니다.
  *
  * @author 송다혜
  * @since 1.0
@@ -30,7 +30,7 @@ import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
 @NoArgsConstructor
 @Entity
 @Table(name = "category_applicable_coupon")
-public class CategoryApplicableCoupon {
+public class OrderTotalApplicableCoupon {
 
     @EmbeddedId
     private Pk pk;
@@ -40,14 +40,14 @@ public class CategoryApplicableCoupon {
     @JoinColumn(name = "order_product_no")
     private OrderProduct orderProduct;
 
-    //todo:copon이 아니라 category_coupon을 받도록 해야함
+    //todo:copon이 아니라 OrderTotalCoupon을 받도록 해야함
     @MapsId("couponNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
     private Coupon coupon;
 
     /**
-     * CategoryApplicableCoupon의 Pk입니다.
+     * OrderTotalApplicableCoupon의 Pk 클레스 입니다.
      *
      * @author 송다혜
      */

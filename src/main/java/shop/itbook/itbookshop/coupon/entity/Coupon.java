@@ -72,7 +72,7 @@ public class Coupon {
     @Column(name = "coupon_modified_at", nullable = false)
     private LocalDateTime couponModifiedAt;
 
-    @Column(name = "image")
+    @Column(name = "image", columnDefinition = "TEXT")
     private String image;
 
     @Column(name = "code", nullable = false, columnDefinition = "varchar(255)", unique = true)
