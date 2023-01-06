@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.producttypeenum.ProductTypeEnum;
 
 /**
  * 상품유형에 대한 엔티티 입니다.
@@ -30,5 +31,5 @@ public class ProductType {
     private Integer productTypeNo;
 
     @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(20)")
-    private String productTypeEnum;
+    private ProductTypeEnum productTypeEnum;
 }
