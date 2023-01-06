@@ -15,8 +15,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.member.entity.Member;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
  * 장바구니 테이블에 대한 엔티티 입니다.
