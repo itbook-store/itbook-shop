@@ -1,12 +1,10 @@
 package shop.itbook.itbookshop.cart.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -59,10 +57,8 @@ public class Cart {
     @Embeddable
     public static class Pk implements Serializable {
 
-        @Column(name = "member_no")
         private Long memberNo;
 
-        @Column(name = "product_no")
         private Long productNo;
 
     }

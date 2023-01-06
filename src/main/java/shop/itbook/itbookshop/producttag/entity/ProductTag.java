@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.producttag.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -56,10 +55,8 @@ public class ProductTag {
     @Embeddable
     public static class Pk implements Serializable {
 
-        @Column(name = "tag_no")
         private Integer tagNo;
 
-        @Column(name = "product_no")
         private Long productNo;
 
     }
