@@ -41,7 +41,6 @@ public class CategoryApplicableCoupon {
     @JoinColumn(name = "order_product_no")
     private OrderProduct orderProduct;
 
-    //todo:copon이 아니라 category_coupon을 받도록 해야함
     @MapsId("couponNo")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")

@@ -29,7 +29,7 @@ import shop.itbook.itbookshop.ordertotalcoupon.entity.OrderTotalCoupon;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "category_applicable_coupon")
+@Table(name = "order_total_applicable_coupon")
 public class OrderTotalApplicableCoupon {
 
     @EmbeddedId
