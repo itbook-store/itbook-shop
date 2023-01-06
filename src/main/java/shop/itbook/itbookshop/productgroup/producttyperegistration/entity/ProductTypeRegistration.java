@@ -1,7 +1,6 @@
-package shop.itbook.itbookshop.cart.entity;
+package shop.itbook.itbookshop.productgroup.producttyperegistration.entity;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,11 +14,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.member.entity.Member;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
- * 장바구니 테이블에 대한 엔티티 입니다.
+ * 상품 유형 등록 테이블에 대한 엔티티 입니다.
  *
  * @author 강명관
  * @since 1.0
@@ -29,27 +28,25 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "cart")
-public class Cart {
+@Table(name = "product_type_registration")
+public class ProductTypeRegistration {
 
     @EmbeddedId
     private Pk pk;
 
-    @MapsId("memberNo")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_no")
-    private Member member;
-
     @MapsId("productNo")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no")
+    @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "product_count", columnDefinition = "integer default 1")
-    private Integer productCount;
+    @MapsId("productTypeNo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_type_no", nullable = false)
+    private ProductType productType;
+
 
     /**
-     * The type Pk. 회원과 상품에 대한 복합키 설정을 위한 클래스 입니다.
+     * The type Pk. 상품과 상품타입 복합키를 주키로 하기위한 클래스 입니다.
      *
      * @author 강명관
      * @since 1.0
@@ -61,10 +58,9 @@ public class Cart {
     @Embeddable
     public static class Pk implements Serializable {
 
-        private Long memberNo;
-
         private Long productNo;
+
+        private Integer productTypeNo;
 
     }
 }
-

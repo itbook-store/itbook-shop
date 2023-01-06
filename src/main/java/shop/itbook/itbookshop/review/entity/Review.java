@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.member.entity.Member;
 import shop.itbook.itbookshop.orderproduct.entity.OrderProduct;
-import shop.itbook.itbookshop.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * 리뷰에 대한 엔티티입니다.

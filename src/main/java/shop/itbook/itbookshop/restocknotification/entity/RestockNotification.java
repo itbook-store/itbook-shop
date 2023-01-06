@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.member.entity.Member;
-import shop.itbook.itbookshop.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * 재입고 알림 테이블에 대한 엔티티 입니다.

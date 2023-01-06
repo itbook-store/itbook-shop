@@ -14,8 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.product.entity.Product;
-import shop.itbook.itbookshop.producttype.entity.ProductType;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
  * 도서 엔티티입니다.
