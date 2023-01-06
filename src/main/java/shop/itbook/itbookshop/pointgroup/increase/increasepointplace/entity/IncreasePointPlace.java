@@ -25,16 +25,16 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointplace.increasepoi
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "saving_point_place")
+@Table(name = "increase_point_place")
 public class IncreasePointPlace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "saving_point_place_no")
-    private Integer pointSavingPlaceNo;
+    @Column(name = "increase_point_place_no")
+    private Integer pointIncreasePlaceNo;
 
-    @Column(name = "saving_point_place_name", columnDefinition = "varchar(255)",
+    @Column(name = "increase_point_place_name", columnDefinition = "varchar(255)",
         nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private IncreasePointPlaceEnum pointSavingPlaceEnum;
+    private IncreasePointPlaceEnum increasePointPlaceEnum;
 }

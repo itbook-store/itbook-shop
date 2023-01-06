@@ -59,17 +59,15 @@ public class DeliveryStatusHistory {
     /**
      * 배송상태이력 엔티티의 생성자입니다.
      *
-     * @param delivery                the delivery
-     * @param deliveryStatusCreatedAt the delivery status created at
-     * @param historyLocation         the history location
-     * @param deliveryStatus          the delivery status
+     * @param delivery        the delivery
+     * @param historyLocation the history location
+     * @param deliveryStatus  the delivery status
      * @author 노수연
      */
     @Builder
-    public DeliveryStatusHistory(Delivery delivery, LocalDateTime deliveryStatusCreatedAt,
+    public DeliveryStatusHistory(Delivery delivery,
                                  String historyLocation, DeliveryStatus deliveryStatus) {
         this.delivery = delivery;
-        this.deliveryStatusCreatedAt = deliveryStatusCreatedAt;
         this.historyLocation = historyLocation;
         this.deliveryStatus = deliveryStatus;
     }

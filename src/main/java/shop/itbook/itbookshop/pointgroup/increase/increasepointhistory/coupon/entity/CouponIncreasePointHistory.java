@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.entity.In
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "coupon_saving_point_history")
+@Table(name = "coupon_increase_point_history")
 public class CouponIncreasePointHistory {
 
     @Id

@@ -28,7 +28,7 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointplace.entity.Incr
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "saving_point_history")
+@Table(name = "increase_point_history")
 public class IncreasePointHistory {
 
     @Id
@@ -40,9 +40,9 @@ public class IncreasePointHistory {
     private PointHistory pointHistory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point_saving_place_no", nullable = false)
+    @JoinColumn(name = "point_increase_place_no", nullable = false)
     private IncreasePointPlace increasePointPlace;
 
-    @Column(name = "saving_point", nullable = false)
-    private Long savingPoint;
+    @Column(name = "increase_point", nullable = false)
+    private Long increasePoint;
 }

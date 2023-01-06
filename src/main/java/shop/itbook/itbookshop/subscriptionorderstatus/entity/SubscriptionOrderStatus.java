@@ -29,10 +29,10 @@ import shop.itbook.itbookshop.subscriptionorderstatusenum.SubscriptionOrderStatu
 public class SubscriptionOrderStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_status_no", nullable = false)
+    @Column(name = "order_status_no")
     private Integer orderStatusNo;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private SubscriptionOrderStatusEnum subscriptionOrderStatusEnum;
 }

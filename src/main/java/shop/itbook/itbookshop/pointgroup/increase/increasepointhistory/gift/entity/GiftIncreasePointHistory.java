@@ -26,7 +26,7 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.entity.In
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "gift_saving_point_history")
+@Table(name = "gift_increase_point_history")
 public class GiftIncreasePointHistory {
 
     @Id

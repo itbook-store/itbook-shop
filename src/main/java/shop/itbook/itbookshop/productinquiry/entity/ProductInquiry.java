@@ -50,7 +50,7 @@ public class ProductInquiry {
     @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
-    @Column(name = "is_pubilc", nullable = false)
+    @Column(name = "is_public", nullable = false)
     private boolean isPublic;
 
     @Column(name = "is_replied", nullable = false)

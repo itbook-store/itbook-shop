@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.pointgroup.common.pointhistory.entity.PointHistory;
-import shop.itbook.itbookshop.pointgroup.decrease.decreasepointplace.entity.PointDecreasePlace;
+import shop.itbook.itbookshop.pointgroup.decrease.decreasepointplace.entity.DecreasePointPlace;
 
 /**
  * 포인트 내역중에서도 차감에 대한 포인트내역을 나타내는 테이블과 매핑하는 엔티티클래스입니다.
@@ -27,7 +27,7 @@ import shop.itbook.itbookshop.pointgroup.decrease.decreasepointplace.entity.Poin
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "used_point_history")
+@Table(name = "decrease_point_history")
 public class DecreasePointHistory {
 
     @Id
@@ -39,9 +39,9 @@ public class DecreasePointHistory {
     private PointHistory pointHistory;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "point_usage_place_no")
-    private PointDecreasePlace pointDecreasePlace;
+    @JoinColumn(name = "decrease_point_place_no", nullable = false)
+    private DecreasePointPlace decreasePointPlace;
 
-    @Column(name = "used_point", nullable = false)
-    private Long usedPoint;
+    @Column(name = "decrease_point", nullable = false)
+    private Long decreasePoint;
 }

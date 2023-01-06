@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.pointgroup.decrease.decreasepointplace.pointusageplaceenum.PointDecreasePlaceEnum;
+import shop.itbook.itbookshop.pointgroup.decrease.decreasepointplace.pointusageplaceenum.DecreasePointPlaceEnum;
 
 /**
  * 포인트 사용처에 대한 상태값을 관리하는 테이블과 매핑하는 클래스입니다.
@@ -25,16 +25,16 @@ import shop.itbook.itbookshop.pointgroup.decrease.decreasepointplace.pointusagep
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "point_usage_place")
-public class PointDecreasePlace {
+@Table(name = "point_decrease_place")
+public class DecreasePointPlace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "point_usage_place_no")
-    private Integer pointUsagePlaceNo;
+    @Column(name = "decrease_point_place_no")
+    private Integer decreasePointPlaceNo;
 
-    @Column(name = "point_usage_place_name", nullable = false, unique = true,
-        columnDefinition = "varchar(20)")
+    @Column(name = "decrease_point_place_name", nullable = false, unique = true,
+        columnDefinition = "varchar(255)")
     @Enumerated(EnumType.STRING)
-    private PointDecreasePlaceEnum pointDecreasePlaceEnum;
+    private DecreasePointPlaceEnum decreasePointPlaceEnum;
 }

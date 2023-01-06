@@ -49,33 +49,33 @@ public class Review {
     private Member member;
 
     @Column(name = "start_point", nullable = false)
-    private Integer starPoint;
+    private Integer startPoint;
 
-    @Column(name = "review_content", nullable = false, columnDefinition = "text")
-    private String reviewContent;
+    @Column(name = "content", nullable = false, columnDefinition = "text")
+    private String content;
 
-    @Column(name = "image", nullable = true, columnDefinition = "text")
+    @Column(name = "image", columnDefinition = "text")
     private String image;
 
     /**
      * 리뷰 엔티티 생성자입니다.
      *
-     * @param orderProduct  the order product
-     * @param product       the product
-     * @param member        the member
-     * @param starPoint     the star point
-     * @param reviewContent the review content
-     * @param image         the image
+     * @param orderProduct the order product
+     * @param product      the product
+     * @param member       the member
+     * @param startPoint   the star point
+     * @param content      the review content
+     * @param image        the image
      * @author 노수연
      */
     @Builder
-    public Review(OrderProduct orderProduct, Product product, Member member, Integer starPoint,
-                  String reviewContent, String image) {
+    public Review(OrderProduct orderProduct, Product product, Member member, Integer startPoint,
+                  String content, String image) {
         this.orderProduct = orderProduct;
         this.product = product;
         this.member = member;
-        this.starPoint = starPoint;
-        this.reviewContent = reviewContent;
+        this.startPoint = startPoint;
+        this.content = content;
         this.image = image;
     }
 }
