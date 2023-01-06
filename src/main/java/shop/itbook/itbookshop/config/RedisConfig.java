@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * redis 에대한 설정 파일입니다.
  *
- * @author 이하니
+ * @author 이하늬
  * @since 1.0
  */
 @Configuration
@@ -38,7 +38,7 @@ public class RedisConfig implements BeanClassLoaderAware {
         return new LettuceConnectionFactory(configuration);
     }
 
-    @SuppressWarnings("java:S1452") // 레디스의 key value의 타입을 자유롭게 지정하기위함.
+    @SuppressWarnings("java:S1452") // 레디스의 key value의 타입을 자유롭게 지정하기 위함.
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
