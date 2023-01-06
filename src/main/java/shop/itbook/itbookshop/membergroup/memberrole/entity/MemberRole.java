@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.bookauthor.entity;
+package shop.itbook.itbookshop.membergroup.memberrole.entity;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -14,49 +14,52 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.role.entity.Role;
 
 /**
- * 도서작가 엔티티입니다.
+ * 회원 권한 관계 테이블에 대한 엔티티입니다.
  *
- * @author 이하늬 * @since 1.0
+ * @author 강명관
  * @since 1.0
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "book_author")
+@NoArgsConstructor
 @Entity
-public class BookAuthor {
+@Table(name = "member_role")
+public class MemberRole {
 
     @EmbeddedId
     private Pk pk;
-
-    @MapsId("productNo")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no", nullable = false)
-    private Book book;
 
     @MapsId("memberNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
+    @MapsId("roleNo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_no", nullable = false)
+    private Role role;
+
     /**
-     * BookAuthor 엔티티를 식별하기 위한 PK 클래스입니다.
+     * The type Pk. 회원 권한테이블의 복합키를 주키로 하기위한 클래스입니다.
      *
-     * @author 이하늬 * @since 1.0
+     * @author 강명관
+     * @since 1.0
      */
-    @EqualsAndHashCode
-    @NoArgsConstructor
+    @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
+    @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
 
-        private Long productNo;
-
         private Long memberNo;
+
+        private Integer roleNo;
+
     }
 }

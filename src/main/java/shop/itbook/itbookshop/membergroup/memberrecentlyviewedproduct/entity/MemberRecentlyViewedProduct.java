@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.bookauthor.entity;
+package shop.itbook.itbookshop.membergroup.memberrecentlyviewedproduct.entity;
 
 import java.io.Serializable;
 import javax.persistence.Embeddable;
@@ -14,49 +14,49 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.recentlyviewedproduct.entity.RecentlyViewedProduct;
 
 /**
- * 도서작가 엔티티입니다.
+ * 회원 최근 본 상품 관계 테이블에 대한 엔티티 입니다.
  *
- * @author 이하늬 * @since 1.0
+ * @author 강명관
  * @since 1.0
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "book_author")
+@NoArgsConstructor
 @Entity
-public class BookAuthor {
+@Table(name = "member_recently_viewed_product")
+public class MemberRecentlyViewedProduct {
 
     @EmbeddedId
     private Pk pk;
-
-    @MapsId("productNo")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no", nullable = false)
-    private Book book;
 
     @MapsId("memberNo")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
+    @MapsId("recentlyViewedProductNo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recently_viewed_product_no", nullable = false)
+    private RecentlyViewedProduct recentlyViewedProduct;
+
     /**
-     * BookAuthor 엔티티를 식별하기 위한 PK 클래스입니다.
-     *
-     * @author 이하늬 * @since 1.0
+     * The type Pk. 회원과 최근본 상품 복합키를 주키로 하기위한 클래스 입니다.
      */
-    @EqualsAndHashCode
-    @NoArgsConstructor
+    @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
+    @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
 
-        private Long productNo;
-
         private Long memberNo;
+
+        private Long recentlyViewedProductNo;
+
     }
 }
