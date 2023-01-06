@@ -49,7 +49,7 @@ public class Bookmark {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "bookmark_cerated_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "bookmark_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime bookmarkCreatedAt;
 
     /**

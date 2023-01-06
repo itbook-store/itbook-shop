@@ -37,12 +37,12 @@ public class CategoryApplicableCoupon {
     private Pk pk;
 
     @MapsId("orderProductNo")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_product_no")
     private OrderProduct orderProduct;
 
     @MapsId("couponNo")
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no")
     private CategoryCoupon categoryCoupon;
 
@@ -60,6 +60,6 @@ public class CategoryApplicableCoupon {
 
         private Long orderProductNo;
 
-        private Integer couponNo;
+        private Long couponNo;
     }
 }

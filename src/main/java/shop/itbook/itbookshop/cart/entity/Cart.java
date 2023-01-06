@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.cart.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -43,6 +44,9 @@ public class Cart {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no")
     private Product product;
+
+    @Column(name = "product_count", columnDefinition = "integer default 1")
+    private Integer productCount;
 
     /**
      * The type Pk. 회원과 상품에 대한 복합키 설정을 위한 클래스 입니다.
