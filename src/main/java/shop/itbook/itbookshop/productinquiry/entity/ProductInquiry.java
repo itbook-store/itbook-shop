@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productinquiry;
+package shop.itbook.itbookshop.productinquiry.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,7 +47,7 @@ public class ProductInquiry {
     @Column(name = "title", nullable = false, columnDefinition = "varchar(20)")
     private String title;
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "text")
     private String content;
 
     @Column(name = "is_pubilc", nullable = false)

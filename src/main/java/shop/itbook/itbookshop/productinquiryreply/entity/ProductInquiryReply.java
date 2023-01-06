@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.member.entity.Member;
-import shop.itbook.itbookshop.productinquiry.ProductInquiry;
+import shop.itbook.itbookshop.productinquiry.entity.ProductInquiry;
 
 /**
  * 상품 문의 댓글 테이블에 대한 엔티티 입니다.
