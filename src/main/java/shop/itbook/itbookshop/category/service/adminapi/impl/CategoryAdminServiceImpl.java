@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.category.service.adminapi.impl;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,9 @@ import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
 @Transactional(readOnly = true)
 public class CategoryAdminServiceImpl implements CategoryAdminService {
 
+    private static final int NO_PARENT_NUMBER = 0;
     private final CategoryRepository categoryRepository;
+
 
     /**
      * {@inheritDoc}
@@ -35,10 +38,26 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public Integer saveCategory(CategoryRequestDto categoryRequestDto) {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
+        boolean hasParentCategory =
+            !Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
+        if (hasParentCategory) {
+            putParentCategory(categoryRequestDto, category);
+            return category.getCategoryNo();
+        }
 
+        categoryRepository.save(category);
         category.setParentCategory(
             this.findCategoryEntity(categoryRequestDto.getParentCategoryNo()));
         return category.getCategoryNo();
+    }
+
+    private void putParentCategory(CategoryRequestDto categoryRequestDto, Category category) {
+        Category parentCategory =
+            categoryRepository.findById(categoryRequestDto.getParentCategoryNo())
+                .orElseThrow(CategoryNotFoundException::new);
+
+        category.setParentCategory(parentCategory);
+        categoryRepository.save(category);
     }
 
     /**
