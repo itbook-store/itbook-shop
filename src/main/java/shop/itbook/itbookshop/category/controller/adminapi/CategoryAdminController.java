@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,13 +41,13 @@ public class CategoryAdminController {
      */
     @PostMapping
     public ResponseEntity<CategoryNoResponseDto> categorySave(
-        @RequestBody CategoryRequestDto categoryRequestDto) {
+        @Valid @RequestBody CategoryRequestDto categoryRequestDto) {
 
-        CategoryNoResponseDto dto = new CategoryNoResponseDto();
-        dto.setCategoryNo(categoryAdminService.saveCategory(categoryRequestDto));
+        CategoryNoResponseDto categoryNoResponseDto = new CategoryNoResponseDto();
+        categoryNoResponseDto.setCategoryNo(categoryAdminService.saveCategory(categoryRequestDto));
 
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(dto);
+            .body(categoryNoResponseDto);
     }
 
     /**
