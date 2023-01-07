@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 카테고리 조회를 위한 엔티티입니다.
+ * 카테고리를 위한 엔티티입니다.
  *
  * @author 최겸준
  * @since 1.0
