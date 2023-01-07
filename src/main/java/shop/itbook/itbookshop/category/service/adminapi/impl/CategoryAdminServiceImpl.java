@@ -66,6 +66,9 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
             .orElseThrow(CategoryNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CategoryResponseDto findCategory(Integer categoryNo) {
 

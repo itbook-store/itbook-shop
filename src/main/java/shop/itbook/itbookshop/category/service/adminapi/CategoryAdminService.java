@@ -7,7 +7,7 @@ import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDt
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
- * 관리자에대한 카테고리 서비스를 제공하는 인터페이스입니다.
+ * 관리자 카테고리 기능과 관련한 비지니스 로직을 담당하는 클래스입니다.
  *
  * @author 최겸준
  * @since 1.0
@@ -42,6 +42,14 @@ public interface CategoryAdminService {
      */
     List<CategoryResponseProjectionDto> findCategoryChildList(Integer categoryNo);
 
+
+    /**
+     * 카테고리 엔티티를 찾고 존재한다면 카테고리를 반환하고 존재하지 않는다면 예외를 발생시키는 기능을 담당합니다.
+     *
+     * @param categoryNo 찾을 카테고리의 번호입니다.
+     * @return 카테고리 entity를 반환합니다.
+     * @author 최겸준
+     */
     Category findCategoryEntity(Integer categoryNo);
 
     /**
