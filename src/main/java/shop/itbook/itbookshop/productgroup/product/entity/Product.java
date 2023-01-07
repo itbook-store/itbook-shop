@@ -72,15 +72,19 @@ public class Product {
     @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
     private Integer discountPercent;
 
+    @Column(name = "raw_price", nullable = false)
+    private Long rawPrice;
+
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   boolean isSelled, boolean isDeleted, boolean isSubscription, String thumbnailUrl,
-                   Long dailyHits, Long fixedPrice, Integer increasePointPercent,
-                   Integer discountPercent, Long rawPrice) {
+                   LocalDateTime productCreatedAt, boolean isSelled, boolean isDeleted,
+                   boolean isSubscription, String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                   Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
+        this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
         this.isSubscription = isSubscription;
@@ -91,9 +95,5 @@ public class Product {
         this.discountPercent = discountPercent;
         this.rawPrice = rawPrice;
     }
-
-    @Column(name = "raw_price", nullable = false)
-    private Long rawPrice;
-
 
 }
