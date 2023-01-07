@@ -24,7 +24,6 @@ import lombok.Setter;
 @Getter
 @Table(name = "category")
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 public class Category {
 
@@ -35,7 +34,7 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_category_no", nullable = false)
-    private Category parentCategoryNo;
+    private Category parentCategory;
 
     @Column(name = "category_name", columnDefinition = "varchar(20)",
         unique = true, nullable = false)
@@ -43,4 +42,9 @@ public class Category {
 
     @Column(name = "is_hidden", nullable = false)
     private boolean isHidden;
+
+    public Category(String categoryName, boolean isHidden) {
+        this.categoryName = categoryName;
+        this.isHidden = isHidden;
+    }
 }

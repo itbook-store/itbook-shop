@@ -1,6 +1,10 @@
 package shop.itbook.itbookshop.category.repository;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
@@ -10,4 +14,10 @@ import shop.itbook.itbookshop.category.entity.Category;
  * @since 1.0
  */
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
+
+    @Query("select c from Category c")
+    List<CategoryResponseProjectionDto> findCategoryList();
+
+    List<CategoryResponseProjectionDto> findAllByParentCategory_CategoryNo(
+        Integer parentCategoryNo);
 }

@@ -1,5 +1,8 @@
 package shop.itbook.itbookshop.category.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -8,7 +11,9 @@ import lombok.Setter;
  * @author 최겸준
  * @since 1.0
  */
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class CategoryResponseDto {
 
     private Integer categoryNo;
