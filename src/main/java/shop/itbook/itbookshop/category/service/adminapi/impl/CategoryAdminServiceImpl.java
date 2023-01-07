@@ -45,8 +45,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     public List<CategoryResponseProjectionDto> findCategoryList() {
 
-//        return categoryRepository.findCategoryAll();
-        return null;
+        return categoryRepository.findCategoryList();
     }
 
     /**
@@ -55,8 +54,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     public List<CategoryResponseProjectionDto> findCategoryChildList(Integer categoryNo) {
 
-//        return categoryRepository.findAllByParentCategory_CategoryNo();
-        return null;
+        return categoryRepository.findAllByParentCategory_CategoryNo(categoryNo);
     }
 
     /**

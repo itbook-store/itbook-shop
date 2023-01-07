@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.category.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 카테고리의 모든 정보를 반환하는 dto 입니다.

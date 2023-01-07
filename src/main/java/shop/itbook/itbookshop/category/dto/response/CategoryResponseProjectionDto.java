@@ -1,9 +1,5 @@
 package shop.itbook.itbookshop.category.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
-import shop.itbook.itbookshop.category.entity.Category;
-
 /**
  * 모든 카테고리를 반환할때 프로젝션할 용도로 사용될 인터페이스입니다.
  *
@@ -14,6 +10,8 @@ public interface CategoryResponseProjectionDto {
 
     Integer getCategoryNo();
 
+    @SuppressWarnings("java:S100")
+        // JPA 이름규칙에 의거 메소드 생성
     Integer getParentCategory_categoryNo();
 
     String getCategoryName();

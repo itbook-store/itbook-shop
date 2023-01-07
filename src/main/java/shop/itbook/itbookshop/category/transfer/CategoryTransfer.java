@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.category.transfer;
 
-import java.util.Objects;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -12,6 +11,9 @@ import shop.itbook.itbookshop.category.entity.Category;
  * @since 1.0
  */
 public class CategoryTransfer {
+
+    private CategoryTransfer() {
+    }
 
     public static CategoryResponseDto entityToDto(Category category) {
 
