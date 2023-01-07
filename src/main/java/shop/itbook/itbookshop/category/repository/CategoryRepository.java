@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.category.repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
@@ -14,11 +15,10 @@ import shop.itbook.itbookshop.category.entity.Category;
  */
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    @Query("select c from Category c")
+    @Query("select c from Category c left outer join fetch c.parentCategory")
     List<CategoryResponseProjectionDto> findCategoryList();
 
-    @SuppressWarnings("java:S100")
-        // JPA 이름규칙에 의거 메소드 생성
-    List<CategoryResponseProjectionDto> findAllByParentCategory_CategoryNo(
+    @Query("select c from Category c where c.parentCategory.categoryNo = :parentCategoryNo")
+    List<CategoryChildResponseProjectionDto> findCategoryThroughParentCategoryNo(
         Integer parentCategoryNo);
 }

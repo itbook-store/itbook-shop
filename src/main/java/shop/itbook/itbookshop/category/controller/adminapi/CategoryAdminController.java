@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
@@ -69,7 +70,7 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}/child-categories")
-    public ResponseEntity<List<CategoryResponseProjectionDto>> categoryChildList(
+    public ResponseEntity<List<CategoryChildResponseProjectionDto>> categoryChildList(
         @PathVariable Integer categoryNo) {
 
         return ResponseEntity.ok().body(categoryAdminService.findCategoryChildList(categoryNo));

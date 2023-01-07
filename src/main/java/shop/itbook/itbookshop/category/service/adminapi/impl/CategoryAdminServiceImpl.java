@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -34,6 +35,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public Integer saveCategory(CategoryRequestDto categoryRequestDto) {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
+
         category.setParentCategory(
             this.findCategoryEntity(categoryRequestDto.getParentCategoryNo()));
         return category.getCategoryNo();
@@ -52,9 +54,9 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryResponseProjectionDto> findCategoryChildList(Integer categoryNo) {
+    public List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo) {
 
-        return categoryRepository.findAllByParentCategory_CategoryNo(categoryNo);
+        return categoryRepository.findCategoryThroughParentCategoryNo(categoryNo);
     }
 
     /**

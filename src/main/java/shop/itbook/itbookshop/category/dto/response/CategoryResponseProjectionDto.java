@@ -10,9 +10,7 @@ public interface CategoryResponseProjectionDto {
 
     Integer getCategoryNo();
 
-    @SuppressWarnings("java:S100")
-        // JPA 이름규칙에 의거 메소드 생성
-    Integer getParentCategory_categoryNo();
+    CategoryResponseProjectionDto getParentCategory();
 
     String getCategoryName();
 

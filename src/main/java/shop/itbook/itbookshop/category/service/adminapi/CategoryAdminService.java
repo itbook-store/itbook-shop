@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.category.service.adminapi;
 
 import java.util.List;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -40,7 +41,7 @@ public interface CategoryAdminService {
      * @return 조건에 해당하는 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryResponseProjectionDto> findCategoryChildList(Integer categoryNo);
+    List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo);
 
 
     /**
