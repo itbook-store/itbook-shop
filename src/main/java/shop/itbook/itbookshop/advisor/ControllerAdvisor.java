@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.advisor;
 
+import javax.validation.ValidationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,11 +16,25 @@ import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 @RestControllerAdvice
 public class ControllerAdvisor {
 
-    @ExceptionHandler(value = {CategoryNotFoundException.class})
+    /**
+     * 400에 해당하는 예외들을 한번에 처리하는 메소드입니다.
+     *
+     * @param e
+     * @return 에러메세지를 response entity 에 담아서 전송합니다.
+     * @author 최겸준
+     */
+    @ExceptionHandler(value = {CategoryNotFoundException.class, ValidationException.class})
     public ResponseEntity<String> badRequestException400(RuntimeException e) {
         return ResponseEntity.badRequest().contentType(MediaType.TEXT_PLAIN).body(e.getMessage());
     }
 
+    /**
+     * 500에 해당하는 예외들을 한번에 처리하는 메소드입니다.
+     *
+     * @param e
+     * @return 에러메세지를 response entity 에 담아서 전송합니다.
+     * @author 최겸준
+     */
     @ExceptionHandler(value = {RuntimeException.class, Exception.class})
     public ResponseEntity<String> internalErrorException500(Exception e) {
         return ResponseEntity.internalServerError().contentType(MediaType.TEXT_PLAIN)
