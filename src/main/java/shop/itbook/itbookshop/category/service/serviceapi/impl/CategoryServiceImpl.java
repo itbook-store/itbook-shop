@@ -1,6 +1,6 @@
-package shop.itbook.itbookshop.category.service.impl;
+package shop.itbook.itbookshop.category.service.serviceapi.impl;
 
-import shop.itbook.itbookshop.category.service.CategoryService;
+import shop.itbook.itbookshop.category.service.serviceapi.CategoryService;
 
 /**
  * CategoryService 인터페이스를 구현한 클래스입니다.
