@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.category.service.adminapi.impl;
 
 import java.util.List;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
 
@@ -13,23 +12,36 @@ import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
  * @since 1.0
  */
 public class CategoryAdminServiceImpl implements CategoryAdminService {
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CategoryNoResponseDto saveCategory(CategoryRequestDto categoryRequestDto) {
+    public Integer saveCategory(CategoryRequestDto categoryRequestDto) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CategoryResponseDto> findCategoryList() {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<CategoryResponseDto> findCategoryChildList(String categoryNo) {
+    public List<CategoryResponseDto> findCategoryChildList(Integer categoryNo) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public CategoryResponseDto findCategory(String categoryNo) {
+    public CategoryResponseDto findCategory(Integer categoryNo) {
         return null;
     }
 }
