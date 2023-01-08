@@ -54,11 +54,20 @@ public interface CategoryAdminService {
     Category findCategoryEntity(Integer categoryNo);
 
     /**
+     * 카테고리의 상위카테고리까지 조인하여 가져온 엔티티를 반환하며 존재하지 않을경우 예외를 발생시키는 기능을 담당합니다.
+     *
+     * @param categoryNo 찾을 카테고리의 번호입니다.
+     * @return 카테고리 entity를 반환합니다.
+     * @author 최겸준
+     */
+    Category findCategoryEntityFetch(Integer categoryNo);
+
+    /**
      * 특정 카테고리의 정보를 반환하는 비지니스 로직을 담당하는 메서드입니다.
      *
      * @param categoryNo 조회할 카테고리의 번호입니다.
      * @return 카테고리의 세부정보를 DTO에 담아 반환합니다.
      * @author 최겸준
      */
-    CategoryResponseDto findCategory(Integer categoryNo);
+    CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo);
 }

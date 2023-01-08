@@ -66,7 +66,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     public List<CategoryResponseProjectionDto> findCategoryList() {
 
-        return categoryRepository.findCategoryList();
+        return categoryRepository.findCategoryListFetch();
     }
 
     /**
@@ -75,7 +75,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     public List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo) {
 
-        return categoryRepository.findCategoryThroughParentCategoryNo(categoryNo);
+        return categoryRepository.findCategoryListFetchThroughParentCategoryNo(categoryNo);
     }
 
     /**
@@ -91,9 +91,18 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public CategoryResponseDto findCategory(Integer categoryNo) {
+    public Category findCategoryEntityFetch(Integer categoryNo) {
+        return categoryRepository.findCategoryFetch(categoryNo)
+            .orElseThrow(CategoryNotFoundException::new);
+    }
 
-        Category category = findCategoryEntity(categoryNo);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo) {
+
+        Category category = this.findCategoryEntityFetch(categoryNo);
         return CategoryTransfer.entityToDto(category);
     }
 }

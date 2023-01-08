@@ -17,7 +17,7 @@ public class CategoryTransfer {
 
 
     /**
-     * entity로 넘어온 카테고리를 반환을 위한 dto로 변경하는 기능입니다.
+     * entity 로 넘어온 카테고리를 반환을 위한 dto 로 변경하는 기능입니다.
      *
      * @param category dto 로 변경해야할 정보를 담은 category entity 입니다.
      * @return dto 형태로 만들어서 반환합니다.

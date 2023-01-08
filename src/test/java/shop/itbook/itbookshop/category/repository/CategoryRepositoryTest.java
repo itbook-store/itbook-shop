@@ -70,7 +70,8 @@ class CategoryRepositoryTest {
     void findCategoryList() {
 
         // when
-        List<CategoryResponseProjectionDto> categoryList = categoryRepository.findCategoryList();
+        List<CategoryResponseProjectionDto> categoryList =
+            categoryRepository.findCategoryListFetch();
 
         // then
         assertThat(categoryList)
@@ -93,7 +94,7 @@ class CategoryRepositoryTest {
 
         // when
         List<CategoryChildResponseProjectionDto> categoryList =
-            categoryRepository.findCategoryThroughParentCategoryNo(
+            categoryRepository.findCategoryListFetchThroughParentCategoryNo(
                 categoryDummyBook.getCategoryNo());
 
         // then

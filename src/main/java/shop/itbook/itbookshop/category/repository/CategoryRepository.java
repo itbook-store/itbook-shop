@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.category.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
@@ -16,9 +17,14 @@ import shop.itbook.itbookshop.category.entity.Category;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     @Query("select c from Category c left outer join fetch c.parentCategory")
-    List<CategoryResponseProjectionDto> findCategoryList();
+    List<CategoryResponseProjectionDto> findCategoryListFetch();
 
     @Query("select c from Category c where c.parentCategory.categoryNo = :parentCategoryNo")
-    List<CategoryChildResponseProjectionDto> findCategoryThroughParentCategoryNo(
+    List<CategoryChildResponseProjectionDto> findCategoryListFetchThroughParentCategoryNo(
         Integer parentCategoryNo);
+
+    @Query("select c from Category c "
+        + "left outer join fetch c.parentCategory "
+        + "where c.categoryNo=:categoryNo")
+    Optional<Category> findCategoryFetch(Integer categoryNo);
 }
