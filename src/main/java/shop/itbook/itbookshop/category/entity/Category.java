@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 카테고리 조회를 위한 엔티티입니다.
+ * 카테고리를 위한 엔티티입니다.
  *
  * @author 최겸준
  * @since 1.0
@@ -24,8 +24,8 @@ import lombok.Setter;
 @Getter
 @Table(name = "category")
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Category {
 
     @Id
@@ -34,8 +34,8 @@ public class Category {
     private Integer categoryNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_no", nullable = false)
-    private Category parentCategoryNo;
+    @JoinColumn(name = "parent_category_no")
+    private Category parentCategory;
 
     @Column(name = "category_name", columnDefinition = "varchar(20)",
         unique = true, nullable = false)
@@ -43,4 +43,9 @@ public class Category {
 
     @Column(name = "is_hidden", nullable = false)
     private boolean isHidden;
+
+    public Category(String categoryName, boolean isHidden) {
+        this.categoryName = categoryName;
+        this.isHidden = isHidden;
+    }
 }
