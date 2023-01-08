@@ -1,9 +1,8 @@
-package shop.itbook.itbookshop.productgroup.product.service;
+package shop.itbook.itbookshop.productgroup.product.service.adminapi;
 
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -14,7 +13,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  */
 public interface ProductService {
     @Transactional
-    AddProductResponseDto addProduct(AddProductRequestDto requestDto);
+    Long addProduct(AddProductRequestDto requestDto);
 
     @Transactional
     void modifyProduct(Long productNo, ModifyProductRequestDto requestDto);

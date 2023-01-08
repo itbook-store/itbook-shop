@@ -14,8 +14,8 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    Optional<Product> findByProductNo(Long productNo);
+    Optional<Product> findById(Long productNo);
 
-    void deleteByProductNo(Long productNo);
+    void deleteById(Long productNo);
 
 }

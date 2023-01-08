@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.dto.request;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +21,6 @@ public class AddProductRequestDto {
     @Length(min = 1, max = 255)
     private String name;
     @Length(min = 1, max = 255)
-    @NotNull
     private String simpleDescription;
     private String detailsDescription;
     private Integer stock;
@@ -30,7 +30,7 @@ public class AddProductRequestDto {
     private boolean isDeleted;
     @NotNull
     private boolean isSubscription;
-    @NotNull
+    @NotBlank
     private String thumbnailUrl;
     @NotNull
     private Long fixedPrice;

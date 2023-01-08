@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.service;
+package shop.itbook.itbookshop.productgroup.product.service.adminapi.impl;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
+import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
 
 /**
  * ProductService 인터페이스를 구현한 상품 서비스 클래스입니다.
@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public AddProductResponseDto addProduct(AddProductRequestDto requestDto) {
+    public Long addProduct(AddProductRequestDto requestDto) {
         Product product = Product.builder().name(requestDto.getName())
             .simpleDescription(requestDto.getSimpleDescription())
             .detailsDescription(requestDto.getDetailsDescription()).stock(requestDto.getStock())
@@ -38,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
             .build();
 
         productRepository.save(product);
-        return AddProductResponseDto.getInstance(product.getProductNo());
+        return product.getProductNo();
     }
 
     @Override
@@ -64,13 +64,13 @@ public class ProductServiceImpl implements ProductService {
             return Boolean.FALSE;
         }
 
-        productRepository.deleteByProductNo(productNo);
+        productRepository.deleteById(productNo);
         return Boolean.TRUE;
     }
 
     @Override
     public Product findProduct(Long productNo) {
-        return productRepository.findByProductNo(productNo)
+        return productRepository.findById(productNo)
             .orElseThrow(() -> new ProductNotFoundException(productNo));
     }
 }
