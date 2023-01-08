@@ -1,8 +1,10 @@
 package shop.itbook.itbookshop.common.response;
 
+import java.io.Serializable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 모든 반환타입에 적용할 클래스입니다.
@@ -24,7 +26,7 @@ public class CommonResponseBody<T> {
      * @since 1.0
      */
     @AllArgsConstructor
-    @NoArgsConstructor
+    @Getter
     public static class CommonHeader {
         private boolean isSuccessful;
         private Integer resultCode;
