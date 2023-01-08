@@ -67,7 +67,7 @@ class ProductRepositoryTest {
         entityManager.persist(product_success);
 
         Optional<Product> product =
-            productRepository.findByProductNo(product_success.getProductNo());
+            productRepository.findById(product_success.getProductNo());
 
         Assertions.assertThat(product).isPresent();
         Assertions.assertThat(product.get()).isEqualTo(product_success);
@@ -87,10 +87,10 @@ class ProductRepositoryTest {
     void test5() {
         entityManager.persist(product_success);
 
-        productRepository.deleteByProductNo(product_success.getProductNo());
+        productRepository.deleteById(product_success.getProductNo());
 
         Optional<Product> product =
-            productRepository.findByProductNo(product_success.getProductNo());
+            productRepository.findById(product_success.getProductNo());
         Assertions.assertThat(product).isNotPresent();
     }
 }
