@@ -1,7 +1,10 @@
 package shop.itbook.itbookshop.productgroup.product.dto.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,24 +21,44 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class ModifyProductRequestDto {
 
-    @Length(min = 1, max = 255)
+    @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
+    @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")
     private String name;
-    @Length(min = 1, max = 255)
+
+    @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
+    @Length(max = 255, message = "상세설명 길이는 1자-255자가 되어야 합니다.")
     private String simpleDescription;
+
     private String detailsDescription;
+
+    @PositiveOrZero(message = "재고는 0개 이상이어야 합니다.")
     private Integer stock;
+
     @NotNull
     private boolean isSelled;
+
     @NotNull
     private boolean isDeleted;
+
     @NotNull
     private boolean isSubscription;
-    @NotBlank
+
+    @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     private String thumbnailUrl;
+
     @NotNull
+    @PositiveOrZero(message = "정가는 0원 이상이어야 합니다.")
     private Long fixedPrice;
+
+    @Min(value = 0, message = "적립율은 0% 이상이어야 합니다.")
+    @Max(value = 100, message = "적립율은 최대 100%입니다.")
     private Integer increasePointPercent;
+
+    @Min(value = 0, message = "할인율은 0% 이상이어야 합니다.")
+    @Max(value = 100, message = "할인율은 최대 100%입니다.")
     private Integer discountPercent;
+
     @NotNull
+    @Min(value = 0, message = "매입원가는 0원 이상이어야 합니다.")
     private Long rawPrice;
 }
