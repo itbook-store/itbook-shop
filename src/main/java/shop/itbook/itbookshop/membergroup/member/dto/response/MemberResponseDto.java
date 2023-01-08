@@ -1,11 +1,11 @@
-package shop.itbook.itbookshop.membergroup.member.domain;
+package shop.itbook.itbookshop.membergroup.member.dto.response;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
 /**
- * 멤버Dto 입니다.
+ * 멤버 정보를 반환할 Dto 클래스 입니다.
  *
  * @author 노수연
  * @since 1.0

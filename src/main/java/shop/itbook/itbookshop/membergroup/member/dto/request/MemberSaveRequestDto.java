@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.membergroup.member.domain;
+package shop.itbook.itbookshop.membergroup.member.dto.request;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
+ * 멤버 생성시 정보를 보관할 dto 입니다.
+ *
  * @author 노수연
  * @since 1.0
  */
@@ -38,9 +40,4 @@ public class MemberSaveRequestDto {
         this.email = email;
     }
 
-    public Member dtoToEntity() {
-        return Member.builder().id(id).nickname(nickname).name(name).isMan(isMan).birth(birth)
-            .password(password).phoneNumber(phoneNumber).email(email)
-            .build();
-    }
 }

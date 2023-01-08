@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.membergroup.member.domain;
+package shop.itbook.itbookshop.membergroup.member.dto.request;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 멤버 수정시 정보를 보관할 dto 입니다.
+ *
  * @author 노수연
  * @since 1.0
  */
