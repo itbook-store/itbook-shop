@@ -97,6 +97,7 @@ class CategoryRepositoryTest {
             categoryRepository.findCategoryListFetchThroughParentCategoryNo(
                 categoryDummyBook.getCategoryNo());
 
+
         // then
         assertThat(categoryList)
             .hasSize(1);
