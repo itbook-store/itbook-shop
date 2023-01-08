@@ -94,7 +94,7 @@ class CategoryRepositoryTest {
 
         // when
         List<CategoryChildResponseProjectionDto> categoryList =
-            categoryRepository.findCategoryListFetchThroughParentCategoryNo(
+            categoryRepository.findCategoryChildListThroughParentCategoryNo(
                 categoryDummyBook.getCategoryNo());
 
 

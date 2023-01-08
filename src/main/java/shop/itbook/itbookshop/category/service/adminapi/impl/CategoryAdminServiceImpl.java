@@ -38,26 +38,31 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     public Integer addCategory(CategoryRequestDto categoryRequestDto) {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
-        boolean hasParentCategory =
-            !Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
-        if (hasParentCategory) {
-            settingParentCategory(categoryRequestDto, category);
+        boolean isNoParentCategory =
+            Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
+
+        if (isNoParentCategory) {
+            category = categoryRepository.save(category);
+            category.setParentCategory(category);
             return category.getCategoryNo();
         }
 
-        categoryRepository.save(category);
-        category.setParentCategory(
-            this.findCategoryEntity(categoryRequestDto.getParentCategoryNo()));
+        settingParentCategory(categoryRequestDto.getParentCategoryNo(), category);
+        category = categoryRepository.save(category);
         return category.getCategoryNo();
     }
 
-    private void settingParentCategory(CategoryRequestDto categoryRequestDto, Category category) {
-        Category parentCategory =
-            categoryRepository.findById(categoryRequestDto.getParentCategoryNo())
-                .orElseThrow(CategoryNotFoundException::new);
+    /**
+     * 상위카테고리가 있는경우 해당 번호로 카테고리를 찾아서 넣어주는 메소드입니다.
+     *
+     * @param parentCategoryNo 상위카테고리 번호입니다.
+     * @param category         현제 저장이 진행되고있는 카테고리 객체입니다.
+     * @author 최겸준
+     */
+    private void settingParentCategory(Integer parentCategoryNo, Category category) {
 
+        Category parentCategory = this.findCategoryEntity(parentCategoryNo);
         category.setParentCategory(parentCategory);
-        categoryRepository.save(category);
     }
 
     /**
@@ -75,7 +80,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     public List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo) {
 
-        return categoryRepository.findCategoryListFetchThroughParentCategoryNo(categoryNo);
+        return categoryRepository.findCategoryChildListThroughParentCategoryNo(categoryNo);
     }
 
     /**
