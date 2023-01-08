@@ -35,13 +35,13 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      */
     @Override
     @Transactional
-    public Integer saveCategory(CategoryRequestDto categoryRequestDto) {
+    public Integer addCategory(CategoryRequestDto categoryRequestDto) {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
         boolean hasParentCategory =
             !Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
         if (hasParentCategory) {
-            putParentCategory(categoryRequestDto, category);
+            settingParentCategory(categoryRequestDto, category);
             return category.getCategoryNo();
         }
 
@@ -51,7 +51,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         return category.getCategoryNo();
     }
 
-    private void putParentCategory(CategoryRequestDto categoryRequestDto, Category category) {
+    private void settingParentCategory(CategoryRequestDto categoryRequestDto, Category category) {
         Category parentCategory =
             categoryRepository.findById(categoryRequestDto.getParentCategoryNo())
                 .orElseThrow(CategoryNotFoundException::new);

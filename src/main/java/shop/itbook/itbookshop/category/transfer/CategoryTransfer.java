@@ -42,6 +42,6 @@ public class CategoryTransfer {
      */
     public static Category dtoToEntity(CategoryRequestDto categoryRequestDto) {
 
-        return new Category(categoryRequestDto.getCategoryName(), categoryRequestDto.isHidden());
+        return new Category(categoryRequestDto.getCategoryName(), categoryRequestDto.getIsHidden());
     }
 }

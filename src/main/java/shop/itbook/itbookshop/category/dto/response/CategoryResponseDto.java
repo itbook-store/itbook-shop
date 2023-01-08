@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.category.dto.response;
 
+import com.querydsl.core.types.dsl.BooleanOperation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +20,5 @@ public class CategoryResponseDto {
     private Integer categoryNo;
     private Integer parentCategoryNo;
     private String categoryName;
-    private boolean isHidden;
+    private Boolean isHidden;
 }
