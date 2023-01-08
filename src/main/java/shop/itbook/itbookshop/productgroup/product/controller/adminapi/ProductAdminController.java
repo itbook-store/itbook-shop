@@ -15,6 +15,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
 
 /**
@@ -26,7 +27,7 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductServi
 @RestController
 @RequestMapping("/api/admin/products")
 @RequiredArgsConstructor
-public class ProductRestController {
+public class ProductAdminController {
 
     private final ProductService productService;
 
@@ -39,7 +40,7 @@ public class ProductRestController {
 
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
-                "product registration successful!"), productPk);
+                ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
 
@@ -49,27 +50,22 @@ public class ProductRestController {
     public ResponseEntity<CommonResponseBody<Boolean>> productModify(
         @PathVariable Long productId,
         @Valid @RequestBody ModifyProductRequestDto modifyProductRequestDto) {
-
         productService.modifyProduct(productId, modifyProductRequestDto);
 
         CommonResponseBody<Boolean> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
-                "product modification successful!"), Boolean.TRUE);
+                ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<CommonResponseBody<Boolean>> productRemove(@PathVariable Long productId) {
-        boolean isRemoved = productService.removeProduct(productId);
-
-        if (!isRemoved) {
-            return ResponseEntity.badRequest().build();
-        }
+        productService.removeProduct(productId);
 
         CommonResponseBody<Boolean> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.NO_CONTENT.value(),
-                "product deletion successful!"), Boolean.TRUE);
+                ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }

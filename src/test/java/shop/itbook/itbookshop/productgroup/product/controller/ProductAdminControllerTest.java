@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductRestController;
+import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAdminController;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
@@ -23,8 +23,8 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductServi
  * @author 이하늬
  * @since 1.0
  */
-@WebMvcTest(ProductRestController.class)
-class ProductRestControllerTest {
+@WebMvcTest(ProductAdminController.class)
+class ProductAdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
