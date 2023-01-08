@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminSer
  * @since 1.0
  */
 @RestController
-@RequestMapping("/api/members")
+@RequestMapping("/api/admin/members")
 @RequiredArgsConstructor
 public class MemberAdminController {
 

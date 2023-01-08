@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.controller.serviceapi;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.membergroup.memberservice.entity.MemberService;
 
@@ -11,8 +12,7 @@ import shop.itbook.itbookshop.membergroup.memberservice.entity.MemberService;
  * @since 1.0
  */
 @RestController
+@RequestMapping("/api/service/members")
 @RequiredArgsConstructor
 public class MemberServiceController {
-
-    private final MemberService memberService;
 }
