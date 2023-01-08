@@ -12,14 +12,11 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  * @since 1.0
  */
 public interface ProductService {
-    @Transactional
     Long addProduct(AddProductRequestDto requestDto);
 
-    @Transactional
     void modifyProduct(Long productNo, ModifyProductRequestDto requestDto);
 
-    @Transactional
-    Boolean removeProduct(Long productNo);
+    void removeProduct(Long productNo);
 
     Product findProduct(Long productNo);
 }

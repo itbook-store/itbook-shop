@@ -20,7 +20,8 @@ public class AddProductRequestDto {
 
     @Length(min = 1, max = 255)
     private String name;
-    @Length(min = 1, max = 255)
+    @Length(max = 255, message = "Length must be 1-255")
+    @NotBlank
     private String simpleDescription;
     private String detailsDescription;
     private Integer stock;
