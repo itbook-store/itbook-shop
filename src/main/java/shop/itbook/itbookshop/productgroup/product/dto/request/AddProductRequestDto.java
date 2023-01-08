@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.dto.request;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

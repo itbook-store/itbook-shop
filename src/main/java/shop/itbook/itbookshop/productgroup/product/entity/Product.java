@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 /**
  * 상품에 대한 엔티티 입니다.
@@ -66,7 +65,8 @@ public class Product {
     @Column(name = "fixed_price", nullable = false)
     private Long fixedPrice;
 
-    @Column(name = "increase_point_percent", nullable = false, columnDefinition = "integer default 0")
+    @Column(name = "increase_point_percent", nullable = false,
+        columnDefinition = "integer default 0")
     private Integer increasePointPercent;
 
     @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
@@ -75,6 +75,7 @@ public class Product {
     @Column(name = "raw_price", nullable = false)
     private Long rawPrice;
 
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
                    LocalDateTime productCreatedAt, boolean isSelled, boolean isDeleted,

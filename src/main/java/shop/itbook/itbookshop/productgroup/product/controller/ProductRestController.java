@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +59,7 @@ public class ProductRestController {
 
     @DeleteMapping("/api/products/{productId}")
     public ResponseEntity productRemove(@PathVariable Long productId) {
-        Boolean isRemoved = productService.removeProduct(productId);
+        boolean isRemoved = productService.removeProduct(productId);
 
         if (!isRemoved) {
             return ResponseEntity.badRequest().build();
