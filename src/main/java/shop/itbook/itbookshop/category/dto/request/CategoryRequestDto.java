@@ -24,5 +24,5 @@ public class CategoryRequestDto {
     private String categoryName;
 
     @NotNull(message = "카테고리를 숨길 것인지 말 것인지에 해당하는 값은 필수값입니다.")
-    private boolean isHidden;
+    private Boolean isHidden;
 }

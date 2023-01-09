@@ -81,7 +81,7 @@ public class Member {
      * @param id           the id
      * @param nickname     the nickname
      * @param name         the name
-     * @param isGender     the is gender
+     * @param isMan        the is man
      * @param birth        the birth
      * @param password     the password
      * @param phoneNumber  the phone number
