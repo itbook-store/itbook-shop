@@ -31,23 +31,25 @@ public class MembershipAdminController {
 
     private final MembershipAdminService membershipAdminService;
 
+    private static final Boolean IS_SUCCESS = true;
+
     /**
      * 관리자가 회원 등급을 등록하기 위한 REST Controller 입니다.
      *
-     * @param membershipRequestDTO the membership request dto
+     * @param membershipRequestDto the membership request dto
      * @return the response entity
      * @author 강명관 *
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<MembershipNoResponseDto>> membershipAdd(
-        @RequestBody @Valid MembershipRequestDto membershipRequestDTO) {
+        @RequestBody @Valid MembershipRequestDto membershipRequestDto) {
 
 
         MembershipNoResponseDto membershipNoResponseDto =
-            new MembershipNoResponseDto(membershipAdminService.addMembership(membershipRequestDTO));
+            new MembershipNoResponseDto(membershipAdminService.addMembership(membershipRequestDto));
 
         CommonResponseBody<MembershipNoResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(IS_SUCCESS, HttpStatus.CREATED.value(),
                 MembershipResultMessageEnum.MEMBERSHIP_CREATE_SUCCESS.getMessage()),
             membershipNoResponseDto
         );
@@ -58,21 +60,19 @@ public class MembershipAdminController {
     /**
      * 관리자가 회원 등급을 삭제하기 위한 메서드 입니다.
      *
-     * @param memberNo                   the member no
-     * @param membershipModifyRequestDto the membership modify request dto
+     * @param memberNo the member no
      * @return the response entity
      * @author 강명관 *
      */
     @DeleteMapping("/{membershipNo}")
     public ResponseEntity<CommonResponseBody<Void>> membershipRemove(
-        @PathVariable(value = "membershipNo") Integer memberNo,
-        @RequestBody @Valid MembershipModifyRequestDto membershipModifyRequestDto) {
+        @PathVariable(value = "membershipNo") Integer memberNo) {
 
         membershipAdminService.removeMembership(memberNo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(true, HttpStatus.NO_CONTENT.value(),
+                new CommonResponseBody.CommonHeader(IS_SUCCESS, HttpStatus.NO_CONTENT.value(),
                     MembershipResultMessageEnum.MEMBERSHIP_DELETE_SUCCESS.getMessage()),
                 null
             ));
@@ -96,7 +96,7 @@ public class MembershipAdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(IS_SUCCESS, HttpStatus.OK.value(),
                     MembershipResultMessageEnum.MEMBERSHIP_MODIFY_SUCCESS.getMessage()),
                 null));
     }

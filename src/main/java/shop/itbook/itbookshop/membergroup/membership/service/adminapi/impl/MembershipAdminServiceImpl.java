@@ -29,9 +29,9 @@ public class MembershipAdminServiceImpl implements MembershipAdminService {
      */
     @Override
     @Transactional
-    public Integer addMembership(MembershipRequestDto membershipRequestDTO) {
+    public Integer addMembership(MembershipRequestDto membershipRequestDto) {
 
-        Membership membership = MembershipTransfer.dtoToEntity(membershipRequestDTO);
+        Membership membership = MembershipTransfer.dtoToEntity(membershipRequestDto);
         return membershipRepository.save(membership).getMemberNo();
     }
 
@@ -45,7 +45,7 @@ public class MembershipAdminServiceImpl implements MembershipAdminService {
         Membership membership = membershipRepository.findById(membershipNo)
             .orElseThrow(MembershipNotFoundException::new);
 
-        membershipRepository.deleteById(membershipNo);
+        membershipRepository.deleteById(membership.getMemberNo());
     }
 
 

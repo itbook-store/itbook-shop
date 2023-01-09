@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * 회원 등급에 대한 엔티티입니다.
@@ -31,7 +30,8 @@ public class Membership {
     @Column(name = "membership_no")
     private Integer memberNo;
 
-    @Column(name = "membership_grade", nullable = false, columnDefinition = "varchar(20)", unique = true)
+    @Column(name = "membership_grade", nullable = false,
+        columnDefinition = "varchar(20)", unique = true)
     private String membershipGrade;
 
     @Column(name = "membership_standard_amount", nullable = false, unique = true)
