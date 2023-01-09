@@ -13,13 +13,13 @@ import lombok.Getter;
  */
 @Getter
 public class MembershipModifyRequestDto {
-    @NotBlank
-    @Size(max = 20)
+    @NotBlank(message = "등급 이름은 공백일 수 없습니다.")
+    @Size(max = 20, message = "등급 이름은 20자를 넘을 수 없습니다.")
     private String membershipGrade;
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "등급 기준금애근 0보다 작을 수 없습니다.")
     private Long membershipStandardAmount;
 
-    @PositiveOrZero
+    @PositiveOrZero(message = "등급 포인트는 0보다 작을 수 없습니다.")
     private Long membershipPoint;
 }
