@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MembershipNoReponseDTO {
+public class MembershipNoResponseDto {
     private Integer memberShipNo;
 }

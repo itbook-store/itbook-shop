@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.membergroup.membership.dto.request;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -13,7 +12,7 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
-public class MembershipRequestDTO {
+public class MembershipRequestDto {
 
     @NotBlank
     @Size(max = 20)

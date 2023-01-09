@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.membership.service.adminapi;
 
-import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDTO;
+import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipModifyRequestDto;
+import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
 
 /**
  * 관리자가 회원 등급에 대해 처리하는 비지니스 로직을 담당하는 클래스의 인터페이스 입니다.
@@ -15,23 +16,26 @@ public interface MembershipAdminService {
      *
      * @param membershipRequestDTO the membership request dto
      * @return the integer
-     * @author gwanii *
+     * @author 강명관 *
      */
-    Integer addMembership(MembershipRequestDTO membershipRequestDTO);
+    Integer addMembership(MembershipRequestDto membershipRequestDTO);
 
     /**
      * 회원등급을 삭제하는 메서드 입니다.
      *
      * @param membershipNo the membership no
-     * @author gwanii *
+     * @author 강명관 *
      */
     void removeMembership(Integer membershipNo);
+
 
     /**
      * 회원등급을 수정하는 메서드 입니다.
      *
-     * @param membershipNo the membership no
-     * @author gwanii *
+     * @param membershipNo               the membership no
+     * @param membershipModifyRequestDto the membership modify request dto
+     * @author 강명관 *
      */
-    void modifyMembership(Integer membershipNo);
+    void modifyMembership(Integer membershipNo,
+                          MembershipModifyRequestDto membershipModifyRequestDto);
 }

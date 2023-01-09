@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.membergroup.membership.transfer;
 
-import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDTO;
+import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 
 /**
@@ -21,9 +21,9 @@ public class MembershipTransfer {
      *
      * @param membershipRequestDTO the membership request dto
      * @return the membership
-     * @author gwanii *
+     * @author 강명관 *
      */
-    public static Membership dtoToEntity(MembershipRequestDTO membershipRequestDTO) {
+    public static Membership dtoToEntity(MembershipRequestDto membershipRequestDTO) {
         return new Membership().builder()
             .membershipGrade(membershipRequestDTO.getMembershipGrade())
             .membershipStandardAmount(membershipRequestDTO.getMembershipStandardAmount())
