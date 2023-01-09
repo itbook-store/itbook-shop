@@ -24,7 +24,7 @@ public interface CategoryAdminService {
      * @return 저장한 카테고리의 번호를 반환합니다.
      * @author 최겸준
      */
-    Integer saveCategory(CategoryRequestDto categoryRequestDto);
+    Integer addCategory(CategoryRequestDto categoryRequestDto);
 
     /**
      * 모든 카테고리 조회의 비지니스 로직을 처리하는 메서드입니다.

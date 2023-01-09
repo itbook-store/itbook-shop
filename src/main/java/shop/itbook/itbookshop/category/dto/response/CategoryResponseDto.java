@@ -1,9 +1,7 @@
 package shop.itbook.itbookshop.category.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * 카테고리의 모든 정보를 반환하는 dto 입니다.
@@ -19,5 +17,5 @@ public class CategoryResponseDto {
     private Integer categoryNo;
     private Integer parentCategoryNo;
     private String categoryName;
-    private boolean isHidden;
+    private Boolean isHidden;
 }

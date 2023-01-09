@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +42,11 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @PostMapping
-    public ResponseEntity<CommonResponseBody<CategoryNoResponseDto>> categorySave(
+    public ResponseEntity<CommonResponseBody<CategoryNoResponseDto>> categoryAdd(
         @Valid @RequestBody CategoryRequestDto categoryRequestDto) {
 
         CategoryNoResponseDto categoryNoResponseDto =
-            new CategoryNoResponseDto(categoryAdminService.saveCategory(categoryRequestDto));
+            new CategoryNoResponseDto(categoryAdminService.addCategory(categoryRequestDto));
 
         CommonResponseBody<CategoryNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
