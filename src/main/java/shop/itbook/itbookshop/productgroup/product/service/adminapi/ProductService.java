@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.service.adminapi;
 
-import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
