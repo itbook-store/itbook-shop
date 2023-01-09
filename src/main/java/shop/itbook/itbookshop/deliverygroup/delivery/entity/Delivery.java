@@ -19,6 +19,7 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * 배송에 관한 엔티티입니다.
  *
  * @author 노수연
+ * @author 정재원
  * @since 1.0
  */
 @Getter
