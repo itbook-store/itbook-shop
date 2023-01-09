@@ -1,23 +1,36 @@
 package shop.itbook.itbookshop.productgroup.product.controller;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAdminController;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
+import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
 /**
  * @author 이하늬
@@ -28,59 +41,108 @@ class ProductAdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    ObjectMapper objectMapper;
 
     @MockBean
     private ProductService productService;
     private AddProductRequestDto addProductRequestDto_success;
     private AddProductRequestDto addProductRequestDto_failure;
 
+
     @BeforeEach
     void setUp() {
         addProductRequestDto_success = new AddProductRequestDto("객체지향의 사실과 오해",
             "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
             "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, Boolean.TRUE, Boolean.FALSE,
-            Boolean.FALSE, "testUrl", 20000L, 1, 10, 12000L);
+            "testUrl", 20000L, 1, 10, 12000L);
 
         addProductRequestDto_failure = new AddProductRequestDto("객체지향의 사실과 오해",
             null, "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, Boolean.TRUE, Boolean.FALSE,
-            Boolean.FALSE, "testUrl", 20000L, 1, 10, 12000L);
-
-        given(productService.findProduct(1L))
-            .willReturn(
-                Product.builder().name("객체지향의 사실과 오해")
-                    .simpleDescription(
-                        "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
-                    .detailsDescription("다 모르겠고 그냥 제발 됐으면 좋겠네요..").stock(1).isSelled(Boolean.TRUE)
-                    .isDeleted(Boolean.FALSE)
-                    .isSubscription(Boolean.FALSE).thumbnailUrl("testUrl").fixedPrice(20000L)
-                    .increasePointPercent(1).discountPercent(10).rawPrice(12000L).dailyHits(0L)
-                    .productCreatedAt(LocalDateTime.now()).build()
-            );
+            "testUrl", 20000L, 1, 10, 12000L);
     }
 
     @Test
     @DisplayName("POST 메서드 성공 테스트")
-    void Test1() throws Exception {
+    void productAddTest_success() throws Exception {
+        Long productNo_long = 1L;
+        Integer productNo_integer = 1;
+
+        given(productService.addProduct(any(AddProductRequestDto.class))).willReturn(
+            productNo_long);
+
         mockMvc.perform(post("/api/admin/products")
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(addProductRequestDto_success)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.result.productNo", equalTo(productNo_integer)));
     }
 
     @Test
-    @DisplayName("POST 메서드 실패 테스트")
-    void Test2() throws Exception {
+    @DisplayName("POST 메서드 실패 테스트 - notnull 컬럼에 null 값 저장")
+    void productAddTest_failure() throws Exception {
         mockMvc.perform(post("/api/products")
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(addProductRequestDto_failure)))
             .andExpect(status().isNotFound());
     }
 
     @Test
-    @DisplayName("PUT 메서드 실패 테스트")
-    void Test3() {
-        Product product = productService.findProduct(1L);
+    @DisplayName("PUT 메서드 성공 테스트")
+    void productModifyTest_success() throws Exception {
+        Long productNo_long = 1L;
+
+        given(productService.findProduct(productNo_long))
+            .willReturn(ProductTransfer.dtoToEntityAdd(addProductRequestDto_success));
+        Product product = productService.findProduct(productNo_long);
+        product.setRawPrice(20000L);
+
+        mockMvc.perform(put("/api/admin/products/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(product)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage", equalTo("상품 수정 성공!")));
+    }
+
+    @Test
+    @DisplayName("PUT 메서드 실패 테스트 - notnull 컬럼에 null 값 저장")
+    void productModifyTest_failure() throws Exception {
+        Long productNo_long = 1L;
+
+        given(productService.findProduct(productNo_long))
+            .willReturn(ProductTransfer.dtoToEntityAdd(addProductRequestDto_success));
+        Product product = productService.findProduct(productNo_long);
+        product.setRawPrice(null);
+
+        mockMvc.perform(put("/api/admin/products/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(product)))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage", containsString("Validation failed")));
+    }
+
+    @Test
+    @DisplayName("DELETE 메서드 성공 테스트")
+    void productDeleteTest_success() throws Exception {
+        Long productNo_long = 1L;
+
+        given(productService.findProduct(productNo_long))
+            .willReturn(ProductTransfer.dtoToEntityAdd(addProductRequestDto_success));
+
+        mockMvc.perform(delete("/api/admin/products/1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage",
+                equalTo(ProductResultMessageEnum.DELETE_SUCCESS.getMessage())));
 
     }
+
 }

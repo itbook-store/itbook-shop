@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.service.adminapi.impl;
 
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,7 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 /**
  * ProductService 인터페이스를 구현한 상품 Service 클래스입니다.
  *
- * @author 이하늬
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
 @Service
@@ -42,11 +41,33 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void modifyProduct(Long productNo, ModifyProductRequestDto requestDto) {
-        Product product = ProductTransfer.dtoToEntityModify(requestDto);
-        Product saveProduct = productRepository.save(product);
-        if (Objects.isNull(saveProduct)) {
-            throw new ProductNotFoundException(saveProduct.getProductNo());
-        }
+        Product product = updateProduct(requestDto, productNo);
+        productRepository.save(product);
+    }
+
+    /**
+     * 상품 번호로 상품을 찾아 해당 상품 정보를 수정해주는 메드입니다.
+     *
+     * @param requestDto 상품 수정을 위한 정보를 담은 dto 객체입니다.
+     * @param productNo  상품 번호입니다.
+     * @return 수정 완료된 상품을 반환합니다.
+     */
+    private Product updateProduct(ModifyProductRequestDto requestDto, Long productNo) {
+        Product product = this.findProduct(productNo);
+
+        product.setName(requestDto.getName());
+        product.setSimpleDescription(requestDto.getSimpleDescription());
+        product.setDetailsDescription(requestDto.getDetailsDescription());
+        product.setStock(requestDto.getStock());
+        product.setIsSelled(requestDto.isSelled());
+        product.setIsDeleted(requestDto.isDeleted());
+        product.setThumbnailUrl(requestDto.getThumbnailUrl());
+        product.setFixedPrice(requestDto.getFixedPrice());
+        product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
+        product.setDiscountPercent(requestDto.getDiscountPercent());
+        product.setRawPrice(requestDto.getRawPrice());
+
+        return product;
     }
 
     /**
@@ -55,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
+        findProduct(productNo);
         productRepository.deleteById(productNo);
     }
 

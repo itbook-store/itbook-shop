@@ -54,6 +54,8 @@ public class ProductAdminController {
     }
 
     /**
+     * 상품 수정을 요청하는 메서드입니다.
+     *
      * @param productId               상품 번호입니다.
      * @param modifyProductRequestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @return 성공 메세지를 response entity에 담아 반환합니다.
@@ -73,6 +75,8 @@ public class ProductAdminController {
     }
 
     /**
+     * 상품 삭제를 요청하는 메서드입니다.
+     *
      * @param productId 상품 번호입니다.
      * @return 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
