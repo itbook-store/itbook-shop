@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
 
 /**
  * 상품에 대한 엔티티 입니다.
@@ -54,9 +53,6 @@ public class Product {
     @Column(name = "is_deleted", nullable = false)
     private Boolean isDeleted;
 
-    @Column(name = "is_subscription", nullable = false)
-    private Boolean isSubscription;
-
     @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
     private String thumbnailUrl;
 
@@ -80,7 +76,7 @@ public class Product {
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
                    LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
-                   Boolean isSubscription, String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                   String thumbnailUrl, Long dailyHits, Long fixedPrice,
                    Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;
@@ -89,7 +85,6 @@ public class Product {
         this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
-        this.isSubscription = isSubscription;
         this.thumbnailUrl = thumbnailUrl;
         this.dailyHits = dailyHits;
         this.fixedPrice = fixedPrice;

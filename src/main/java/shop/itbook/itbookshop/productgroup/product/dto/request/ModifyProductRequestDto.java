@@ -38,9 +38,6 @@ public class ModifyProductRequestDto {
     @NotNull
     private boolean isDeleted;
 
-    @NotNull
-    private boolean isSubscription;
-
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     private String thumbnailUrl;
 
