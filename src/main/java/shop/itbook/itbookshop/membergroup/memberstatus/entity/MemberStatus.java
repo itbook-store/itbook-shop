@@ -37,4 +37,8 @@ public class MemberStatus {
     @Enumerated(EnumType.STRING)
     @Column(name = "member_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private MemberStatusEnum memberStatusEnum;
+
+    public MemberStatus(MemberStatusEnum memberStatusEnum) {
+        this.memberStatusEnum = memberStatusEnum;
+    }
 }

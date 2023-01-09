@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 
 /**
  * rest controller 에서 예외발생시 종합적인 처리를 해주기 위한 클래스입니다.
@@ -27,7 +28,7 @@ public class RestControllerAdvisor {
      * @author 최겸준
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
-        MethodArgumentNotValidException.class})
+        MethodArgumentNotValidException.class, MemberNotFoundException.class})
     public ResponseEntity<CommonResponseBody<RuntimeException>> badRequestException400(
         Exception e) {
 
