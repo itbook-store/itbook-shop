@@ -20,7 +20,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<CategoryResponseProjectionDto> findCategoryListFetch();
 
     @Query("select c from Category c where c.parentCategory.categoryNo = :parentCategoryNo")
-    List<CategoryChildResponseProjectionDto> findCategoryListFetchThroughParentCategoryNo(
+    List<CategoryChildResponseProjectionDto> findCategoryChildListThroughParentCategoryNo(
         Integer parentCategoryNo);
 
     @Query("select c from Category c "

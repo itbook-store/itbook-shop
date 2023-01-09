@@ -1,9 +1,9 @@
 package shop.itbook.itbookshop.common.advisor;
 
-import javax.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
@@ -27,10 +27,10 @@ public class RestControllerAdvisor {
      * @return 에러메세지를 response entity 에 담아서 전송합니다.
      * @author 최겸준
      */
-    @ExceptionHandler(value = {CategoryNotFoundException.class, ValidationException.class,
-        MemberNotFoundException.class})
+    @ExceptionHandler(value = {CategoryNotFoundException.class,
+        MethodArgumentNotValidException.class, MemberNotFoundException.class})
     public ResponseEntity<CommonResponseBody<RuntimeException>> badRequestException400(
-        RuntimeException e) {
+        Exception e) {
 
         CommonResponseBody<RuntimeException> exceptionCommonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(false, HttpStatus.BAD_REQUEST.value(),
@@ -55,7 +55,7 @@ public class RestControllerAdvisor {
             new CommonResponseBody.CommonHeader(false, HttpStatus.FORBIDDEN.value(),
                 e.getMessage()), null);
 
-        return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
             .body(exceptionCommonResponseBody);
     }
 
