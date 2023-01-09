@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  * 상품에 대한 엔티티 입니다.
@@ -25,6 +25,7 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "product")
+@DynamicUpdate
 @Entity
 public class Product {
 
@@ -66,21 +67,27 @@ public class Product {
     @Column(name = "fixed_price", nullable = false)
     private Long fixedPrice;
 
-    @Column(name = "increase_point_percent", nullable = false, columnDefinition = "integer default 0")
+    @Column(name = "increase_point_percent", nullable = false,
+        columnDefinition = "integer default 0")
     private Integer increasePointPercent;
 
     @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
     private Integer discountPercent;
 
+    @Column(name = "raw_price", nullable = false)
+    private Long rawPrice;
+
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   boolean isSelled, boolean isDeleted, boolean isSubscription, String thumbnailUrl,
-                   Long dailyHits, Long fixedPrice, Integer increasePointPercent,
-                   Integer discountPercent, Long rawPrice) {
+                   LocalDateTime productCreatedAt, boolean isSelled, boolean isDeleted,
+                   boolean isSubscription, String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                   Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
+        this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
         this.isSubscription = isSubscription;
@@ -91,9 +98,5 @@ public class Product {
         this.discountPercent = discountPercent;
         this.rawPrice = rawPrice;
     }
-
-    @Column(name = "raw_price", nullable = false)
-    private Long rawPrice;
-
 
 }
