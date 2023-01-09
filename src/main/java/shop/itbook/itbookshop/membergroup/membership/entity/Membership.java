@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.membership.entity;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +20,6 @@ import lombok.Setter;
  * @since 1.0
  */
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -54,5 +54,30 @@ public class Membership {
         this.membershipGrade = membershipGrade;
         this.membershipStandardAmount = membershipStandardAmount;
         this.membershipPoint = membershipPoint;
+    }
+
+    /**
+     * 회원등급을 수정할 경우의 메서드 입니다.
+     *
+     * @param membershipGrade          the membership grade
+     * @param membershipStandardAmount the membership standard amount
+     * @param membershipPoint          the membership point
+     * @author 강명관 *
+     */
+    public void updateMembershipInfo(String membershipGrade, Long membershipStandardAmount,
+                                     Long membershipPoint) {
+
+        if (Objects.nonNull(membershipGrade)) {
+            this.membershipGrade = membershipGrade;
+        }
+
+        if (Objects.nonNull(membershipStandardAmount)) {
+            this.membershipStandardAmount = membershipStandardAmount;
+        }
+
+        if (Objects.nonNull(membershipPoint)) {
+            this.membershipPoint = membershipPoint;
+        }
+
     }
 }
