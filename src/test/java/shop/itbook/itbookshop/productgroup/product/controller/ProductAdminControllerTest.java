@@ -39,21 +39,21 @@ class ProductAdminControllerTest {
     void setUp() {
         addProductRequestDto_success = new AddProductRequestDto("객체지향의 사실과 오해",
             "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
-            "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, true, false,
-            false, "testUrl", 20000L, 1, 10, 12000L);
+            "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, Boolean.TRUE, Boolean.FALSE,
+            Boolean.FALSE, "testUrl", 20000L, 1, 10, 12000L);
 
         addProductRequestDto_failure = new AddProductRequestDto("객체지향의 사실과 오해",
-            null, "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, true, false,
-            false, "testUrl", 20000L, 1, 10, 12000L);
+            null, "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, Boolean.TRUE, Boolean.FALSE,
+            Boolean.FALSE, "testUrl", 20000L, 1, 10, 12000L);
 
         given(productService.findProduct(1L))
             .willReturn(
                 Product.builder().name("객체지향의 사실과 오해")
                     .simpleDescription(
                         "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
-                    .detailsDescription("다 모르겠고 그냥 제발 됐으면 좋겠네요..").stock(1).isSelled(true)
-                    .isDeleted(false)
-                    .isSubscription(false).thumbnailUrl("testUrl").fixedPrice(20000L)
+                    .detailsDescription("다 모르겠고 그냥 제발 됐으면 좋겠네요..").stock(1).isSelled(Boolean.TRUE)
+                    .isDeleted(Boolean.FALSE)
+                    .isSubscription(Boolean.FALSE).thumbnailUrl("testUrl").fixedPrice(20000L)
                     .increasePointPercent(1).discountPercent(10).rawPrice(12000L).dailyHits(0L)
                     .productCreatedAt(LocalDateTime.now()).build()
             );
@@ -68,14 +68,14 @@ class ProductAdminControllerTest {
             .andExpect(status().isCreated());
     }
 
-//    @Test
-//    @DisplayName("POST 메서드 실패 테스트")
-//    void Test2() throws Exception {
-//        mockMvc.perform(post("/api/products")
-//                .contentType("application/json")
-//                .content(objectMapper.writeValueAsString(addProductRequestDto_failure)))
-//            .andExpect(status().isBadRequest());
-//    }
+    @Test
+    @DisplayName("POST 메서드 실패 테스트")
+    void Test2() throws Exception {
+        mockMvc.perform(post("/api/products")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(addProductRequestDto_failure)))
+            .andExpect(status().isNotFound());
+    }
 
     @Test
     @DisplayName("PUT 메서드 실패 테스트")

@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service.adminapi.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,7 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductServi
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
 /**
- * ProductService 인터페이스를 구현한 상품 서비스 클래스입니다.
+ * ProductService 인터페이스를 구현한 상품 Service 클래스입니다.
  *
  * @author 이하늬
  * @since 1.0
@@ -24,6 +25,9 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Long addProduct(AddProductRequestDto requestDto) {
@@ -32,19 +36,31 @@ public class ProductServiceImpl implements ProductService {
         return product.getProductNo();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void modifyProduct(Long productNo, ModifyProductRequestDto requestDto) {
         Product product = ProductTransfer.dtoToEntityModify(requestDto);
-        productRepository.save(product);
+        Product saveProduct = productRepository.save(product);
+        if (Objects.isNull(saveProduct)) {
+            throw new ProductNotFoundException(saveProduct.getProductNo());
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
         productRepository.deleteById(productNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Product findProduct(Long productNo) {
         return productRepository.findById(productNo)

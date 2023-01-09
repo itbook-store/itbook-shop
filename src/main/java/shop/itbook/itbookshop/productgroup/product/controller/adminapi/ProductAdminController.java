@@ -19,9 +19,9 @@ import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResu
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
 
 /**
- * 상품 컨트롤러 클래스입니다.
+ * 관리자의 요청을 받고 반환하는 상품 Controller 클래스입니다.
  *
- * @author 이하늬
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
 @RestController
@@ -30,7 +30,15 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductServi
 public class ProductAdminController {
 
     private final ProductService productService;
+    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
+    /**
+     * 상품 등록을 요청하는 메서드입니다.
+     *
+     * @param addProductRequestDto 상품 등록을 위한 정보를 바인딩 받는 dto 객체입니다.
+     * @return 등록한 상품의 상품 번호를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
     @PostMapping
     public ResponseEntity<CommonResponseBody<AddProductResponseDto>> productAdd(
         @Valid @RequestBody AddProductRequestDto addProductRequestDto) {
@@ -39,32 +47,42 @@ public class ProductAdminController {
             new AddProductResponseDto(productService.addProduct(addProductRequestDto));
 
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
-
     }
 
+    /**
+     * @param productId               상품 번호입니다.
+     * @param modifyProductRequestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
+     * @return 성공 메세지를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
     @PutMapping("/{productId}")
-    public ResponseEntity<CommonResponseBody<Boolean>> productModify(
+    public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productId,
         @Valid @RequestBody ModifyProductRequestDto modifyProductRequestDto) {
         productService.modifyProduct(productId, modifyProductRequestDto);
 
-        CommonResponseBody<Boolean> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
                 ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * @param productId 상품 번호입니다.
+     * @return 성공 메세지를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
     @DeleteMapping("/{productId}")
-    public ResponseEntity<CommonResponseBody<Boolean>> productRemove(@PathVariable Long productId) {
+    public ResponseEntity<CommonResponseBody<Void>> productRemove(@PathVariable Long productId) {
         productService.removeProduct(productId);
 
-        CommonResponseBody<Boolean> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.NO_CONTENT.value(),
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.NO_CONTENT.value(),
                 ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);

@@ -41,10 +41,13 @@ class ProductRepositoryTest {
             .increasePointPercent(1).discountPercent(10).rawPrice(12000L).dailyHits(0L)
             .productCreatedAt(LocalDateTime.now()).build();
         product_failure = Product.builder().name("객체지향의 사실과 오해").simpleDescription(null)
-            .detailsDescription("좀..").stock(1).isSelled(true).isDeleted(false)
-            .isSubscription(false).thumbnailUrl("testUrl").fixedPrice(20000L)
+            .detailsDescription("좀..").stock(1).isSelled(Boolean.TRUE).isDeleted(Boolean.FALSE)
+            .isSubscription(Boolean.FALSE).thumbnailUrl("testUrl").fixedPrice(20000L)
             .increasePointPercent(1).discountPercent(10).rawPrice(12000L).dailyHits(0L)
             .productCreatedAt(LocalDateTime.now()).build();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @Test

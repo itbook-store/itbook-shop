@@ -25,7 +25,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "product")
-@DynamicUpdate
 @Entity
 public class Product {
 
@@ -50,13 +49,13 @@ public class Product {
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_selled", nullable = false)
-    private boolean isSelled;
+    private Boolean isSelled;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     @Column(name = "is_subscription", nullable = false)
-    private boolean isSubscription;
+    private Boolean isSubscription;
 
     @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
     private String thumbnailUrl;
@@ -80,8 +79,8 @@ public class Product {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   LocalDateTime productCreatedAt, boolean isSelled, boolean isDeleted,
-                   boolean isSubscription, String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                   LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
+                   Boolean isSubscription, String thumbnailUrl, Long dailyHits, Long fixedPrice,
                    Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;

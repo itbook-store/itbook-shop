@@ -3,6 +3,8 @@ package shop.itbook.itbookshop.productgroup.product.resultmessageenum;
 import lombok.Getter;
 
 /**
+ * 컨트롤러에서 요청 성공 시 반환해줄 성공 메세지를 열거한 enum 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */
