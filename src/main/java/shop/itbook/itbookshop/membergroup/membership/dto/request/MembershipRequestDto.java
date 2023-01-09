@@ -18,7 +18,7 @@ public class MembershipRequestDto {
     @Size(max = 20, message = "등급 이름은 20자를 넘을 수 없습니다.")
     private String membershipGrade;
 
-    @PositiveOrZero(message = "등급 기준금애근 0보다 작을 수 없습니다.")
+    @PositiveOrZero(message = "등급 기준금액은 0보다 작을 수 없습니다.")
     private Long membershipStandardAmount;
 
     @PositiveOrZero(message = "등급 포인트는 0보다 작을 수 없습니다.")
