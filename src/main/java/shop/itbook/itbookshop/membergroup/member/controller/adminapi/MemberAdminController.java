@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
@@ -79,7 +78,7 @@ public class MemberAdminController {
 
         CommonResponseBody<MemberNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
-                CategoryResultMessageEnum.CATEGORY_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                "멤버 삽입에 성공하였습니다."),
             memberNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

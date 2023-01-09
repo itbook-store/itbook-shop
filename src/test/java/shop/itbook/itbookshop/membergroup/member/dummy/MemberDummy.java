@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.member.dummy;
+package shop.itbook.itbookshop.membergroup.member.dummy;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
