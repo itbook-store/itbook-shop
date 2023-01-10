@@ -49,7 +49,7 @@ public class Book {
     private LocalDateTime bookCreatedAt;
 
     @Column(name = "is_ebook", nullable = false)
-    private boolean isEbook;
+    private Boolean isEbook;
 
     @Column(name = "table_of_contents", columnDefinition = "text")
     private String tableOfContents;
