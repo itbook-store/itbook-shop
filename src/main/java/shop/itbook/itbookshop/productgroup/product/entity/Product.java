@@ -12,12 +12,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicUpdate;
 
 /**
  * 상품에 대한 엔티티 입니다.
  *
  * @author 노수연
+ * @author 이하늬
  * @since 1.0
  */
 @Getter
@@ -25,7 +25,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "product")
-@DynamicUpdate
 @Entity
 public class Product {
 
@@ -50,13 +49,10 @@ public class Product {
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_selled", nullable = false)
-    private boolean isSelled;
+    private Boolean isSelled;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
-
-    @Column(name = "is_subscription", nullable = false)
-    private boolean isSubscription;
+    private Boolean isDeleted;
 
     @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
     private String thumbnailUrl;
@@ -80,8 +76,8 @@ public class Product {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   LocalDateTime productCreatedAt, boolean isSelled, boolean isDeleted,
-                   boolean isSubscription, String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                   LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
+                   String thumbnailUrl, Long dailyHits, Long fixedPrice,
                    Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;
@@ -90,7 +86,6 @@ public class Product {
         this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
-        this.isSubscription = isSubscription;
         this.thumbnailUrl = thumbnailUrl;
         this.dailyHits = dailyHits;
         this.fixedPrice = fixedPrice;
