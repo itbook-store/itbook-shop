@@ -46,10 +46,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 상품 번호로 상품을 찾아 해당 상품 정보를 수정해주는 메드입니다.
+     * 상품 번호로 상품을 찾아 해당 상품 정보를 수정해주는 메서드입니다.
      *
      * @param requestDto 상품 수정을 위한 정보를 담은 dto 객체입니다.
-     * @param productNo  상품 번호입니다.
+     * @param productNo  수정해야 할 상품 번호입니다.
      * @return 수정 완료된 상품을 반환합니다.
      */
     private Product updateProduct(ModifyProductRequestDto requestDto, Long productNo) {
@@ -76,7 +76,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
-        findProduct(productNo);
         productRepository.deleteById(productNo);
     }
 
@@ -86,6 +85,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProduct(Long productNo) {
         return productRepository.findById(productNo)
-            .orElseThrow(() -> new ProductNotFoundException(productNo));
+            .orElseThrow(ProductNotFoundException::new);
     }
 }

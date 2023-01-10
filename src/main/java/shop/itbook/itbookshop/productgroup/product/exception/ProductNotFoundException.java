@@ -10,7 +10,7 @@ public class ProductNotFoundException extends RuntimeException {
 
     public static final String MESSAGE = "존재하지 않는 상품입니다.";
 
-    public ProductNotFoundException(Long id) {
-        super(MESSAGE + " 아이디 : " + id);
+    public ProductNotFoundException() {
+        super(MESSAGE);
     }
 }
