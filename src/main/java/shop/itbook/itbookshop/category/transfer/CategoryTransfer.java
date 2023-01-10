@@ -29,7 +29,7 @@ public class CategoryTransfer {
             .categoryNo(category.getCategoryNo())
             .categoryName(category.getCategoryName())
             .parentCategoryNo(category.getParentCategory().getCategoryNo())
-            .isHidden(category.isHidden())
+            .isHidden(category.getIsHidden())
             .build();
     }
 

@@ -42,7 +42,7 @@ public class Category {
     private String categoryName;
 
     @Column(name = "is_hidden", nullable = false)
-    private boolean isHidden;
+    private Boolean isHidden;
 
     public Category(String categoryName, boolean isHidden) {
         this.categoryName = categoryName;
