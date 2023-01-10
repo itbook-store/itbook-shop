@@ -31,7 +31,7 @@ public class MembershipAdminController {
 
     private final MembershipAdminService membershipAdminService;
 
-    private static final Boolean IS_SUCCESS = true;
+    private static final Boolean SUCCEED = Boolean.TRUE;
 
     /**
      * 관리자가 회원 등급을 등록하기 위한 REST Controller 입니다.
@@ -49,7 +49,7 @@ public class MembershipAdminController {
             new MembershipNoResponseDto(membershipAdminService.addMembership(membershipRequestDto));
 
         CommonResponseBody<MembershipNoResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(IS_SUCCESS, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.CREATED.value(),
                 MembershipResultMessageEnum.MEMBERSHIP_CREATE_SUCCESS.getMessage()),
             membershipNoResponseDto
         );
@@ -72,7 +72,7 @@ public class MembershipAdminController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(IS_SUCCESS, HttpStatus.NO_CONTENT.value(),
+                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.NO_CONTENT.value(),
                     MembershipResultMessageEnum.MEMBERSHIP_DELETE_SUCCESS.getMessage()),
                 null
             ));
@@ -96,7 +96,7 @@ public class MembershipAdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(IS_SUCCESS, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                     MembershipResultMessageEnum.MEMBERSHIP_MODIFY_SUCCESS.getMessage()),
                 null));
     }

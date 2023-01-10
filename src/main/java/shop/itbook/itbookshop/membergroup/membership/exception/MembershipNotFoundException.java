@@ -11,4 +11,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class MembershipNotFoundException extends RuntimeException {
+
+    private static final String MESSAGE = "존재하지 않는 회원 등급입니다.";
+
+    public MembershipNotFoundException() {
+        super(MESSAGE);
+    }
 }
