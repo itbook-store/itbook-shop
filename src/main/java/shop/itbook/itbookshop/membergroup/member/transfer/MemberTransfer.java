@@ -4,7 +4,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDt
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
-import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
 

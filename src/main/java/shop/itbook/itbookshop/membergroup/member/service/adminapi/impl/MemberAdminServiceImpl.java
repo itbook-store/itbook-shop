@@ -32,7 +32,9 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
         Optional<Member> member = memberRepository.findById(memberNo);
 
-        member.orElseThrow(MemberNotFoundException::new);
+        if (member.isEmpty()) {
+            throw new MemberNotFoundException();
+        }
 
         return MemberTransfer.entityToDto(member.get());
     }
@@ -55,11 +57,15 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     @Transactional
     public void modifyMember(Long memberNo, MemberUpdateRequestDto requestDto) {
 
-        memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new);
+        Optional<Member> member = memberRepository.findById(memberNo);
 
-        Member member = memberRepository.findById(memberNo).get();
+        if (member.isEmpty()) {
+            throw new MemberNotFoundException();
+        }
 
-        member.update(requestDto);
+        Member modifiedMember = member.get();
+
+        modifiedMember.update(requestDto);
     }
 
     @Override

@@ -4,12 +4,9 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
  * 멤버 생성시 정보를 보관할 dto 입니다.
@@ -49,19 +46,5 @@ public class MemberSaveRequestDto {
     @NotBlank(message = "이메일은 null값 및 공백을 허용하지 않습니다.")
     @Email(message = "이메일 형식을 갖춰야 합니다.")
     private String email;
-
-    @Builder
-    public MemberSaveRequestDto(String id, String nickname, String name, boolean isMan,
-                                LocalDateTime birth, String password, String phoneNumber,
-                                String email) {
-        this.id = id;
-        this.nickname = nickname;
-        this.name = name;
-        this.isMan = isMan;
-        this.birth = birth;
-        this.password = password;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
 
 }

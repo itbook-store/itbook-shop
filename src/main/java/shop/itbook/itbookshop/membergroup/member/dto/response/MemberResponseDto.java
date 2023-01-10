@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
-import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
-import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
 /**
  * 멤버 정보를 반환할 Dto 클래스 입니다.
