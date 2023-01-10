@@ -14,8 +14,9 @@ public enum CategoryResultMessageEnum {
     CATEGORY_SAVE_SUCCESS_MESSAGE("카테고리 삽입에 성공했습니다."),
     CATEGORY_LIST_SUCCESS_MESSAGE("모든 카테고리 반환에 성공했습니다."),
     CATEGORY_CHILD_LIST_SUCCESS_MESSAGE("특정 카테고리에 대한 모든 자식 카테고리 반환에 성공했습니다. 자식카테고리가 없을수도 있습니다."),
-    CATEGORY_DETAILS_SUCCESS_MESSAGE("특정 카테고리 세부정보 반환해 성공했습니다.");
-
+    CATEGORY_DETAILS_SUCCESS_MESSAGE("특정 카테고리 세부정보 반환에 성공했습니다."),
+    CATEGORY_MODIFY_SUCCESS_MESSAGE("카테고리 수정에 성공했습니다."),
+    CATEGORY_REMOVE_SUCCESS("카테고리 삭제에 성공했습니다.");
     private String successMessage;
 
     CategoryResultMessageEnum(String successMessage) {
