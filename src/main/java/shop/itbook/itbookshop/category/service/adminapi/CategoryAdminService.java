@@ -15,8 +15,6 @@ import shop.itbook.itbookshop.category.entity.Category;
  */
 public interface CategoryAdminService {
 
-    // TODO 2 : 카테고리 저장시 dto에서 entity로 반환하는 코드컨벤션 확인해서 클래스만들기 assembler?
-
     /**
      * 카테고리 저장의 비지니스 로직을 처리하는 메서드입니다.
      *

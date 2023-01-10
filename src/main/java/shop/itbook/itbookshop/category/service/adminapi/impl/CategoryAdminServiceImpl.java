@@ -115,6 +115,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto) {
         Category category = findCategoryEntityFetch(categoryNo);
         category.setCategoryName(categoryRequestDto.getCategoryName());
@@ -134,6 +135,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void removeCategory(Integer categoryNo) {
         categoryRepository.deleteById(categoryNo);
     }

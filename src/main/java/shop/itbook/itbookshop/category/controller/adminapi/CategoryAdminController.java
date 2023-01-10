@@ -1,8 +1,6 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import java.util.List;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,10 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
@@ -39,7 +35,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 public class CategoryAdminController {
 
     private final CategoryAdminService categoryAdminService;
-    private final static Boolean SUCCESSED = Boolean.TRUE;
+    private static final Boolean SUCCESSED = Boolean.TRUE;
 
     /**
      * 카테고리 저장 요청을 처리하는 메서드입니다.
@@ -81,8 +77,6 @@ public class CategoryAdminController {
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
-
-    // TODO 1 : 카테고리 조회에서 hidden 과 nohidden 도 추가해야함 현재는 all 만 있음
 
     /**
      * 카테고리의 번호를 받아서 해당 카테고리의 자식카테고리들을 반환하는 요청을 처리하는 메서드입니다.

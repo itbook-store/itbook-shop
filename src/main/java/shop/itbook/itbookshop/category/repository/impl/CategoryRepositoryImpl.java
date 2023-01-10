@@ -71,12 +71,11 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QCategory qCategory = QCategory.category;
         QCategory qParentCategory = new QCategory("parentCategory");
 
-        Optional<Category> category = Optional.of(from(qCategory)
+        return Optional.of(from(qCategory)
             .leftJoin(qCategory.parentCategory, qParentCategory)
             .fetchJoin()
             .where(qCategory.categoryNo.eq(categoryNo))
             .select(qCategory)
             .fetchOne());
-        return category;
     }
 }
