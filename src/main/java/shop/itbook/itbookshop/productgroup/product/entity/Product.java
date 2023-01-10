@@ -17,6 +17,7 @@ import lombok.Setter;
  * 상품에 대한 엔티티 입니다.
  *
  * @author 노수연
+ * @author 이하늬
  * @since 1.0
  */
 @Getter

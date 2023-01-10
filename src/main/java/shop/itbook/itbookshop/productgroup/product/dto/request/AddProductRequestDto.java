@@ -29,19 +29,20 @@ public class AddProductRequestDto {
 
     private String detailsDescription;
 
+    @NotNull(message = "null을 허용하지 않습니다.")
     @PositiveOrZero(message = "재고는 0개 이상이어야 합니다.")
     private Integer stock;
 
-    @NotNull
+    @NotNull(message = "null을 허용하지 않습니다.")
     private boolean isSelled;
 
-    @NotNull
+    @NotNull(message = "null을 허용하지 않습니다.")
     private boolean isDeleted;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     private String thumbnailUrl;
 
-    @NotNull
+    @NotNull(message = "null을 허용하지 않습니다.")
     @PositiveOrZero(message = "정가는 0원 이상이어야 합니다.")
     private Long fixedPrice;
 
