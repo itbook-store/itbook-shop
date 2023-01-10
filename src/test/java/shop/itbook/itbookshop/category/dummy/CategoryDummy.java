@@ -10,7 +10,7 @@ public class CategoryDummy {
     }
 
     public static Category getCategoryNoHiddenStuff() {
-        Category category = new Category("잡화", false);
+        Category category = new Category("잡화", true);
         return category;
     }
 }

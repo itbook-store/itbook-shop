@@ -1,7 +1,10 @@
 package shop.itbook.itbookshop.category.repository.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
@@ -18,7 +21,6 @@ import shop.itbook.itbookshop.category.repository.CustomCategoryRepository;
  */
 public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     CustomCategoryRepository {
-
     public CategoryRepositoryImpl() {
         super(Category.class);
     }
@@ -32,6 +34,8 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QCategory qChildCategory = new QCategory("childCategory");
         QCategory qParentCategory = new QCategory("parentCategory");
 
+        BooleanBuilder builder = new BooleanBuilder();
+        setBuilder(builder, qChildCategory, isHidden);
 
         return from(qChildCategory)
             .leftJoin(qChildCategory.parentCategory, qParentCategory)
@@ -42,7 +46,17 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
                 qChildCategory.parentCategory.categoryNo.as("parentCategoryNo"),
                 qChildCategory.parentCategory.categoryName.as("parentCategoryName"),
                 qChildCategory.parentCategory.isHidden.as("parentCategoryIsHidden")))
+            .where(builder)
             .fetch();
+    }
+
+    private void setBuilder(BooleanBuilder builder, QCategory qCategory, Boolean isHidden) {
+
+        if (Objects.isNull(isHidden)) {
+            return;
+        }
+
+        builder.and(qCategory.isHidden.eq(isHidden));
     }
 
     /**
@@ -55,8 +69,12 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
 
         QCategory qCategory = QCategory.category;
 
+        BooleanBuilder builder = new BooleanBuilder();
+        setBuilder(builder, qCategory, isHidden);
+
         return from(qCategory)
             .where(qCategory.parentCategory.categoryNo.eq(parentCategoryNo))
+            .where(builder)
             .select(Projections.fields(CategoryWithoutParentFieldResponseDto.class,
                 qCategory.categoryNo,
                 qCategory.categoryName,

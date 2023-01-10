@@ -25,7 +25,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
 
@@ -129,14 +128,14 @@ class CategoryAdminControllerTest {
     void categoryDetails() throws Exception {
 
         // given
-        CategoryResponseDto categoryResponseDto = CategoryResponseDto.builder()
+        CategoryAllFieldResponseDto categoryResponseDto = CategoryAllFieldResponseDto.builder()
             .categoryNo(1)
             .parentCategoryNo(1)
             .categoryName("도서")
             .isHidden(false)
             .build();
 
-        given(categoryAdminService.findCategoryResponseDtoThroughCategoryNo(any()))
+        given(categoryAdminService.findCategoryAllFieldResponseDtoThroughCategoryNo(any()))
             .willReturn(categoryResponseDto);
 
         // when

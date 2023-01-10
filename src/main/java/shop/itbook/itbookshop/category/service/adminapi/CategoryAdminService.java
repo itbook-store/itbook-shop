@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.category.service.adminapi;
 import java.util.List;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
@@ -69,7 +68,8 @@ public interface CategoryAdminService {
      * @return 카테고리의 세부정보를 DTO에 담아 반환합니다.
      * @author 최겸준
      */
-    CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo);
+    CategoryAllFieldResponseDto findCategoryAllFieldResponseDtoThroughCategoryNo(
+        Integer categoryNo);
 
     /**
      * 카테고리 수정에 관한 비즈니스 로직을 담당하는 기능입니다.

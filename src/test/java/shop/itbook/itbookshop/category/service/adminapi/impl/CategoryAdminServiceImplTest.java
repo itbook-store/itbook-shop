@@ -23,7 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -231,8 +230,8 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.of(bookCategory));
 
         //when
-        CategoryResponseDto actual =
-            categoryAdminService.findCategoryResponseDtoThroughCategoryNo(1);
+        CategoryAllFieldResponseDto actual =
+            categoryAdminService.findCategoryAllFieldResponseDtoThroughCategoryNo(1);
 
         //then
         assertThat(actual.getCategoryName())

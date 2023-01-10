@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
@@ -61,6 +60,8 @@ public class CategoryAdminController {
 
     /**
      * 카테고리의 모든 리스트를 조회하는 메서드입니다.
+     * hidden true인 경우에는 히든상품만, false인 경우에는 히든이 아닌 상품의 모든 리스트를 조회합니다.
+     * null인경우 모든 리스트
      *
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      * @author 최겸준
@@ -106,13 +107,14 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}")
-    public ResponseEntity<CommonResponseBody<CategoryResponseDto>> categoryDetails(
+    public ResponseEntity<CommonResponseBody<CategoryAllFieldResponseDto>> categoryDetails(
         @PathVariable Integer categoryNo) {
 
-        CommonResponseBody<CategoryResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
-                CategoryResultMessageEnum.CATEGORY_DETAILS_SUCCESS_MESSAGE.getSuccessMessage()),
-            categoryAdminService.findCategoryResponseDtoThroughCategoryNo(categoryNo));
+        CommonResponseBody<CategoryAllFieldResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                    CategoryResultMessageEnum.CATEGORY_DETAILS_SUCCESS_MESSAGE.getSuccessMessage()),
+                categoryAdminService.findCategoryAllFieldResponseDtoThroughCategoryNo(categoryNo));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

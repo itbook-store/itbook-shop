@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
@@ -107,7 +106,8 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo) {
+    public CategoryAllFieldResponseDto findCategoryAllFieldResponseDtoThroughCategoryNo(
+        Integer categoryNo) {
 
         Category category = this.findCategoryEntityFetch(categoryNo);
         return CategoryTransfer.entityToDto(category);
