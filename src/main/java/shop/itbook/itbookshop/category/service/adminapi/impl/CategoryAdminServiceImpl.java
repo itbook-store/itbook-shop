@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
@@ -69,18 +68,20 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryResponseProjectionDto> findCategoryList() {
+    public List<CategoryAllFieldResponseDto> findCategoryList(Boolean isHidden) {
 
-        return categoryRepository.findCategoryListFetch();
+        return categoryRepository.findCategoryListFetch(isHidden);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo) {
+    public List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo,
+                                                                             Boolean isHidden) {
 
-        return categoryRepository.findCategoryChildListThroughParentCategoryNo(categoryNo);
+        return categoryRepository.findCategoryChildListThroughParentCategoryNo(categoryNo,
+            isHidden);
     }
 
     /**
@@ -105,9 +106,39 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo) {
+    public CategoryAllFieldResponseDto findCategoryAllFieldResponseDtoThroughCategoryNo(
+        Integer categoryNo) {
 
         Category category = this.findCategoryEntityFetch(categoryNo);
         return CategoryTransfer.entityToDto(category);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto) {
+        Category category = findCategoryEntityFetch(categoryNo);
+        category.setCategoryName(categoryRequestDto.getCategoryName());
+        category.setIsHidden(categoryRequestDto.getIsHidden());
+
+        boolean isNoParent =
+            Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
+        if (isNoParent) {
+            return;
+        }
+
+        Category parentCategory = findCategoryEntity(categoryRequestDto.getParentCategoryNo());
+        category.setParentCategory(parentCategory);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void removeCategory(Integer categoryNo) {
+        categoryRepository.deleteById(categoryNo);
     }
 }
