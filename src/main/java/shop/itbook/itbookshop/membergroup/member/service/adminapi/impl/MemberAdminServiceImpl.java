@@ -5,9 +5,10 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
@@ -37,7 +38,7 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     }
 
     @Override
-    public List<MemberResponseDto> findMemberList() {
+    public List<MemberResponseProjectionDto> findMemberList() {
 
         return memberRepository.findAllBy();
     }
@@ -52,7 +53,7 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
     @Override
     @Transactional
-    public void updateMember(Long memberNo, MemberUpdateRequestDto requestDto) {
+    public void modifyMember(Long memberNo, MemberUpdateRequestDto requestDto) {
 
         memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new);
 
@@ -63,7 +64,7 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
     @Override
     @Transactional
-    public Void deleteMember(Long memberNo) {
+    public Void removeMember(Long memberNo) {
         memberRepository.deleteById(memberNo);
         return null;
     }

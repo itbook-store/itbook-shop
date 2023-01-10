@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.membergroup.memberstatus.dto.response;
 
+import lombok.Builder;
+import lombok.Getter;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
@@ -8,9 +10,10 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  * @author 노수연
  * @since 1.0
  */
-public interface MemberStatusResponseDto {
+@Getter
+@Builder
+public class MemberStatusResponseDto {
 
-    Integer getMemberStatusNo();
-
-    MemberStatusEnum getMemberStatusEnum();
+    private Integer memberStatusNo;
+    private MemberStatusEnum memberStatusEnum;
 }

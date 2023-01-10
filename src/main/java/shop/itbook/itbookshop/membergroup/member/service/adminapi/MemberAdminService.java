@@ -2,9 +2,9 @@ package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 
 import java.util.List;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
-import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 
 /**
  * 멤버 서비스 인터페이스입니다.
@@ -29,7 +29,7 @@ public interface MemberAdminService {
      * @return MemberResponseDto 리스트를 반환합니다.
      * @author 노수연
      */
-    List<MemberResponseDto> findMemberList();
+    List<MemberResponseProjectionDto> findMemberList();
 
     /**
      * 멤버를 추가하는 로직을 담당하는 메서드입니다.
@@ -48,7 +48,7 @@ public interface MemberAdminService {
      * @return 반환값은 없습니다.
      * @author 노수연
      */
-    void updateMember(Long memberNo, MemberUpdateRequestDto requestDto);
+    void modifyMember(Long memberNo, MemberUpdateRequestDto requestDto);
 
     /**
      * 특정 멤버를 삭제하는 로직을 담당한 메서드입니다.
@@ -57,6 +57,6 @@ public interface MemberAdminService {
      * @return 반환 값은 없습니다.
      * @author 노수연
      */
-    Void deleteMember(Long memberNo);
+    Void removeMember(Long memberNo);
 
 }

@@ -11,10 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
-import shop.itbook.itbookshop.membergroup.membership.test.repository.MembershipRepository;
+import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
@@ -87,7 +87,7 @@ class MemberRepositoryTest {
     void findAllBy() {
 
         //when
-        List<MemberResponseDto> memberList = memberRepository.findAllBy();
+        List<MemberResponseProjectionDto> memberList = memberRepository.findAllBy();
 
         //then
         assertThat(memberList.size()).isEqualTo(2);
@@ -122,7 +122,7 @@ class MemberRepositoryTest {
 
         memberRepository.save(member);
 
-        List<MemberResponseDto> memberList = memberRepository.findAllBy();
+        List<MemberResponseProjectionDto> memberList = memberRepository.findAllBy();
 
         assertThat(memberList.size()).isEqualTo(3);
 

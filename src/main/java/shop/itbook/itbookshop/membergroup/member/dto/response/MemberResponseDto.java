@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.dto.response;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
@@ -18,8 +19,8 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 public class MemberResponseDto {
 
     private Long memberNo;
-    private Membership membership;
-    private MemberStatus memberStatus;
+    private MembershipResponseDto membership;
+    private MemberStatusResponseDto memberStatus;
     private String id;
     private String nickname;
     private String name;

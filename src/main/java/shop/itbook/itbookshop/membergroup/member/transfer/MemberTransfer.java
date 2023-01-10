@@ -4,6 +4,9 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDt
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
+import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
+import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
 
 /**
  * 멤버의 엔티티와 dto 간의 변환을 작성한 클래스입니다.
@@ -47,9 +50,17 @@ public class MemberTransfer {
             .build();
     }
 
+    /**
+     * 멤버 엔티티를 dto로 변경하는 메서드입니다.
+     *
+     * @param member dto로 변경하기 위한 엔티티 클래스입니다.
+     * @return 멤버 dto로 만들어서 반환합니다.
+     * @author 노수연
+     */
     public static MemberResponseDto entityToDto(Member member) {
         return MemberResponseDto.builder().memberNo(member.getMemberNo())
-            .membership(member.getMembership()).memberStatus(member.getMemberStatus()).id(
+            .membership(MembershipTransfer.entityToDto(member.getMembership())).memberStatus(
+                MemberStatusTransfer.entityToDto(member.getMemberStatus())).id(
                 member.getId()).nickname(member.getNickname()).name(member.getName())
             .isMan(member.getIsMan()).birth(member.getBirth()).password(
                 member.getPassword()).phoneNumber(member.getPhoneNumber()).email(member.getEmail())
