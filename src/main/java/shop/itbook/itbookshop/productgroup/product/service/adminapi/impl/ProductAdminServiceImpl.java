@@ -8,7 +8,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequ
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
+import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
 /**
@@ -20,7 +20,7 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService {
+public class ProductAdminServiceImpl implements ProductAdminService {
 
     private final ProductRepository productRepository;
 

@@ -10,7 +10,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  * @author 이하늬
  * @since 1.0
  */
-public interface ProductService {
+public interface ProductAdminService {
     /**
      * 상품 등록을 담당하는 메서드입니다.
      *

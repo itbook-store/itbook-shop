@@ -3,8 +3,6 @@ package shop.itbook.itbookshop.productgroup.product.controller;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,8 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,9 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAdminController;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
+import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
 /**
@@ -45,7 +40,7 @@ class ProductAdminControllerTest {
     ObjectMapper objectMapper;
 
     @MockBean
-    private ProductService productService;
+    private ProductAdminService productService;
     private AddProductRequestDto addProductRequestDto_success;
     private AddProductRequestDto addProductRequestDto_failure;
 

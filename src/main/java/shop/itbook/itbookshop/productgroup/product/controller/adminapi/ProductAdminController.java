@@ -16,7 +16,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequest
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductService;
+import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
 
 /**
  * 관리자의 요청을 받고 반환하는 상품 Controller 클래스입니다.
@@ -29,7 +29,7 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductServi
 @RequiredArgsConstructor
 public class ProductAdminController {
 
-    private final ProductService productService;
+    private final ProductAdminService productService;
     public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
     /**
