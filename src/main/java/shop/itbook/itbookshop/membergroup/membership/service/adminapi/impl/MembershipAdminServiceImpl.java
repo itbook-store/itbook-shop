@@ -15,6 +15,7 @@ import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer
  * 관리자 회원등급 기능과 관련된 비지니스 로직을 담당하는 클래스 입니다.
  *
  * @author 강명관
+ * @author 노수연
  * @since 1.0
  */
 @Service
@@ -32,7 +33,7 @@ public class MembershipAdminServiceImpl implements MembershipAdminService {
     public Integer addMembership(MembershipRequestDto membershipRequestDto) {
 
         Membership membership = MembershipTransfer.dtoToEntity(membershipRequestDto);
-        return membershipRepository.save(membership).getMemberNo();
+        return membershipRepository.save(membership).getMembershipNo();
     }
 
     /**
@@ -45,7 +46,7 @@ public class MembershipAdminServiceImpl implements MembershipAdminService {
         Membership membership = membershipRepository.findById(membershipNo)
             .orElseThrow(MembershipNotFoundException::new);
 
-        membershipRepository.deleteById(membership.getMemberNo());
+        membershipRepository.deleteById(membership.getMembershipNo());
     }
 
 

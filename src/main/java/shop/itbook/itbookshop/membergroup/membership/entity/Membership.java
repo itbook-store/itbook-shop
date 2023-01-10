@@ -28,7 +28,7 @@ public class Membership {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "membership_no")
-    private Integer memberNo;
+    private Integer membershipNo;
 
     @Column(name = "membership_grade", nullable = false,
         columnDefinition = "varchar(20)", unique = true)
