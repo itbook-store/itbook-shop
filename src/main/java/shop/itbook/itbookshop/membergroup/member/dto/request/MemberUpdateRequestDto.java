@@ -19,26 +19,26 @@ import org.hibernate.validator.constraints.Length;
 @NoArgsConstructor
 public class MemberUpdateRequestDto {
 
-    @NotBlank
-    @Length(min = 2, max = 20)
+    @NotBlank(message = "닉네임은 null값 및 공백을 허용하지 않습니다.")
+    @Length(min = 2, max = 20, message = "닉네임은 최소 2자, 최대 20자까지 허용합니다.")
     private String nickname;
 
-    @NotBlank
-    @Length(max = 20)
+    @NotBlank(message = "이름은 null값 및 공백을 허용하지 않습니다.")
+    @Length(max = 20, message = "이름은 최대 20자까지 허용합니다.")
     private String name;
 
-    @NotNull
+    @NotNull(message = "생일은 null값을 허용하지 않습니다.")
     private LocalDateTime birth;
 
-    @NotBlank
-    @Length(max = 255)
+    @NotBlank(message = "비밀번호는 null값 및 공백을 허용하지 않습니다.")
+    @Length(max = 255, message = "비밀번호는 최대 255자까지 허용합니다.")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "핸드폰 번호는 null값 및 공백을 허용하지 않습니다.")
     private String phoneNumber;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "이메일은 null값 및 공백을 허용하지 않습니다.")
+    @Email(message = "이메일 형식을 갖춰야 합니다.")
     private String email;
 
     @Builder

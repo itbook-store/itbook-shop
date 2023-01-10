@@ -79,17 +79,18 @@ public class Member {
     /**
      * 회원 테이블에 대한 엔티티 생성자 입니다.
      *
-     * @param membership   the membership
-     * @param memberStatus the member status
-     * @param id           the id
-     * @param nickname     the nickname
-     * @param name         the name
-     * @param isMan        the is man
-     * @param birth        the birth
-     * @param password     the password
-     * @param phoneNumber  the phone number
-     * @param email        the email
+     * @param membership   멤버십 정보
+     * @param memberStatus 멤버 상태 정보 (정상회원, 차단회원, 탈퇴회원)
+     * @param id           아이디
+     * @param nickname     닉네임
+     * @param name         이름
+     * @param isMan        성별 여부
+     * @param birth        생일
+     * @param password     비밀번호
+     * @param phoneNumber  핸드폰 번호
+     * @param email        이메일
      * @author 강명관
+     * @author 노수연
      */
     @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder

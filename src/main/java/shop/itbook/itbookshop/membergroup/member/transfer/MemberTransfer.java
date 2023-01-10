@@ -16,7 +16,7 @@ public class MemberTransfer {
     }
 
     /**
-     * Dto를 멤버 엔티티로 변경하는 메서드입니다.
+     * 저장하는 로직이 실행될 때 Dto를 멤버 엔티티로 변경하는 메서드입니다.
      *
      * @param memberSaveRequestDto entity로 변경하기위한 정보를 담은 dto입니다.
      * @return 멤버 엔티티를 만들어서 반환합니다.
@@ -31,6 +31,13 @@ public class MemberTransfer {
             .build();
     }
 
+    /**
+     * 수장하는 로직이 실행될 때 Dto를 멤버 엔티티로 변경하는 메서드입니다.
+     *
+     * @param memberUpdateRequestDto entity로 변경하기위한 정보를 담은 dto입니다.
+     * @return 멤버 엔티티를 만들어서 반환합니다.
+     * @author 노수연
+     */
     public static Member dtoToEntityInUpdate(MemberUpdateRequestDto memberUpdateRequestDto) {
         return Member.builder().nickname(memberUpdateRequestDto.getNickname())
             .name(memberUpdateRequestDto.getName()).birth(memberUpdateRequestDto.getBirth())

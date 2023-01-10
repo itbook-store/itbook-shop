@@ -37,10 +37,10 @@ public class MemberAdminController {
     private final MemberAdminService memberAdminService;
 
     /**
-     * 특정 아이디의 멤버를 조회하는 메서드입니다.
+     * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.
      *
-     * @param memberNo the member no
-     * @return the response entity
+     * @param memberNo 멤버 번호로 멤버를 조회합니다.
+     * @return memberResponseDto를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
     @GetMapping("/{memberNo}")
@@ -59,7 +59,7 @@ public class MemberAdminController {
     /**
      * 모든 멤버들을 조회하는 메서드입니다.
      *
-     * @return the response entity
+     * @return MemberResponseDto 리스트를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
     @GetMapping()
@@ -78,8 +78,8 @@ public class MemberAdminController {
     /**
      * 멤버 정보를 저장하는 메서드입니다.
      *
-     * @param requestDto the request dto
-     * @return the response entity
+     * @param requestDto 멤버를 저장하기 위한 dto 입니다.
+     * @return 멤버 번호 dto를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
     @PostMapping()
@@ -101,9 +101,9 @@ public class MemberAdminController {
     /**
      * 멤버 정보를 수정하는 메서드입니다.
      *
-     * @param memberNo   the member no
-     * @param requestDto the request dto
-     * @return the response entity
+     * @param memberNo   멤버 번호로 해당 멤버의 정보를 수정합니다.
+     * @param requestDto 멤버를 수정하기 위한 dto 입니다.
+     * @return null을 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
     @PutMapping("/{memberNo}")
@@ -123,11 +123,12 @@ public class MemberAdminController {
     /**
      * 멤버 번호를 받아서 해당 멤버 정보를 삭제하는 메서드입니다.
      *
-     * @param memberNo the member no
-     * @return the response entity
-     * @author
+     * @param memberNo 멤버 번호로 해당 멤버를 삭제합니다.
+     * @return null을 ResponseEntity에 담아 반환합니다.
+     * @author 노수연
      */
     @DeleteMapping("/{memberNo}")
+    //TODO 1. Object를 Void로 수정
     public ResponseEntity<CommonResponseBody<Object>> memberDelete(
         @PathVariable("memberNo") Long memberNo) {
 
