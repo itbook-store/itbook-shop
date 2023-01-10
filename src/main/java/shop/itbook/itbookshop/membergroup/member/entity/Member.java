@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
@@ -111,12 +110,4 @@ public class Member {
         this.memberCreatedAt = memberCreatedAt;
     }
 
-    public void update(MemberUpdateRequestDto requestDto) {
-        this.nickname = requestDto.getNickname();
-        this.name = requestDto.getName();
-        this.birth = requestDto.getBirth();
-        this.password = requestDto.getPassword();
-        this.phoneNumber = requestDto.getPhoneNumber();
-        this.email = requestDto.getEmail();
-    }
 }

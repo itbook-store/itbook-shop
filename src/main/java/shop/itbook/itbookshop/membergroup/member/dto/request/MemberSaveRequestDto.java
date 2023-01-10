@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * 멤버 생성시 정보를 보관할 dto 입니다.
+ * 멤버 생성시 정보를 가져올 요청 dto 입니다.
  *
  * @author 노수연
  * @since 1.0

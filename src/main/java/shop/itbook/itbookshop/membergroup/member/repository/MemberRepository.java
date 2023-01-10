@@ -6,7 +6,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProj
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
- * 멤버 jpa 레포지토리입니다.
+ * 멤버 JPA 레포지토리입니다.
  *
  * @author 노수연
  * @since 1.0

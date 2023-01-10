@@ -57,6 +57,6 @@ public interface MemberAdminService {
      * @return 반환 값은 없습니다.
      * @author 노수연
      */
-    Void removeMember(Long memberNo);
+    void removeMember(Long memberNo);
 
 }

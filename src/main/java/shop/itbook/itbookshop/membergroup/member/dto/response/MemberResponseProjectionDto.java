@@ -5,6 +5,8 @@ import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResp
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 
 /**
+ * 멤버 응답 인터페이스 dto 입니다.
+ *
  * @author 노수연
  * @since 1.0
  */

@@ -65,13 +65,18 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
         Member modifiedMember = member.get();
 
-        modifiedMember.update(requestDto);
+        modifiedMember.setNickname(requestDto.getNickname());
+        modifiedMember.setName(requestDto.getName());
+        modifiedMember.setBirth(requestDto.getBirth());
+        modifiedMember.setPassword(requestDto.getPassword());
+        modifiedMember.setPhoneNumber(requestDto.getPhoneNumber());
+        modifiedMember.setEmail(requestDto.getEmail());
+
     }
 
     @Override
     @Transactional
-    public Void removeMember(Long memberNo) {
+    public void removeMember(Long memberNo) {
         memberRepository.deleteById(memberNo);
-        return null;
     }
 }

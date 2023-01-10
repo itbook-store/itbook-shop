@@ -19,6 +19,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 
 /**
@@ -47,7 +48,7 @@ public class MemberAdminController {
 
         CommonResponseBody<MemberResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
-                "멤버 조회를 성공하였습니다."),
+                MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
             memberAdminService.findMember(memberNo)
         );
 
@@ -66,7 +67,7 @@ public class MemberAdminController {
         CommonResponseBody<List<MemberResponseProjectionDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
-                    "모든 멤버정보 조회에 성공하였습니다."),
+                    MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberAdminService.findMemberList());
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
@@ -89,7 +90,7 @@ public class MemberAdminController {
 
         CommonResponseBody<MemberNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
-                "멤버 삽입에 성공하였습니다."),
+                MemberResultMessageEnum.MEMBER_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
             memberNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -112,7 +113,8 @@ public class MemberAdminController {
         memberAdminService.modifyMember(memberNo, requestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), "수정 완료하였습니다."),
+            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+                MemberResultMessageEnum.MEMBER_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
             null
         );
 
@@ -135,7 +137,7 @@ public class MemberAdminController {
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
-                "삭제 완료하였습니다."), null);
+                MemberResultMessageEnum.MEMBER_REMOVE_SUCCESS_MESSAGE.getSuccessMessage()), null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
 
