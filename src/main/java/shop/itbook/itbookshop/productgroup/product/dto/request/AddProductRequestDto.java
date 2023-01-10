@@ -54,7 +54,7 @@ public class AddProductRequestDto {
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
     private Integer discountPercent;
 
-    @NotNull
+    @NotNull(message = "null을 허용하지 않습니다.")
     @Min(value = 0, message = "매입원가는 0원 이상이어야 합니다.")
     private Long rawPrice;
 }
