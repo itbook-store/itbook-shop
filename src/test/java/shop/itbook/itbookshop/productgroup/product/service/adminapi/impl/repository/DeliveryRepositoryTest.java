@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.deliverygroup.delivery.repository;
+package shop.itbook.itbookshop.productgroup.product.service.adminapi.impl.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
+import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
