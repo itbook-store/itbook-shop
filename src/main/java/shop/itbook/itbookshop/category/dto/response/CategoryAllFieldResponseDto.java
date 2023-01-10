@@ -6,16 +6,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 카테고리 조회중 부모카테고리의 정보까지 모두 반환
+ * 카테고리 조회중 부모카테고리의 정보까지 모두 가지고 있는 Dto클래스입니다.
  *
  * @author 최겸준
  * @since 1.0
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
+
 @Getter
-public class AllCategoryResponseDto {
+public class CategoryAllFieldResponseDto {
 
     private Integer categoryNo;
 
@@ -27,6 +25,6 @@ public class AllCategoryResponseDto {
 
     private String parentCategoryName;
 
-    private Boolean parentIsHidden;
+    private Boolean parentCategoryIsHidden;
 
 }

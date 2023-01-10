@@ -2,9 +2,9 @@ package shop.itbook.itbookshop.category.service.adminapi;
 
 import java.util.List;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
@@ -32,7 +32,7 @@ public interface CategoryAdminService {
      * @return 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryResponseProjectionDto> findCategoryList();
+    List<CategoryAllFieldResponseDto> findCategoryList(Boolean isHidden);
 
     /**
      * 특정 카테고리 번호를 받아서 자식 카테고리들의 정보반환 처리를 담당하는 메서드입니다.
@@ -41,7 +41,7 @@ public interface CategoryAdminService {
      * @return 조건에 해당하는 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo);
+    List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo);
 
 
     /**
@@ -70,4 +70,15 @@ public interface CategoryAdminService {
      * @author 최겸준
      */
     CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo);
+
+    /**
+     * 카테고리 수정후 결과를 반환하는 메서드입니다.
+     *
+     * @param categoryNo         수정해야할 카테고리 번호입니다.
+     * @param categoryRequestDto
+     * @return true 혹은 false 값을 반환합니다.
+     */
+    void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
+
+    void removeCategory(Integer categoryNo);
 }
