@@ -79,20 +79,23 @@ public class CategoryAdminController {
     }
 
     /**
-     * 카테고리의 번호를 받아서 해당 카테고리의 자식카테고리들을 반환하는 요청을 처리하는 메서드입니다.
+     * 부모카테고리의 번호를 받아서 해당 카테고리의 자식카테고리들을 반환하는 요청을 처리하는 메서드입니다.
      *
      * @param categoryNo 부모카테고리의 번호입니다.
+     * @param isHidden   카테고리를 손님에게 숨겨줄지 말지에 대한 여부로서 조회시에는 true면 숨길상품만 보여주고 false이면 숨기지 않을상품만 보여줍니다.
+     *                   또한 null 이면
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}/child-categories")
     public ResponseEntity<CommonResponseBody<List<CategoryWithoutParentFieldResponseDto>>>
-    categoryChildList(@PathVariable Integer categoryNo) {
+    categoryChildList(@PathVariable Integer categoryNo,
+                      @RequestParam(value = "isHidden", required = false) Boolean isHidden) {
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
                 CategoryResultMessageEnum.CATEGORY_CHILD_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-            categoryAdminService.findCategoryChildList(categoryNo)));
+            categoryAdminService.findCategoryChildList(categoryNo, isHidden)));
     }
 
     /**

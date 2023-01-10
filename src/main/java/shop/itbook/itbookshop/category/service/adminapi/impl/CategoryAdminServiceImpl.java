@@ -71,16 +71,18 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Override
     public List<CategoryAllFieldResponseDto> findCategoryList(Boolean isHidden) {
 
-        return categoryRepository.findCategoryListFetch();
+        return categoryRepository.findCategoryListFetch(isHidden);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo) {
+    public List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo,
+                                                                             Boolean isHidden) {
 
-        return categoryRepository.findCategoryChildListThroughParentCategoryNo(categoryNo);
+        return categoryRepository.findCategoryChildListThroughParentCategoryNo(categoryNo,
+            isHidden);
     }
 
     /**

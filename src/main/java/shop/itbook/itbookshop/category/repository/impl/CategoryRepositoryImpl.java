@@ -27,10 +27,11 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryAllFieldResponseDto> findCategoryListFetch() {
+    public List<CategoryAllFieldResponseDto> findCategoryListFetch(Boolean isHidden) {
 
         QCategory qChildCategory = new QCategory("childCategory");
         QCategory qParentCategory = new QCategory("parentCategory");
+
 
         return from(qChildCategory)
             .leftJoin(qChildCategory.parentCategory, qParentCategory)
@@ -49,7 +50,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
      */
     @Override
     public List<CategoryWithoutParentFieldResponseDto> findCategoryChildListThroughParentCategoryNo(
-        Integer parentCategoryNo) {
+        Integer parentCategoryNo, Boolean isHidden) {
 
 
         QCategory qCategory = QCategory.category;
