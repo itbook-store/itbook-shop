@@ -10,7 +10,6 @@ import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
-import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 
 /**
  * rest controller 에서 예외발생시 종합적인 처리를 해주기 위한 클래스입니다.
@@ -29,6 +28,8 @@ public class RestControllerAdvisor {
      * @author 최겸준
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
+        MethodArgumentNotValidException.class, MemberNotFoundException.class,
+        MembershipNotFoundException.class})
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
         ProductNotFoundException.class})
     public ResponseEntity<CommonResponseBody<RuntimeException>> badRequestException400(
