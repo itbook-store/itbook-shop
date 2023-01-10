@@ -10,6 +10,7 @@ import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
+import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 
 /**
  * rest controller 에서 예외발생시 종합적인 처리를 해주기 위한 클래스입니다.
@@ -30,12 +31,10 @@ public class RestControllerAdvisor {
     @ExceptionHandler(value = {CategoryNotFoundException.class,
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
         MembershipNotFoundException.class})
-        MethodArgumentNotValidException.class, MemberNotFoundException.class,
-        ProductNotFoundException.class})
-    public ResponseEntity<CommonResponseBody<RuntimeException>> badRequestException400(
+    public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
 
-        CommonResponseBody<RuntimeException> exceptionCommonResponseBody = new CommonResponseBody<>(
+        CommonResponseBody<Void> exceptionCommonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(false, HttpStatus.BAD_REQUEST.value(),
                 e.getMessage()), null);
 
@@ -51,10 +50,10 @@ public class RestControllerAdvisor {
      * @author 최겸준
      */
     @ExceptionHandler(value = {MemberForbiddenException.class})
-    public ResponseEntity<CommonResponseBody<RuntimeException>> forbiddenException403(
+    public ResponseEntity<CommonResponseBody<Void>> forbiddenException403(
         RuntimeException e) {
 
-        CommonResponseBody<RuntimeException> exceptionCommonResponseBody = new CommonResponseBody<>(
+        CommonResponseBody<Void> exceptionCommonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(false, HttpStatus.FORBIDDEN.value(),
                 e.getMessage()), null);
 
@@ -70,9 +69,9 @@ public class RestControllerAdvisor {
      * @author 최겸준
      */
     @ExceptionHandler(value = {RuntimeException.class, Exception.class})
-    public ResponseEntity<CommonResponseBody<Exception>> internalErrorException500(Exception e) {
+    public ResponseEntity<CommonResponseBody<Void>> internalErrorException500(Exception e) {
 
-        CommonResponseBody<Exception> exceptionCommonResponseBody = new CommonResponseBody<>(
+        CommonResponseBody<Void> exceptionCommonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(false, HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 e.getMessage()), null);
 

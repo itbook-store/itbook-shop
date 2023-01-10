@@ -2,9 +2,8 @@ package shop.itbook.itbookshop.category.service.adminapi;
 
 import java.util.List;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
@@ -14,8 +13,6 @@ import shop.itbook.itbookshop.category.entity.Category;
  * @since 1.0
  */
 public interface CategoryAdminService {
-
-    // TODO 2 : 카테고리 저장시 dto에서 entity로 반환하는 코드컨벤션 확인해서 클래스만들기 assembler?
 
     /**
      * 카테고리 저장의 비지니스 로직을 처리하는 메서드입니다.
@@ -32,16 +29,18 @@ public interface CategoryAdminService {
      * @return 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryResponseProjectionDto> findCategoryList();
+    List<CategoryAllFieldResponseDto> findCategoryList(Boolean isHidden);
 
     /**
      * 특정 카테고리 번호를 받아서 자식 카테고리들의 정보반환 처리를 담당하는 메서드입니다.
      *
      * @param categoryNo 부모 카테고리의 번호입니다.
+     * @param isHidden
      * @return 조건에 해당하는 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryChildResponseProjectionDto> findCategoryChildList(Integer categoryNo);
+    List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo,
+                                                                      Boolean isHidden);
 
 
     /**
@@ -69,5 +68,24 @@ public interface CategoryAdminService {
      * @return 카테고리의 세부정보를 DTO에 담아 반환합니다.
      * @author 최겸준
      */
-    CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo);
+    CategoryAllFieldResponseDto findCategoryAllFieldResponseDtoThroughCategoryNo(
+        Integer categoryNo);
+
+    /**
+     * 카테고리 수정에 관한 비즈니스 로직을 담당하는 기능입니다.
+     *
+     * @param categoryNo         수정해야할 카테고리 번호입니다.
+     * @param categoryRequestDto 카테고리 수정에 대한 내용을 담고있는 객체입니다.
+     * @return true 혹은 false 값을 반환합니다.
+     * @author 최겸준
+     */
+    void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
+
+    /**
+     * 카테고리 삭제에 관한 비지니스 로직을 담당하는 기능입니다.
+     *
+     * @param categoryNo 삭제해야할 카테고리의 번호입니다.
+     * @author 최겸준
+     */
+    void removeCategory(Integer categoryNo);
 }
