@@ -5,8 +5,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,9 +24,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
 
 /**
@@ -43,9 +45,9 @@ class CategoryAdminControllerTest {
     @MockBean
     CategoryAdminService categoryAdminService;
 
-
     @Autowired
     ObjectMapper objectMapper;
+
 
     @DisplayName("저장에 관련한 요청이 잘들어오고 PK 값이(1) 잘 반환된다.")
     @Test
@@ -75,48 +77,17 @@ class CategoryAdminControllerTest {
     @DisplayName("카테고리 내 모든 리스트가 반환된다.")
     @Test
     void categoryList() throws Exception {
-        given(categoryAdminService.findCategoryList())
-            .willReturn(List.of(new CategoryResponseProjectionDto() {
-                @Override
-                public Integer getCategoryNo() {
-                    return 1;
-                }
 
-                @Override
-                public CategoryResponseProjectionDto getParentCategory() {
-                    return null;
-                }
+        CategoryAllFieldResponseDto category1 = new CategoryAllFieldResponseDto();
+        ReflectionTestUtils.setField(category1, "categoryNo", 1);
+        ReflectionTestUtils.setField(category1, "categoryName", "도서");
 
-                @Override
-                public String getCategoryName() {
-                    return "도서";
-                }
+        CategoryAllFieldResponseDto category2 = new CategoryAllFieldResponseDto();
+        ReflectionTestUtils.setField(category2, "categoryNo", 2);
+        ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
-                @Override
-                public boolean getIsHidden() {
-                    return false;
-                }
-            }, new CategoryResponseProjectionDto() {
-                @Override
-                public Integer getCategoryNo() {
-                    return 2;
-                }
-
-                @Override
-                public CategoryResponseProjectionDto getParentCategory() {
-                    return null;
-                }
-
-                @Override
-                public String getCategoryName() {
-                    return "잡화";
-                }
-
-                @Override
-                public boolean getIsHidden() {
-                    return false;
-                }
-            }));
+        given(categoryAdminService.findCategoryList(null))
+            .willReturn(List.of(category1, category2));
 
         mvc.perform(get("/api/admin/categories"))
             .andExpect(status().isOk())
@@ -130,38 +101,19 @@ class CategoryAdminControllerTest {
     @DisplayName("특정 카테고리의 자식카테고리들이 모두 반환된다.")
     @Test
     void categoryChildList() throws Exception {
+
+        CategoryWithoutParentFieldResponseDto response1 =
+            new CategoryWithoutParentFieldResponseDto();
+        ReflectionTestUtils.setField(response1, "categoryNo", 3);
+        ReflectionTestUtils.setField(response1, "categoryName", "객체지향의사실과오해");
+
+        CategoryWithoutParentFieldResponseDto response2 =
+            new CategoryWithoutParentFieldResponseDto();
+        ReflectionTestUtils.setField(response2, "categoryNo", 4);
+        ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
+
         given(categoryAdminService.findCategoryChildList(anyInt()))
-            .willReturn(List.of(new CategoryChildResponseProjectionDto() {
-                @Override
-                public Integer getCategoryNo() {
-                    return 3;
-                }
-
-                @Override
-                public String getCategoryName() {
-                    return "객체지향의사실과오해";
-                }
-
-                @Override
-                public boolean getIsHidden() {
-                    return false;
-                }
-            }, new CategoryChildResponseProjectionDto() {
-                @Override
-                public Integer getCategoryNo() {
-                    return 4;
-                }
-
-                @Override
-                public String getCategoryName() {
-                    return "자바로배우는자료구조";
-                }
-
-                @Override
-                public boolean getIsHidden() {
-                    return false;
-                }
-            }));
+            .willReturn(List.of(response1, response2));
 
         mvc.perform(get("/api/admin/categories/1/child-categories"))
             .andExpect(status().isOk())
@@ -201,5 +153,43 @@ class CategoryAdminControllerTest {
                 equalTo(categoryResponseDto.getParentCategoryNo())))
             .andExpect(
                 jsonPath("$.result.isHidden", equalTo(categoryResponseDto.getIsHidden())));
+    }
+
+    @DisplayName("카테고리 수정요청시 결과값이 잘 받아와진다.")
+    @Test
+    void categoryModify() throws Exception {
+
+        // given
+        CategoryRequestDto categoryRequestDto = new CategoryRequestDto();
+        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
+        ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
+        ReflectionTestUtils.setField(categoryRequestDto, "isHidden", true);
+
+        // when
+        mvc.perform(put("/api/admin/categories/1").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(categoryRequestDto)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+    }
+
+    @DisplayName("카테고리 삭제요청이 잘가고 결과가 잘 받아와진다.")
+    @Test
+    void categoryDelete() throws Exception {
+
+        // given
+        CategoryRequestDto categoryRequestDto = new CategoryRequestDto();
+        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
+        ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
+        ReflectionTestUtils.setField(categoryRequestDto, "isHidden", true);
+
+        // when
+        mvc.perform(delete("/api/admin/categories/1").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(categoryRequestDto)))
+            .andExpect(status().isNoContent())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
     }
 }

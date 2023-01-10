@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
 
@@ -70,21 +72,21 @@ class CategoryRepositoryTest {
     void findCategoryList() {
 
         // when
-        List<CategoryResponseProjectionDto> categoryList =
+        List<CategoryAllFieldResponseDto> categoryList =
             categoryRepository.findCategoryListFetch();
 
         // then
         assertThat(categoryList)
             .hasSize(2);
-        CategoryResponseProjectionDto actual = categoryList.get(0);
+        CategoryAllFieldResponseDto actual = categoryList.get(0);
 
         assertThat(actual.getCategoryNo())
             .isEqualTo(categoryDummyBook.getCategoryNo());
         assertThat(actual.getCategoryName())
             .isEqualTo(categoryDummyBook.getCategoryName());
         assertThat(actual.getIsHidden())
-            .isEqualTo(categoryDummyBook.isHidden());
-        assertThat(actual.getParentCategory())
+            .isEqualTo(categoryDummyBook.getIsHidden());
+        assertThat(actual.getParentCategoryNo())
             .isNull();
     }
 
@@ -93,21 +95,34 @@ class CategoryRepositoryTest {
     void findCategoryThroughParentCategoryNo() {
 
         // when
-        List<CategoryChildResponseProjectionDto> categoryList =
+        List<CategoryWithoutParentFieldResponseDto> categoryList =
             categoryRepository.findCategoryChildListThroughParentCategoryNo(
                 categoryDummyBook.getCategoryNo());
-
 
         // then
         assertThat(categoryList)
             .hasSize(1);
-        CategoryChildResponseProjectionDto actual = categoryList.get(0);
+        CategoryWithoutParentFieldResponseDto actual = categoryList.get(0);
 
         assertThat(actual.getCategoryNo())
             .isEqualTo(categoryDummyStuff.getCategoryNo());
         assertThat(actual.getCategoryName())
             .isEqualTo(categoryDummyStuff.getCategoryName());
         assertThat(actual.getIsHidden())
-            .isEqualTo(categoryDummyStuff.isHidden());
+            .isEqualTo(categoryDummyStuff.getIsHidden());
+    }
+
+    @DisplayName("카테고리를 찾아올때 부모카테고리까지 함께 얻어온다.")
+    @Test
+    void findCategoryFetch() {
+
+        // when
+        Category category = categoryRepository.findCategoryFetch(2).get();
+
+        //given
+        assertThat(category.getParentCategory().getCategoryName())
+            .isEqualTo("도서");
+        assertThat(category.getParentCategory().getCategoryNo())
+            .isEqualTo(1);
     }
 }
