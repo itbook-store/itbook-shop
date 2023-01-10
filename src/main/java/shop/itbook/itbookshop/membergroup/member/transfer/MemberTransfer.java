@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.transfer;
 
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
@@ -22,12 +22,20 @@ public class MemberTransfer {
      * @return 멤버 엔티티를 만들어서 반환합니다.
      * @author 노수연
      */
-    public static Member dtoToEntity(MemberSaveRequestDto memberSaveRequestDto) {
+    public static Member dtoToEntityInSave(MemberSaveRequestDto memberSaveRequestDto) {
         return Member.builder().id(memberSaveRequestDto.getId()).nickname(
                 memberSaveRequestDto.getNickname()).name(memberSaveRequestDto.getName()).isMan(
-                memberSaveRequestDto.isMan()).birth(memberSaveRequestDto.getBirth())
+                memberSaveRequestDto.getIsMan()).birth(memberSaveRequestDto.getBirth())
             .password(memberSaveRequestDto.getPassword()).phoneNumber(
                 memberSaveRequestDto.getPhoneNumber()).email(memberSaveRequestDto.getEmail())
+            .build();
+    }
+
+    public static Member dtoToEntityInUpdate(MemberUpdateRequestDto memberUpdateRequestDto) {
+        return Member.builder().nickname(memberUpdateRequestDto.getNickname())
+            .name(memberUpdateRequestDto.getName()).birth(memberUpdateRequestDto.getBirth())
+            .password(memberUpdateRequestDto.getPassword()).phoneNumber(
+                memberUpdateRequestDto.getPhoneNumber()).email(memberUpdateRequestDto.getEmail())
             .build();
     }
 }

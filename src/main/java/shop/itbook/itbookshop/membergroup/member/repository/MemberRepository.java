@@ -13,8 +13,6 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  */
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    MemberResponseDto findMemberById(Long id);
-
     List<MemberResponseDto> findAllBy();
-    
+
 }

@@ -16,6 +16,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
@@ -27,6 +29,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
  */
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -56,7 +59,7 @@ public class Member {
     private String name;
 
     @Column(name = "is_man", nullable = false)
-    private boolean isMan;
+    private Boolean isMan;
 
     @Column(name = "birth", nullable = false)
     private LocalDateTime birth;
@@ -91,8 +94,9 @@ public class Member {
     @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder
     public Member(Membership membership, MemberStatus memberStatus, String id, String nickname,
-                  String name, boolean isMan, LocalDateTime birth, String password,
-                  String phoneNumber, String email) {
+                  String name, Boolean isMan, LocalDateTime birth, String password,
+                  String phoneNumber,
+                  String email, LocalDateTime memberCreatedAt) {
         this.membership = membership;
         this.memberStatus = memberStatus;
         this.id = id;
@@ -103,5 +107,15 @@ public class Member {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.memberCreatedAt = memberCreatedAt;
+    }
+
+    public void update(MemberUpdateRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.name = requestDto.getName();
+        this.birth = requestDto.getBirth();
+        this.password = requestDto.getPassword();
+        this.phoneNumber = requestDto.getPhoneNumber();
+        this.email = requestDto.getEmail();
     }
 }

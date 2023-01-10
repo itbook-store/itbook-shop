@@ -1,10 +1,14 @@
 package shop.itbook.itbookshop.membergroup.member.dto.request;
 
 import java.time.LocalDateTime;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
@@ -17,13 +21,33 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 @NoArgsConstructor
 public class MemberSaveRequestDto {
 
+    @NotBlank
+    @Length(min = 2, max = 15)
     private String id;
+
+    @NotBlank
+    @Length(min = 2, max = 20)
     private String nickname;
+
+    @NotBlank
+    @Length(max = 20)
     private String name;
-    private boolean isMan;
+
+    @NotNull
+    private Boolean isMan;
+
+    @NotNull
     private LocalDateTime birth;
+
+    @NotBlank
+    @Length(max = 255)
     private String password;
+
+    @NotBlank
     private String phoneNumber;
+
+    @NotBlank
+    @Email
     private String email;
 
     @Builder

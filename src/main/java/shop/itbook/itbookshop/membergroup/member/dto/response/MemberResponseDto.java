@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.dto.response;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
+import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
 /**
@@ -16,7 +17,7 @@ public interface MemberResponseDto {
 
     Membership getMembership();
 
-    MemberStatus getMemberStatus();
+    MemberStatusResponseDto getMemberStatus();
 
     String getId();
 

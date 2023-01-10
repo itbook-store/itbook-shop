@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi.impl;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +27,13 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     private final MemberRepository memberRepository;
 
     @Override
-    public MemberResponseDto findMember(Long memberNo) {
+    public Member findMember(Long memberNo) {
 
-        MemberResponseDto memberResponseDto = memberRepository.findMemberById(memberNo);
+        Optional<Member> member = memberRepository.findById(memberNo);
 
-        if (Objects.isNull(memberResponseDto)) {
-            throw new MemberNotFoundException("해당 memberNo가 존재하지 않습니다.");
-        }
+        member.orElseThrow(MemberNotFoundException::new);
 
-        return memberResponseDto;
+        return member.get();
     }
 
     @Override
@@ -46,28 +44,29 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
     @Override
     @Transactional
-    public Long saveMember(MemberSaveRequestDto requestDto) {
+    public Long addMember(MemberSaveRequestDto requestDto) {
 
-        Member member = MemberTransfer.dtoToEntity(requestDto);
+        Member member = MemberTransfer.dtoToEntityInSave(requestDto);
         return memberRepository.save(member).getMemberNo();
     }
 
     @Override
     @Transactional
-    public Boolean updateMember(Long memberNo, MemberUpdateRequestDto requestDto) {
+    public Void updateMember(Long memberNo, MemberUpdateRequestDto requestDto) {
 
-        if (Objects.isNull(memberRepository.findMemberById(memberNo).getId())) {
-            return false;
-        }
+        memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new);
 
-        //
+        Member member = memberRepository.findById(memberNo).get();
 
-        return true;
+        member.update(requestDto);
+
+        return null;
     }
 
     @Override
     @Transactional
-    public void deleteMember(Long memberNo) {
+    public Void deleteMember(Long memberNo) {
         memberRepository.deleteById(memberNo);
+        return null;
     }
 }
