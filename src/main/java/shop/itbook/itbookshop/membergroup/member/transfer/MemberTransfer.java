@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.transfer;
 
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
@@ -44,5 +45,14 @@ public class MemberTransfer {
             .password(memberUpdateRequestDto.getPassword()).phoneNumber(
                 memberUpdateRequestDto.getPhoneNumber()).email(memberUpdateRequestDto.getEmail())
             .build();
+    }
+
+    public static MemberResponseDto entityToDto(Member member) {
+        return MemberResponseDto.builder().memberNo(member.getMemberNo())
+            .membership(member.getMembership()).memberStatus(member.getMemberStatus()).id(
+                member.getId()).nickname(member.getNickname()).name(member.getName())
+            .isMan(member.getIsMan()).birth(member.getBirth()).password(
+                member.getPassword()).phoneNumber(member.getPhoneNumber()).email(member.getEmail())
+            .memberCreatedAt(member.getMemberCreatedAt()).build();
     }
 }

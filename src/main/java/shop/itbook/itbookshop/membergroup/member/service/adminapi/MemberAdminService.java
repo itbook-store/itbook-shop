@@ -21,7 +21,7 @@ public interface MemberAdminService {
      * @return MemberResponseDto를 반환합니다.
      * @author 노수연
      */
-    Member findMember(Long memberNo);
+    MemberResponseDto findMember(Long memberNo);
 
     /**
      * 모든 멤버 리스트를 조회할 수 있는 로직을 담당하는 메서드입니다.
@@ -48,7 +48,7 @@ public interface MemberAdminService {
      * @return 반환값은 없습니다.
      * @author 노수연
      */
-    Void updateMember(Long memberNo, MemberUpdateRequestDto requestDto);
+    void updateMember(Long memberNo, MemberUpdateRequestDto requestDto);
 
     /**
      * 특정 멤버를 삭제하는 로직을 담당한 메서드입니다.

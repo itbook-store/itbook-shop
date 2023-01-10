@@ -44,10 +44,10 @@ public class MemberAdminController {
      * @author 노수연
      */
     @GetMapping("/{memberNo}")
-    public ResponseEntity<CommonResponseBody<Member>> memberDetails(
+    public ResponseEntity<CommonResponseBody<MemberResponseDto>> memberDetails(
         @PathVariable("memberNo") Long memberNo) {
 
-        CommonResponseBody<Member> commonResponseBody = new CommonResponseBody<>(
+        CommonResponseBody<MemberResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
                 "멤버 조회를 성공하였습니다."),
             memberAdminService.findMember(memberNo)

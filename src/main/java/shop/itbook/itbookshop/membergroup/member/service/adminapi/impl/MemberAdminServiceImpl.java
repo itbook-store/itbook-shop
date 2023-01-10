@@ -27,13 +27,13 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Member findMember(Long memberNo) {
+    public MemberResponseDto findMember(Long memberNo) {
 
         Optional<Member> member = memberRepository.findById(memberNo);
 
         member.orElseThrow(MemberNotFoundException::new);
 
-        return member.get();
+        return MemberTransfer.entityToDto(member.get());
     }
 
     @Override
@@ -52,15 +52,13 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
     @Override
     @Transactional
-    public Void updateMember(Long memberNo, MemberUpdateRequestDto requestDto) {
+    public void updateMember(Long memberNo, MemberUpdateRequestDto requestDto) {
 
         memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new);
 
         Member member = memberRepository.findById(memberNo).get();
 
         member.update(requestDto);
-
-        return null;
     }
 
     @Override

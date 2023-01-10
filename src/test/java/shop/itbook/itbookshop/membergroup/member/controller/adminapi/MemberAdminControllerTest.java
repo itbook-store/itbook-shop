@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
+import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
@@ -68,7 +69,7 @@ class MemberAdminControllerTest {
     @DisplayName("특정 멤버 조회 테스트")
     void memberDetails() throws Exception {
 
-        given(memberAdminService.findMember(any())).willReturn(member1);
+        given(memberAdminService.findMember(any())).willReturn(MemberTransfer.entityToDto(member1));
 
         mvc.perform(get("/api/admin/members/1").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
