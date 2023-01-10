@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,6 +39,7 @@ public class MemberStatus {
     @Column(name = "member_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private MemberStatusEnum memberStatusEnum;
 
+    @Builder
     public MemberStatus(MemberStatusEnum memberStatusEnum) {
         this.memberStatusEnum = memberStatusEnum;
     }
