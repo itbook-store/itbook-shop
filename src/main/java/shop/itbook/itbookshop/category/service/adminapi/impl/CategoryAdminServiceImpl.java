@@ -112,11 +112,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     }
 
     /**
-     * 카테고리 수정하는 비지니스로직을 담당하는 메서드입니다.
-     *
-     * @param categoryNo         수정해야할 카테고리 번호입니다.
-     * @param categoryRequestDto 수정해야할 정보가 담긴 객체입니다.
-     * @author 최겸준
+     * {@inheritDoc}
      */
     @Override
     public void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto) {
@@ -135,10 +131,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     }
 
     /**
-     * 카테고리 삭제의 비지니스로직을 담당하는 메서드입니다.
-     *
-     * @param categoryNo 삭제해야할 카테고리번호입니다.
-     * @author 최겸준
+     * {@inheritDoc}
      */
     @Override
     public void removeCategory(Integer categoryNo) {

@@ -72,13 +72,20 @@ public interface CategoryAdminService {
     CategoryResponseDto findCategoryResponseDtoThroughCategoryNo(Integer categoryNo);
 
     /**
-     * 카테고리 수정후 결과를 반환하는 메서드입니다.
+     * 카테고리 수정에 관한 비즈니스 로직을 담당하는 기능입니다.
      *
      * @param categoryNo         수정해야할 카테고리 번호입니다.
-     * @param categoryRequestDto
+     * @param categoryRequestDto 카테고리 수정에 대한 내용을 담고있는 객체입니다.
      * @return true 혹은 false 값을 반환합니다.
+     * @author 최겸준
      */
     void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
 
+    /**
+     * 카테고리 삭제에 관한 비지니스 로직을 담당하는 기능입니다.
+     *
+     * @param categoryNo 삭제해야할 카테고리의 번호입니다.
+     * @author 최겸준
+     */
     void removeCategory(Integer categoryNo);
 }
