@@ -112,7 +112,7 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(response2, "categoryNo", 4);
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
-        given(categoryAdminService.findCategoryChildList(anyInt()))
+        given(categoryAdminService.findCategoryChildList(anyInt(), any()))
             .willReturn(List.of(response1, response2));
 
         mvc.perform(get("/api/admin/categories/1/child-categories"))

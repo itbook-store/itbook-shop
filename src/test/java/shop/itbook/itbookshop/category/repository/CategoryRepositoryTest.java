@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryChildResponseProjectionDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseProjectionDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -73,7 +71,7 @@ class CategoryRepositoryTest {
 
         // when
         List<CategoryAllFieldResponseDto> categoryList =
-            categoryRepository.findCategoryListFetch();
+            categoryRepository.findCategoryListFetch(null);
 
         // then
         assertThat(categoryList)
@@ -97,7 +95,7 @@ class CategoryRepositoryTest {
         // when
         List<CategoryWithoutParentFieldResponseDto> categoryList =
             categoryRepository.findCategoryChildListThroughParentCategoryNo(
-                categoryDummyBook.getCategoryNo());
+                categoryDummyBook.getCategoryNo(), null);
 
         // then
         assertThat(categoryList)

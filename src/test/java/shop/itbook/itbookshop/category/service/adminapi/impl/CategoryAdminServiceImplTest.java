@@ -104,7 +104,7 @@ class CategoryAdminServiceImplTest {
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
-        given(categoryRepository.findCategoryListFetch())
+        given(categoryRepository.findCategoryListFetch(null))
             .willReturn(List.of(category1, category2));
 
         // when
@@ -137,12 +137,12 @@ class CategoryAdminServiceImplTest {
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
         // given
-        given(categoryRepository.findCategoryChildListThroughParentCategoryNo(anyInt()))
+        given(categoryRepository.findCategoryChildListThroughParentCategoryNo(anyInt(), any()))
             .willReturn(List.of(response1, response2));
 
         // when
         List<CategoryWithoutParentFieldResponseDto> categoryList =
-            categoryAdminService.findCategoryChildList(1);
+            categoryAdminService.findCategoryChildList(1, null);
 
         // then
         assertThat(categoryList.get(0).getCategoryNo())
