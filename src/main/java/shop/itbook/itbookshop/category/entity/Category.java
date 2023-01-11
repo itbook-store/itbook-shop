@@ -44,7 +44,10 @@ public class Category {
     @Column(name = "is_hidden", nullable = false)
     private Boolean isHidden;
 
-    public Category(String categoryName, boolean isHidden) {
+    @Column(name = "level")
+    private Integer level;
+
+    public Category(String categoryName, Boolean isHidden) {
         this.categoryName = categoryName;
         this.isHidden = isHidden;
     }
