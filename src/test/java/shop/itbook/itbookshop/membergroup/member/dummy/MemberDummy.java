@@ -2,7 +2,9 @@ package shop.itbook.itbookshop.membergroup.member.dummy;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
+import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
@@ -15,13 +17,12 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 public class MemberDummy {
 
     public static Member getMember() {
-        Membership membership = new Membership("실버", 200_000L, 20_000L);
-        MemberStatus memberStatus = new MemberStatus(MemberStatusEnum.NORMAL);
+        Membership membership = MembershipDummy.getMembership();
+        MemberStatus memberStatus = MemberStatusDummy.getMemberStatus();
 
-        Member member = new Member(membership, memberStatus, "user1", "유저1", "홍길동", true,
-            LocalDateTime.of(2000, 1, 1, 0, 0, 0), "1234", "010-0000-0000", "user1@test1.com");
-
-        return member;
+        return new Member(membership, memberStatus, "user4", "유저4", "김유리", true,
+            LocalDateTime.of(2000, 1, 1, 0, 0, 0), "1234", "010-4000-0000", "user4@test1.com",
+            LocalDateTime.now());
     }
 
 }

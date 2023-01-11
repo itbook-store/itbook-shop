@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
@@ -27,6 +28,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
  */
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -56,7 +58,7 @@ public class Member {
     private String name;
 
     @Column(name = "is_man", nullable = false)
-    private boolean isMan;
+    private Boolean isMan;
 
     @Column(name = "birth", nullable = false)
     private LocalDateTime birth;
@@ -76,23 +78,25 @@ public class Member {
     /**
      * 회원 테이블에 대한 엔티티 생성자 입니다.
      *
-     * @param membership   the membership
-     * @param memberStatus the member status
-     * @param id           the id
-     * @param nickname     the nickname
-     * @param name         the name
-     * @param isMan        the is man
-     * @param birth        the birth
-     * @param password     the password
-     * @param phoneNumber  the phone number
-     * @param email        the email
+     * @param membership   멤버십 정보
+     * @param memberStatus 멤버 상태 정보 (정상회원, 차단회원, 탈퇴회원)
+     * @param id           아이디
+     * @param nickname     닉네임
+     * @param name         이름
+     * @param isMan        성별 여부
+     * @param birth        생일
+     * @param password     비밀번호
+     * @param phoneNumber  핸드폰 번호
+     * @param email        이메일
      * @author 강명관
+     * @author 노수연
      */
     @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder
     public Member(Membership membership, MemberStatus memberStatus, String id, String nickname,
-                  String name, boolean isMan, LocalDateTime birth, String password,
-                  String phoneNumber, String email) {
+                  String name, Boolean isMan, LocalDateTime birth, String password,
+                  String phoneNumber,
+                  String email, LocalDateTime memberCreatedAt) {
         this.membership = membership;
         this.memberStatus = memberStatus;
         this.id = id;
@@ -103,5 +107,7 @@ public class Member {
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.memberCreatedAt = memberCreatedAt;
     }
+
 }

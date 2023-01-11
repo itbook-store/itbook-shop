@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.category.transfer;
 
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
@@ -23,13 +23,15 @@ public class CategoryTransfer {
      * @return dto 형태로 만들어서 반환합니다.
      * @author 최겸준
      */
-    public static CategoryResponseDto entityToDto(Category category) {
+    public static CategoryAllFieldResponseDto entityToDto(Category category) {
 
-        return CategoryResponseDto.builder()
+        return CategoryAllFieldResponseDto.builder()
             .categoryNo(category.getCategoryNo())
             .categoryName(category.getCategoryName())
+            .isHidden(category.getIsHidden())
             .parentCategoryNo(category.getParentCategory().getCategoryNo())
-            .isHidden(category.isHidden())
+            .parentCategoryName(category.getCategoryName())
+            .parentCategoryIsHidden(category.getIsHidden())
             .build();
     }
 

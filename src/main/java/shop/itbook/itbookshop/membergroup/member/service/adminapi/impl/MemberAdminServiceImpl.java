@@ -1,13 +1,14 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi.impl;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
@@ -29,45 +30,53 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     @Override
     public MemberResponseDto findMember(Long memberNo) {
 
-        MemberResponseDto memberResponseDto = memberRepository.findMemberById(memberNo);
+        Optional<Member> member = memberRepository.findById(memberNo);
 
-        if (Objects.isNull(memberResponseDto)) {
-            throw new MemberNotFoundException("해당 memberNo가 존재하지 않습니다.");
+        if (member.isEmpty()) {
+            throw new MemberNotFoundException();
         }
 
-        return memberResponseDto;
+        return MemberTransfer.entityToDto(member.get());
     }
 
     @Override
-    public List<MemberResponseDto> findMemberList() {
+    public List<MemberResponseProjectionDto> findMemberList() {
 
         return memberRepository.findAllBy();
     }
 
     @Override
     @Transactional
-    public Long saveMember(MemberSaveRequestDto requestDto) {
+    public Long addMember(MemberSaveRequestDto requestDto) {
 
-        Member member = MemberTransfer.dtoToEntity(requestDto);
+        Member member = MemberTransfer.dtoToEntityInSave(requestDto);
         return memberRepository.save(member).getMemberNo();
     }
 
     @Override
     @Transactional
-    public Boolean updateMember(Long memberNo, MemberUpdateRequestDto requestDto) {
+    public void modifyMember(Long memberNo, MemberUpdateRequestDto requestDto) {
 
-        if (Objects.isNull(memberRepository.findMemberById(memberNo).getId())) {
-            return false;
+        Optional<Member> member = memberRepository.findById(memberNo);
+
+        if (member.isEmpty()) {
+            throw new MemberNotFoundException();
         }
 
-        //
+        Member modifiedMember = member.get();
 
-        return true;
+        modifiedMember.setNickname(requestDto.getNickname());
+        modifiedMember.setName(requestDto.getName());
+        modifiedMember.setBirth(requestDto.getBirth());
+        modifiedMember.setPassword(requestDto.getPassword());
+        modifiedMember.setPhoneNumber(requestDto.getPhoneNumber());
+        modifiedMember.setEmail(requestDto.getEmail());
+
     }
 
     @Override
     @Transactional
-    public void deleteMember(Long memberNo) {
+    public void removeMember(Long memberNo) {
         memberRepository.deleteById(memberNo);
     }
 }
