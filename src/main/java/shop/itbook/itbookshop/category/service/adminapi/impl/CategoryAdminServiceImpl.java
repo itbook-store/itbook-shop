@@ -29,7 +29,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     private static final int BASE_LEVEL = 0;
     private final CategoryRepository categoryRepository;
 
-
     /**
      * {@inheritDoc}*
      */

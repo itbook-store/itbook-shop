@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.category.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,9 +42,11 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
                 qChildCategory.categoryNo,
                 qChildCategory.categoryName,
                 qChildCategory.isHidden,
+                qChildCategory.level,
                 qChildCategory.parentCategory.categoryNo.as("parentCategoryNo"),
                 qChildCategory.parentCategory.categoryName.as("parentCategoryName"),
-                qChildCategory.parentCategory.isHidden.as("parentCategoryIsHidden")))
+                qChildCategory.parentCategory.isHidden.as("parentCategoryIsHidden"),
+                qChildCategory.parentCategory.level.as("parentCategoryLevel")))
             .where(builder)
             .fetch();
     }
@@ -78,7 +79,8 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
             .select(Projections.fields(CategoryWithoutParentFieldResponseDto.class,
                 qCategory.categoryNo,
                 qCategory.categoryName,
-                qCategory.isHidden))
+                qCategory.isHidden,
+                qCategory.level))
             .fetch();
     }
 

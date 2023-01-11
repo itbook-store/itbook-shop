@@ -28,7 +28,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestina
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "order")
+@Table(name = "order_paper")
 @Entity
 public class Order {
 

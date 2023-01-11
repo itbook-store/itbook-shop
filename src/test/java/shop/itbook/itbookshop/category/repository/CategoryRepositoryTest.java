@@ -32,7 +32,7 @@ class CategoryRepositoryTest {
 
         //given
         categoryDummyBook = CategoryDummy.getCategoryNoHiddenBook();
-        categoryDummyStuff = CategoryDummy.getCategoryNoHiddenStuff();
+        categoryDummyStuff = CategoryDummy.getCategoryHiddenStuff();
 
         categoryRepository.save(categoryDummyBook);
         categoryRepository.save(categoryDummyStuff);
