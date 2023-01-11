@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.book.repository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -12,9 +13,9 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  * @since 1.0
  */
 @Repository
-public interface BookRepository extends JpaRepository<Product, Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
-    Optional<Product> findById(Long productNo);
+    Optional<Book> findById(Long productNo);
 
     void deleteById(Long productNo);
 
