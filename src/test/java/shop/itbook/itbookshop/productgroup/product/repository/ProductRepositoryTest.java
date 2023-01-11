@@ -36,12 +36,12 @@ class ProductRepositoryTest {
     void setUp() {
         product_success = Product.builder().name("객체지향의 사실과 오해")
             .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
-            .detailsDescription("다 모르겠고 그냥 제발 됐으면 좋겠네요..").stock(1).isSelled(true).isDeleted(false)
+            .detailsDescription("상세 설명").stock(1).isSelled(true).isDeleted(false)
             .thumbnailUrl("testUrl").fixedPrice(20000L)
             .increasePointPercent(1).discountPercent(10).rawPrice(12000L).dailyHits(0L)
             .productCreatedAt(LocalDateTime.now()).build();
         product_failure = Product.builder().name("객체지향의 사실과 오해").simpleDescription(null)
-            .detailsDescription("좀..").stock(1).isSelled(Boolean.TRUE).isDeleted(Boolean.FALSE)
+            .detailsDescription("상세 설명").stock(1).isSelled(Boolean.TRUE).isDeleted(Boolean.FALSE)
             .thumbnailUrl("testUrl").fixedPrice(20000L)
             .increasePointPercent(1).discountPercent(10).rawPrice(12000L).dailyHits(0L)
             .productCreatedAt(LocalDateTime.now()).build();
