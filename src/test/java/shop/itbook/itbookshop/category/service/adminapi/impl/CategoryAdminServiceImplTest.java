@@ -53,7 +53,7 @@ class CategoryAdminServiceImplTest {
         ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
 
-        Category dummyCategory = new Category(1, null, "도서", false);
+        Category dummyCategory = new Category(1, null, "도서", false, 0);
         given(categoryRepository.save(any(Category.class)))
             .willReturn(dummyCategory);
 
@@ -75,7 +75,7 @@ class CategoryAdminServiceImplTest {
         ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
 
-        Category dummyCategory = new Category(3, null, "IT서적", false);
+        Category dummyCategory = new Category(3, null, "IT서적", false, 0);
         given(categoryRepository.save(any(Category.class)))
             .willReturn(dummyCategory);
 
@@ -159,7 +159,7 @@ class CategoryAdminServiceImplTest {
     void findCategoryEntity() {
 
         // given
-        Category dummyCategory = new Category(3, null, "IT서적", false);
+        Category dummyCategory = new Category(3, null, "IT서적", false, 0);
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(dummyCategory));
 
@@ -191,7 +191,7 @@ class CategoryAdminServiceImplTest {
 
         // given
         Category dummyCategoryBook = CategoryDummy.getCategoryNoHiddenBook();
-        Category dummyCategory = new Category(3, dummyCategoryBook, "IT서적", false);
+        Category dummyCategory = new Category(3, dummyCategoryBook, "IT서적", false, 0);
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(dummyCategory));
 
