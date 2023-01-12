@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
@@ -12,6 +13,6 @@ import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FindProductTypeResponseDto {
-    private ProductType productType;
+public class FindProductResponseDto {
+    private Product product;
 }

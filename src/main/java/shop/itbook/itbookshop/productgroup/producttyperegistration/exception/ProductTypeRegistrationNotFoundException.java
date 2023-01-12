@@ -1,16 +1,16 @@
-package shop.itbook.itbookshop.productgroup.producttype.exception;
+package shop.itbook.itbookshop.productgroup.producttyperegistration.exception;
 
 /**
- * 상품유형이 존재하지 않을 때 발생시킬 예외 클래스입니다.
+ * 상품유형 등록이 되어있지 않을 때 발생시킬 예외 클래스입니다.
  *
  * @author 이하늬
  * @since 1.0
  */
-public class ProductTypeNotFoundException extends RuntimeException {
+public class ProductTypeRegistrationNotFoundException extends RuntimeException {
 
-    public static final String MESSAGE = "존재하지 않는 상품유형입니다.";
+    public static final String MESSAGE = "상품유형 등록이 되어 있지 않습니다.";
 
-    public ProductTypeNotFoundException() {
+    public ProductTypeRegistrationNotFoundException() {
         super(MESSAGE);
     }
 }

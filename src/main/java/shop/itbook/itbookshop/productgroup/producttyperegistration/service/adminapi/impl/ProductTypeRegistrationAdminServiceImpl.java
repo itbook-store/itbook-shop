@@ -1,12 +1,13 @@
 package shop.itbook.itbookshop.productgroup.producttyperegistration.service.adminapi.impl;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.exception.ProductTypeRegistrationNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.repository.ProductTypeRegistrationRepository;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.service.adminapi.ProductTypeRegistrationAdminService;
 
@@ -29,7 +30,14 @@ public class ProductTypeRegistrationAdminServiceImpl implements
      */
     @Override
     public List<FindProductTypeResponseDto> findProductTypeNameList(Long productNo) {
-        return productTypeRegistrationRepository.findProductTypeListByProductNo(productNo);
+        List<FindProductTypeResponseDto> productTypeListWithProductNo =
+            productTypeRegistrationRepository.findProductTypeListWithProductNo(productNo);
+        
+        if (Objects.isNull(productTypeListWithProductNo)) {
+            throw new ProductTypeRegistrationNotFoundException();
+        }
+
+        return productTypeListWithProductNo;
     }
 
     /**
@@ -37,6 +45,13 @@ public class ProductTypeRegistrationAdminServiceImpl implements
      */
     @Override
     public List<FindProductResponseDto> findProductList(Integer productTypeNo) {
-        return productTypeRegistrationRepository.findProductListByProductTypeNo(productTypeNo);
+        List<FindProductResponseDto> productListWithProductTypeNo =
+            productTypeRegistrationRepository.findProductListWithProductTypeNo(productTypeNo);
+
+        if (Objects.isNull(productListWithProductTypeNo)) {
+            throw new ProductTypeRegistrationNotFoundException();
+        }
+
+        return productListWithProductTypeNo;
     }
 }

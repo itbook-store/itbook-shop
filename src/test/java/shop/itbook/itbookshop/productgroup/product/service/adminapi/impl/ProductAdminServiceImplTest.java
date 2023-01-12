@@ -43,8 +43,8 @@ class ProductAdminServiceImplTest {
     @MockBean
     ProductRepository mockProductRepository;
 
-    private AddProductRequestDto addProductRequestDto;
-    private ModifyProductRequestDto modifyProductRequestDto;
+    AddProductRequestDto addProductRequestDto;
+    ModifyProductRequestDto modifyProductRequestDto;
 
     @BeforeEach
     void setUp() {
