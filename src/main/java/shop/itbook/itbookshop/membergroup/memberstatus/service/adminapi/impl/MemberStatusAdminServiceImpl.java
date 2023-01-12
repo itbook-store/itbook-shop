@@ -3,12 +3,11 @@ package shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.membergroup.memberstatus.dto.request.MemberStatusRequestDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
-import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
+import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepositoryCustom;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
+import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * 멤버 상태 서비스 인터페이스를 상속받아 구현한 클래스입니다.
@@ -21,32 +20,17 @@ import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberSt
 public class MemberStatusAdminServiceImpl implements MemberStatusAdminService {
 
     private final MemberStatusRepository memberStatusRepository;
+    private final MemberStatusRepositoryCustom memberStatusRepositoryCustom;
 
     @Override
-    public MemberStatusResponseDto findMemberStatus(Long memberStatusNo) {
-        return null;
+    public MemberStatusResponseDto findMemberStatus(MemberStatusEnum memberStatusEnum) {
+        return memberStatusRepositoryCustom.querydslFindByName(memberStatusEnum.getMemberStatus())
+            .get();
     }
 
     @Override
-    public List<MemberStatusResponseProjectionDto> findMemberStatusList() {
-        return null;
+    public List<MemberStatusResponseDto> findMemberStatusList() {
+        return memberStatusRepositoryCustom.querydslFindAll();
     }
 
-    @Override
-    @Transactional
-    public Long addMemberStatus(MemberStatusRequestDto requestDto) {
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public void modifyMemberStatus(Long memberStatusNo, MemberStatusRequestDto requestDto) {
-
-    }
-
-    @Override
-    @Transactional
-    public void removeMemberStatus(Long memberStatusNo) {
-
-    }
 }

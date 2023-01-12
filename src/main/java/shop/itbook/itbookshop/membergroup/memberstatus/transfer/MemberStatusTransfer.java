@@ -25,7 +25,12 @@ public class MemberStatusTransfer {
      * @author 노수연
      */
     public static MemberStatusResponseDto entityToDto(MemberStatus memberStatus) {
-        return MemberStatusResponseDto.builder().memberStatusNo(memberStatus.getMemberStatusNo())
+        return MemberStatusResponseDto.builder()
             .memberStatusEnum(memberStatus.getMemberStatusEnum()).build();
+    }
+
+    public static MemberStatus dtoToEntity(MemberStatusResponseDto memberStatusResponseDto) {
+        return MemberStatus.builder()
+            .memberStatusEnum(memberStatusResponseDto.getMemberStatusEnum()).build();
     }
 }
