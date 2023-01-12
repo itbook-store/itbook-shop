@@ -5,7 +5,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequ
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
- * 상품과 관련하여 비즈니스 로직을 담당하는 Service 인터페이스입니다.
+ * 상품 Service 인터페이스입니다.
  *
  * @author 이하늬
  * @since 1.0

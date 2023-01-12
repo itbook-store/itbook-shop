@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.review.entity;
+package shop.itbook.itbookshop.productgroup.review.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
