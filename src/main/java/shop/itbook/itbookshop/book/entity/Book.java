@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -15,12 +14,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
  * 도서 엔티티입니다.
  *
- * @author 이하늬
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
 @Getter
@@ -56,15 +54,25 @@ public class Book {
     @Column(name = "publisher_name", nullable = false, columnDefinition = "varchar(20)")
     private String publisherName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_type_no", nullable = false)
-    private ProductType productType;
-
+    /**
+     * 빌터 패턴을 적용한 생성자입니다.
+     *
+     * @param productNo     상품 번호입니다.
+     * @param product       상품입니다.
+     * @param isbn          도서 isbn입니다.
+     * @param pageCount     도서 페이지 수 입니다.
+     * @param bookCreatedAt 도서 발간일입니다.
+     * @param isEbook       도서 전자책 여부입니다.
+     * @param ebookUrl      도서 전자책 url입니다.
+     * @param publisherName 도서 출판사 명 입니다.
+     * @author
+     */
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Book(Long productNo, Product product, String isbn, Integer pageCount,
-                LocalDateTime bookCreatedAt, boolean isEbook, String tableOfContents,
+                LocalDateTime bookCreatedAt, boolean isEbook,
                 String ebookUrl,
-                String publisherName, ProductType productType) {
+                String publisherName) {
         this.productNo = productNo;
         this.product = product;
         this.isbn = isbn;
@@ -73,6 +81,5 @@ public class Book {
         this.isEbook = isEbook;
         this.ebookUrl = ebookUrl;
         this.publisherName = publisherName;
-        this.productType = productType;
     }
 }
