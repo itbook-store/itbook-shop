@@ -55,7 +55,7 @@ public class MemberController {
                 memberService.findMember(id)
             );
 
-        return null;
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 
 }
