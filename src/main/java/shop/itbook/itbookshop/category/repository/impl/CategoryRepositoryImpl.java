@@ -67,7 +67,6 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     public List<CategoryWithoutParentFieldResponseDto> findCategoryChildListThroughParentCategoryNo(
         Integer parentCategoryNo, Boolean isHidden) {
 
-
         QCategory qCategory = QCategory.category;
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -92,11 +91,15 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QCategory qCategory = QCategory.category;
         QCategory qParentCategory = new QCategory("parentCategory");
 
-        return Optional.of(from(qCategory)
+        Category value = from(qCategory)
             .leftJoin(qCategory.parentCategory, qParentCategory)
             .fetchJoin()
+//            .leftJoin(qCategory, qCategory.parentCategory)
+//            .fetchJoin()
             .where(qCategory.categoryNo.eq(categoryNo))
             .select(qCategory)
-            .fetchOne());
+            .fetchOne();
+
+        return Optional.of(value);
     }
 }

@@ -30,7 +30,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     private final CategoryRepository categoryRepository;
 
     /**
-     * {@inheritDoc}*
+     * {@inheritDoc}
      */
     @Override
     @Transactional

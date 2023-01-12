@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,6 +192,21 @@ class CategoryRepositoryTest {
     @DisplayName("카테고리를 찾아올때 부모카테고리까지 함께 얻어온다.")
     @Test
     void findCategoryFetch() {
+
+        // when
+        Category category =
+            categoryRepository.findCategoryFetch(categoryDummyStuff.getCategoryNo()).get();
+
+        //given
+        assertThat(category.getParentCategory().getCategoryName())
+            .isEqualTo("도서");
+        assertThat(category.getParentCategory().getCategoryNo())
+            .isEqualTo(categoryDummyStuff.getParentCategory().getCategoryNo());
+    }
+
+    @DisplayName("카테고리를 찾아올때 자식카테고리까지 함께 얻어온다.")
+    @Test
+    void findCategoryFetch_child() {
 
         // when
         Category category =

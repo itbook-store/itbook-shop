@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -53,7 +54,15 @@ class CategoryAdminServiceImplTest {
         ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
 
-        Category dummyCategory = new Category(1, null, "도서", false, 0);
+        Category dummyCategory = Category.builder()
+            .categoryName("도서")
+            .isHidden(false)
+            .parentCategory(null)
+            .level(0)
+            .sequence(1)
+            .build();
+        dummyCategory.setCategoryNo(1);
+
         given(categoryRepository.save(any(Category.class)))
             .willReturn(dummyCategory);
 
@@ -75,7 +84,15 @@ class CategoryAdminServiceImplTest {
         ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
 
-        Category dummyCategory = new Category(3, null, "IT서적", false, 0);
+        Category dummyCategory = Category.builder()
+            .categoryName("IT서적")
+            .isHidden(false)
+            .parentCategory(null)
+            .level(0)
+            .sequence(1)
+            .build();
+        dummyCategory.setCategoryNo(3);
+
         given(categoryRepository.save(any(Category.class)))
             .willReturn(dummyCategory);
 
@@ -159,7 +176,15 @@ class CategoryAdminServiceImplTest {
     void findCategoryEntity() {
 
         // given
-        Category dummyCategory = new Category(3, null, "IT서적", false, 0);
+        Category dummyCategory = Category.builder()
+            .categoryName("IT서적")
+            .isHidden(false)
+            .parentCategory(null)
+            .level(0)
+            .sequence(1)
+            .build();
+        dummyCategory.setCategoryNo(3);
+
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(dummyCategory));
 
@@ -191,7 +216,14 @@ class CategoryAdminServiceImplTest {
 
         // given
         Category dummyCategoryBook = CategoryDummy.getCategoryNoHiddenBook();
-        Category dummyCategory = new Category(3, dummyCategoryBook, "IT서적", false, 0);
+        Category dummyCategory = Category.builder()
+            .categoryName("IT서적")
+            .isHidden(false)
+            .parentCategory(dummyCategoryBook)
+            .level(0)
+            .sequence(1)
+            .build();
+        dummyCategory.setCategoryNo(3);
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(dummyCategory));
 

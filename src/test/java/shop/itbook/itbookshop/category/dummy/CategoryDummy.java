@@ -5,23 +5,43 @@ import shop.itbook.itbookshop.category.entity.Category;
 public class CategoryDummy {
 
     public static Category getCategoryHiddenBook() {
-        Category category = new Category("도서", true);
-        return category;
+
+        return Category.builder()
+            .categoryName("도서")
+            .isHidden(true)
+            .level(0)
+            .sequence(1)
+            .build();
     }
 
     public static Category getCategoryNoHiddenBook() {
-        Category category = new Category("도서", false);
-        return category;
+
+        return Category.builder()
+            .categoryName("도서")
+            .isHidden(false)
+            .level(0)
+            .sequence(1)
+            .build();
     }
 
     public static Category getCategoryHiddenStuff() {
-        Category category = new Category("잡화", true);
-        return category;
+
+        return Category.builder()
+            .categoryName("잡화")
+            .isHidden(true)
+            .level(0)
+            .sequence(1)
+            .build();
     }
 
     public static Category getCategoryNoHiddenStuff() {
-        Category category = new Category("잡화", false);
-        return category;
+
+        return Category.builder()
+            .categoryName("잡화")
+            .isHidden(false)
+            .level(0)
+            .sequence(1)
+            .build();
     }
 
 
