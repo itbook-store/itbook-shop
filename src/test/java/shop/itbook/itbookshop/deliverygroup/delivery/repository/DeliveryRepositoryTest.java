@@ -1,19 +1,17 @@
-package shop.itbook.itbookshop.productgroup.product.service.adminapi.impl.repository;
+package shop.itbook.itbookshop.deliverygroup.delivery.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
-import shop.itbook.itbookshop.membergroup.member.entity.Member;
-import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
-import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
-import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.context.annotation.Bean;
+import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
+import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
+import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNotFoundException;
 
 /**
  * 배송 엔티티 Repository 의 테스트 클래스입니다.
@@ -22,43 +20,32 @@ import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
  * @since 1.0
  */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class DeliveryRepositoryTest {
 
-    @MockBean
+    @Autowired
     DeliveryRepository deliveryRepository;
 
-    @MockBean
-    OrderRepository orderRepository;
+    @Test
+    @DisplayName("delivery 테이블에 더미 데이터 insert 성공")
+    void insertTest() {
+        Delivery delivery = DeliveryDummy.getDelivery();
 
-    OrderDummy orderDummy;
+        Delivery savedDelivery = deliveryRepository.save(delivery);
 
-    @BeforeEach
-    void setup() {
-        Member member = mock(Member.class);
-        MemberDestination memberDestination = mock(MemberDestination.class);
-
+        assertThat(savedDelivery.getTrackingNo()).isEqualTo(delivery.getTrackingNo());
     }
 
     @Test
-    @DisplayName("delivery 테이블에 insert 성공")
-    void insertTest() {
-//        given(orderRepository.findById(1L)).willReturn(Optional.ofNullable(orderDummy));
-//        Order order = orderRepository.findById(1L).get();
-//
-//        Delivery delivery = Delivery.builder()
-//            .order(order)
-//            .receiverName("테스트 수령인이름")
-//            .receiverAddress("테스트 주소")
-//            .receiverDetailAddress("테스트 상세주소")
-//            .receiverPhoneNumber("테스트 전화번호")
-//            .trackingNo("테스트 운송장번호")
-//            .build();
-//
-//        given(deliveryRepository.save(delivery)).willReturn(delivery);
-//
-//        Delivery savedDelivery = deliveryRepository.save(delivery);
-//
-//        assertThat(savedDelivery.getReceiverName()).isEqualTo("테스트 수령인이름");
+    @DisplayName("delivery 테이블에서 조회 성공")
+    void findTest() {
+        Delivery delivery = DeliveryDummy.getDelivery();
+
+        deliveryRepository.save(delivery);
+
+        Delivery savedDelivery =
+            deliveryRepository.findById(delivery.getDeliveryNo()).orElseThrow(
+                DeliveryNotFoundException::new);
+
+        assertThat(savedDelivery.getTrackingNo()).isEqualTo(delivery.getTrackingNo());
     }
 }
