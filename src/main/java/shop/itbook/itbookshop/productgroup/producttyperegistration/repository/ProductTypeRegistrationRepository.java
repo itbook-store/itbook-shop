@@ -12,5 +12,6 @@ import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.Produc
  */
 @Repository
 public interface ProductTypeRegistrationRepository
-    extends JpaRepository<ProductTypeRegistration, ProductTypeRegistration.Pk> {
+    extends JpaRepository<ProductTypeRegistration, ProductTypeRegistration.Pk>,
+    ProductTypeRegistrationRepositoryCustom {
 }
