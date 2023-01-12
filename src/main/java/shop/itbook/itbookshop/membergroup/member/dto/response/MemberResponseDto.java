@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.dto.response;
 
 import java.time.LocalDateTime;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
@@ -13,7 +13,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatus
  * @since 1.0
  */
 @Getter
-@Builder
+@AllArgsConstructor
 public class MemberResponseDto {
 
     private Long memberNo;
@@ -28,5 +28,6 @@ public class MemberResponseDto {
     private String phoneNumber;
     private String email;
     private LocalDateTime memberCreatedAt;
+
 
 }

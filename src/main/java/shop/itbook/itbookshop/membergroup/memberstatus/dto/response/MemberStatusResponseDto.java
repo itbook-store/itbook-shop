@@ -14,6 +14,5 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 @Builder
 public class MemberStatusResponseDto {
 
-    private Integer memberStatusNo;
     private MemberStatusEnum memberStatusEnum;
 }

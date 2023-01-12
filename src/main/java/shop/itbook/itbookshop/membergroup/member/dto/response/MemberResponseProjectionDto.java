@@ -1,38 +1,45 @@
 package shop.itbook.itbookshop.membergroup.member.dto.response;
 
 import java.time.LocalDateTime;
-import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
-import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
+import lombok.Builder;
+import lombok.Getter;
+import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
- * 멤버 응답 인터페이스 dto 입니다.
+ * 관리자 api 에서 멤버를 조회할 때 정보를 받아올 dto 입니다.
  *
  * @author 노수연
  * @since 1.0
  */
-public interface MemberResponseProjectionDto {
+@Getter
+public class MemberResponseProjectionDto {
 
-    Long getMemberNo();
+    String id;
+    String membershipGrade;
+    MemberStatusEnum memberStatusName;
+    String nickname;
+    String name;
+    Boolean isMan;
+    LocalDateTime birth;
+    String phoneNumber;
+    String email;
+    LocalDateTime memberCreatedAt;
 
-    MembershipResponseDto getMembership();
-
-    MemberStatusResponseDto getMemberStatus();
-
-    String getId();
-
-    String getNickname();
-
-    String getName();
-
-    Boolean getIsMan();
-
-    LocalDateTime getBirth();
-
-    String getPassword();
-
-    String getPhoneNumber();
-
-    String getEmail();
-
-    LocalDateTime getMemberCreatedAt();
+    @Builder
+    public MemberResponseProjectionDto(String id, String membershipGrade,
+                                       MemberStatusEnum memberStatusName,
+                                       String nickname, String name, Boolean isMan,
+                                       LocalDateTime birth, String phoneNumber, String email,
+                                       LocalDateTime memberCreatedAt) {
+        this.id = id;
+        this.membershipGrade = membershipGrade;
+        this.memberStatusName = memberStatusName;
+        this.nickname = nickname;
+        this.name = name;
+        this.isMan = isMan;
+        this.birth = birth;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.memberCreatedAt = memberCreatedAt;
+    }
 }

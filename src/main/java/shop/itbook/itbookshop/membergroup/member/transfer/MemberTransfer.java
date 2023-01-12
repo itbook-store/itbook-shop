@@ -2,7 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.transfer;
 
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
@@ -49,6 +49,18 @@ public class MemberTransfer {
             .build();
     }
 
+    /*public static Member dtoToEntity(MemberResponseDto memberRequestDto) {
+        return Member.builder().id(memberRequestDto.getId())
+            .membership(memberRequestDto.getMembership())
+            .memberStatus(memberRequestDto.getMemberStatus()).id(memberRequestDto.getId()).nickname(
+                memberRequestDto.getNickname()).name(memberRequestDto.getName())
+            .isMan(memberRequestDto.getIsMan()).birth(memberRequestDto.getBirth()).password(
+                memberRequestDto.getPassword()).phoneNumber(memberRequestDto.getPhoneNumber())
+            .email(
+                memberRequestDto.getEmail()).memberCreatedAt(memberRequestDto.getMemberCreatedAt())
+            .build();
+    }*/
+
     /**
      * 멤버 엔티티를 dto로 변경하는 메서드입니다.
      *
@@ -56,13 +68,16 @@ public class MemberTransfer {
      * @return 멤버 dto로 만들어서 반환합니다.
      * @author 노수연
      */
-    public static MemberResponseDto entityToDto(Member member) {
-        return MemberResponseDto.builder().memberNo(member.getMemberNo())
-            .membership(MembershipTransfer.entityToDto(member.getMembership())).memberStatus(
-                MemberStatusTransfer.entityToDto(member.getMemberStatus())).id(
+    public static MemberResponseProjectionDto entityToDto(Member member) {
+        return MemberResponseProjectionDto.builder()
+            .membershipGrade(
+                MembershipTransfer.entityToDto(member.getMembership()).getMembershipGrade())
+            .memberStatusName(
+                MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusEnum())
+            .id(
                 member.getId()).nickname(member.getNickname()).name(member.getName())
-            .isMan(member.getIsMan()).birth(member.getBirth()).password(
-                member.getPassword()).phoneNumber(member.getPhoneNumber()).email(member.getEmail())
+            .isMan(member.getIsMan()).birth(member.getBirth()).phoneNumber(member.getPhoneNumber())
+            .email(member.getEmail())
             .memberCreatedAt(member.getMemberCreatedAt()).build();
     }
 }
