@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,21 +45,27 @@ class CategoryAdminServiceImplTest {
     @MockBean
     CategoryRepository categoryRepository;
 
+    CategoryRequestDto categoryRequestDto;
+
+    @BeforeEach
+    void setUp() {
+        categoryRequestDto = new CategoryRequestDto();
+        ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
+        ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
+    }
+
     @DisplayName("상위카테고리가 없는경우(0인경우) repository 에 저장한 값의 번호를 정상적으로 반환한다.")
     @Test
     void addCategory_noParentCategory() {
         // given
-        CategoryRequestDto categoryResponseDto = new CategoryRequestDto();
-        ReflectionTestUtils.setField(categoryResponseDto, "parentCategoryNo", 0);
-        ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
-        ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 0);
 
         Category dummyCategory = new Category(1, null, "도서", false);
         given(categoryRepository.save(any(Category.class)))
             .willReturn(dummyCategory);
 
         // when
-        Integer actual = categoryAdminService.addCategory(categoryResponseDto);
+        Integer actual = categoryAdminService.addCategory(categoryRequestDto);
 
         // then
         assertThat(actual)
@@ -68,12 +75,8 @@ class CategoryAdminServiceImplTest {
     @DisplayName("상위카테고리가 있는 경우(1이상인경우) repository 에 저장한 값의 번호를 정상적으로 반환한다.")
     @Test
     void addCategory_hasParentCategory() {
-
         // given
-        CategoryRequestDto categoryResponseDto = new CategoryRequestDto();
-        ReflectionTestUtils.setField(categoryResponseDto, "parentCategoryNo", 1);
-        ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
-        ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
 
         Category dummyCategory = new Category(3, null, "IT서적", false);
         given(categoryRepository.save(any(Category.class)))
@@ -83,7 +86,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.of(dummyCategory));
 
         // when
-        Integer actual = categoryAdminService.addCategory(categoryResponseDto);
+        Integer actual = categoryAdminService.addCategory(categoryRequestDto);
 
         // then
         assertThat(actual)
@@ -94,7 +97,6 @@ class CategoryAdminServiceImplTest {
     @Test
     void findCategoryList() {
         // given
-
         CategoryAllFieldResponseDto category1 = new CategoryAllFieldResponseDto();
         ReflectionTestUtils.setField(category1, "categoryNo", 1);
         ReflectionTestUtils.setField(category1, "categoryName", "도서");
@@ -124,7 +126,6 @@ class CategoryAdminServiceImplTest {
     @DisplayName("자식 카테고리들을 가져오는경우 반환받은 값을 잘 가져온다.")
     @Test
     void findCategoryChildList() {
-
         CategoryWithoutParentFieldResponseDto response1 =
             new CategoryWithoutParentFieldResponseDto();
         ReflectionTestUtils.setField(response1, "categoryNo", 3);
@@ -157,7 +158,6 @@ class CategoryAdminServiceImplTest {
     @DisplayName("조회한 카테고리 엔티티를 잘 반환한다.")
     @Test
     void findCategoryEntity() {
-
         // given
         Category dummyCategory = new Category(3, null, "IT서적", false);
         given(categoryRepository.findById(anyInt()))
@@ -174,7 +174,6 @@ class CategoryAdminServiceImplTest {
     @DisplayName("카테고리가 존재하지 않을경우 CategoryNotFoundException을 발생시킨다.")
     @Test
     void findCategoryEntity_fail() {
-
         // given
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.empty());
@@ -188,7 +187,6 @@ class CategoryAdminServiceImplTest {
     @DisplayName("엔티티를 조회할때 상위카테고리까지 잘 받아온다.")
     @Test
     void findCategoryEntityFetch() {
-
         // given
         Category dummyCategoryBook = CategoryDummy.getCategoryNoHiddenBook();
         Category dummyCategory = new Category(3, dummyCategoryBook, "IT서적", false);
@@ -208,7 +206,6 @@ class CategoryAdminServiceImplTest {
     @DisplayName("엔티티를 조회할때 엔티티가 없다면 CategoryNotFoundException을 발생시킨다.")
     @Test
     void findCategoryEntityFetch_fail() {
-
         // given
         given(categoryRepository.findCategoryFetch(anyInt()))
             .willReturn(Optional.empty());
@@ -241,16 +238,12 @@ class CategoryAdminServiceImplTest {
     @DisplayName("부모카테고리가 없는경우 카테고리 수정 메서드가 잘 동작한다.")
     @Test
     void modifyCategory() {
-
-        CategoryRequestDto categoryResponseDto = new CategoryRequestDto();
-        ReflectionTestUtils.setField(categoryResponseDto, "parentCategoryNo", 0);
-        ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
-        ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 0);
 
         Category category = mock(Category.class);
         given(categoryRepository.findCategoryFetch(anyInt())).willReturn(
             Optional.of(category));
-        categoryAdminService.modifyCategory(1, categoryResponseDto);
+        categoryAdminService.modifyCategory(1, categoryRequestDto);
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
@@ -259,18 +252,14 @@ class CategoryAdminServiceImplTest {
     @DisplayName("부모카테고리가 있는경우 카테고리 수정 메서드가 잘 동작한다.")
     @Test
     void modifyCategory_hasParent() {
-
-        CategoryRequestDto categoryResponseDto = new CategoryRequestDto();
-        ReflectionTestUtils.setField(categoryResponseDto, "parentCategoryNo", 1);
-        ReflectionTestUtils.setField(categoryResponseDto, "categoryName", "도서");
-        ReflectionTestUtils.setField(categoryResponseDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
 
         Category category = mock(Category.class);
         given(categoryRepository.findCategoryFetch(anyInt())).willReturn(
             Optional.of(category));
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(category));
-        categoryAdminService.modifyCategory(1, categoryResponseDto);
+        categoryAdminService.modifyCategory(1, categoryRequestDto);
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
@@ -280,7 +269,6 @@ class CategoryAdminServiceImplTest {
     @DisplayName("삭제행위가 잘 이루어진다.")
     @Test
     void removeCategory() {
-
         categoryAdminService.removeCategory(1);
         verify(categoryRepository).deleteById(1);
     }
