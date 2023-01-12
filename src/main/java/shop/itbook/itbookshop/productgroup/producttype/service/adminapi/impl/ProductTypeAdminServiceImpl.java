@@ -27,6 +27,5 @@ public class ProductTypeAdminServiceImpl implements ProductTypeAdminService {
     @Override
     public List<ProductType> findProductTypeList() {
         return productTypeRepository.findAll();
-
     }
 }
