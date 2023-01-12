@@ -44,11 +44,17 @@ public class ProductTypeRegistration {
     @JoinColumn(name = "product_type_no", nullable = false)
     private ProductType productType;
 
+    public ProductTypeRegistration(Product product, ProductType productType) {
+        this.product = product;
+        this.productType = productType;
+        this.setPk(new Pk(product.getProductNo(), productType.getProductTypeNo()));
+    }
 
     /**
      * The type Pk. 상품과 상품타입 복합키를 주키로 하기위한 클래스 입니다.
      *
      * @author 강명관
+     * @author 이하늬
      * @since 1.0
      */
     @Getter
@@ -57,10 +63,7 @@ public class ProductTypeRegistration {
     @EqualsAndHashCode
     @Embeddable
     public static class Pk implements Serializable {
-
         private Long productNo;
-
         private Integer productTypeNo;
-
     }
 }
