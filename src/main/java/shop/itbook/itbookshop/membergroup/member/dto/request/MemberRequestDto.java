@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 @Getter
 @NoArgsConstructor
 public class MemberRequestDto {
+    private Long memberNo;
     private Membership membership;
     private MemberStatus memberStatus;
     private String id;

@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.transfer;
 
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
@@ -49,7 +50,7 @@ public class MemberTransfer {
             .build();
     }
 
-    /*public static Member dtoToEntity(MemberResponseDto memberRequestDto) {
+    public static Member dtoToEntity(MemberRequestDto memberRequestDto) {
         return Member.builder().id(memberRequestDto.getId())
             .membership(memberRequestDto.getMembership())
             .memberStatus(memberRequestDto.getMemberStatus()).id(memberRequestDto.getId()).nickname(
@@ -59,7 +60,7 @@ public class MemberTransfer {
             .email(
                 memberRequestDto.getEmail()).memberCreatedAt(memberRequestDto.getMemberCreatedAt())
             .build();
-    }*/
+    }
 
     /**
      * 멤버 엔티티를 dto로 변경하는 메서드입니다.
