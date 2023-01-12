@@ -16,7 +16,7 @@ import lombok.Setter;
 /**
  * 상품에 대한 엔티티 입니다.
  *
- * @author 노수연 * @since 1.0
+ * @author 노수연
  * @since 1.0
  */
 @Getter
@@ -88,7 +88,7 @@ public class Product {
      * @param increasePointPercent 상품 포인트 적립율입니다.
      * @param discountPercent      상품 할인율입니다.
      * @param rawPrice             상품 매입원가입니다.
-     * @author
+     * @author 이하늬
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
