@@ -51,12 +51,12 @@ class ProductAdminServiceImplTest {
         addProductRequestDto = new AddProductRequestDto("객체지향의 사실과 오해",
             "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
             "상세 설명", 1, Boolean.TRUE, Boolean.FALSE,
-            "testUrl", 20000L, 1, 10, 12000L);
+            "testUrl", 20000L, 1, 10.0, 12000L);
 
         modifyProductRequestDto = new ModifyProductRequestDto("객체지향의 사실과 오해",
             "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
             "상세 설명", 1, Boolean.TRUE, Boolean.FALSE,
-            "testUrl", 20000L, 1, 10, 12000L);
+            "testUrl", 20000L, 1, 10.0, 12000L);
     }
 
     @Test

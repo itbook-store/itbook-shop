@@ -17,6 +17,7 @@ import lombok.Setter;
  * 상품에 대한 엔티티 입니다.
  *
  * @author 노수연
+ * @author 이하늬
  * @since 1.0
  */
 @Getter
@@ -67,7 +68,7 @@ public class Product {
     private Integer increasePointPercent;
 
     @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
-    private Integer discountPercent;
+    private Double discountPercent;
 
     @Column(name = "raw_price", nullable = false)
     private Long rawPrice;
@@ -95,7 +96,7 @@ public class Product {
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
                    LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
                    String thumbnailUrl, Long dailyHits, Long fixedPrice,
-                   Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
+                   Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
