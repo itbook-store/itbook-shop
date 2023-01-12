@@ -78,7 +78,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("상품 수정 테스트")
-    void test4() {
+    void productModifyTest() {
         product_success.setName("객체지향의 거짓과 오해");
         entityManager.persist(product_success);
         Assertions.assertThatNoException();
@@ -87,7 +87,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("상품 삭제 테스트")
-    void test5() {
+    void productRemoveTest() {
         entityManager.persist(product_success);
 
         productRepository.deleteById(product_success.getProductNo());

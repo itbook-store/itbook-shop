@@ -76,6 +76,7 @@ class ProductAdminServiceImplTest {
     void modifyProductTest() {
         Product product = mock(Product.class);
         given(mockProductRepository.findById(anyLong())).willReturn(Optional.of(product));
+
         productService.modifyProduct(1L, modifyProductRequestDto);
 
         then(mockProductRepository).should().findById(anyLong());
@@ -89,6 +90,7 @@ class ProductAdminServiceImplTest {
     @DisplayName("상품 삭제 테스트")
     void removeProductTests() {
         productService.removeProduct(1L);
+
         then(mockProductRepository).should().deleteById(1L);
     }
 
