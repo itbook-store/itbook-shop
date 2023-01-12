@@ -27,7 +27,6 @@ import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 @Setter
 @NoArgsConstructor
 @Table(name = "book")
-@Builder
 @Entity
 public class Book {
 
@@ -49,10 +48,7 @@ public class Book {
     private LocalDateTime bookCreatedAt;
 
     @Column(name = "is_ebook", nullable = false)
-    private boolean isEbook;
-
-    @Column(name = "table_of_contents", columnDefinition = "text")
-    private String tableOfContents;
+    private Boolean isEbook;
 
     @Column(name = "ebook_url", columnDefinition = "text")
     private String ebookUrl;
@@ -75,7 +71,6 @@ public class Book {
         this.pageCount = pageCount;
         this.bookCreatedAt = bookCreatedAt;
         this.isEbook = isEbook;
-        this.tableOfContents = tableOfContents;
         this.ebookUrl = ebookUrl;
         this.publisherName = publisherName;
         this.productType = productType;

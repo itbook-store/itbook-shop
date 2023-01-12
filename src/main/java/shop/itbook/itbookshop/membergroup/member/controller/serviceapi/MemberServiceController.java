@@ -14,4 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/service/members")
 @RequiredArgsConstructor
 public class MemberServiceController {
+
+    /*@PostMapping()
+    public ResponseEntity<CommonResponseBody>*/
 }

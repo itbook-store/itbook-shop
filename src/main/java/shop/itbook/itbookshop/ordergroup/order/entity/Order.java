@@ -67,5 +67,8 @@ public class Order {
         this.member = member;
         this.memberDestination = memberDestination;
         this.isSubscribed = isSubscribed;
+
+        this.orderCreatedAt = LocalDateTime.now();
+        this.countSpecifiedDeliveryDate = LocalDateTime.now();
     }
 }

@@ -16,8 +16,7 @@ import lombok.Setter;
 /**
  * 상품에 대한 엔티티 입니다.
  *
- * @author 노수연
- * @author 이하늬
+ * @author 노수연 * @since 1.0
  * @since 1.0
  */
 @Getter
@@ -73,6 +72,24 @@ public class Product {
     @Column(name = "raw_price", nullable = false)
     private Long rawPrice;
 
+    /**
+     * 빌터 패턴을 적용한 생성자입니다.
+     *
+     * @param name                 상품명입니다.
+     * @param simpleDescription    상품 간단 설명입니다.
+     * @param detailsDescription   상품 상세 설명입니다.
+     * @param stock                상품 재고입니다.
+     * @param productCreatedAt     상품 등록 일자입니다.
+     * @param isSelled             상품 판매 여부입니다.
+     * @param isDeleted            상품 삭제 여부입니다.
+     * @param thumbnailUrl         상품 썸네일 url입니다.
+     * @param dailyHits            상품 조회수입니다.
+     * @param fixedPrice           상품 정가입니다.
+     * @param increasePointPercent 상품 포인트 적립율입니다.
+     * @param discountPercent      상품 할인율입니다.
+     * @param rawPrice             상품 매입원가입니다.
+     * @author
+     */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,

@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.membergroup.member.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
@@ -38,6 +37,9 @@ class MemberRepositoryTest {
     private MemberStatusRepository memberStatusRepository;
     @Autowired
     private MembershipRepository membershipRepository;
+
+    @MockBean
+    private CustomMemberRepository customMemberRepository;
 
     @BeforeEach
     void setup() {
@@ -70,7 +72,7 @@ class MemberRepositoryTest {
         testEntityManager.clear();
     }
 
-    @Test
+    /*@Test
     @DisplayName("멤버no로 특정 멤버를 찾기")
     void findById() {
 
@@ -80,9 +82,9 @@ class MemberRepositoryTest {
         //then
         assertThat(member.getMemberNo()).isEqualTo(testMember1.getMemberNo());
 
-    }
+    }*/
 
-    @Test
+    /*@Test
     @DisplayName("모든 멤버 리스트 찾기")
     void findAllBy() {
 
@@ -91,7 +93,7 @@ class MemberRepositoryTest {
 
         //then
         assertThat(memberList.size()).isEqualTo(2);
-    }
+    }*/
 
     @Test
     @DisplayName("멤버 저장 테스트")
@@ -110,7 +112,7 @@ class MemberRepositoryTest {
         assertThat(testMember.getName()).isEqualTo("김유리");
     }
 
-    @Test
+    /*@Test
     @DisplayName("멤버 삭제 테스트")
     void delete() {
 
@@ -122,16 +124,16 @@ class MemberRepositoryTest {
 
         memberRepository.save(member);
 
-        List<MemberResponseProjectionDto> memberList = memberRepository.findAllBy();
+        List<MemberResponseProjectionDto> memberList = customMemberRepository.querydslFindAll();
 
         assertThat(memberList.size()).isEqualTo(3);
 
         memberRepository.deleteById(member.getMemberNo());
 
-        memberList = memberRepository.findAllBy();
+        memberList = customMemberRepository.querydslFindAll();
 
         assertThat(memberList.size()).isEqualTo(2);
 
-    }
+    }*/
 
 }

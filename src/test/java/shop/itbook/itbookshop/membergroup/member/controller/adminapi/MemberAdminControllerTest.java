@@ -1,11 +1,11 @@
 package shop.itbook.itbookshop.membergroup.member.controller.adminapi;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,21 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberAdminController.class)
 class MemberAdminControllerTest {
@@ -49,6 +41,7 @@ class MemberAdminControllerTest {
     Membership membership;
     MemberStatus memberStatus;
     Member member1;
+    Member member2;
 
     @BeforeEach
     void setup() {
@@ -63,6 +56,12 @@ class MemberAdminControllerTest {
                 .nickname("유저1").name("홍길동").isMan(true).birth(
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
                 .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
+
+        member2 =
+            Member.builder().membership(membership).memberStatus(memberStatus).id("user2")
+                .nickname("유저2").name("김철수").isMan(true).birth(
+                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("2345").phoneNumber("010-1000-0000")
+                .email("user2@test.com").memberCreatedAt(LocalDateTime.now()).build();
     }
 
     @Test
@@ -78,14 +77,21 @@ class MemberAdminControllerTest {
 
     @Test
     @DisplayName("전체 멤버 조회 테스트")
-    void memberList() {
+    void memberList() throws Exception {
 
+        given(memberAdminService.findMemberList()).willReturn(List.of(
+            MemberTransfer.entityToDto(member1),
+            MemberTransfer.entityToDto(member2)
+        ));
+
+        mvc.perform(get("/api/admin/members").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 
     @Test
     @DisplayName("멤버 저장 테스트")
     void memberSave() {
-
     }
 
     @Test
