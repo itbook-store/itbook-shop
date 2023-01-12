@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.category.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -43,9 +42,11 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
                 qChildCategory.categoryNo,
                 qChildCategory.categoryName,
                 qChildCategory.isHidden,
+                qChildCategory.level,
                 qChildCategory.parentCategory.categoryNo.as("parentCategoryNo"),
                 qChildCategory.parentCategory.categoryName.as("parentCategoryName"),
-                qChildCategory.parentCategory.isHidden.as("parentCategoryIsHidden")))
+                qChildCategory.parentCategory.isHidden.as("parentCategoryIsHidden"),
+                qChildCategory.parentCategory.level.as("parentCategoryLevel")))
             .where(builder)
             .fetch();
     }
@@ -66,7 +67,6 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     public List<CategoryWithoutParentFieldResponseDto> findCategoryChildListThroughParentCategoryNo(
         Integer parentCategoryNo, Boolean isHidden) {
 
-
         QCategory qCategory = QCategory.category;
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -78,7 +78,8 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
             .select(Projections.fields(CategoryWithoutParentFieldResponseDto.class,
                 qCategory.categoryNo,
                 qCategory.categoryName,
-                qCategory.isHidden))
+                qCategory.isHidden,
+                qCategory.level))
             .fetch();
     }
 
@@ -90,11 +91,15 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QCategory qCategory = QCategory.category;
         QCategory qParentCategory = new QCategory("parentCategory");
 
-        return Optional.of(from(qCategory)
+        Category value = from(qCategory)
             .leftJoin(qCategory.parentCategory, qParentCategory)
             .fetchJoin()
+//            .leftJoin(qCategory, qCategory.parentCategory)
+//            .fetchJoin()
             .where(qCategory.categoryNo.eq(categoryNo))
             .select(qCategory)
-            .fetchOne());
+            .fetchOne();
+
+        return Optional.of(value);
     }
 }
