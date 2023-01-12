@@ -49,11 +49,11 @@ class ProductAdminControllerTest {
     void setUp() {
         addProductRequestDto_success = new AddProductRequestDto("객체지향의 사실과 오해",
             "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
-            "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, Boolean.TRUE, Boolean.FALSE,
+            "상세 설명", 1, Boolean.TRUE, Boolean.FALSE,
             "testUrl", 20000L, 1, 10, 12000L);
 
         addProductRequestDto_failure = new AddProductRequestDto("객체지향의 사실과 오해",
-            null, "다 모르겠고 그냥 제발 됐으면 좋겠네요..", 1, Boolean.TRUE, Boolean.FALSE,
+            null, "상세 설명", 1, Boolean.TRUE, Boolean.FALSE,
             "testUrl", 20000L, 1, 10, 12000L);
     }
 
