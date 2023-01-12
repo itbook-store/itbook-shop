@@ -19,7 +19,6 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * 배송에 관한 엔티티입니다.
  *
  * @author 노수연
- * @author 정재원
  * @since 1.0
  */
 @Getter
@@ -38,41 +37,18 @@ public class Delivery {
     @JoinColumn(name = "order_no", nullable = false)
     private Order order;
 
-    @Column(name = "receiver_name", columnDefinition = "varchar(20)", nullable = false)
-    private String receiverName;
-
-    @Column(name = "receiver_address", columnDefinition = "varchar(255)", nullable = false)
-    private String receiverAddress;
-
-    @Column(name = "receiver_detail_address", columnDefinition = "varchar(255)", nullable = false)
-    private String receiverDetailAddress;
-
-    @Column(name = "receiver_phone_number", columnDefinition = "varchar(14)", nullable = false)
-    private String receiverPhoneNumber;
-
     @Column(name = "tracking_no", columnDefinition = "varchar(255)",
         unique = true, nullable = false)
     private String trackingNo;
 
     /**
-     * 배송 엔티티의 생성자 입니다.
+     * 배송 번호를 제외하고 배송 엔티티의 객체를 생성하는 생성자입니다.
      *
-     * @param order                 the order
-     * @param receiverName          the receiver name
-     * @param receiverAddress       the receiver address
-     * @param receiverDetailAddress the receiver detail address
-     * @param receiverPhoneNumber   the receiver phone number
-     * @param trackingNo            the tracking no
-     * @author 노수연
+     * @param order      배송할 주문의 정보
+     * @param trackingNo 운송장 번호
      */
-    @Builder
-    public Delivery(Order order, String receiverName, String receiverAddress,
-                    String receiverDetailAddress, String receiverPhoneNumber, String trackingNo) {
+    public Delivery(Order order, String trackingNo) {
         this.order = order;
-        this.receiverName = receiverName;
-        this.receiverAddress = receiverAddress;
-        this.receiverDetailAddress = receiverDetailAddress;
-        this.receiverPhoneNumber = receiverPhoneNumber;
         this.trackingNo = trackingNo;
     }
 }
