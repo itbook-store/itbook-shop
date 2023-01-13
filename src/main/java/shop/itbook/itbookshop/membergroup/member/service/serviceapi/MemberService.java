@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.service.serviceapi;
 
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 
@@ -10,11 +10,11 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProj
  * @author 노수연
  * @since 1.0
  */
-public interface MemberServiceService {
+public interface MemberService {
 
     MemberResponseProjectionDto findMember(String id);
 
-    Long addMember(MemberSaveRequestDto requestDto);
+    Long addMember(MemberRequestDto requestDto);
 
     void modifyMember(String id, MemberUpdateRequestDto requestDto);
 }

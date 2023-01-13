@@ -1,8 +1,8 @@
 package shop.itbook.itbookshop.membergroup.memberstatus.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * 멤버 상태 정보를 반환할 Dto 클래스입니다.
@@ -12,7 +12,9 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  */
 @Getter
 @Builder
+@AllArgsConstructor
 public class MemberStatusResponseDto {
 
-    private MemberStatusEnum memberStatusEnum;
+    private Integer memberStatusNo;
+    private String memberStatusName;
 }

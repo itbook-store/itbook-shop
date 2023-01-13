@@ -28,7 +28,6 @@ import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTran
 public class MemberAdminServiceImpl implements MemberAdminService {
 
     private final MemberRepository memberRepository;
-    //private final CustomMemberRepository customMemberRepository;
     private final MemberStatusAdminService memberStatusAdminService;
 
     @Override

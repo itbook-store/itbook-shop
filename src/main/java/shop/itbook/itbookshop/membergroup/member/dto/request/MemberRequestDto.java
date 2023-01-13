@@ -3,8 +3,6 @@ package shop.itbook.itbookshop.membergroup.member.dto.request;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
-import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
 /**
  * @author 노수연
@@ -14,8 +12,8 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 @Getter
 @NoArgsConstructor
 public class MemberRequestDto {
-    private Membership membership;
-    private MemberStatus memberStatus;
+    private Integer membershipNo;
+    private Integer memberStatusNo;
     private String id;
     private String nickname;
     private String name;
@@ -24,5 +22,4 @@ public class MemberRequestDto {
     private String password;
     private String phoneNumber;
     private String email;
-    private LocalDateTime memberCreatedAt;
 }

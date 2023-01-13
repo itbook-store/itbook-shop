@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
-import org.springframework.stereotype.Repository;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
@@ -19,7 +18,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.QMemberStatus;
  * @author 노수연
  * @since 1.0
  */
-@Repository
+
 public class MemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -37,14 +36,15 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
 
         return Optional.of(jpaQueryFactory.select(
                 Projections.constructor(MemberResponseProjectionDto.class, qmember.id,
-                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum, qmember.nickname,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
                     qmember.memberCreatedAt))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmember.id.eq(id))
-            .fetch().get(0));
+            .fetchOne());
     }
 
     /*@Override
@@ -74,7 +74,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     public List<MemberResponseProjectionDto> querydslFindAll() {
         return jpaQueryFactory.select(
                 Projections.constructor(MemberResponseProjectionDto.class, qmember.id,
-                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum, qmember.nickname,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
                     qmember.memberCreatedAt))
             .from(qmember)
