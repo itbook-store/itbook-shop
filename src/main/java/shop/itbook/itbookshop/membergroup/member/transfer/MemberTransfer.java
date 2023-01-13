@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.transfer;
 
+import java.time.LocalDateTime;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
@@ -49,17 +51,15 @@ public class MemberTransfer {
             .build();
     }
 
-    /*public static Member dtoToEntity(MemberResponseDto memberRequestDto) {
-        return Member.builder().id(memberRequestDto.getId())
-            .membership(memberRequestDto.getMembership())
-            .memberStatus(memberRequestDto.getMemberStatus()).id(memberRequestDto.getId()).nickname(
+    public static Member dtoToEntity(MemberRequestDto memberRequestDto) {
+        return Member.builder().id(memberRequestDto.getId()).id(memberRequestDto.getId()).nickname(
                 memberRequestDto.getNickname()).name(memberRequestDto.getName())
             .isMan(memberRequestDto.getIsMan()).birth(memberRequestDto.getBirth()).password(
                 memberRequestDto.getPassword()).phoneNumber(memberRequestDto.getPhoneNumber())
             .email(
-                memberRequestDto.getEmail()).memberCreatedAt(memberRequestDto.getMemberCreatedAt())
+                memberRequestDto.getEmail()).memberCreatedAt(LocalDateTime.now())
             .build();
-    }*/
+    }
 
     /**
      * 멤버 엔티티를 dto로 변경하는 메서드입니다.
@@ -73,7 +73,7 @@ public class MemberTransfer {
             .membershipGrade(
                 MembershipTransfer.entityToDto(member.getMembership()).getMembershipGrade())
             .memberStatusName(
-                MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusEnum())
+                MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusName())
             .id(
                 member.getId()).nickname(member.getNickname()).name(member.getName())
             .isMan(member.getIsMan()).birth(member.getBirth()).phoneNumber(member.getPhoneNumber())

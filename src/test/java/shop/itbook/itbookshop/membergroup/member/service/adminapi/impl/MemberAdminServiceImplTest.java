@@ -60,7 +60,8 @@ class MemberAdminServiceImplTest {
         //given
         MemberResponseProjectionDto memberDto =
             new MemberResponseProjectionDto("user1", "white",
-                MemberStatusEnum.NORMAL, "유저1", "홍길동", true, LocalDateTime.of(2000, 1, 1, 0, 0, 0),
+                MemberStatusEnum.NORMAL.getMemberStatus(), "유저1", "홍길동", true,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0),
                 "010-0000-0000", "user1@test.com", LocalDateTime.now());
 
         Member member =

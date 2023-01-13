@@ -54,10 +54,12 @@ class MemberRepositoryTest {
 
         memberStatusRepository.save(memberStatus);
 
-        testMember1 = Member.builder().membership(membership).memberStatus(memberStatus).id("user1")
-            .nickname("유저1").name("홍길동").isMan(true).birth(
-                LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
-            .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
+        testMember1 =
+            Member.builder().membership(membership).memberStatus(memberStatus).id("user134")
+                .nickname("유저134").name("홍길동").isMan(true).birth(
+                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234")
+                .phoneNumber("010-03440-0000")
+                .email("user1342@test1.com").memberCreatedAt(LocalDateTime.now()).build();
 
         memberRepository.save(testMember1);
 
