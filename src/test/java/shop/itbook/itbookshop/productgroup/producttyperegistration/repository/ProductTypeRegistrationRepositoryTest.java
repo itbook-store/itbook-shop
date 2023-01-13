@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.annotation.Rollback;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
@@ -34,16 +35,9 @@ class ProductTypeRegistrationRepositoryTest {
     ProductRepository productRepository;
     @Autowired
     ProductTypeRepository productTypeRepository;
-    @Autowired
-    TestEntityManager entityManager;
-
-
     Product product;
     ProductType productType1;
     ProductType productType2;
-    Product actualProduct;
-    ProductType actualProductType1;
-    ProductType actualProductType2;
 
     @BeforeEach
     void setUp() {
@@ -55,21 +49,18 @@ class ProductTypeRegistrationRepositoryTest {
             .productCreatedAt(LocalDateTime.now()).build();
         productType1 = new ProductType(null, ProductTypeEnum.BESTSELLER);
         productType2 = new ProductType(null, ProductTypeEnum.NEW_ISSUE);
-        productRepository.save(product);
-        productTypeRepository.save(productType1);
-        productTypeRepository.save(productType2);
-        actualProduct = productRepository.findById(product.getProductNo()).get();
-        actualProductType1 =
-            productTypeRepository.findById(productType1.getProductTypeNo()).get();
-        actualProductType2 =
-            productTypeRepository.findById(productType2.getProductTypeNo()).get();
-
     }
 
     @Test
     @DisplayName("상품유형 등록 성공")
     void addProductTypeRegistrationTest() {
+        productRepository.save(product);
+        productTypeRepository.save(productType1);
+        productTypeRepository.save(productType2);
 
+        Product actualProduct = productRepository.findById(product.getProductNo()).get();
+        ProductType actualProductType1 =
+            productTypeRepository.findById(productType1.getProductTypeNo()).get();
         ProductTypeRegistration productTypeRegistration =
             new ProductTypeRegistration(actualProduct, actualProductType1);
         productTypeRegistrationRepository.save(productTypeRegistration);
@@ -88,6 +79,15 @@ class ProductTypeRegistrationRepositoryTest {
     @Test
     @DisplayName("상품 번호로 상품유형 리스트 조회 성공")
     void findProductTypeListByProductNoTest() {
+        productRepository.save(product);
+        productTypeRepository.save(productType1);
+        productTypeRepository.save(productType2);
+
+        Product actualProduct = productRepository.findById(product.getProductNo()).get();
+        ProductType actualProductType1 =
+            productTypeRepository.findById(productType1.getProductTypeNo()).get();
+        ProductType actualProductType2 =
+            productTypeRepository.findById(productType2.getProductTypeNo()).get();
 
         ProductTypeRegistration productTypeRegistration1 =
             new ProductTypeRegistration(actualProduct, actualProductType1);
@@ -102,13 +102,21 @@ class ProductTypeRegistrationRepositoryTest {
                 actualProduct.getProductNo());
 
         Assertions.assertThat(productTypeListByProductNo.size()).isEqualTo(2);
-        Assertions.assertThat(productTypeListByProductNo.get(0).getProductTypeName())
-            .isEqualTo(actualProductType1.getProductTypeEnum());
+        Assertions.assertThat(
+                productTypeListByProductNo.get(0).getProductTypeName().getProductType())
+            .isEqualTo(actualProductType1.getProductTypeEnum().getProductType());
     }
 
     @Test
     @DisplayName("상품 유형 번호로 상품 조회 성공")
     void findProductListByProductTypeNoTest() {
+        productRepository.save(product);
+        productTypeRepository.save(productType1);
+        productTypeRepository.save(productType2);
+
+        Product actualProduct = productRepository.findById(product.getProductNo()).get();
+        ProductType actualProductType1 =
+            productTypeRepository.findById(productType1.getProductTypeNo()).get();
 
         ProductTypeRegistration productTypeRegistration =
             new ProductTypeRegistration(actualProduct, actualProductType1);
