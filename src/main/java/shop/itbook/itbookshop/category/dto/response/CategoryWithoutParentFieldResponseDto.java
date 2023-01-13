@@ -16,4 +16,6 @@ public class CategoryWithoutParentFieldResponseDto {
     private String categoryName;
 
     private Boolean isHidden;
+
+    private Integer level;
 }

@@ -53,7 +53,6 @@ public class MemberDestination {
     @Column(name = "recipient_address_details", columnDefinition = "varchar(255)", nullable = false)
     private String recipientAddressDetails;
 
-
     /**
      * 회원 배송지 테이블에 대한 엔티티 생성자 입니다.
      *

@@ -26,8 +26,8 @@ import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
 public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     private static final int NO_PARENT_NUMBER = 0;
+    private static final int BASE_LEVEL = 0;
     private final CategoryRepository categoryRepository;
-
 
     /**
      * {@inheritDoc}
@@ -43,6 +43,8 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         if (isNoParentCategory) {
             category = categoryRepository.save(category);
             category.setParentCategory(category);
+
+            category.setLevel(BASE_LEVEL);
             return category.getCategoryNo();
         }
 
@@ -53,6 +55,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     /**
      * 상위카테고리가 있는경우 해당 번호로 카테고리를 찾아서 넣어주는 메소드입니다.
+     * 또한 상위카테고리가 있을경우 상위카테고리의 레벨에서 하나를 더 추가해서 삽입해 줍니다.
      *
      * @param parentCategoryNo 상위카테고리 번호입니다.
      * @param category         현제 저장이 진행되고있는 카테고리 객체입니다.
@@ -62,6 +65,9 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
         Category parentCategory = this.findCategoryEntity(parentCategoryNo);
         category.setParentCategory(parentCategory);
+
+        Integer parentCategoryLevel = parentCategory.getLevel();
+        category.setLevel(++parentCategoryLevel);
     }
 
     /**

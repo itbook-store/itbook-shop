@@ -61,7 +61,7 @@ public class CategoryAdminController {
     /**
      * 카테고리의 모든 리스트를 조회하는 메서드입니다.
      * hidden true인 경우에는 히든상품만, false인 경우에는 히든이 아닌 상품의 모든 리스트를 조회합니다.
-     * null인경우 모든 리스트
+     * null 인 경우 모든 리스트
      *
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      * @author 최겸준

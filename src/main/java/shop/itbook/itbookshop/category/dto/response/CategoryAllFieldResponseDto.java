@@ -24,10 +24,14 @@ public class CategoryAllFieldResponseDto {
 
     private Boolean isHidden;
 
+    private Integer level;
+
     private Integer parentCategoryNo;
 
     private String parentCategoryName;
 
     private Boolean parentCategoryIsHidden;
+
+    private Integer parentCategoryLevel;
 
 }
