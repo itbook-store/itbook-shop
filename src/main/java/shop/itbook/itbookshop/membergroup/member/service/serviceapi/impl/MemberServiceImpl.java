@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
@@ -11,6 +10,9 @@ import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundExcepti
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
+import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
+import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
+import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
 
 /**
  * @author 노수연
@@ -22,20 +24,25 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final MemberStatusAdminService memberStatusAdminService;
+
     @Override
     public MemberResponseProjectionDto findMember(String id) {
-        Optional<MemberResponseProjectionDto> member = memberRepository.querydslFindById(id);
-
-        if (member.isEmpty()) {
-            throw new MemberNotFoundException();
-        }
-
-        return member.get();
+        return memberRepository.querydslFindById(id).orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
     public Long addMember(MemberRequestDto requestDto) {
+
         Member member = MemberTransfer.dtoToEntity(requestDto);
+
+        MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
+            memberStatusAdminService.findMemberStatusWithMemberStatusNo(
+                requestDto.getMemberStatusNo()));
+        //TODO 2. membership 가져오기
+
+        member.setMemberStatus(memberStatus);
+
         return memberRepository.save(member).getMemberNo();
     }
 

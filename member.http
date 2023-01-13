@@ -1,0 +1,34 @@
+GET /test
+Host: localhost:8082
+Accept: application/json
+
+###
+
+GET /api/admin/members/testId
+Host: localhost:8082
+Accept: application/json
+
+###
+
+GET /api/admin/members
+Host: localhost:8082
+Accept: application/json
+
+###
+
+POST /api/service/members
+Host: localhost:8082
+Content-Type: application/json
+
+{
+  "membershipNo": 1,
+  "memberStatusNo": 1,
+  "id" : "user4",
+  "nickname" : "유저4",
+  "name" : "유저",
+  "isMan": 1,
+  "birth": "",
+  "password": "1234",
+  "phoneNumber": "010-0000-0112",
+  "email": "user392@test1.com"
+}

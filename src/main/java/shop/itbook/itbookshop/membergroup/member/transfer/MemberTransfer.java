@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.transfer;
 
+import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
@@ -51,14 +52,12 @@ public class MemberTransfer {
     }
 
     public static Member dtoToEntity(MemberRequestDto memberRequestDto) {
-        return Member.builder().id(memberRequestDto.getId())
-            .membership(memberRequestDto.getMembership())
-            .memberStatus(memberRequestDto.getMemberStatus()).id(memberRequestDto.getId()).nickname(
+        return Member.builder().id(memberRequestDto.getId()).id(memberRequestDto.getId()).nickname(
                 memberRequestDto.getNickname()).name(memberRequestDto.getName())
             .isMan(memberRequestDto.getIsMan()).birth(memberRequestDto.getBirth()).password(
                 memberRequestDto.getPassword()).phoneNumber(memberRequestDto.getPhoneNumber())
             .email(
-                memberRequestDto.getEmail()).memberCreatedAt(memberRequestDto.getMemberCreatedAt())
+                memberRequestDto.getEmail()).memberCreatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -74,7 +73,7 @@ public class MemberTransfer {
             .membershipGrade(
                 MembershipTransfer.entityToDto(member.getMembership()).getMembershipGrade())
             .memberStatusName(
-                MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusEnum())
+                MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusName())
             .id(
                 member.getId()).nickname(member.getNickname()).name(member.getName())
             .isMan(member.getIsMan()).birth(member.getBirth()).phoneNumber(member.getPhoneNumber())

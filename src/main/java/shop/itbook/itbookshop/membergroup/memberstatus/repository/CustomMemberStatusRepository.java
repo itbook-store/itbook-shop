@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.memberstatus.repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 
 /**
@@ -10,9 +11,12 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatus
  * @author 노수연
  * @since 1.0
  */
-public interface MemberStatusRepositoryCustom {
+@NoRepositoryBean
+public interface CustomMemberStatusRepository {
 
     Optional<MemberStatusResponseDto> querydslFindByName(String memberStatusName);
+
+    Optional<MemberStatusResponseDto> querydslFindByNo(int memberStatusNo);
 
     List<MemberStatusResponseDto> querydslFindAll();
 }

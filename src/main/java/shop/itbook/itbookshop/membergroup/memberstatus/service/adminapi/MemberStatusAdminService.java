@@ -21,6 +21,8 @@ public interface MemberStatusAdminService {
      */
     MemberStatusResponseDto findMemberStatus(MemberStatusEnum memberStatusEnum);
 
+    MemberStatusResponseDto findMemberStatusWithMemberStatusNo(int memberStatusNo);
+
     /**
      * 모든 멤버 상태 리스트를 조회할 수 있는 로직을 담당하는 메서드입니다.
      *

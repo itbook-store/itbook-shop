@@ -5,18 +5,14 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateAdminRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
@@ -81,7 +77,7 @@ public class MemberAdminController {
      * @return 멤버 번호 dto를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
-    @PostMapping()
+    /*@PostMapping()
     public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> memberAdd(
         @Valid @RequestBody MemberSaveRequestDto requestDto) {
 
@@ -94,7 +90,7 @@ public class MemberAdminController {
             memberNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
-    }
+    }*/
 
     /**
      * 멤버 정보를 수정하는 메서드입니다.
@@ -129,7 +125,7 @@ public class MemberAdminController {
      * @return null을 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
-    @DeleteMapping("/{memberNo}")
+    /*@DeleteMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<Void>> memberRemove(
         @PathVariable("memberNo") Long memberNo) {
 
@@ -141,6 +137,6 @@ public class MemberAdminController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
 
-    }
+    }*/
 
 }
