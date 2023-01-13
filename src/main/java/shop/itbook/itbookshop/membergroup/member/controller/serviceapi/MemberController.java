@@ -30,9 +30,10 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping()
+    @PostMapping("/sign-up")
     public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> memberAdd(@Valid @RequestBody
                                                                              MemberRequestDto requestDto) {
+
         MemberNoResponseDto memberNoResponseDto =
             new MemberNoResponseDto(memberService.addMember(requestDto));
 
@@ -45,14 +46,14 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{memberId}")
     public ResponseEntity<CommonResponseBody<MemberResponseProjectionDto>> memberDetails(
-        @PathVariable("id") String id) {
+        @PathVariable("memberId") String memberId) {
         CommonResponseBody<MemberResponseProjectionDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
                     MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
-                memberService.findMember(id)
+                memberService.findMember(memberId)
             );
 
         return ResponseEntity.ok().body(commonResponseBody);

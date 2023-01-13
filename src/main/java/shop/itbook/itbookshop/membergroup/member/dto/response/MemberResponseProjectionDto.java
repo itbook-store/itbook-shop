@@ -13,7 +13,8 @@ import lombok.Getter;
 @Getter
 public class MemberResponseProjectionDto {
 
-    String id;
+    Long memberNo;
+    String memberId;
     String membershipGrade;
     String memberStatusName;
     String nickname;
@@ -25,12 +26,12 @@ public class MemberResponseProjectionDto {
     LocalDateTime memberCreatedAt;
 
     @Builder
-    public MemberResponseProjectionDto(String id, String membershipGrade,
-                                       String memberStatusName,
-                                       String nickname, String name, Boolean isMan,
-                                       LocalDateTime birth, String phoneNumber, String email,
-                                       LocalDateTime memberCreatedAt) {
-        this.id = id;
+    public MemberResponseProjectionDto(Long memberNo, String memberId, String membershipGrade,
+                                       String memberStatusName, String nickname, String name,
+                                       Boolean isMan, LocalDateTime birth, String phoneNumber,
+                                       String email, LocalDateTime memberCreatedAt) {
+        this.memberNo = memberNo;
+        this.memberId = memberId;
         this.membershipGrade = membershipGrade;
         this.memberStatusName = memberStatusName;
         this.nickname = nickname;

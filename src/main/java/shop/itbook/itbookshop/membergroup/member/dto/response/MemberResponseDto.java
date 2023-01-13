@@ -19,7 +19,7 @@ public class MemberResponseDto {
     private Long memberNo;
     private MembershipResponseDto membership;
     private MemberStatusResponseDto memberStatus;
-    private String id;
+    private String memberId;
     private String nickname;
     private String name;
     private Boolean isMan;
