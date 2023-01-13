@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
- * 상품 상태 Repository 클래스입니다.
+ * 상품 유형 Repository 클래스입니다.
  *
  * @author 이하늬
  * @since 1.0
