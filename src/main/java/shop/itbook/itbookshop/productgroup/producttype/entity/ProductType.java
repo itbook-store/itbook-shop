@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.producttype.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.productgroup.producttype.converter.impl.ProductTypeEnumConverter;
 import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
 
 /**
@@ -32,7 +35,7 @@ public class ProductType {
     @Column(name = "product_type_no", nullable = false)
     private Integer productTypeNo;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = ProductTypeEnumConverter.class)
     @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private ProductTypeEnum productTypeEnum;
 }
