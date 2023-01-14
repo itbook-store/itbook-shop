@@ -20,7 +20,7 @@ public class MemberSaveRequestDto {
 
     @NotBlank(message = "아이디는 null값 및 공백을 허용하지 않습니다.")
     @Length(min = 2, max = 15, message = "아이디는 최소 2자부터 시작하며 최대 15자까지 작성해야합니다.")
-    private String id;
+    private String memberId;
 
     @NotBlank(message = "닉네임은 null값 및 공백을 허용하지 않습니다.")
     @Length(min = 2, max = 20, message = "닉네임은 최소 2자, 최대 20자까지 허용합니다.")

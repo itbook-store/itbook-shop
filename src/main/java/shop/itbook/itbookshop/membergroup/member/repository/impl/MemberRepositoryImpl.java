@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
@@ -32,10 +33,11 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     QMemberStatus qmemberStatus = QMemberStatus.memberStatus;
 
     @Override
-    public Optional<MemberResponseProjectionDto> querydslFindById(String id) {
+    public Optional<MemberResponseProjectionDto> querydslFindByMemberId(String memberId) {
 
         return Optional.of(jpaQueryFactory.select(
-                Projections.constructor(MemberResponseProjectionDto.class, qmember.id,
+                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberNo,
+                    qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
@@ -43,7 +45,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.id.eq(id))
+            .where(qmember.memberId.eq(memberId))
             .fetchOne());
     }
 
@@ -61,19 +63,20 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }*/
 
     @Override
-    public Optional<Member> querydslFindByIdToMember(String id) {
+    public Optional<Member> querydslFindByMemberIdToMember(String memberId) {
         return Optional.of(jpaQueryFactory.select(Projections.fields(Member.class,
-            qmember.memberNo, qmembership, qmemberStatus, qmember.id, qmember.nickname,
+            qmember.memberNo, qmembership, qmemberStatus, qmember.memberId, qmember.nickname,
             qmember.name, qmember.isMan,
             qmember.birth, qmember.password, qmember.phoneNumber, qmember.email,
             qmember.memberCreatedAt
-        )).from(qmember).where(qmember.id.eq(id)).fetch().get(0));
+        )).from(qmember).where(qmember.memberId.eq(memberId)).fetch().get(0));
     }
 
     @Override
     public List<MemberResponseProjectionDto> querydslFindAll() {
         return jpaQueryFactory.select(
-                Projections.constructor(MemberResponseProjectionDto.class, qmember.id,
+                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberNo,
+                    qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
@@ -82,5 +85,20 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .fetch();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MemberAuthResponseDto findAuthInfoByMemberId(String memberId) {
+        return jpaQueryFactory.from(qmember)
+            .where(qmember.memberId.eq(memberId))
+            .select(Projections.constructor(
+                MemberAuthResponseDto.class,
+                qmember.memberNo,
+                qmember.memberId,
+                qmember.password
+            )).fetchOne();
     }
 }

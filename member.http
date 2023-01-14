@@ -16,19 +16,19 @@ Accept: application/json
 
 ###
 
-POST /api/service/members
+POST /api/service/members/sign-up
 Host: localhost:8082
 Content-Type: application/json
 
 {
-  "membershipNo": 1,
-  "memberStatusNo": 1,
-  "id" : "user4",
-  "nickname" : "유저4",
-  "name" : "유저",
+  "membershipNo": 428,
+  "memberStatusNo": 392,
+  "memberId" : "user7",
+  "nickname" : "유저7",
+  "name" : "유저7",
   "isMan": 1,
-  "birth": "",
+  "birth": "2019-12-14T07:51:01",
   "password": "1234",
-  "phoneNumber": "010-0000-0112",
-  "email": "user392@test1.com"
+  "phoneNumber": "010-6703-0112",
+  "email": "use339d5@test1.com"
 }

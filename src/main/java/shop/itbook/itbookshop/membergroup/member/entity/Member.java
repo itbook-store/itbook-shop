@@ -49,7 +49,7 @@ public class Member {
     private MemberStatus memberStatus;
 
     @Column(name = "member_id", nullable = false, columnDefinition = "varchar(15)", unique = true)
-    private String id;
+    private String memberId;
 
     @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
     private String nickname;
@@ -80,7 +80,7 @@ public class Member {
      *
      * @param membership   멤버십 정보
      * @param memberStatus 멤버 상태 정보 (정상회원, 차단회원, 탈퇴회원)
-     * @param id           아이디
+     * @param memberId     아이디
      * @param nickname     닉네임
      * @param name         이름
      * @param isMan        성별 여부
@@ -93,13 +93,14 @@ public class Member {
      */
     @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder
-    public Member(Membership membership, MemberStatus memberStatus, String id, String nickname,
+    public Member(Membership membership, MemberStatus memberStatus, String memberId,
+                  String nickname,
                   String name, Boolean isMan, LocalDateTime birth, String password,
                   String phoneNumber,
                   String email, LocalDateTime memberCreatedAt) {
         this.membership = membership;
         this.memberStatus = memberStatus;
-        this.id = id;
+        this.memberId = memberId;
         this.nickname = nickname;
         this.name = name;
         this.isMan = isMan;
