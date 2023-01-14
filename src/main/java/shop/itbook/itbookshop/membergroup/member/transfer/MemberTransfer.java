@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.membergroup.member.transfer;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -21,22 +20,6 @@ public class MemberTransfer {
     }
 
     /**
-     * 저장하는 로직이 실행될 때 Dto를 멤버 엔티티로 변경하는 메서드입니다.
-     *
-     * @param memberSaveRequestDto entity로 변경하기위한 정보를 담은 dto입니다.
-     * @return 멤버 엔티티를 만들어서 반환합니다.
-     * @author 노수연
-     */
-    public static Member dtoToEntityInSave(MemberSaveRequestDto memberSaveRequestDto) {
-        return Member.builder().id(memberSaveRequestDto.getId()).nickname(
-                memberSaveRequestDto.getNickname()).name(memberSaveRequestDto.getName()).isMan(
-                memberSaveRequestDto.getIsMan()).birth(memberSaveRequestDto.getBirth())
-            .password(memberSaveRequestDto.getPassword()).phoneNumber(
-                memberSaveRequestDto.getPhoneNumber()).email(memberSaveRequestDto.getEmail())
-            .build();
-    }
-
-    /**
      * 수장하는 로직이 실행될 때 Dto를 멤버 엔티티로 변경하는 메서드입니다.
      *
      * @param memberUpdateRequestDto entity로 변경하기위한 정보를 담은 dto입니다.
@@ -52,7 +35,7 @@ public class MemberTransfer {
     }
 
     public static Member dtoToEntity(MemberRequestDto memberRequestDto) {
-        return Member.builder().id(memberRequestDto.getId()).id(memberRequestDto.getId()).nickname(
+        return Member.builder().memberId(memberRequestDto.getMemberId()).nickname(
                 memberRequestDto.getNickname()).name(memberRequestDto.getName())
             .isMan(memberRequestDto.getIsMan()).birth(memberRequestDto.getBirth()).password(
                 memberRequestDto.getPassword()).phoneNumber(memberRequestDto.getPhoneNumber())
@@ -74,8 +57,8 @@ public class MemberTransfer {
                 MembershipTransfer.entityToDto(member.getMembership()).getMembershipGrade())
             .memberStatusName(
                 MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusName())
-            .id(
-                member.getId()).nickname(member.getNickname()).name(member.getName())
+            .memberId(
+                member.getMemberId()).nickname(member.getNickname()).name(member.getName())
             .isMan(member.getIsMan()).birth(member.getBirth()).phoneNumber(member.getPhoneNumber())
             .email(member.getEmail())
             .memberCreatedAt(member.getMemberCreatedAt()).build();

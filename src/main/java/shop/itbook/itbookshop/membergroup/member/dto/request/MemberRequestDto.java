@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class MemberRequestDto {
     private Integer membershipNo;
     private Integer memberStatusNo;
-    private String id;
+    private String memberId;
     private String nickname;
     private String name;
     private Boolean isMan;

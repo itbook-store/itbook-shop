@@ -11,5 +11,4 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  */
 
 public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
-
 }

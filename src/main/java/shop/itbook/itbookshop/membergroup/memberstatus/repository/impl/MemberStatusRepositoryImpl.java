@@ -5,7 +5,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
-import org.springframework.stereotype.Repository;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.QMemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.CustomMemberStatusRepository;
@@ -17,7 +16,6 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  * @author 노수연
  * @since 1.0
  */
-@Repository
 public class MemberStatusRepositoryImpl implements CustomMemberStatusRepository {
 
     private final JPAQueryFactory jpaQueryFactory;

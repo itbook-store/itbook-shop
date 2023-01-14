@@ -12,9 +12,9 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProj
  */
 public interface MemberService {
 
-    MemberResponseProjectionDto findMember(String id);
+    MemberResponseProjectionDto findMember(String memberId);
 
     Long addMember(MemberRequestDto requestDto);
 
-    void modifyMember(String id, MemberUpdateRequestDto requestDto);
+    void modifyMember(String memberId, MemberUpdateRequestDto requestDto);
 }
