@@ -25,6 +25,7 @@ public class MemberResponseProjectionDto {
     String email;
     LocalDateTime memberCreatedAt;
 
+    @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder
     public MemberResponseProjectionDto(Long memberNo, String memberId, String membershipGrade,
                                        String memberStatusName, String nickname, String name,

@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -36,4 +37,12 @@ public interface CustomMemberRepository {
      */
     List<MemberResponseProjectionDto> querydslFindAll();
 
+    /**
+     * 회원 아이디로 로그인에 필요한 정보를 가져오는 메서드 입니다.
+     *
+     * @param memberId the member id
+     * @return the member auth response dto
+     * @author 강명관
+     */
+    MemberAuthResponseDto findAuthInfoByMemberId(String memberId);
 }

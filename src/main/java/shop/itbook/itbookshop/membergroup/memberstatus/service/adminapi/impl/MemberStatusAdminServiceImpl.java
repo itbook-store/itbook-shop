@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
+import shop.itbook.itbookshop.membergroup.memberstatus.exception.MemberStatusNotFound;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
@@ -23,12 +24,13 @@ public class MemberStatusAdminServiceImpl implements MemberStatusAdminService {
     @Override
     public MemberStatusResponseDto findMemberStatus(MemberStatusEnum memberStatusEnum) {
         return memberStatusRepository.querydslFindByName(memberStatusEnum.getMemberStatus())
-            .get();
+            .orElseThrow(MemberStatusNotFound::new);
     }
 
     @Override
     public MemberStatusResponseDto findMemberStatusWithMemberStatusNo(int memberStatusNo) {
-        return memberStatusRepository.querydslFindByNo(memberStatusNo).get();
+        return memberStatusRepository.querydslFindByNo(memberStatusNo)
+            .orElseThrow(MemberStatusNotFound::new);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class MemberStatusTransfer {
     /**
      * @author 노수연
      */
-    public MemberStatusTransfer() {
+    private MemberStatusTransfer() {
     }
 
     /**

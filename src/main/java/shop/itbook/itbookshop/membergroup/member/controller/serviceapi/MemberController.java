@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
@@ -31,8 +33,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> memberAdd(@Valid @RequestBody
-                                                                             MemberRequestDto requestDto) {
+    public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> memberAdd(
+        @Valid @RequestBody MemberRequestDto requestDto) {
 
         MemberNoResponseDto memberNoResponseDto =
             new MemberNoResponseDto(memberService.addMember(requestDto));
@@ -57,6 +59,24 @@ public class MemberController {
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * Auth 로그인 시 회원에 대한 정보를 반환받는 API 입니다.
+     *
+     * @param memberId the member id
+     * @return the response entity
+     * @author 강명관
+     */
+    @GetMapping
+    public ResponseEntity<CommonResponseBody<MemberAuthResponseDto>> authLogin(
+        @RequestParam(value = "memberId") String memberId) {
+
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+                MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
+            memberService.findMemberAuthInfo(memberId)
+        ));
     }
 
 }

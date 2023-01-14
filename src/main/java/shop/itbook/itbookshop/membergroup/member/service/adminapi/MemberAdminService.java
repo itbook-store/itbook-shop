@@ -34,7 +34,6 @@ public interface MemberAdminService {
      *
      * @param memberId   멤버 아이디로 테이블에서 해당 멤버를 찾습니다.
      * @param requestDto 멤버 수정 dto를 받아와 테이블에 멤버 정보를 수정합니다.
-     * @return 반환값은 없습니다.
      * @author 노수연
      */
     void modifyMember(String memberId, MemberUpdateAdminRequestDto requestDto);

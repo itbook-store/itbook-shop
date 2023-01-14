@@ -34,7 +34,8 @@ public class MemberStatus {
     private Integer memberStatusNo;
 
     @Convert(converter = MemberStatusEnumConverter.class)
-    @Column(name = "member_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "member_status_name", nullable = false,
+        columnDefinition = "varchar(255)", unique = true)
     private MemberStatusEnum memberStatusEnum;
 
     @Builder

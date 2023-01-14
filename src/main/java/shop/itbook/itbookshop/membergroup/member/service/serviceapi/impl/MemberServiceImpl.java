@@ -2,8 +2,10 @@ package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -20,6 +22,8 @@ import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTran
  * @author 노수연
  * @since 1.0
  */
+
+@Transactional(readOnly = true)
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -36,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
             .orElseThrow(MemberNotFoundException::new);
     }
 
+    @Transactional
     @Override
     public Long addMember(MemberRequestDto requestDto) {
 
@@ -55,8 +60,22 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(member).getMemberNo();
     }
 
+    @Transactional
     @Override
     public void modifyMember(String memberId, MemberUpdateRequestDto requestDto) {
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MemberAuthResponseDto findMemberAuthInfo(String memberId) {
+
+        if (!memberRepository.existsByMemberId(memberId)) {
+            throw new MemberNotFoundException();
+        }
+
+        return memberRepository.findAuthInfoByMemberId(memberId);
     }
 }

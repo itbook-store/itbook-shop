@@ -18,11 +18,7 @@ public class MemberStatusAdminController {
 
     @GetMapping("/test")
     public MemberStatusResponseDto test() {
-
-        MemberStatusResponseDto memberStatusResponseDto =
-            memberStatusAdminService.findMemberStatusWithMemberStatusNo(392);
-
-        return memberStatusResponseDto;
+        return memberStatusAdminService.findMemberStatusWithMemberStatusNo(329);
     }
 
 }

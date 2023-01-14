@@ -16,11 +16,11 @@ public interface MembershipAdminService {
     /**
      * 회원등급을 추가하는 메서드 입니다.
      *
-     * @param membershipRequestDTO the membership request dto
+     * @param membershipRequestDto the membership request dto
      * @return the integer
      * @author 강명관 *
      */
-    Integer addMembership(MembershipRequestDto membershipRequestDTO);
+    Integer addMembership(MembershipRequestDto membershipRequestDto);
 
     /**
      * 회원등급을 삭제하는 메서드 입니다.
