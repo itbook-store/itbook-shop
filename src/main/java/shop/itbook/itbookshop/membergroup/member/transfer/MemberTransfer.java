@@ -26,7 +26,7 @@ public class MemberTransfer {
      * @author 노수연
      */
     public static Member dtoToEntityInSave(MemberSaveRequestDto memberSaveRequestDto) {
-        return Member.builder().id(memberSaveRequestDto.getId()).nickname(
+        return Member.builder().memberId(memberSaveRequestDto.getId()).nickname(
                 memberSaveRequestDto.getNickname()).name(memberSaveRequestDto.getName()).isMan(
                 memberSaveRequestDto.getIsMan()).birth(memberSaveRequestDto.getBirth())
             .password(memberSaveRequestDto.getPassword()).phoneNumber(
@@ -75,7 +75,7 @@ public class MemberTransfer {
             .memberStatusName(
                 MemberStatusTransfer.entityToDto(member.getMemberStatus()).getMemberStatusEnum())
             .id(
-                member.getId()).nickname(member.getNickname()).name(member.getName())
+                member.getMemberId()).nickname(member.getNickname()).name(member.getName())
             .isMan(member.getIsMan()).birth(member.getBirth()).phoneNumber(member.getPhoneNumber())
             .email(member.getEmail())
             .memberCreatedAt(member.getMemberCreatedAt()).build();

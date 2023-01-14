@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
@@ -52,13 +53,13 @@ class MemberAdminControllerTest {
         memberStatus = MemberStatus.builder().memberStatusEnum(MemberStatusEnum.NORMAL).build();
 
         member1 =
-            Member.builder().membership(membership).memberStatus(memberStatus).id("user1")
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user1")
                 .nickname("유저1").name("홍길동").isMan(true).birth(
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
                 .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
 
         member2 =
-            Member.builder().membership(membership).memberStatus(memberStatus).id("user2")
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user2")
                 .nickname("유저2").name("김철수").isMan(true).birth(
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("2345").phoneNumber("010-1000-0000")
                 .email("user2@test.com").memberCreatedAt(LocalDateTime.now()).build();

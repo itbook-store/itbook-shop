@@ -54,17 +54,19 @@ class MemberRepositoryTest {
 
         memberStatusRepository.save(memberStatus);
 
-        testMember1 = Member.builder().membership(membership).memberStatus(memberStatus).id("user1")
-            .nickname("유저1").name("홍길동").isMan(true).birth(
-                LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
-            .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
+        testMember1 =
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user1")
+                .nickname("유저1").name("홍길동").isMan(true).birth(
+                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
+                .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
 
         memberRepository.save(testMember1);
 
-        testMember2 = Member.builder().membership(membership).memberStatus(memberStatus).id("user2")
-            .nickname("유저2").name("김철수").isMan(true).birth(
-                LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-1000-0000")
-            .email("user2@test1.com").memberCreatedAt(LocalDateTime.now()).build();
+        testMember2 =
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user2")
+                .nickname("유저2").name("김철수").isMan(true).birth(
+                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-1000-0000")
+                .email("user2@test1.com").memberCreatedAt(LocalDateTime.now()).build();
 
         memberRepository.save(testMember2);
 
@@ -99,7 +101,7 @@ class MemberRepositoryTest {
     @DisplayName("멤버 저장 테스트")
     void save() {
         Member member =
-            Member.builder().membership(membership).memberStatus(memberStatus).id("user3")
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user3")
                 .nickname("유저3").name("김유리").isMan(true).birth(
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-2000-0000")
                 .email("user3@test1.com").memberCreatedAt(LocalDateTime.now()).build();

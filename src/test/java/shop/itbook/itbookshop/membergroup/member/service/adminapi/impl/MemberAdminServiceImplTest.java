@@ -64,7 +64,7 @@ class MemberAdminServiceImplTest {
                 "010-0000-0000", "user1@test.com", LocalDateTime.now());
 
         Member member =
-            Member.builder().membership(membership).memberStatus(memberStatus).id("user1")
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user1")
                 .nickname("유저1").name("홍길동").isMan(true).birth(
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
                 .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
