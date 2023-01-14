@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.category.service.adminapi.impl;
+package shop.itbook.itbookshop.category.service.impl;
 
 import java.util.List;
 import java.util.Objects;
@@ -6,12 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
-import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
+import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
 
 /**
@@ -23,10 +23,12 @@ import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CategoryAdminServiceImpl implements CategoryAdminService {
+public class CategoryServiceImpl implements CategoryService {
 
     private static final int NO_PARENT_NUMBER = 0;
-    private static final int BASE_LEVEL = 0;
+    private static final int MAIN_CATEGORY_LEVEL = 0;
+    private static final long INIT_ZERO = 0L;
+
     private final CategoryRepository categoryRepository;
 
     /**
@@ -44,7 +46,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
             category = categoryRepository.save(category);
             category.setParentCategory(category);
 
-            category.setLevel(BASE_LEVEL);
+            category.setLevel(MAIN_CATEGORY_LEVEL);
             return category.getCategoryNo();
         }
 
@@ -74,20 +76,29 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryAllFieldResponseDto> findCategoryList(Boolean isHidden) {
+    public List<CategoryListResponseDto> findCategoryListByEmployee() {
 
-        return categoryRepository.findCategoryListFetch(isHidden);
+        return categoryRepository.findCategoryListByEmployee();
+    }
+
+    @Override
+    public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
+        List<CategoryListResponseDto> categoryListByNotEmployee =
+            categoryRepository.findCategoryListByNotEmployee();
+
+        return categoryListByNotEmployee;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo,
-                                                                             Boolean isHidden) {
+    public List<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo) {
 
-        return categoryRepository.findCategoryChildListThroughParentCategoryNo(categoryNo,
-            isHidden);
+        List<CategoryListResponseDto> categoryListAboutChild =
+            categoryRepository.findCategoryListAboutChild(categoryNo);
+
+        return categoryListAboutChild;
     }
 
     /**
@@ -112,7 +123,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public CategoryAllFieldResponseDto findCategoryAllFieldResponseDtoThroughCategoryNo(
+    public CategoryDetailsResponseDto findCategoryDetailsResponseDto(
         Integer categoryNo) {
 
         Category category = this.findCategoryEntityFetch(categoryNo);
@@ -146,5 +157,10 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     @Transactional
     public void removeCategory(Integer categoryNo) {
         categoryRepository.deleteById(categoryNo);
+    }
+
+    @Override
+    public List<CategoryListResponseDto> findMainCategoryList() {
+        return categoryRepository.findMainCategoryList();
     }
 }

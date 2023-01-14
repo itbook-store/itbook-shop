@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.category.controller.adminapi.CategoryAdminController;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
-import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
+import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 
 @WebMvcTest(CategoryAdminController.class)
@@ -31,7 +31,7 @@ class CategoryRestControllerAdvisorTest {
     CategoryAdminController categoryAdminController;
 
     @MockBean
-    CategoryAdminService categoryAdminService;
+    CategoryService categoryService;
 
     @Autowired
     MockMvc mvc;
@@ -49,7 +49,7 @@ class CategoryRestControllerAdvisorTest {
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
 
-        given(categoryAdminService.addCategory(any(CategoryRequestDto.class)))
+        given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willThrow(new MemberForbiddenException());
 
         // when then
@@ -74,7 +74,7 @@ class CategoryRestControllerAdvisorTest {
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
 
-        given(categoryAdminService.addCategory(any(CategoryRequestDto.class)))
+        given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willThrow(new CategoryNotFoundException());
 
         // when then
@@ -122,7 +122,7 @@ class CategoryRestControllerAdvisorTest {
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
 
-        given(categoryAdminService.addCategory(any(CategoryRequestDto.class)))
+        given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willThrow(new RuntimeException("test message"));
 
         // when then

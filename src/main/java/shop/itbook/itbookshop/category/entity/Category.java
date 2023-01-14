@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.category.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,7 +41,7 @@ public class Category {
     @JoinColumn(name = "parent_category_no")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     List<Category> childCategoryList = new ArrayList<>();
 
     @Column(name = "category_name", columnDefinition = "varchar(20)",
