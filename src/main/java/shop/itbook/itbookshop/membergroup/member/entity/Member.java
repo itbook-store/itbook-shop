@@ -48,7 +48,7 @@ public class Member {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "id", nullable = false, columnDefinition = "varchar(15)", unique = true)
+    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(15)", unique = true)
     private String id;
 
     @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
