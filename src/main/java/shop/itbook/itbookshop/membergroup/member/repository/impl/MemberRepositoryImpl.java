@@ -19,6 +19,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.QMemberStatus;
  * @author 노수연
  * @since 1.0
  */
+
 public class MemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -32,18 +33,20 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     QMemberStatus qmemberStatus = QMemberStatus.memberStatus;
 
     @Override
-    public Optional<MemberResponseProjectionDto> querydslFindById(String id) {
+    public Optional<MemberResponseProjectionDto> querydslFindByMemberId(String memberId) {
 
         return Optional.of(jpaQueryFactory.select(
-                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberId,
-                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum, qmember.nickname,
+                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
                     qmember.memberCreatedAt))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberId.eq(id))
-            .fetch().get(0));
+            .where(qmember.memberId.eq(memberId))
+            .fetchOne());
     }
 
     /*@Override
@@ -60,20 +63,22 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }*/
 
     @Override
-    public Optional<Member> querydslFindByIdToMember(String id) {
+    public Optional<Member> querydslFindByMemberIdToMember(String memberId) {
         return Optional.of(jpaQueryFactory.select(Projections.fields(Member.class,
             qmember.memberNo, qmembership, qmemberStatus, qmember.memberId, qmember.nickname,
             qmember.name, qmember.isMan,
             qmember.birth, qmember.password, qmember.phoneNumber, qmember.email,
             qmember.memberCreatedAt
-        )).from(qmember).where(qmember.memberId.eq(id)).fetch().get(0));
+        )).from(qmember).where(qmember.memberId.eq(memberId)).fetch().get(0));
     }
 
     @Override
     public List<MemberResponseProjectionDto> querydslFindAll() {
         return jpaQueryFactory.select(
-                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberId,
-                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum, qmember.nickname,
+                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
                     qmember.memberCreatedAt))
             .from(qmember)

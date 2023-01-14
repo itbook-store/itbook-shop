@@ -67,4 +67,10 @@ public class MembershipAdminServiceImpl implements MembershipAdminService {
         );
 
     }
+
+    @Override
+    public Membership findMembership(Integer membershipNo) {
+        return membershipRepository.findById(membershipNo)
+            .orElseThrow(MembershipNotFoundException::new);
+    }
 }

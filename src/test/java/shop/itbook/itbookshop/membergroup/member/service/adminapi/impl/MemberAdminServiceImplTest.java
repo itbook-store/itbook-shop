@@ -59,8 +59,9 @@ class MemberAdminServiceImplTest {
     void findMember() {
         //given
         MemberResponseProjectionDto memberDto =
-            new MemberResponseProjectionDto("user1", "white",
-                MemberStatusEnum.NORMAL, "유저1", "홍길동", true, LocalDateTime.of(2000, 1, 1, 0, 0, 0),
+            new MemberResponseProjectionDto(1L, "user1", "white",
+                MemberStatusEnum.NORMAL.getMemberStatus(), "유저1", "홍길동", true,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0),
                 "010-0000-0000", "user1@test.com", LocalDateTime.now());
 
         Member member =
@@ -69,11 +70,11 @@ class MemberAdminServiceImplTest {
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
                 .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
 
-        given(memberRepository.querydslFindById("user1")).willReturn(Optional.of(memberDto));
+        given(memberRepository.querydslFindByMemberId("user1")).willReturn(Optional.of(memberDto));
 
         MemberResponseProjectionDto testMember = memberAdminService.findMember("user1");
 
-        assertThat(testMember.getId()).isEqualTo("user1");
+        assertThat(testMember.getMemberId()).isEqualTo("user1");
     }
 
     @Test

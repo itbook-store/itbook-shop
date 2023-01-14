@@ -5,14 +5,12 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
-import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
@@ -28,14 +26,13 @@ import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTran
 public class MemberAdminServiceImpl implements MemberAdminService {
 
     private final MemberRepository memberRepository;
-    //private final CustomMemberRepository customMemberRepository;
     private final MemberStatusAdminService memberStatusAdminService;
 
     @Override
-    public MemberResponseProjectionDto findMember(String id) {
+    public MemberResponseProjectionDto findMember(String memberId) {
 
         Optional<MemberResponseProjectionDto> member =
-            memberRepository.querydslFindById(id);
+            memberRepository.querydslFindByMemberId(memberId);
 
         if (member.isEmpty()) {
             throw new MemberNotFoundException();
@@ -52,17 +49,9 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
     @Override
     @Transactional
-    public Long addMember(MemberSaveRequestDto requestDto) {
+    public void modifyMember(String memberId, MemberUpdateAdminRequestDto requestDto) {
 
-        Member member = MemberTransfer.dtoToEntityInSave(requestDto);
-        return memberRepository.save(member).getMemberNo();
-    }
-
-    @Override
-    @Transactional
-    public void modifyMember(String id, MemberUpdateAdminRequestDto requestDto) {
-
-        Optional<Member> member = memberRepository.querydslFindByIdToMember(id);
+        Optional<Member> member = memberRepository.querydslFindByMemberIdToMember(memberId);
 
         if (member.isEmpty()) {
             throw new MemberNotFoundException();
@@ -75,11 +64,5 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
         modifiedMember.setMemberStatus(memberStatus);
 
-    }
-
-    @Override
-    @Transactional
-    public void removeMember(Long memberNo) {
-        memberRepository.deleteById(memberNo);
     }
 }

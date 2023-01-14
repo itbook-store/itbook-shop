@@ -19,4 +19,14 @@ public enum MemberStatusEnum {
     MemberStatusEnum(String memberStatus) {
         this.memberStatus = memberStatus;
     }
+
+    public static MemberStatusEnum stringToEnum(String dbData) {
+        for (MemberStatusEnum value : MemberStatusEnum.values()) {
+            if (value.getMemberStatus().equals(dbData)) {
+                return value;
+            }
+        }
+
+        return null;
+    }
 }

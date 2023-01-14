@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.memberstatus.transfer;
 
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
+import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * MemberStatus 엔티티와 dto 간의 변환을 작성한 transfer 클래스입니다.
@@ -14,7 +15,7 @@ public class MemberStatusTransfer {
     /**
      * @author 노수연
      */
-    public MemberStatusTransfer() {
+    private MemberStatusTransfer() {
     }
 
     /**
@@ -26,11 +27,13 @@ public class MemberStatusTransfer {
      */
     public static MemberStatusResponseDto entityToDto(MemberStatus memberStatus) {
         return MemberStatusResponseDto.builder()
-            .memberStatusEnum(memberStatus.getMemberStatusEnum()).build();
+            .memberStatusName(memberStatus.getMemberStatusEnum().getMemberStatus()).build();
     }
 
     public static MemberStatus dtoToEntity(MemberStatusResponseDto memberStatusResponseDto) {
-        return MemberStatus.builder()
-            .memberStatusEnum(memberStatusResponseDto.getMemberStatusEnum()).build();
+        return MemberStatus.builder().memberStatusNo(memberStatusResponseDto.getMemberStatusNo())
+            .memberStatusEnum(
+                MemberStatusEnum.stringToEnum(memberStatusResponseDto.getMemberStatusName())
+            ).build();
     }
 }

@@ -19,21 +19,15 @@ public interface CustomMemberRepository {
     /**
      * memberNo로 특정 멤버 정보를 찾는 메서드입니다.
      *
-     * @param id member id로 테이블에서 멤버를 찾습니다.
+     * @param memberId member id로 테이블에서 멤버를 찾습니다.
      * @return Dto로 받아와 반환합니다.
      * @author 노수연
      */
-    Optional<MemberResponseProjectionDto> querydslFindById(String id);
+    Optional<MemberResponseProjectionDto> querydslFindByMemberId(String memberId);
 
     //Optional<MemberResponseDto> querydslFindByIdAllInfo(String id);
 
-    /**
-     * Querydsl find by id to member optional.
-     *
-     * @param id the id
-     * @return the optional
-     */
-    Optional<Member> querydslFindByIdToMember(String id);
+    Optional<Member> querydslFindByMemberIdToMember(String memberId);
 
     /**
      * 모든 회원 리스트를 가져오는 메서드입니다.
