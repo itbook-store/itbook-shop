@@ -15,7 +15,7 @@ public class MemberStatusTransfer {
     /**
      * @author 노수연
      */
-    public MemberStatusTransfer() {
+    private MemberStatusTransfer() {
     }
 
     /**
@@ -30,12 +30,10 @@ public class MemberStatusTransfer {
             .memberStatusName(memberStatus.getMemberStatusEnum().getMemberStatus()).build();
     }
 
-    // TODO 1. MemberStatusEnum.valueOf(memberStatusResponseDto.getMemberStatusName()) 값 확인하기
     public static MemberStatus dtoToEntity(MemberStatusResponseDto memberStatusResponseDto) {
-        return MemberStatus.builder()
+        return MemberStatus.builder().memberStatusNo(memberStatusResponseDto.getMemberStatusNo())
             .memberStatusEnum(
-                MemberStatusEnum.valueOf(memberStatusResponseDto.getMemberStatusName())).build();
-
-        //return null;
+                MemberStatusEnum.stringToEnum(memberStatusResponseDto.getMemberStatusName())
+            ).build();
     }
 }
