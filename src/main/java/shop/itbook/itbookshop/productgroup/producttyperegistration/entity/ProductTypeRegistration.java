@@ -21,6 +21,7 @@ import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
  * 상품 유형 등록 테이블에 대한 엔티티 입니다.
  *
  * @author 강명관
+ * @author 이하늬
  * @since 1.0
  */
 @Getter
@@ -54,7 +55,6 @@ public class ProductTypeRegistration {
      * The type Pk. 상품과 상품타입 복합키를 주키로 하기위한 클래스 입니다.
      *
      * @author 강명관
-     * @author 이하늬
      * @since 1.0
      */
     @Getter

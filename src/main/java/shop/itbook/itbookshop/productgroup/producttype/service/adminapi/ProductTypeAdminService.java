@@ -19,4 +19,11 @@ public interface ProductTypeAdminService {
      */
     List<ProductType> findProductTypeList();
 
+    /**
+     * @param productTypeNo 조회할 상품유형 번호입니다.
+     * @return 찾은 상품유형 entity를 반환합니다.
+     * @author 이하늬
+     */
+    ProductType findProductType(Integer productTypeNo);
+
 }

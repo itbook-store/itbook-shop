@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 
 import java.util.List;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSaveRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 
@@ -16,11 +15,11 @@ public interface MemberAdminService {
     /**
      * 특정 memberNo로 멤버 조회 기능을 담당하는 메서드입니다.
      *
-     * @param id 멤버 아이디로 테이블에서 멤버를 찾습니다.
+     * @param memberId 멤버 아이디로 테이블에서 멤버를 찾습니다.
      * @return MemberResponseDto를 반환합니다.
      * @author 노수연
      */
-    MemberResponseProjectionDto findMember(String id);
+    MemberResponseProjectionDto findMember(String memberId);
 
     /**
      * 모든 멤버 리스트를 조회할 수 있는 로직을 담당하는 메서드입니다.
@@ -31,31 +30,12 @@ public interface MemberAdminService {
     List<MemberResponseProjectionDto> findMemberList();
 
     /**
-     * 멤버를 추가하는 로직을 담당하는 메서드입니다.
-     *
-     * @param requestDto 멤버 저장 dto를 받아와 테이블에 멤버를 추가합니다.
-     * @return 추가된 멤버의 멤버 번호를 반환합니다.
-     * @author 노수연
-     */
-    Long addMember(MemberSaveRequestDto requestDto);
-
-    /**
      * 특정 멤버를 수정하는 로직을 담당하는 메서드입니다.
      *
-     * @param id         멤버 아이디로 테이블에서 해당 멤버를 찾습니다.
+     * @param memberId   멤버 아이디로 테이블에서 해당 멤버를 찾습니다.
      * @param requestDto 멤버 수정 dto를 받아와 테이블에 멤버 정보를 수정합니다.
-     * @return 반환값은 없습니다.
      * @author 노수연
      */
-    void modifyMember(String id, MemberUpdateAdminRequestDto requestDto);
-
-    /**
-     * 특정 멤버를 삭제하는 로직을 담당한 메서드입니다.
-     *
-     * @param memberNo 멤버 번호로 테이블에서 해당 멤버를 찾아 삭제합니다.
-     * @return 반환 값은 없습니다.
-     * @author 노수연
-     */
-    void removeMember(Long memberNo);
+    void modifyMember(String memberId, MemberUpdateAdminRequestDto requestDto);
 
 }

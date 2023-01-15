@@ -4,8 +4,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
+import shop.itbook.itbookshop.membergroup.memberstatus.exception.MemberStatusNotFound;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
-import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepositoryCustom;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
@@ -20,17 +20,22 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 public class MemberStatusAdminServiceImpl implements MemberStatusAdminService {
 
     private final MemberStatusRepository memberStatusRepository;
-    private final MemberStatusRepositoryCustom memberStatusRepositoryCustom;
 
     @Override
     public MemberStatusResponseDto findMemberStatus(MemberStatusEnum memberStatusEnum) {
-        return memberStatusRepositoryCustom.querydslFindByName(memberStatusEnum.getMemberStatus())
-            .get();
+        return memberStatusRepository.querydslFindByName(memberStatusEnum.getMemberStatus())
+            .orElseThrow(MemberStatusNotFound::new);
+    }
+
+    @Override
+    public MemberStatusResponseDto findMemberStatusWithMemberStatusNo(int memberStatusNo) {
+        return memberStatusRepository.querydslFindByNo(memberStatusNo)
+            .orElseThrow(MemberStatusNotFound::new);
     }
 
     @Override
     public List<MemberStatusResponseDto> findMemberStatusList() {
-        return memberStatusRepositoryCustom.querydslFindAll();
+        return memberStatusRepository.querydslFindAll();
     }
 
 }

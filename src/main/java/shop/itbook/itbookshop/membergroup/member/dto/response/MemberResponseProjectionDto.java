@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.membergroup.member.dto.response;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * 관리자 api 에서 멤버를 조회할 때 정보를 받아올 dto 입니다.
@@ -14,9 +13,10 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 @Getter
 public class MemberResponseProjectionDto {
 
-    String id;
+    Long memberNo;
+    String memberId;
     String membershipGrade;
-    MemberStatusEnum memberStatusName;
+    String memberStatusName;
     String nickname;
     String name;
     Boolean isMan;
@@ -25,13 +25,14 @@ public class MemberResponseProjectionDto {
     String email;
     LocalDateTime memberCreatedAt;
 
+    @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder
-    public MemberResponseProjectionDto(String id, String membershipGrade,
-                                       MemberStatusEnum memberStatusName,
-                                       String nickname, String name, Boolean isMan,
-                                       LocalDateTime birth, String phoneNumber, String email,
-                                       LocalDateTime memberCreatedAt) {
-        this.id = id;
+    public MemberResponseProjectionDto(Long memberNo, String memberId, String membershipGrade,
+                                       String memberStatusName, String nickname, String name,
+                                       Boolean isMan, LocalDateTime birth, String phoneNumber,
+                                       String email, LocalDateTime memberCreatedAt) {
+        this.memberNo = memberNo;
+        this.memberId = memberId;
         this.membershipGrade = membershipGrade;
         this.memberStatusName = memberStatusName;
         this.nickname = nickname;

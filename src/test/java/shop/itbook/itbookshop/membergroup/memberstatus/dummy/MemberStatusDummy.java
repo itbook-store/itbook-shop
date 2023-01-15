@@ -13,6 +13,6 @@ public class MemberStatusDummy {
 
     public static MemberStatus getMemberStatus() {
 
-        return new MemberStatus(MemberStatusEnum.NORMAL);
+        return new MemberStatus(1, MemberStatusEnum.NORMAL);
     }
 }
