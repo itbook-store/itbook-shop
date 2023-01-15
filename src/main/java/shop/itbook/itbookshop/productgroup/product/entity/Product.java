@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
 /**
@@ -28,8 +29,9 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @NoArgsConstructor
 @Table(name = "product")
 @Entity
-@Document(indexName = "itbook_product_nori_test1")
+@Document(indexName = "itbook_product_nori_test2")
 @Setting(settingPath = "elastic/product-setting.json")
+@Mapping(mappingPath = "elastic/product-mapping.json")
 public class Product {
 
     @Id
@@ -106,11 +108,11 @@ public class Product {
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
-        this.productCreatedAt = LocalDateTime.now();
+        this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
         this.thumbnailUrl = thumbnailUrl;
-        this.dailyHits = 0L;
+        this.dailyHits = dailyHits;
         this.fixedPrice = fixedPrice;
         this.increasePointPercent = increasePointPercent;
         this.discountPercent = discountPercent;
