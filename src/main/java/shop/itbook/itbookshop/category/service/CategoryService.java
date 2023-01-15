@@ -1,9 +1,9 @@
-package shop.itbook.itbookshop.category.service.adminapi;
+package shop.itbook.itbookshop.category.service;
 
 import java.util.List;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
@@ -12,7 +12,7 @@ import shop.itbook.itbookshop.category.entity.Category;
  * @author 최겸준
  * @since 1.0
  */
-public interface CategoryAdminService {
+public interface CategoryService {
 
     /**
      * 카테고리 저장의 비지니스 로직을 처리하는 메서드입니다.
@@ -29,19 +29,21 @@ public interface CategoryAdminService {
      * @return 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryAllFieldResponseDto> findCategoryList(Boolean isHidden);
+    List<CategoryListResponseDto> findCategoryListByEmployee();
+
+    List<CategoryListResponseDto> findCategoryListByNotEmployee();
+
 
     /**
      * 특정 카테고리 번호를 받아서 자식 카테고리들의 정보반환 처리를 담당하는 메서드입니다.
      *
-     * @param categoryNo 부모 카테고리의 번호입니다.
      * @param isHidden
+     * @param categoryNo 부모 카테고리의 번호입니다.
+     * @param employee
      * @return 조건에 해당하는 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryWithoutParentFieldResponseDto> findCategoryChildList(Integer categoryNo,
-                                                                      Boolean isHidden);
-
+    List<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo);
 
     /**
      * 카테고리 엔티티를 찾고 존재한다면 카테고리를 반환하고 존재하지 않는다면 예외를 발생시키는 기능을 담당합니다.
@@ -68,7 +70,7 @@ public interface CategoryAdminService {
      * @return 카테고리의 세부정보를 DTO에 담아 반환합니다.
      * @author 최겸준
      */
-    CategoryAllFieldResponseDto findCategoryAllFieldResponseDtoThroughCategoryNo(
+    CategoryDetailsResponseDto findCategoryDetailsResponseDto(
         Integer categoryNo);
 
     /**
@@ -88,4 +90,6 @@ public interface CategoryAdminService {
      * @author 최겸준
      */
     void removeCategory(Integer categoryNo);
+
+    List<CategoryListResponseDto> findMainCategoryList();
 }

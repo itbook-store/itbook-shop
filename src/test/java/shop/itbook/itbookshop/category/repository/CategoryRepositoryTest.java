@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
 
@@ -38,8 +36,10 @@ class CategoryRepositoryTest {
         categoryRepository.save(categoryDummyBook);
         categoryRepository.save(categoryDummyStuff);
 
-//        categoryDummyBook.setParentCategory(categoryDummyStuff);
         categoryDummyStuff.setParentCategory(categoryDummyBook);
+
+//        categoryDummyBook.setParentCategory(categoryDummyStuff);
+//        categoryDummyStuff.setParentCategory(categoryDummyBook);
 
         testEntityManager.flush();
         testEntityManager.clear();
@@ -62,45 +62,20 @@ class CategoryRepositoryTest {
     @Test
     void deleteById() {
 
-        categoryRepository.deleteById(categoryDummyBook.getCategoryNo());
         categoryRepository.deleteById(categoryDummyStuff.getCategoryNo());
+        categoryRepository.deleteById(categoryDummyBook.getCategoryNo());
     }
 
-    @DisplayName("입력된 데이터만큼(2) 등록된 모든 카테고리를 잘 불러온다.")
+    @DisplayName("도서를 부모로 가진 잡화 카테고리가 잘 불러와진다.")
     @Test
     void findCategoryList() {
 
         // when
-        List<CategoryAllFieldResponseDto> categoryList =
-            categoryRepository.findCategoryListFetch(null);
+        List<CategoryListResponseDto> categoryList =
+            categoryRepository.findCategoryListByEmployee();
 
         // then
-        assertThat(categoryList)
-            .hasSize(2);
-        CategoryAllFieldResponseDto actual = categoryList.get(0);
-
-        assertThat(actual.getCategoryNo())
-            .isEqualTo(categoryDummyBook.getCategoryNo());
-        assertThat(actual.getCategoryName())
-            .isEqualTo(categoryDummyBook.getCategoryName());
-        assertThat(actual.getIsHidden())
-            .isEqualTo(categoryDummyBook.getIsHidden());
-        assertThat(actual.getParentCategoryNo())
-            .isNull();
-    }
-
-    @DisplayName("hidden 등록된 모든 카테고리를(잡화 1개) 잘 불러온다.")
-    @Test
-    void findCategoryList_hidden() {
-
-        // when
-        List<CategoryAllFieldResponseDto> categoryList =
-            categoryRepository.findCategoryListFetch(true);
-
-        // then
-        assertThat(categoryList)
-            .hasSize(1);
-        CategoryAllFieldResponseDto actual = categoryList.get(0);
+        CategoryListResponseDto actual = categoryList.get(0);
 
         assertThat(actual.getCategoryNo())
             .isEqualTo(categoryDummyStuff.getCategoryNo());
@@ -108,42 +83,24 @@ class CategoryRepositoryTest {
             .isEqualTo(categoryDummyStuff.getCategoryName());
         assertThat(actual.getIsHidden())
             .isEqualTo(categoryDummyStuff.getIsHidden());
+        assertThat(actual.getParentCategoryNo())
+            .isNull();
     }
 
-    @DisplayName("hidden 등록되지 않은 모든 카테고리를(도서 1개) 잘 불러온다.")
-    @Test
-    void findCategoryList_no_hidden() {
-
-        // when
-        List<CategoryAllFieldResponseDto> categoryList =
-            categoryRepository.findCategoryListFetch(false);
-
-        // then
-        assertThat(categoryList)
-            .hasSize(1);
-        CategoryAllFieldResponseDto actual = categoryList.get(0);
-
-        assertThat(actual.getCategoryNo())
-            .isEqualTo(categoryDummyBook.getCategoryNo());
-        assertThat(actual.getCategoryName())
-            .isEqualTo(categoryDummyBook.getCategoryName());
-        assertThat(actual.getIsHidden())
-            .isEqualTo(categoryDummyBook.getIsHidden());
-    }
 
     @DisplayName("부모의 번호를 통해서 자식 들을 모두 잘 찾는다.")
     @Test
     void findCategoryChildListThroughParentCategoryNo() {
 
         // when
-        List<CategoryWithoutParentFieldResponseDto> categoryList =
-            categoryRepository.findCategoryChildListThroughParentCategoryNo(
-                categoryDummyBook.getCategoryNo(), null);
+        List<CategoryListResponseDto> categoryList =
+            categoryRepository.findCategoryListAboutChild(
+                categoryDummyBook.getCategoryNo());
 
         // then
         assertThat(categoryList)
             .hasSize(1);
-        CategoryWithoutParentFieldResponseDto actual = categoryList.get(0);
+        CategoryListResponseDto actual = categoryList.get(0);
 
         assertThat(actual.getCategoryNo())
             .isEqualTo(categoryDummyStuff.getCategoryNo());
@@ -158,14 +115,14 @@ class CategoryRepositoryTest {
     void findCategoryChildListThroughParentCategory_hidden() {
 
         // when
-        List<CategoryWithoutParentFieldResponseDto> categoryList =
-            categoryRepository.findCategoryChildListThroughParentCategoryNo(
-                categoryDummyBook.getCategoryNo(), true);
+        List<CategoryListResponseDto> categoryList =
+            categoryRepository.findCategoryListAboutChild(
+                categoryDummyBook.getCategoryNo());
 
         // then
         assertThat(categoryList)
             .hasSize(1);
-        CategoryWithoutParentFieldResponseDto actual = categoryList.get(0);
+        CategoryListResponseDto actual = categoryList.get(0);
 
         assertThat(actual.getCategoryNo())
             .isEqualTo(categoryDummyStuff.getCategoryNo());
@@ -173,20 +130,6 @@ class CategoryRepositoryTest {
             .isEqualTo(categoryDummyStuff.getCategoryName());
         assertThat(actual.getIsHidden())
             .isEqualTo(categoryDummyStuff.getIsHidden());
-    }
-
-    @DisplayName("부모의 번호를 통해서 hidden 이 false 인(0) 자식 들을 모두 잘 찾는다.")
-    @Test
-    void findCategoryChildListThroughParentCategoryNo_hidden() {
-
-        // when
-        List<CategoryWithoutParentFieldResponseDto> categoryList =
-            categoryRepository.findCategoryChildListThroughParentCategoryNo(
-                categoryDummyBook.getCategoryNo(), false);
-
-        // then
-        assertThat(categoryList)
-            .hasSize(0);
     }
 
     @DisplayName("카테고리를 찾아올때 부모카테고리까지 함께 얻어온다.")
@@ -218,4 +161,28 @@ class CategoryRepositoryTest {
         assertThat(category.getParentCategory().getCategoryNo())
             .isEqualTo(categoryDummyStuff.getParentCategory().getCategoryNo());
     }
+
+    @DisplayName("메인카테고리를 갯수까지 순서에맞게 잘 가져온다.")
+    @Test
+    void findMainCategoryList() {
+
+        List<CategoryListResponseDto> mainCategoryList = categoryRepository.findMainCategoryList();
+
+        assertThat(mainCategoryList)
+            .hasSize(2);
+        assertThat(mainCategoryList.get(0).getCategoryNo())
+            .isEqualTo(categoryDummyBook.getCategoryNo());
+        assertThat(mainCategoryList.get(0).getCategoryName())
+            .isEqualTo(categoryDummyBook.getCategoryName());
+        assertThat(mainCategoryList.get(0).getCount())
+            .isEqualTo(0);
+
+        assertThat(mainCategoryList.get(1).getCategoryNo())
+            .isEqualTo(categoryDummyStuff.getCategoryNo());
+        assertThat(mainCategoryList.get(1).getCategoryName())
+            .isEqualTo(categoryDummyStuff.getCategoryName());
+        assertThat(mainCategoryList.get(1).getCount())
+            .isEqualTo(0);
+    }
+
 }

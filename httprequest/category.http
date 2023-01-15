@@ -1,0 +1,31 @@
+GET http://localhost:8082/api/categories
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/admin/categories
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/admin/categories/main-categories
+
+###
+
+GET http://localhost:8082/api/admin/categories/1/child-categories
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/admin/categories/100
+Accept: application/json
+Content-Type: application/json
+
+###
+
+
+
+
