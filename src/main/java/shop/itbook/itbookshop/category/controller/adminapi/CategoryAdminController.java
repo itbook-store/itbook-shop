@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
-import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
+import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 
 /**
@@ -33,8 +32,8 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 @RequiredArgsConstructor
 public class CategoryAdminController {
 
-    private final CategoryAdminService categoryAdminService;
-    private static final Boolean SUCCESSED = Boolean.TRUE;
+    private final CategoryService categoryService;
+    private static final Boolean SUCCEED = Boolean.TRUE;
 
     /**
      * 카테고리 저장 요청을 처리하는 메서드입니다.
@@ -48,10 +47,10 @@ public class CategoryAdminController {
         @Valid @RequestBody CategoryRequestDto categoryRequestDto) {
 
         CategoryNoResponseDto categoryNoResponseDto =
-            new CategoryNoResponseDto(categoryAdminService.addCategory(categoryRequestDto));
+            new CategoryNoResponseDto(categoryService.addCategory(categoryRequestDto));
 
         CommonResponseBody<CategoryNoResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.CREATED.value(),
                 CategoryResultMessageEnum.CATEGORY_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
             categoryNoResponseDto);
 
@@ -60,21 +59,30 @@ public class CategoryAdminController {
 
     /**
      * 카테고리의 모든 리스트를 조회하는 메서드입니다.
-     * hidden true인 경우에는 히든상품만, false인 경우에는 히든이 아닌 상품의 모든 리스트를 조회합니다.
-     * null 인 경우 모든 리스트
      *
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      * @author 최겸준
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CategoryAllFieldResponseDto>>> categoryList(
-        @RequestParam(value = "isHidden", required = false) Boolean isHidden) {
+    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
 
-        CommonResponseBody<List<CategoryAllFieldResponseDto>> commonResponseBody =
+        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryAdminService.findCategoryList(isHidden));
+                categoryService.findCategoryListByEmployee());
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping("/main-categories")
+    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> mainCategoryList() {
+
+        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+                    CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                categoryService.findMainCategoryList());
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -83,20 +91,17 @@ public class CategoryAdminController {
      * 부모카테고리의 번호를 받아서 해당 카테고리의 자식카테고리들을 반환하는 요청을 처리하는 메서드입니다.
      *
      * @param categoryNo 부모카테고리의 번호입니다.
-     * @param isHidden   카테고리를 손님에게 숨겨줄지 말지에 대한 여부로서 조회시에는 true면 숨길상품만 보여주고 false이면 숨기지 않을상품만 보여줍니다.
-     *                   또한 null 이면
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}/child-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryWithoutParentFieldResponseDto>>>
-    categoryChildList(@PathVariable Integer categoryNo,
-                      @RequestParam(value = "isHidden", required = false) Boolean isHidden) {
+    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>>
+    categoryChildList(@PathVariable Integer categoryNo) {
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                 CategoryResultMessageEnum.CATEGORY_CHILD_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-            categoryAdminService.findCategoryChildList(categoryNo, isHidden)));
+            categoryService.findCategoryListAboutChild(categoryNo)));
     }
 
     /**
@@ -107,14 +112,14 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}")
-    public ResponseEntity<CommonResponseBody<CategoryAllFieldResponseDto>> categoryDetails(
+    public ResponseEntity<CommonResponseBody<CategoryDetailsResponseDto>> categoryDetails(
         @PathVariable Integer categoryNo) {
 
-        CommonResponseBody<CategoryAllFieldResponseDto> commonResponseBody =
+        CommonResponseBody<CategoryDetailsResponseDto> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                     CategoryResultMessageEnum.CATEGORY_DETAILS_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryAdminService.findCategoryAllFieldResponseDtoThroughCategoryNo(categoryNo));
+                categoryService.findCategoryDetailsResponseDto(categoryNo));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -130,11 +135,11 @@ public class CategoryAdminController {
     public ResponseEntity<CommonResponseBody<Void>> categoryModify(
         @PathVariable Integer categoryNo, @RequestBody CategoryRequestDto categoryRequestDto) {
 
-        categoryAdminService.modifyCategory(categoryNo, categoryRequestDto);
+        categoryService.modifyCategory(categoryNo, categoryRequestDto);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
-                SUCCESSED, HttpStatus.NO_CONTENT.value(),
+                SUCCEED, HttpStatus.NO_CONTENT.value(),
                 CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
                 null);
 
@@ -152,11 +157,11 @@ public class CategoryAdminController {
     public ResponseEntity<CommonResponseBody<Void>> categoryRemove(
         @PathVariable Integer categoryNo) {
 
-        categoryAdminService.removeCategory(categoryNo);
+        categoryService.removeCategory(categoryNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                     CategoryResultMessageEnum.CATEGORY_REMOVE_SUCCESS.getSuccessMessage()), null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value())
