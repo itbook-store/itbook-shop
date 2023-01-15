@@ -12,6 +12,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Setting;
 
 /**
  * 상품에 대한 엔티티 입니다.
@@ -26,9 +28,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Table(name = "product")
 @Entity
+@Document(indexName = "itbook_product_nori_test1")
+@Setting(settingPath = "elastic/product-setting.json")
 public class Product {
 
     @Id
+    @org.springframework.data.annotation.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_no", nullable = false)
     private Long productNo;
@@ -101,11 +106,11 @@ public class Product {
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
-        this.productCreatedAt = productCreatedAt;
+        this.productCreatedAt = LocalDateTime.now();
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
         this.thumbnailUrl = thumbnailUrl;
-        this.dailyHits = dailyHits;
+        this.dailyHits = 0L;
         this.fixedPrice = fixedPrice;
         this.increasePointPercent = increasePointPercent;
         this.discountPercent = discountPercent;
