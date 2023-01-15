@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
@@ -76,6 +77,42 @@ public class MemberController {
             new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
                 MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
             memberService.findMemberAuthInfo(memberId)
+        ));
+    }
+
+    @GetMapping("/sign-up/memberId/{memberId}")
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkMemberIdDuplicate(
+        @PathVariable("memberId") String memberId) {
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(true,
+                HttpStatus.OK.value(), ""), memberService.checkMemberIdDuplicate(memberId)
+        ));
+    }
+
+    @GetMapping("/sign-up/nickname/{nickname}")
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkNicknameDuplicate(
+        @PathVariable("nickname") String nickname) {
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), ""),
+            memberService.checkNickNameDuplicate(nickname)
+        ));
+    }
+
+    @GetMapping("/sign-up/email/{email}")
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkEmailDuplicate(
+        @PathVariable("email") String email) {
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), ""),
+            memberService.checkEmailDuplicate(email)
+        ));
+    }
+
+    @GetMapping("/sign-up/phoneNumber/{phoneNumber}")
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkPhoneNumber(
+        @PathVariable("phoneNumber") String phoneNumber) {
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), ""),
+            memberService.checkPhoneNumberDuplicate(phoneNumber)
         ));
     }
 

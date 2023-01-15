@@ -9,7 +9,6 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * @author 노수연
  * @since 1.0
  */
-
 public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
 
     /**
@@ -20,4 +19,27 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CustomMem
      * @author 강명관
      */
     boolean existsByMemberId(String memberId);
+
+    /**
+     * 닉네임으로 테이블에 회원이 존재하는지 확인하는 메서드입니다.
+     *
+     * @param nickname 닉네임으로 테이블에 회원 데이터가 있는지 확인합니다.
+     * @return 존재하면 true 없으면 false를 반환합니다.
+     * @author 노수연
+     */
+    boolean existsByNickname(String nickname);
+
+    /**
+     * @param email the email
+     * @return 존재하면 true 없으면 false를 반환합니다.
+     * @author 노수연
+     */
+    boolean existsByEmail(String email);
+
+    /**
+     * @param phoneNumber the phone number
+     * @return 존재하면 true 없으면 false를 반환합니다.
+     * @author 노수연
+     */
+    boolean existsByPhoneNumber(String phoneNumber);
 }

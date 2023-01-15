@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -46,7 +47,6 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = MemberTransfer.dtoToEntity(requestDto);
 
-        //TODO 2. membership 가져오기
         Membership membership = membershipAdminService.findMembership(requestDto.getMembershipNo());
 
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
@@ -77,5 +77,27 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return memberRepository.findAuthInfoByMemberId(memberId);
+    }
+
+
+    @Override
+    public MemberBooleanResponseDto checkMemberIdDuplicate(String memberId) {
+        return new MemberBooleanResponseDto(memberRepository.existsByMemberId(memberId));
+
+    }
+
+    @Override
+    public MemberBooleanResponseDto checkNickNameDuplicate(String nickname) {
+        return new MemberBooleanResponseDto(memberRepository.existsByNickname(nickname));
+    }
+
+    @Override
+    public MemberBooleanResponseDto checkEmailDuplicate(String email) {
+        return new MemberBooleanResponseDto(memberRepository.existsByEmail(email));
+    }
+
+    @Override
+    public MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber) {
+        return new MemberBooleanResponseDto(memberRepository.existsByPhoneNumber(phoneNumber));
     }
 }

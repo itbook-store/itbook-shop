@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.service.serviceapi;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 
 /**
@@ -28,4 +29,12 @@ public interface MemberService {
      * @author 강명관
      */
     MemberAuthResponseDto findMemberAuthInfo(String memberId);
+
+    MemberBooleanResponseDto checkMemberIdDuplicate(String memberId);
+
+    MemberBooleanResponseDto checkNickNameDuplicate(String nickname);
+
+    MemberBooleanResponseDto checkEmailDuplicate(String email);
+
+    MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber);
 }
