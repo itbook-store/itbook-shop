@@ -42,8 +42,6 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
                 delivery.order.orderNo,
                 delivery.trackingNo,
                 deliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")))
-            .orderBy(deliveryStatusHistory.delivery.deliveryNo.asc())
-            .limit(1L)
             .fetch();
     }
 
@@ -65,7 +63,7 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
                 delivery.order.orderNo,
                 delivery.trackingNo,
                 deliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")))
-            .where(deliveryStatusHistory.deliveryStatus.deliveryStatusEnum.stringValue().eq(
+            .where(deliveryStatus.deliveryStatusEnum.stringValue().eq(
                 DeliveryStatusEnum.WAIT_DELIVERY.getDeliveryStatus()))
             .fetch();
     }
@@ -83,7 +81,7 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(deliveryStatus)
             .on(deliveryStatusHistory.deliveryStatus.eq(deliveryStatus))
             .fetchJoin()
-            .where(deliveryStatusHistory.deliveryStatus.deliveryStatusEnum.stringValue().eq(
+            .where(deliveryStatus.deliveryStatusEnum.stringValue().eq(
                 DeliveryStatusEnum.WAIT_DELIVERY.getDeliveryStatus()))
             .fetch();
     }

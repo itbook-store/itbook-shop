@@ -69,5 +69,7 @@ public class DeliveryStatusHistory {
         this.delivery = delivery;
         this.historyLocation = historyLocation;
         this.deliveryStatus = deliveryStatus;
+
+        this.deliveryStatusCreatedAt = LocalDateTime.now();
     }
 }

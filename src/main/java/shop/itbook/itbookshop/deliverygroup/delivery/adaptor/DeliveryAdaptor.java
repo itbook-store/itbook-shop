@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.adaptor;
 
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -35,12 +36,17 @@ public class DeliveryAdaptor<T> {
      * @return 배송 더미 서버로부터 받은 배송 등록 정보.
      * @author 정재원
      */
-    public ResponseEntity<CommonResponseBody<DeliveryDetailResponseDto>> postDelivery(
+    public DeliveryDetailResponseDto postDelivery(
         String uri, HttpEntity<DeliveryServerRequestDto> http) {
 
-        return restTemplate.exchange(uri, HttpMethod.POST, http,
-            new ParameterizedTypeReference<>() {
-            });
+        ResponseEntity<CommonResponseBody<DeliveryDetailResponseDto>> exchange =
+            restTemplate.exchange(uri, HttpMethod.POST, http,
+                new ParameterizedTypeReference<>() {
+                });
+
+        // TODO: 2023/01/15 에러 체크 추가.
+
+        return Objects.requireNonNull(exchange.getBody()).getResult();
     }
 
     /**
@@ -51,11 +57,14 @@ public class DeliveryAdaptor<T> {
      * @return 배송 더미 서버로부터 받은 배송 등록 정보.
      * @author 정재원
      */
-    public ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> postDeliveryList(
+    public List<DeliveryDetailResponseDto> postDeliveryList(
         String uri, HttpEntity<DeliveryServerRequestDto> http) {
 
-        return restTemplate.exchange(uri, HttpMethod.POST, http,
-            new ParameterizedTypeReference<>() {
-            });
+        ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> exchange =
+            restTemplate.exchange(uri, HttpMethod.POST, http,
+                new ParameterizedTypeReference<>() {
+                });
+
+        return exchange.getBody().getResult();
     }
 }

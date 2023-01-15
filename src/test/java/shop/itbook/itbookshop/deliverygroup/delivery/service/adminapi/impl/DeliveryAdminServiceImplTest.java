@@ -68,18 +68,8 @@ class DeliveryAdminServiceImplTest {
             .trackingNo(testTrackingNo)
             .build();
 
-        CommonResponseBody<DeliveryDetailResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(), "테스트 성공"),
-            deliveryResponseDto
-        );
-
-        ResponseEntity<CommonResponseBody<DeliveryDetailResponseDto>> responseEntity =
-            new ResponseEntity<>(
-                commonResponseBody, HttpStatus.CREATED
-            );
-
         given(deliveryAdaptor.postDelivery(anyString(), any(HttpEntity.class))).willReturn(
-            responseEntity);
+            deliveryResponseDto);
 
         DeliveryDetailResponseDto resultResponseDto =
             deliveryService.sendDelivery(deliveryRequestDto);

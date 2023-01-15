@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -72,12 +74,7 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
             .fromUriString("http://localhost:8083" + deliveryPostPath).encode();
 
-        ResponseEntity<CommonResponseBody<DeliveryDetailResponseDto>> responseEntity =
-            deliveryAdaptor.postDelivery(uriComponentsBuilder.toUriString(), http);
-
-        // TODO: 2023/01/13 DB 저장 로직. 
-
-        return Objects.requireNonNull(responseEntity.getBody()).getResult();
+        return deliveryAdaptor.postDelivery(uriComponentsBuilder.toUriString(), http);
     }
 
     /**
@@ -114,29 +111,37 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
             .fromUriString("http://localhost:8083" + deliveryPostPath).encode();
 
-        ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> responseEntity =
-            deliveryAdaptor.postDeliveryList(uriComponentsBuilder.toUriString(), http);
-
         List<DeliveryDetailResponseDto> result =
-            Objects.requireNonNull(responseEntity.getBody()).getResult();
+            deliveryAdaptor.postDeliveryList(uriComponentsBuilder.toUriString(), http);
 
         Queue<DeliveryDetailResponseDto> deliveryDetailResponseDtoQueue =
             new LinkedList<>(result);
 
-        deliveryList.stream().forEach(delivery -> {
-            DeliveryStatus deliveryStatus = deliveryStatusRepository.findByDeliveryStatusEnum(
-                DeliveryStatusEnum.DELIVERY_IN_PROGRESS).orElseThrow(
-                DeliveryStatusNotFoundException::new);
+        DeliveryStatus deliveryStatus = deliveryStatusRepository.findByDeliveryStatusEnum(
+            DeliveryStatusEnum.DELIVERY_IN_PROGRESS).orElseThrow(
+            DeliveryStatusNotFoundException::new);
+
+        deliveryList.forEach(delivery -> {
+
+            delivery.setTrackingNo(deliveryDetailResponseDtoQueue.peek().getTrackingNo());
 
             DeliveryStatusHistory deliveryStatusHistory = DeliveryStatusHistory.builder()
                 .delivery(delivery)
                 .historyLocation(
-                    stringBuffer.append(deliveryDetailResponseDtoQueue.poll().getReceiverAddress())
+                    stringBuffer.append(
+                            Objects.requireNonNull(deliveryDetailResponseDtoQueue.peek())
+                                .getReceiverAddress())
                         .append(" ")
-                        .append(deliveryDetailResponseDtoQueue.poll().getReceiverDetailAddress())
+                        .append(Objects.requireNonNull(deliveryDetailResponseDtoQueue.poll())
+                            .getReceiverDetailAddress())
                         .toString())
                 .deliveryStatus(deliveryStatus)
                 .build();
+
+            stringBuffer.delete(0, stringBuffer.length());
+
+            deliveryRepository.save(delivery);
+            deliveryStatusHistoryRepository.save(deliveryStatusHistory);
         });
 
         return result;

@@ -37,7 +37,7 @@ public class Delivery {
     private Order order;
 
     @Column(name = "tracking_no", columnDefinition = "varchar(255)",
-        unique = true, nullable = false)
+        unique = true)
     private String trackingNo;
 
     /**
