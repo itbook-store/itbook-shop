@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class CategoryAllFieldResponseDto {
+public class CategoryDetailsResponseDto {
 
     private Integer categoryNo;
 

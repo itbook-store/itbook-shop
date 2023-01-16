@@ -19,29 +19,29 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
-import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
+import shop.itbook.itbookshop.category.service.CategoryService;
+import shop.itbook.itbookshop.category.service.impl.CategoryServiceImpl;
 
 /**
  * @author 최겸준
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@Import(CategoryAdminServiceImpl.class)
-class CategoryAdminServiceImplTest {
+@Import(CategoryServiceImpl.class)
+class CategoryServiceImplTest {
 
     @Autowired
-    CategoryAdminService categoryAdminService;
+    CategoryService categoryService;
 
     @MockBean
     CategoryRepository categoryRepository;
@@ -74,7 +74,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(dummyCategory);
 
         // when
-        Integer actual = categoryAdminService.addCategory(categoryRequestDto);
+        Integer actual = categoryService.addCategory(categoryRequestDto);
 
         // then
         assertThat(actual)
@@ -103,7 +103,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.of(dummyCategory));
 
         // when
-        Integer actual = categoryAdminService.addCategory(categoryRequestDto);
+        Integer actual = categoryService.addCategory(categoryRequestDto);
 
         // then
         assertThat(actual)
@@ -114,20 +114,19 @@ class CategoryAdminServiceImplTest {
     @Test
     void findCategoryList() {
         // given
-        CategoryAllFieldResponseDto category1 = new CategoryAllFieldResponseDto();
+        CategoryListResponseDto category1 = new CategoryListResponseDto();
         ReflectionTestUtils.setField(category1, "categoryNo", 1);
         ReflectionTestUtils.setField(category1, "categoryName", "도서");
 
-        CategoryAllFieldResponseDto category2 = new CategoryAllFieldResponseDto();
+        CategoryListResponseDto category2 = new CategoryListResponseDto();
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
-        given(categoryRepository.findCategoryListFetch(null))
+        given(categoryRepository.findCategoryListByEmployee())
             .willReturn(List.of(category1, category2));
 
         // when
-        List<CategoryAllFieldResponseDto> categoryList = categoryAdminService.findCategoryList(
-            null);
+        List<CategoryListResponseDto> categoryList = categoryService.findCategoryListByEmployee();
 
         // then
         assertThat(categoryList.get(0).getCategoryNo())
@@ -143,23 +142,23 @@ class CategoryAdminServiceImplTest {
     @DisplayName("자식 카테고리들을 가져오는경우 반환받은 값을 잘 가져온다.")
     @Test
     void findCategoryChildList() {
-        CategoryWithoutParentFieldResponseDto response1 =
-            new CategoryWithoutParentFieldResponseDto();
+        CategoryListResponseDto response1 =
+            new CategoryListResponseDto();
         ReflectionTestUtils.setField(response1, "categoryNo", 3);
         ReflectionTestUtils.setField(response1, "categoryName", "객체지향의사실과오해");
 
-        CategoryWithoutParentFieldResponseDto response2 =
-            new CategoryWithoutParentFieldResponseDto();
+        CategoryListResponseDto response2 =
+            new CategoryListResponseDto();
         ReflectionTestUtils.setField(response2, "categoryNo", 4);
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
         // given
-        given(categoryRepository.findCategoryChildListThroughParentCategoryNo(anyInt(), any()))
+        given(categoryRepository.findCategoryListAboutChild(anyInt()))
             .willReturn(List.of(response1, response2));
 
         // when
-        List<CategoryWithoutParentFieldResponseDto> categoryList =
-            categoryAdminService.findCategoryChildList(1, null);
+        List<CategoryListResponseDto> categoryList =
+            categoryService.findCategoryListAboutChild(1);
 
         // then
         assertThat(categoryList.get(0).getCategoryNo())
@@ -189,7 +188,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.of(dummyCategory));
 
         // when
-        Category category = categoryAdminService.findCategoryEntity(1);
+        Category category = categoryService.findCategoryEntity(1);
 
         // then
         assertThat(category.getCategoryNo())
@@ -204,7 +203,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> categoryAdminService.findCategoryEntity(1))
+        assertThatThrownBy(() -> categoryService.findCategoryEntity(1))
             .isInstanceOf(CategoryNotFoundException.class)
             .hasMessage(CategoryNotFoundException.MESSAGE);
     }
@@ -226,7 +225,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.of(dummyCategory));
 
         // when
-        Category category = categoryAdminService.findCategoryEntity(1);
+        Category category = categoryService.findCategoryEntity(1);
 
         // then
         assertThat(category.getCategoryNo())
@@ -243,7 +242,7 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.empty());
 
         // when
-        assertThatThrownBy(() -> categoryAdminService.findCategoryEntityFetch(1))
+        assertThatThrownBy(() -> categoryService.findCategoryEntityFetch(1))
             .isInstanceOf(CategoryNotFoundException.class)
             .hasMessage(CategoryNotFoundException.MESSAGE);
     }
@@ -259,8 +258,8 @@ class CategoryAdminServiceImplTest {
             .willReturn(Optional.of(bookCategory));
 
         //when
-        CategoryAllFieldResponseDto actual =
-            categoryAdminService.findCategoryAllFieldResponseDtoThroughCategoryNo(1);
+        CategoryDetailsResponseDto actual =
+            categoryService.findCategoryDetailsResponseDto(1);
 
         //then
         assertThat(actual.getCategoryName())
@@ -275,7 +274,7 @@ class CategoryAdminServiceImplTest {
         Category category = mock(Category.class);
         given(categoryRepository.findCategoryFetch(anyInt())).willReturn(
             Optional.of(category));
-        categoryAdminService.modifyCategory(1, categoryRequestDto);
+        categoryService.modifyCategory(1, categoryRequestDto);
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
@@ -291,7 +290,7 @@ class CategoryAdminServiceImplTest {
             Optional.of(category));
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(category));
-        categoryAdminService.modifyCategory(1, categoryRequestDto);
+        categoryService.modifyCategory(1, categoryRequestDto);
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
@@ -301,7 +300,7 @@ class CategoryAdminServiceImplTest {
     @DisplayName("삭제행위가 잘 이루어진다.")
     @Test
     void removeCategory() {
-        categoryAdminService.removeCategory(1);
+        categoryService.removeCategory(1);
         verify(categoryRepository).deleteById(1);
     }
 }

@@ -3,8 +3,7 @@ package shop.itbook.itbookshop.category.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
 /**
@@ -23,7 +22,11 @@ public interface CustomCategoryRepository {
      * @return 모든 카테고리 리스트를 반환합니다.
      * @author 최겸준
      */
-    List<CategoryAllFieldResponseDto> findCategoryListFetch(Boolean isHidden);
+    List<CategoryListResponseDto> findCategoryListByEmployee();
+
+    List<CategoryListResponseDto> findCategoryListByNotEmployee();
+
+    List<CategoryListResponseDto> findMainCategoryList();
 
     /**
      * 부모카테고리를 통해서 자식카테고리들을 찾는 기능을 담당합니다.
@@ -33,8 +36,7 @@ public interface CustomCategoryRepository {
      * @param isHidden         카테고리 조회 조건으로서 관리자가 사용자에게 숨겼는지 숨기지 않았는지를 나타냅니다. null일시에는 모든 카테고리를 조회합니다.
      * @return 부모카테고리의 정보를 제외한 자식카테고리들의 정보를 반환합니다.
      */
-    List<CategoryWithoutParentFieldResponseDto> findCategoryChildListThroughParentCategoryNo(
-        Integer parentCategoryNo, Boolean isHidden);
+    List<CategoryListResponseDto> findCategoryListAboutChild(Integer parentCategoryNo);
 
     /**
      * 카테고리를 조회할때 부모카테고리까지 조인하여 조회합니다.
