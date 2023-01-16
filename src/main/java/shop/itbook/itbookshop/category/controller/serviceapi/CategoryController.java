@@ -31,22 +31,17 @@ public class CategoryController {
     /**
      * 관리자가 숨기지 않은 카테고리를 조회할때 요청을 받고 반환하는 기능을 담당하는 메서드 입니다.
      *
-     * @param categoryNo 조회해야할 카테고리의 번호를 의미합니다.
      * @author 최겸준
      */
     @GetMapping
 
     public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
-        log.error("##################################### 들어왔다 카테고리 조회");
-        log.error("##################################### 들어왔다 카테고리 조회");
         CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 categoryService.findCategoryListByNotEmployee());
 
-        log.error("##################################### 나간다 카테고리 조회");
-        log.error("##################################### 나간다 카테고리 조회");
         return ResponseEntity.ok().body(commonResponseBody);
     }
 }
