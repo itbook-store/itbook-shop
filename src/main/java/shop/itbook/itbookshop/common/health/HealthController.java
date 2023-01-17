@@ -1,12 +1,12 @@
 package shop.itbook.itbookshop.common.health;
 
 import java.util.Objects;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.itbook.itbookshop.common.response.CommonResponseBody;
 
 /**
  * 로드 밸런서 헬스 체크를 위한 컨트롤러입니다.
@@ -37,15 +37,17 @@ public class HealthController {
     }
 
     @PutMapping(value = "/monitor/l7check")
-    public ResponseEntity<String> healthStatusModify(
+    public ResponseEntity<CommonResponseBody<CommonResponseBody.CommonHeader>> healthStatusModify(
         @RequestParam(required = false) String healthStatus) {
 
         if (Objects.isNull(healthStatus)) {
             this.isOk = OK;
-            return ResponseEntity.ok(OK_MESSAGE);
+            return ResponseEntity.ok(
+                new CommonResponseBody<>(new CommonResponseBody.CommonHeader(OK_MESSAGE), null));
         }
 
         this.isOk = INTERNAL;
-        return ResponseEntity.ok(INTERNAL_MESSAGE);
+        return ResponseEntity.ok(
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(INTERNAL_MESSAGE), null));
     }
 }
