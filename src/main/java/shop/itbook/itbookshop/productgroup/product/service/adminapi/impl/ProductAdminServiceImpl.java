@@ -1,8 +1,11 @@
 package shop.itbook.itbookshop.productgroup.product.service.adminapi.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.book.service.adminapi.BookAdminService;
+import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -23,6 +26,7 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 public class ProductAdminServiceImpl implements ProductAdminService {
 
     private final ProductRepository productRepository;
+    private final BookAdminService bookService;
 
     /**
      * {@inheritDoc}
@@ -59,8 +63,8 @@ public class ProductAdminServiceImpl implements ProductAdminService {
         product.setSimpleDescription(requestDto.getSimpleDescription());
         product.setDetailsDescription(requestDto.getDetailsDescription());
         product.setStock(requestDto.getStock());
-        product.setIsSelled(requestDto.isSelled());
-        product.setIsDeleted(requestDto.isDeleted());
+        product.setIsSelled(requestDto.getIsSelled());
+        product.setIsDeleted(requestDto.getIsDeleted());
         product.setThumbnailUrl(requestDto.getThumbnailUrl());
         product.setFixedPrice(requestDto.getFixedPrice());
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());

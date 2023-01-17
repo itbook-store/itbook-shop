@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service.adminapi;
 
+import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -20,13 +21,15 @@ public interface ProductAdminService {
      */
     Long addProduct(AddProductRequestDto requestDto);
 
+
     /**
-     * 상품 수정을 담당하는 메서드입니다.
+     * 도서 등록을 담당하는 메서드입니다.
      *
-     * @param productNo  수정할 상품 번호입니다.
-     * @param requestDto 상품 수정을 위한 정보를 담은 dto 객체입니다.
+     * @param requestDto 도서 등록을 위한 정보를 담은 dto 객체입니다.
+     * @return Pk 값인 상품 번호를 반환합니다.
      * @author 이하늬
      */
+
     void modifyProduct(Long productNo, ModifyProductRequestDto requestDto);
 
     /**

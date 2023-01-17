@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
@@ -52,6 +53,7 @@ public class ProductAdminController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
+    
 
     /**
      * 상품 수정을 요청하는 메서드입니다.

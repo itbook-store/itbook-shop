@@ -12,7 +12,7 @@ import shop.itbook.itbookshop.book.entity.Book;
  * @since 1.0
  */
 @Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, Long>, BookRepositoryCustom {
 
     Optional<Book> findById(Long productNo);
 

@@ -73,6 +73,7 @@ public class Product {
     @Column(name = "raw_price", nullable = false)
     private Long rawPrice;
 
+
     /**
      * 빌터 패턴을 적용한 생성자입니다.
      *

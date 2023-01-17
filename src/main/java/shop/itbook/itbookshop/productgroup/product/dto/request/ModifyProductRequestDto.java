@@ -34,10 +34,10 @@ public class ModifyProductRequestDto {
     private Integer stock;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isSelled;
+    private Boolean isSelled;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     private String thumbnailUrl;

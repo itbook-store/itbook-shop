@@ -54,6 +54,9 @@ public class Book {
     @Column(name = "publisher_name", nullable = false, columnDefinition = "varchar(20)")
     private String publisherName;
 
+    @Column(name = "author_name", nullable = false, columnDefinition = "varchar(255)")
+    private String authorName;
+
     /**
      * 빌터 패턴을 적용한 생성자입니다.
      *
@@ -64,15 +67,15 @@ public class Book {
      * @param bookCreatedAt 도서 발간일입니다.
      * @param isEbook       도서 전자책 여부입니다.
      * @param ebookUrl      도서 전자책 url입니다.
-     * @param publisherName 도서 출판사 명 입니다.
+     * @param publisherName 도서 출판사명 입니다.
+     * @param authorName    도서 저자명 입니다.
      * @author
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Book(Long productNo, Product product, String isbn, Integer pageCount,
-                LocalDateTime bookCreatedAt, boolean isEbook,
-                String ebookUrl,
-                String publisherName) {
+                LocalDateTime bookCreatedAt, Boolean isEbook,
+                String ebookUrl, String publisherName, String authorName) {
         this.productNo = productNo;
         this.product = product;
         this.isbn = isbn;
@@ -81,5 +84,6 @@ public class Book {
         this.isEbook = isEbook;
         this.ebookUrl = ebookUrl;
         this.publisherName = publisherName;
+        this.authorName = authorName;
     }
 }

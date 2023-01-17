@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.productgroup.product.transfer;
 
+import java.time.LocalDateTime;
+import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
@@ -24,12 +26,27 @@ public class ProductTransfer {
         return Product.builder().name(requestDto.getName())
             .simpleDescription(requestDto.getSimpleDescription())
             .detailsDescription(requestDto.getDetailsDescription()).stock(requestDto.getStock())
-            .isSelled(requestDto.isSelled()).isDeleted(requestDto.isDeleted())
+            .isSelled(requestDto.getIsSelled()).isDeleted(requestDto.getIsDeleted())
             .thumbnailUrl(requestDto.getThumbnailUrl())
             .fixedPrice(requestDto.getFixedPrice())
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent()).rawPrice(requestDto.getRawPrice())
             .build();
     }
+
+    public static Product dtoToEntityAdd(AddProductBookRequestDto requestDto) {
+
+        return Product.builder().name(requestDto.getProductName())
+            .simpleDescription(requestDto.getSimpleDescription())
+            .detailsDescription(requestDto.getDetailsDescription()).stock(requestDto.getStock())
+            .isSelled(requestDto.isSelled()).isDeleted(requestDto.isDeleted())
+            .thumbnailUrl(requestDto.getFileThumbnailsUrl())
+            .fixedPrice(requestDto.getFixedPrice()).dailyHits(0L)
+            .productCreatedAt(LocalDateTime.now())
+            .increasePointPercent(requestDto.getIncreasePointPercent())
+            .discountPercent(requestDto.getDiscountPercent()).rawPrice(requestDto.getRawPrice())
+            .build();
+    }
+
 
 }

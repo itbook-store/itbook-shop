@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
  * @author 이하늬
