@@ -21,7 +21,7 @@ import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearch
  * @since 1.0
  */
 @Controller
-@RequestMapping("/api/admin/products")
+@RequestMapping("/api/admin/products/search")
 @RequiredArgsConstructor
 public class ProductElasticController {
     private final ProductSearchService productSearchService;
