@@ -31,15 +31,15 @@ public class HealthController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @PutMapping(value = "/monitor/l7check", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PutMapping(value = "/monitor/l7check")
     public ResponseEntity<String> healthStatusModify(@RequestParam String healthStatus) {
 
         if (Objects.isNull(healthStatus)) {
             this.isOk = OK;
-            return ResponseEntity.ok("now server status is OK 200");
+            return ResponseEntity.ok("\"result\" : \"now server status is OK 200\"");
         }
 
         this.isOk = INTERNAL;
-        return ResponseEntity.ok("now server status is INTERNAL 500");
+        return ResponseEntity.ok("\"result\" : \"now server status is INTERNAL 500\"");
     }
 }
