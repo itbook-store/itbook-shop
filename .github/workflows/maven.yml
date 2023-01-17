@@ -76,7 +76,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
-          script: "./deployed_server1.sh"
+          script: "./ready_server1.sh"
 
 
         ### phase 2
@@ -126,4 +126,4 @@ jobs:
           key: ${{ secrets.SSH_KEY2 }}
           port: ${{ secrets.SSH_PORT2 }}
           script_stop: true
-          script: "./deployed_server2.sh"
+          script: "./ready_server2.sh"
