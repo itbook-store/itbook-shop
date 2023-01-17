@@ -21,6 +21,11 @@ public class HealthController {
     private static final Boolean OK = Boolean.TRUE;
     private static final Boolean INTERNAL = Boolean.FALSE;
 
+    private static final String OK_MESSAGE = "\"result\" : \"now server status is OK 200\"";
+    private static final String INTERNAL_MESSAGE =
+        "\"result\" : \"now server status is INTERNAL 500\"";
+
+
     @GetMapping("/monitor/l7check")
     public ResponseEntity<Void> health() {
 
@@ -32,14 +37,15 @@ public class HealthController {
     }
 
     @PutMapping(value = "/monitor/l7check")
-    public ResponseEntity<String> healthStatusModify(@RequestParam String healthStatus) {
+    public ResponseEntity<String> healthStatusModify(
+        @RequestParam(required = false) String healthStatus) {
 
         if (Objects.isNull(healthStatus)) {
             this.isOk = OK;
-            return ResponseEntity.ok("\"result\" : \"now server status is OK 200\"");
+            return ResponseEntity.ok(OK_MESSAGE);
         }
 
         this.isOk = INTERNAL;
-        return ResponseEntity.ok("\"result\" : \"now server status is INTERNAL 500\"");
+        return ResponseEntity.ok(INTERNAL_MESSAGE);
     }
 }

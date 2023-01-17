@@ -43,7 +43,7 @@ public class MemberAdminController {
 
         CommonResponseBody<MemberResponseProjectionDto> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberAdminService.findMember(memberId)
             );
@@ -62,7 +62,7 @@ public class MemberAdminController {
 
         CommonResponseBody<List<MemberResponseProjectionDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberAdminService.findMemberList());
 
@@ -87,7 +87,7 @@ public class MemberAdminController {
         memberAdminService.modifyMember(memberId, requestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
             null
         );
