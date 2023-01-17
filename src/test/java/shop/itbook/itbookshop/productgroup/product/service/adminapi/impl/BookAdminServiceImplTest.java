@@ -17,10 +17,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.itbook.itbookshop.book.repository.BookRepository;
+import shop.itbook.itbookshop.book.service.adminapi.BookAdminService;
+import shop.itbook.itbookshop.book.service.adminapi.impl.BookAdminServiceImpl;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -34,14 +38,20 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = ProductAdminServiceImpl.class)
-class ProductAdminServiceImplTest {
+@ContextConfiguration(classes = {ProductAdminServiceImpl.class, BookAdminServiceImpl.class})
+class BookAdminServiceImplTest {
 
     @Autowired
     ProductAdminService productService;
 
+    @Autowired
+    BookAdminService bookAdminService;
+
     @MockBean
     ProductRepository mockProductRepository;
+
+    @MockBean
+    BookRepository mockBookRepository;
 
     AddProductRequestDto addProductRequestDto;
     ModifyProductRequestDto modifyProductRequestDto;
