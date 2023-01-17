@@ -68,6 +68,11 @@ jobs:
           script_stop: true
           script: "./startup.sh"
 
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
+
       - name : complete server1 deployment (excute shell script)
         uses: appleboy/ssh-action@master
         with:
@@ -117,6 +122,11 @@ jobs:
           port: ${{ secrets.SSH_PORT2 }}
           script_stop: true
           script: "./startup.sh"
+
+      - name: Sleep for 10 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '10s'
 
       - name : complete server2 deployment (excute shell script)
         uses: appleboy/ssh-action@master
