@@ -5,7 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
@@ -91,14 +91,14 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public MemberAuthResponseDto findAuthInfoByMemberId(String memberId) {
-        return jpaQueryFactory.from(qmember)
+    public Optional<MemberAuthInfoResponseDto> findAuthInfoByMemberId(String memberId) {
+        return Optional.ofNullable(jpaQueryFactory.from(qmember)
             .where(qmember.memberId.eq(memberId))
             .select(Projections.constructor(
-                MemberAuthResponseDto.class,
+                MemberAuthInfoResponseDto.class,
                 qmember.memberNo,
                 qmember.memberId,
                 qmember.password
-            )).fetchOne();
+            )).fetchOne());
     }
 }
