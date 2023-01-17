@@ -71,7 +71,7 @@ jobs:
       - name: Sleep for 60 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '10s'
+          time: '15s'
 
       - name : complete server1 deployment (excute shell script)
         uses: appleboy/ssh-action@master
@@ -126,7 +126,7 @@ jobs:
       - name: Sleep for 60 seconds
         uses: jakejarvis/wait-action@master
         with:
-          time: '10s'
+          time: '15s'
 
       - name : complete server2 deployment (excute shell script)
         uses: appleboy/ssh-action@master
