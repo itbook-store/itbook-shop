@@ -34,14 +34,15 @@ public class CategoryController {
      * @author 최겸준
      */
     @GetMapping
-
     public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
+        log.info("####### 카테고리리스트 메소드 시작");
         CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 categoryService.findCategoryListByNotEmployee());
 
+        log.info("####### 카테고리리스트 메소드 종료");
         return ResponseEntity.ok().body(commonResponseBody);
     }
 }
