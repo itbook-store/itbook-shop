@@ -31,7 +31,6 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdmin
 public class ProductAdminController {
 
     private final ProductAdminService productService;
-    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
     /**
      * 상품 등록을 요청하는 메서드입니다.
@@ -48,7 +47,7 @@ public class ProductAdminController {
             new AddProductResponseDto(productService.addProduct(addProductRequestDto));
 
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -70,7 +69,7 @@ public class ProductAdminController {
         productService.modifyProduct(productId, modifyProductRequestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
@@ -88,7 +87,7 @@ public class ProductAdminController {
         productService.removeProduct(productId);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.NO_CONTENT.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);

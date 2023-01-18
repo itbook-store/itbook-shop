@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.category.controller.adminapi;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -24,9 +25,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
-import shop.itbook.itbookshop.category.service.adminapi.CategoryAdminService;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
+import shop.itbook.itbookshop.category.service.CategoryService;
 
 /**
  * @author 최겸준
@@ -42,7 +43,7 @@ class CategoryAdminControllerTest {
     CategoryAdminController categoryAdminController;
 
     @MockBean
-    CategoryAdminService categoryAdminService;
+    CategoryService categoryService;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -60,7 +61,7 @@ class CategoryAdminControllerTest {
 
         Integer testNo = 1;
 
-        given(categoryAdminService.addCategory(any(CategoryRequestDto.class)))
+        given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willReturn(testNo);
 
         // when then
@@ -77,15 +78,15 @@ class CategoryAdminControllerTest {
     @Test
     void categoryList() throws Exception {
 
-        CategoryAllFieldResponseDto category1 = new CategoryAllFieldResponseDto();
+        CategoryListResponseDto category1 = new CategoryListResponseDto();
         ReflectionTestUtils.setField(category1, "categoryNo", 1);
         ReflectionTestUtils.setField(category1, "categoryName", "도서");
 
-        CategoryAllFieldResponseDto category2 = new CategoryAllFieldResponseDto();
+        CategoryListResponseDto category2 = new CategoryListResponseDto();
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
-        given(categoryAdminService.findCategoryList(null))
+        given(categoryService.findCategoryListByEmployee())
             .willReturn(List.of(category1, category2));
 
         mvc.perform(get("/api/admin/categories"))
@@ -101,17 +102,17 @@ class CategoryAdminControllerTest {
     @Test
     void categoryChildList() throws Exception {
 
-        CategoryWithoutParentFieldResponseDto response1 =
-            new CategoryWithoutParentFieldResponseDto();
+        CategoryListResponseDto response1 =
+            new CategoryListResponseDto();
         ReflectionTestUtils.setField(response1, "categoryNo", 3);
         ReflectionTestUtils.setField(response1, "categoryName", "객체지향의사실과오해");
 
-        CategoryWithoutParentFieldResponseDto response2 =
-            new CategoryWithoutParentFieldResponseDto();
+        CategoryListResponseDto response2 =
+            new CategoryListResponseDto();
         ReflectionTestUtils.setField(response2, "categoryNo", 4);
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
-        given(categoryAdminService.findCategoryChildList(anyInt(), any()))
+        given(categoryService.findCategoryListAboutChild(anyInt()))
             .willReturn(List.of(response1, response2));
 
         mvc.perform(get("/api/admin/categories/1/child-categories"))
@@ -128,14 +129,14 @@ class CategoryAdminControllerTest {
     void categoryDetails() throws Exception {
 
         // given
-        CategoryAllFieldResponseDto categoryResponseDto = CategoryAllFieldResponseDto.builder()
+        CategoryDetailsResponseDto categoryResponseDto = CategoryDetailsResponseDto.builder()
             .categoryNo(1)
             .parentCategoryNo(1)
             .categoryName("도서")
             .isHidden(false)
             .build();
 
-        given(categoryAdminService.findCategoryAllFieldResponseDtoThroughCategoryNo(any()))
+        given(categoryService.findCategoryDetailsResponseDto(any()))
             .willReturn(categoryResponseDto);
 
         // when
@@ -169,8 +170,7 @@ class CategoryAdminControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @DisplayName("카테고리 삭제요청이 잘가고 결과가 잘 받아와진다.")
@@ -188,7 +188,6 @@ class CategoryAdminControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
             .andExpect(status().isNoContent())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

@@ -1,16 +1,15 @@
 package shop.itbook.itbookshop.category.repository.impl;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.itbook.itbookshop.category.dto.response.CategoryAllFieldResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryWithoutParentFieldResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.entity.QCategory;
 import shop.itbook.itbookshop.category.repository.CustomCategoryRepository;
+import shop.itbook.itbookshop.productgroup.productcategory.entity.QProductCategory;
 
 /**
  * CustomCategoryRepository 의 기능들을 구현하기 위해서 만든 클래스입니다.
@@ -20,6 +19,9 @@ import shop.itbook.itbookshop.category.repository.CustomCategoryRepository;
  */
 public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     CustomCategoryRepository {
+
+    private static final Integer MAIN_CATEGORY_LEVEL = 0;
+
     public CategoryRepositoryImpl() {
         super(Category.class);
     }
@@ -28,58 +30,96 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryAllFieldResponseDto> findCategoryListFetch(Boolean isHidden) {
+    public List<CategoryListResponseDto> findCategoryListByEmployee() {
 
-        QCategory qChildCategory = new QCategory("childCategory");
+        QCategory qCategory = QCategory.category;
         QCategory qParentCategory = new QCategory("parentCategory");
+        QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        BooleanBuilder builder = new BooleanBuilder();
-        setBuilder(builder, qChildCategory, isHidden);
-
-        return from(qChildCategory)
-            .leftJoin(qChildCategory.parentCategory, qParentCategory)
-            .select(Projections.fields(CategoryAllFieldResponseDto.class,
-                qChildCategory.categoryNo,
-                qChildCategory.categoryName,
-                qChildCategory.isHidden,
-                qChildCategory.level,
-                qChildCategory.parentCategory.categoryNo.as("parentCategoryNo"),
-                qChildCategory.parentCategory.categoryName.as("parentCategoryName"),
-                qChildCategory.parentCategory.isHidden.as("parentCategoryIsHidden"),
-                qChildCategory.parentCategory.level.as("parentCategoryLevel")))
-            .where(builder)
-            .fetch();
+        return getCategoryListJPQLQuery(qCategory, qParentCategory, qProductCategory)
+                    .fetch();
     }
 
-    private void setBuilder(BooleanBuilder builder, QCategory qCategory, Boolean isHidden) {
+    public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
 
-        if (Objects.isNull(isHidden)) {
-            return;
-        }
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
+        QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        builder.and(qCategory.isHidden.eq(isHidden));
+        return getCategoryListJPQLQuery(qCategory, qParentCategory, qProductCategory)
+                   .where(qCategory.isHidden.eq(false)
+                        .and(qParentCategory.isHidden.eq(false)))
+                    .fetch();
     }
+
+    private JPQLQuery<CategoryListResponseDto> getCategoryListJPQLQuery(QCategory qCategory, QCategory qParentCategory,
+                                                         QProductCategory qProductCategory) {
+        return from(qCategory)
+                .leftJoin(qParentCategory)
+                    .on(qCategory.categoryNo.eq(qParentCategory.parentCategory.categoryNo))
+                .leftJoin(qProductCategory)
+                    .on(qProductCategory.category.categoryNo.eq(qParentCategory.categoryNo))
+                .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
+                .groupBy(qCategory.categoryNo, qParentCategory.categoryNo)
+                .orderBy(qCategory.sequence.asc(), qParentCategory.level.asc(),
+                    qParentCategory.sequence.asc())
+                .select(Projections.fields(CategoryListResponseDto.class,
+                    qParentCategory.categoryNo,
+                    qParentCategory.parentCategory.categoryNo.as("parent_category_no"),
+                    qParentCategory.categoryName,
+                    qParentCategory.isHidden,
+                    qParentCategory.level,
+                    qParentCategory.sequence,
+                    qProductCategory.category.categoryNo.count().as("count")));
+    }
+
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public List<CategoryWithoutParentFieldResponseDto> findCategoryChildListThroughParentCategoryNo(
-        Integer parentCategoryNo, Boolean isHidden) {
-
+    public List<CategoryListResponseDto> findCategoryListAboutChild(
+        Integer parentCategoryNo) {
         QCategory qCategory = QCategory.category;
-
-        BooleanBuilder builder = new BooleanBuilder();
-        setBuilder(builder, qCategory, isHidden);
+        QProductCategory qProductCategory = QProductCategory.productCategory;
 
         return from(qCategory)
+            .leftJoin(qProductCategory)
+                .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
             .where(qCategory.parentCategory.categoryNo.eq(parentCategoryNo))
-            .where(builder)
-            .select(Projections.fields(CategoryWithoutParentFieldResponseDto.class,
+            .orderBy(qCategory.level.asc(), qCategory.sequence.asc())
+            .groupBy(qCategory.categoryNo)
+            .select(Projections.fields(CategoryListResponseDto.class,
                 qCategory.categoryNo,
+                qCategory.parentCategory.categoryNo.as("parent_category_no"),
                 qCategory.categoryName,
                 qCategory.isHidden,
-                qCategory.level))
+                qCategory.level,
+                qCategory.sequence,
+                qProductCategory.category.categoryNo.count().as("count")
+            ))
+            .fetch();
+    }
+
+    @Override
+    public List<CategoryListResponseDto> findMainCategoryList() {
+        QCategory qCategory = QCategory.category;
+        QProductCategory qProductCategory = QProductCategory.productCategory;
+
+        return from(qCategory)
+            .leftJoin(qProductCategory)
+                .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
+            .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
+            .orderBy(qCategory.sequence.asc())
+            .groupBy(qCategory.categoryNo)
+            .select(Projections.fields(CategoryListResponseDto.class,
+                qCategory.categoryNo,
+                qCategory.parentCategory.categoryNo.as("parent_category_no"),
+                qCategory.categoryName,
+                qCategory.isHidden,
+                qCategory.level,
+                qCategory.sequence,
+                qProductCategory.category.categoryNo.count().as("count")
+            ))
             .fetch();
     }
 
@@ -88,18 +128,16 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
      */
     @Override
     public Optional<Category> findCategoryFetch(Integer categoryNo) {
+
         QCategory qCategory = QCategory.category;
         QCategory qParentCategory = new QCategory("parentCategory");
 
-        Category value = from(qCategory)
+        Optional<Category> category = Optional.of(from(qCategory)
             .leftJoin(qCategory.parentCategory, qParentCategory)
             .fetchJoin()
-//            .leftJoin(qCategory, qCategory.parentCategory)
-//            .fetchJoin()
             .where(qCategory.categoryNo.eq(categoryNo))
             .select(qCategory)
-            .fetchOne();
-
-        return Optional.of(value);
+            .fetchOne());
+        return category;
     }
 }
