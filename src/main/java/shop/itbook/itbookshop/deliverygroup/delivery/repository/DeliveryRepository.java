@@ -11,5 +11,6 @@ import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
  * @since 1.0
  */
 @Repository
-public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
+public interface DeliveryRepository
+    extends JpaRepository<Delivery, Long>, CustomDeliveryRepository {
 }
