@@ -81,6 +81,8 @@ public interface CategoryService {
      */
     void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
 
+    void modifyCategory(Integer categoryNo);
+
     /**
      * 카테고리 삭제에 관한 비지니스 로직을 담당하는 기능입니다.
      *
