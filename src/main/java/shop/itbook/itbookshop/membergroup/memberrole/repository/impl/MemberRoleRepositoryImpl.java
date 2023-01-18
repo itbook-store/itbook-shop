@@ -10,6 +10,8 @@ import shop.itbook.itbookshop.membergroup.memberrole.repository.CustomMemberRole
 import shop.itbook.itbookshop.role.entity.QRole;
 
 /**
+ * 회원 권한에 대한 QueryDsl 입니다.
+ *
  * @author 강명관
  * @since 1.0
  */
