@@ -18,25 +18,6 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 public interface DeliveryAdminService {
 
     /**
-     * 주문이 완료되었을 경우 배송 대기 상태로 배송 정보가 하나 추가 됩니다.
-     *
-     * @param order 완료된 주문 정보
-     * @return 배송 정보 Pk 값의 번호
-     * @author 정재원 *
-     */
-    DeliveryOrderNoResponseDto addDelivery(Order order);
-
-    /**
-     * 배송 관련 서비스 로직을 처리합니다.
-     *
-     * @param deliveryRequestDto 배송 서버에 등록을 요청할 Dto
-     * @return 배송 서버로부터 받은 배송 정보
-     * @throws JsonProcessingException Json 파싱 실패 시 나는 예외
-     * @author 정재원 *
-     */
-    DeliveryDetailResponseDto sendDelivery(DeliveryServerRequestDto deliveryRequestDto);
-
-    /**
      * 배송 엔티티의 리스트를 배송 상태 정보와 함께 반환합니다.
      *
      * @return the list

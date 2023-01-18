@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
-import shop.itbook.itbookshop.deliverygroup.deliverystatus.entity.DeliveryStatus;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.DeliveryStatus;
 
 /**
  * 배송상태이력에 대한 엔티티입니다.

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.deliverygroup.deliverystatus.entity;
+package shop.itbook.itbookshop.deliverygroup.deliverystatus;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;

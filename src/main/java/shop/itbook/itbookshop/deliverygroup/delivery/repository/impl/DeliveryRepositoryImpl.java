@@ -7,7 +7,7 @@ import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithSt
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.CustomDeliveryRepository;
-import shop.itbook.itbookshop.deliverygroup.deliverystatus.entity.QDeliveryStatus;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.QDeliveryStatus;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.QDeliveryStatusHistory;
 

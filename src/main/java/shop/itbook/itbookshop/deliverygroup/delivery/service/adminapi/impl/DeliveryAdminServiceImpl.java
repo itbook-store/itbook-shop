@@ -13,20 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 import shop.itbook.itbookshop.deliverygroup.delivery.adaptor.DeliveryAdaptor;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryOrderNoResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
 import shop.itbook.itbookshop.deliverygroup.delivery.transfer.DeliveryTransfer;
-import shop.itbook.itbookshop.deliverygroup.deliverystatus.entity.DeliveryStatus;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.DeliveryStatus;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.exception.DeliveryStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.repository.DeliveryStatusRepository;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
  * DeliveryService 인터페이스의 기본 구현체 입니다.
@@ -47,33 +45,6 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     @Value("${itbook-server-url.delivery-post-path}")
     private String deliveryPostPath;
     private static final StringBuilder stringBuilder = new StringBuilder();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public DeliveryOrderNoResponseDto addDelivery(Order order) {
-
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public DeliveryDetailResponseDto sendDelivery(DeliveryServerRequestDto deliveryRequestDto) {
-
-        HttpEntity<DeliveryServerRequestDto> http =
-            new HttpEntity<>(deliveryRequestDto);
-
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-            .fromUriString(stringBuilder.append(deliveryUrl).append(deliveryPostPath).toString())
-            .encode();
-
-        return deliveryAdaptor.postDelivery(uriComponentsBuilder.toUriString(), http);
-    }
 
     /**
      * {@inheritDoc}
@@ -109,6 +80,8 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
             .fromUriString(stringBuilder.append(deliveryUrl).append(deliveryPostPath).toString())
             .encode();
+
+        stringBuilder.setLength(0);
 
         List<DeliveryDetailResponseDto> result =
             deliveryAdaptor.postDeliveryList(uriComponentsBuilder.toUriString(), http);

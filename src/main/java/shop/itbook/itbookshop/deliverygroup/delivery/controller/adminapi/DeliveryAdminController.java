@@ -29,20 +29,6 @@ public class DeliveryAdminController {
     private final DeliveryAdminService deliveryService;
 
     /**
-     * 개별 배송을 배송 서버에 요청합니다.
-     *
-     * @param deliveryRequestDto 배송 정보를 담은 요청 Dto
-     * @return 배송 등록 성공한 배송 정보가 담긴 응답 Dto
-     * @author 정재원
-     */
-    @PostMapping("/one")
-    public DeliveryDetailResponseDto addDelivery(
-        @RequestBody DeliveryServerRequestDto deliveryRequestDto) {
-
-        return deliveryService.sendDelivery(deliveryRequestDto);
-    }
-
-    /**
      * 모든 배송 정보를 최신 배송 상태와 함께 리스트로 반환합니다.
      *
      * @return 최신 상태가 포함된 배송 정보

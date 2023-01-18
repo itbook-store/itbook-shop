@@ -2,7 +2,7 @@ package shop.itbook.itbookshop.deliverygroup.deliverystatus.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.itbook.itbookshop.deliverygroup.deliverystatus.entity.DeliveryStatus;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.DeliveryStatus;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 
 /**

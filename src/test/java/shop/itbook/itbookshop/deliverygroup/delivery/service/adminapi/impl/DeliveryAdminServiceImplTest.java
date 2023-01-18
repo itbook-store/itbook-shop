@@ -7,30 +7,26 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Disabled;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.config.ServerConfig;
 import shop.itbook.itbookshop.deliverygroup.delivery.adaptor.DeliveryAdaptor;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
-import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.dummy.DeliveryStatusDummy;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.repository.DeliveryStatusRepository;
+import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 
 /**
@@ -55,7 +51,7 @@ class DeliveryAdminServiceImplTest {
     DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
 
     @Test
-    @DisplayName("서버에 요청을 보내고 값을 받아오는 성공 케이스")
+    @DisplayName("서버에 배송 정보 리스트를 보내고 등록 성공")
     void addDeliveryTest() {
 
         String testTrackingNo = "6557042215056853289";
@@ -78,13 +74,21 @@ class DeliveryAdminServiceImplTest {
             .trackingNo(testTrackingNo)
             .build();
 
-        given(deliveryAdaptor.postDelivery(anyString(), any(HttpEntity.class))).willReturn(
-            deliveryResponseDto);
+        List<DeliveryDetailResponseDto> deliveryDetailResponseDtoList =
+            new ArrayList<>();
 
-        DeliveryDetailResponseDto resultResponseDto =
-            deliveryService.sendDelivery(deliveryRequestDto);
+        deliveryDetailResponseDtoList.add(deliveryResponseDto);
 
-        assertThat(resultResponseDto.getTrackingNo()).isEqualTo(testTrackingNo);
+        given(deliveryAdaptor.postDeliveryList(anyString(), any(HttpEntity.class))).willReturn(
+            deliveryDetailResponseDtoList);
+        given((deliveryStatusRepository.findByDeliveryStatusEnum(
+            any(DeliveryStatusEnum.class)))).willReturn(
+            Optional.of(DeliveryStatusDummy.getDummyWait()));
+
+        List<DeliveryDetailResponseDto> responseDtoList =
+            deliveryService.sendDeliveryListWithStatusWait();
+
+        assertThat(responseDtoList.get(0).getTrackingNo()).isEqualTo(testTrackingNo);
     }
 
     @Test

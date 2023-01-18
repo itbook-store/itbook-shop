@@ -28,27 +28,6 @@ public class DeliveryAdaptor<T extends DeliveryDetailResponseDto> {
     private final RestTemplate restTemplate;
 
     /**
-     * rest template 을 이용해 배송 서버에 요청을 보내고 받아 옵니다.
-     *
-     * @param uri  배송 서버 Url.
-     * @param http 요청할 정보가 담긴 http entity.
-     * @return 배송 더미 서버로부터 받은 배송 등록 정보.
-     * @author 정재원
-     */
-    public T postDelivery(
-        String uri, HttpEntity<DeliveryServerRequestDto> http) {
-
-        ResponseEntity<CommonResponseBody<T>> exchange =
-            restTemplate.exchange(uri, HttpMethod.POST, http,
-                new ParameterizedTypeReference<>() {
-                });
-
-        // TODO: 2023/01/15 에러 체크 추가.
-
-        return Objects.requireNonNull(exchange.getBody()).getResult();
-    }
-
-    /**
      * rest template 을 이용해 배송 정보 리스트를 배송 서버에 요청보내고 받아옵니다.
      *
      * @param uri  배송 서버 Url.
