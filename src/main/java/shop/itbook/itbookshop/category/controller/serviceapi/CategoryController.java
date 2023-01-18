@@ -26,7 +26,6 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private static final Boolean SUCCEED = Boolean.TRUE;
 
     /**
      * 관리자가 숨기지 않은 카테고리를 조회할때 요청을 받고 반환하는 기능을 담당하는 메서드 입니다.
@@ -35,14 +34,12 @@ public class CategoryController {
      */
     @GetMapping
     public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
-        log.info("####### 카테고리리스트 메소드 시작");
         CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 categoryService.findCategoryListByNotEmployee());
 
-        log.info("####### 카테고리리스트 메소드 종료");
         return ResponseEntity.ok().body(commonResponseBody);
     }
 }

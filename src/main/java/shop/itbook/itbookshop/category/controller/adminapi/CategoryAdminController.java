@@ -33,7 +33,6 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 public class CategoryAdminController {
 
     private final CategoryService categoryService;
-    private static final Boolean SUCCEED = Boolean.TRUE;
 
     /**
      * 카테고리 저장 요청을 처리하는 메서드입니다.
@@ -50,7 +49,7 @@ public class CategoryAdminController {
             new CategoryNoResponseDto(categoryService.addCategory(categoryRequestDto));
 
         CommonResponseBody<CategoryNoResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(
                 CategoryResultMessageEnum.CATEGORY_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
             categoryNoResponseDto);
 
@@ -68,7 +67,7 @@ public class CategoryAdminController {
 
         CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 categoryService.findCategoryListByEmployee());
 
@@ -80,7 +79,7 @@ public class CategoryAdminController {
 
         CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 categoryService.findMainCategoryList());
 
@@ -99,7 +98,7 @@ public class CategoryAdminController {
     categoryChildList(@PathVariable Integer categoryNo) {
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(
                 CategoryResultMessageEnum.CATEGORY_CHILD_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
             categoryService.findCategoryListAboutChild(categoryNo)));
     }
@@ -117,7 +116,7 @@ public class CategoryAdminController {
 
         CommonResponseBody<CategoryDetailsResponseDto> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_DETAILS_SUCCESS_MESSAGE.getSuccessMessage()),
                 categoryService.findCategoryDetailsResponseDto(categoryNo));
 
@@ -139,7 +138,6 @@ public class CategoryAdminController {
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
-                SUCCEED, HttpStatus.NO_CONTENT.value(),
                 CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
                 null);
 
@@ -161,7 +159,7 @@ public class CategoryAdminController {
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCEED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_REMOVE_SUCCESS.getSuccessMessage()), null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT.value())

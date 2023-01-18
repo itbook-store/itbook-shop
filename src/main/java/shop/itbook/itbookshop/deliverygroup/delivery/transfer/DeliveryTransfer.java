@@ -1,8 +1,8 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.transfer;
 
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryRequestDto;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DummyServerDeliveryRequestDto;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryResponseDto;
+import java.util.List;
+import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
+import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
@@ -13,6 +13,7 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * @since 1.0
  */
 public class DeliveryTransfer {
+
     private DeliveryTransfer() {
     }
 
@@ -23,12 +24,31 @@ public class DeliveryTransfer {
      * @return Delivery 엔티티의 모든 정보를 담은 DeliveryResponseDto 객체
      * @author 정재원 *
      */
-    public static DeliveryResponseDto entityToDto(Delivery delivery) {
+    public static DeliveryDetailResponseDto entityToDetailDto(Delivery delivery) {
 
-        return DeliveryResponseDto.builder()
+        return DeliveryDetailResponseDto.builder()
             .deliveryNo(delivery.getDeliveryNo())
-//            .orderNo(delivery.getOrder().getOrderNo())
+            .orderNo(delivery.getOrder().getOrderNo())
             .trackingNo(delivery.getTrackingNo())
+            .build();
+    }
+
+    /**
+     * 배송 엔티티를 배송 서버에 요청할 Dto 로 변환합니다.
+     *
+     * @return 배송 서버에 요청할 정보가 담긴 Dto
+     * @author 정재원 *
+     */
+    public static DeliveryServerRequestDto entityToServerRequestDto(Delivery delivery) {
+        return DeliveryServerRequestDto.builder()
+            .orderNo(delivery.getOrder().getOrderNo())
+            .receiverName(delivery.getOrder().getMemberDestination().getRecipientName())
+            .receiverAddress(
+                delivery.getOrder().getMemberDestination().getDeliveryDestination().getAddress())
+            .receiverDetailAddress(
+                delivery.getOrder().getMemberDestination().getRecipientAddressDetails())
+            .receiverPhoneNumber(
+                delivery.getOrder().getMemberDestination().getRecipientPhoneNumber())
             .build();
     }
 
@@ -39,8 +59,8 @@ public class DeliveryTransfer {
      * @return 배송 더미 서버에 요청할 필수 값이 담긴 RequestDto
      * @author 정재원 *
      */
-    public static DummyServerDeliveryRequestDto orderEntityToDto(Order order) {
-        return DummyServerDeliveryRequestDto.builder()
+    public static DeliveryServerRequestDto orderEntityToDto(Order order) {
+        return DeliveryServerRequestDto.builder()
             .orderNo(order.getOrderNo())
             .receiverName(order.getMemberDestination().getRecipientName())
             .receiverAddress(order.getMemberDestination().getDeliveryDestination().getAddress())

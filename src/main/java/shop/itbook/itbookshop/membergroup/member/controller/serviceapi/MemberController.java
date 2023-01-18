@@ -41,7 +41,7 @@ public class MemberController {
             new MemberNoResponseDto(memberService.addMember(requestDto));
 
         CommonResponseBody<MemberNoResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
             memberNoResponseDto
         );
@@ -56,7 +56,7 @@ public class MemberController {
         @PathVariable("memberId") String memberId) {
         CommonResponseBody<MemberResponseProjectionDto> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberService.findMember(memberId)
             );
@@ -76,7 +76,7 @@ public class MemberController {
         @RequestParam(value = "memberId") String memberId) {
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
             memberService.findMemberAuthInfo(memberId)
         ));
