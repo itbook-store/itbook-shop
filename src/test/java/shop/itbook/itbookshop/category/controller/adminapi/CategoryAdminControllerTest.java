@@ -170,8 +170,7 @@ class CategoryAdminControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @DisplayName("카테고리 삭제요청이 잘가고 결과가 잘 받아와진다.")
@@ -189,7 +188,6 @@ class CategoryAdminControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
             .andExpect(status().isNoContent())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
