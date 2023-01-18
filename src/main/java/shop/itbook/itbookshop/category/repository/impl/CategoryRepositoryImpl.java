@@ -37,7 +37,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
         return getCategoryListJPQLQuery(qCategory, qParentCategory, qProductCategory)
-                    .fetch();
+            .fetch();
     }
 
     public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
@@ -47,30 +47,31 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
         return getCategoryListJPQLQuery(qCategory, qParentCategory, qProductCategory)
-                   .where(qCategory.isHidden.eq(false)
-                        .and(qParentCategory.isHidden.eq(false)))
-                    .fetch();
+            .where(qCategory.isHidden.eq(false)
+                .and(qParentCategory.isHidden.eq(false)))
+            .fetch();
     }
 
-    private JPQLQuery<CategoryListResponseDto> getCategoryListJPQLQuery(QCategory qCategory, QCategory qParentCategory,
-                                                         QProductCategory qProductCategory) {
+    private JPQLQuery<CategoryListResponseDto> getCategoryListJPQLQuery(QCategory qCategory,
+                                                                        QCategory qParentCategory,
+                                                                        QProductCategory qProductCategory) {
         return from(qCategory)
-                .leftJoin(qParentCategory)
-                    .on(qCategory.categoryNo.eq(qParentCategory.parentCategory.categoryNo))
-                .leftJoin(qProductCategory)
-                    .on(qProductCategory.category.categoryNo.eq(qParentCategory.categoryNo))
-                .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
-                .groupBy(qCategory.categoryNo, qParentCategory.categoryNo)
-                .orderBy(qCategory.sequence.asc(), qParentCategory.level.asc(),
-                    qParentCategory.sequence.asc())
-                .select(Projections.fields(CategoryListResponseDto.class,
-                    qParentCategory.categoryNo,
-                    qParentCategory.parentCategory.categoryNo.as("parent_category_no"),
-                    qParentCategory.categoryName,
-                    qParentCategory.isHidden,
-                    qParentCategory.level,
-                    qParentCategory.sequence,
-                    qProductCategory.category.categoryNo.count().as("count")));
+            .leftJoin(qParentCategory)
+            .on(qCategory.categoryNo.eq(qParentCategory.parentCategory.categoryNo))
+            .leftJoin(qProductCategory)
+            .on(qProductCategory.category.categoryNo.eq(qParentCategory.categoryNo))
+            .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
+            .groupBy(qCategory.categoryNo, qParentCategory.categoryNo)
+            .orderBy(qCategory.sequence.asc(), qParentCategory.level.asc(),
+                qParentCategory.sequence.asc(), qParentCategory.categoryNo.desc())
+            .select(Projections.fields(CategoryListResponseDto.class,
+                qParentCategory.categoryNo,
+                qParentCategory.parentCategory.categoryNo.as("parent_category_no"),
+                qParentCategory.categoryName,
+                qParentCategory.isHidden,
+                qParentCategory.level,
+                qParentCategory.sequence,
+                qProductCategory.category.categoryNo.count().as("count")));
     }
 
 
@@ -84,9 +85,9 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
 
         return from(qCategory)
             .leftJoin(qProductCategory)
-                .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
+            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
             .where(qCategory.parentCategory.categoryNo.eq(parentCategoryNo))
-            .orderBy(qCategory.level.asc(), qCategory.sequence.asc())
+            .orderBy(qCategory.level.asc(), qCategory.sequence.asc(), qCategory.categoryNo.desc())
             .groupBy(qCategory.categoryNo)
             .select(Projections.fields(CategoryListResponseDto.class,
                 qCategory.categoryNo,
@@ -107,9 +108,9 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
 
         return from(qCategory)
             .leftJoin(qProductCategory)
-                .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
+            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
             .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
-            .orderBy(qCategory.sequence.asc())
+            .orderBy(qCategory.sequence.asc(), qCategory.categoryNo.desc())
             .groupBy(qCategory.categoryNo)
             .select(Projections.fields(CategoryListResponseDto.class,
                 qCategory.categoryNo,

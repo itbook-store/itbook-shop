@@ -43,10 +43,10 @@ public class CategoryServiceImpl implements CategoryService {
             Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
 
         if (isNoParentCategory) {
+            category.setLevel(MAIN_CATEGORY_LEVEL);
             category = categoryRepository.save(category);
             category.setParentCategory(category);
 
-            category.setLevel(MAIN_CATEGORY_LEVEL);
             return category.getCategoryNo();
         }
 
@@ -139,15 +139,14 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = findCategoryEntityFetch(categoryNo);
         category.setCategoryName(categoryRequestDto.getCategoryName());
         category.setIsHidden(categoryRequestDto.getIsHidden());
+        category.setSequence(categoryRequestDto.getSequence());
+    }
 
-        boolean isNoParent =
-            Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
-        if (isNoParent) {
-            return;
-        }
-
-        Category parentCategory = findCategoryEntity(categoryRequestDto.getParentCategoryNo());
-        category.setParentCategory(parentCategory);
+    @Override
+    @Transactional
+    public void modifyCategory(Integer categoryNo) {
+        Category category = findCategoryEntityFetch(categoryNo);
+        category.setIsHidden(!category.getIsHidden());
     }
 
     /**

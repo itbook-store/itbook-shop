@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class CommonResponseBody<T> {
     private CommonHeader header;
@@ -24,7 +23,6 @@ public class CommonResponseBody<T> {
      * @since 1.0
      */
     @AllArgsConstructor
-    @NoArgsConstructor
     @Getter
     public static class CommonHeader {
         private String resultMessage;
