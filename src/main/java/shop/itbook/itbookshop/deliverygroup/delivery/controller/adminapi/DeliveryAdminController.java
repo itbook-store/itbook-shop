@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.deliverygroup.delivery.controller.adminapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +53,7 @@ public class DeliveryAdminController {
 
         CommonResponseBody<List<DeliveryWithStatusResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 deliveryService.findDeliveryListWithStatus()
             );
@@ -72,7 +71,7 @@ public class DeliveryAdminController {
 
         CommonResponseBody<List<DeliveryWithStatusResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 deliveryService.findDeliveryListWithStatusWait()
             );
@@ -90,7 +89,7 @@ public class DeliveryAdminController {
 
         CommonResponseBody<List<DeliveryDetailResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESSED, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 deliveryService.sendDeliveryListWithStatusWait()
             );
