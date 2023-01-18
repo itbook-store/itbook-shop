@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class FindBookListResponseDto {
+public class FindBookResponseDto {
 
     private Long productNo;
 
@@ -63,14 +63,14 @@ public class FindBookListResponseDto {
     @Setter
     String thumbnailsName;
 
-    public FindBookListResponseDto(Long productNo, String productName, String simpleDescription,
-                                   String detailsDescription, Boolean isSelled, Boolean isDeleted,
-                                   Integer stock, Integer increasePointPercent, Long rawPrice,
-                                   Long fixedPrice, Double discountPercent,
-                                   String fileThumbnailsUrl,
-                                   String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
-                                   Boolean isEbook, String fileEbookUrl, String publisherName,
-                                   String authorName) {
+    public FindBookResponseDto(Long productNo, String productName, String simpleDescription,
+                               String detailsDescription, Boolean isSelled, Boolean isDeleted,
+                               Integer stock, Integer increasePointPercent, Long rawPrice,
+                               Long fixedPrice, Double discountPercent,
+                               String fileThumbnailsUrl,
+                               String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
+                               Boolean isEbook, String fileEbookUrl, String publisherName,
+                               String authorName) {
         this.productNo = productNo;
         this.productName = productName;
         this.simpleDescription = simpleDescription;

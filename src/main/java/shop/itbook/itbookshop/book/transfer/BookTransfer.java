@@ -28,7 +28,7 @@ public class BookTransfer {
         LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
 
         return Book.builder().isbn(requestDto.getIsbn()).pageCount(requestDto.getPageCount())
-            .isEbook(requestDto.getIsEbook()).authorName(requestDto.getAuthorName())
+            .isEbook(requestDto.isEbook()).authorName(requestDto.getAuthorName())
             .bookCreatedAt(date).publisherName(requestDto.getPublisherName()).productNo(productNo)
             .build();
     }
@@ -38,7 +38,7 @@ public class BookTransfer {
         LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
 
         return Book.builder().isbn(requestDto.getIsbn()).pageCount(requestDto.getPageCount())
-            .isEbook(requestDto.getIsEbook()).authorName(requestDto.getAuthorName())
+            .isEbook(requestDto.isEbook()).authorName(requestDto.getAuthorName())
             .ebookUrl(ebookUrl)
             .bookCreatedAt(date).publisherName(requestDto.getPublisherName()).productNo(productNo)
             .build();

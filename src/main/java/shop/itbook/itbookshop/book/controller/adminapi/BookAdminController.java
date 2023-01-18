@@ -1,16 +1,17 @@
 package shop.itbook.itbookshop.book.controller.adminapi;
 
 import java.util.List;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import shop.itbook.itbookshop.book.dto.response.FindBookListResponseDto;
+import org.springframework.web.multipart.MultipartFile;
+import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
 import shop.itbook.itbookshop.book.service.adminapi.BookAdminService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
@@ -42,16 +43,30 @@ public class BookAdminController {
      * @author 이하늬
      */
     @GetMapping("/api/admin/products/books")
-    public ResponseEntity<CommonResponseBody<List<FindBookListResponseDto>>> productList() {
+    public ResponseEntity<CommonResponseBody<List<FindBookResponseDto>>> bookList() {
 
-        List<FindBookListResponseDto> bookList = bookService.findBookList();
+        List<FindBookResponseDto> bookList = bookService.findBookList();
 
-        CommonResponseBody<List<FindBookListResponseDto>> commonResponseBody =
+        CommonResponseBody<List<FindBookResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),
+                new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
                     ProductResultMessageEnum.ADD_SUCCESS.getMessage()), bookList);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @GetMapping("/api/admin/products/books/{id}")
+    public ResponseEntity<CommonResponseBody<FindBookResponseDto>> bookDetails(
+        @PathVariable Long id) {
+
+        FindBookResponseDto book = bookService.findBook(id);
+
+        CommonResponseBody<FindBookResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+                    ProductResultMessageEnum.ADD_SUCCESS.getMessage()), book);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
     /**
@@ -63,10 +78,12 @@ public class BookAdminController {
      */
     @PostMapping("/api/admin/products/books")
     public ResponseEntity<CommonResponseBody<AddProductResponseDto>> BookAdd(
-        @Valid @RequestBody AddProductBookRequestDto requestDto) {
+        @RequestPart AddProductBookRequestDto requestDto,
+        @RequestPart MultipartFile thumbnails,
+        @RequestPart(required = false) MultipartFile ebook) {
 
         AddProductResponseDto productPk =
-            new AddProductResponseDto(bookService.addBook(requestDto));
+            new AddProductResponseDto(bookService.addBook(requestDto, thumbnails, ebook));
 
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),

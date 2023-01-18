@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.itbook.itbookshop.book.dto.response.FindBookListResponseDto;
+import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.book.repository.BookRepositoryCustom;
@@ -20,21 +20,43 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
     }
 
     @Override
-    public List<FindBookListResponseDto> findBookList() {
-        QBook book = QBook.book;
-        QProduct product = QProduct.product;
+    public List<FindBookResponseDto> findBookList() {
+        QBook qBook = QBook.book;
+        QProduct qProduct = QProduct.product;
 
-        JPQLQuery<FindBookListResponseDto> bookList =
-            from(book)
-                .innerJoin(book.product, product)
-                .select(Projections.constructor(FindBookListResponseDto.class,
-                    product.productNo, product.name,
-                    product.simpleDescription, product.detailsDescription, product.isSelled,
-                    product.isDeleted, product.stock, product.increasePointPercent,
-                    product.rawPrice,
-                    product.fixedPrice, product.discountPercent, product.thumbnailUrl, book.isbn,
-                    book.pageCount, book.bookCreatedAt, book.isEbook, book.ebookUrl,
-                    book.publisherName, book.authorName));
+        JPQLQuery<FindBookResponseDto> bookList =
+            from(qBook)
+                .innerJoin(qBook.product, qProduct)
+                .select(Projections.constructor(FindBookResponseDto.class,
+                    qProduct.productNo, qProduct.name,
+                    qProduct.simpleDescription, qProduct.detailsDescription, qProduct.isSelled,
+                    qProduct.isDeleted, qProduct.stock, qProduct.increasePointPercent,
+                    qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn,
+                    qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,
+                    qBook.publisherName, qBook.authorName));
         return bookList.fetch();
+    }
+
+    @Override
+    public FindBookResponseDto findBook(Long id) {
+        QBook qBook = QBook.book;
+        QProduct qProduct = QProduct.product;
+
+        JPQLQuery<FindBookResponseDto> book =
+            from(qBook)
+                .innerJoin(qBook.product, qProduct)
+                .select(Projections.constructor(FindBookResponseDto.class,
+                    qProduct.productNo, qProduct.name,
+                    qProduct.simpleDescription, qProduct.detailsDescription, qProduct.isSelled,
+                    qProduct.isDeleted, qProduct.stock, qProduct.increasePointPercent,
+                    qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn,
+                    qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,
+                    qBook.publisherName, qBook.authorName))
+                .where(qProduct.productNo.eq(id));
+        return book.fetchOne();
     }
 }

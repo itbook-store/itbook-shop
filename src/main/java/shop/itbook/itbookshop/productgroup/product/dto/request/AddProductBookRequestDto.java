@@ -7,7 +7,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author 이하늬
@@ -16,6 +19,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @AllArgsConstructor
 public class AddProductBookRequestDto {
+
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")
     private String productName;
@@ -56,26 +60,27 @@ public class AddProductBookRequestDto {
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
     private Double discountPercent;
 
-    //    @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
-//    private MultipartFile fileThumbnails;//
-    private String fileThumbnailsUrl;
+    //    @NotNull(message = "null을 허용하지 않습니다.")
+//    private MultipartFile fileThumbnails;
+    @Setter
+    private LinkedMultiValueMap<String, Object> fileMap;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     private String isbn;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    @PositiveOrZero(message = "페이지 수는 0 페이지 이상이어야 합니다.")
+    @PositiveOrZero(message = "페이지 수는 0페이지 이상이어야 합니다.")
     private Integer pageCount;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     private String bookCreatedAt;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private Boolean isEbook;
+    private boolean isEbook;
 
     //    private MultipartFile fileEbook;
-    private String fileEbookUrl;
-
+//    @Setter
+//    private LinkedMultiValueMap<String, Object> fileEbookMap;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(max = 255, message = "이름 길이는 1자-20자가 되어야 합니다.")
@@ -85,6 +90,10 @@ public class AddProductBookRequestDto {
     @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")
     private String authorName;
 
-//    private MultiValueMap<String, Object> map;
+    @Setter
+    private String fileThumbnailsUrl;
+    //    private MultipartFile fileEbook;
+    @Setter
+    private String fileEbookUrl;
 
 }
