@@ -46,6 +46,8 @@ public class MemberController {
             memberNoResponseDto
         );
 
+        System.out.println(">>>>>>>" + memberNoResponseDto.getMemberNo());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 

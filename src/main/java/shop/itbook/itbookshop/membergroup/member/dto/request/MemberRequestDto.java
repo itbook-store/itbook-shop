@@ -5,7 +5,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -14,13 +14,13 @@ import org.hibernate.validator.constraints.Length;
  */
 
 @Getter
-@NoArgsConstructor
+@Setter
 public class MemberRequestDto {
 
-    @NotBlank(message = "멤버쉽 번호는 null값 및 공백을 허용하지 않습니다.")
+    @NotNull(message = "멤버쉽 번호는 null값을 허용하지 않습니다.")
     private Integer membershipNo;
 
-    @NotBlank(message = "멤버 상태 번호는 null값 및 공백을 허용하지 않습니다.")
+    @NotNull(message = "멤버 상태 번호는 null값을 허용하지 않습니다.")
     private Integer memberStatusNo;
 
     @NotBlank(message = "아이디는 null값 및 공백을 허용하지 않습니다.")
