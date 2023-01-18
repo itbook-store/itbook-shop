@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -10,11 +8,9 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
-import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.deliverygroup.delivery.adaptor.DeliveryAdaptor;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryOrderNoResponseDto;
@@ -45,11 +41,12 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryStatusRepository deliveryStatusRepository;
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
-    private final DeliveryAdaptor deliveryAdaptor;
+    private final DeliveryAdaptor<Void> deliveryAdaptor;
+    @Value("${itbook-server-url.delivery-url}")
     private String deliveryUrl;
     @Value("${itbook-server-url.delivery-post-path}")
     private String deliveryPostPath;
-    private static final StringBuffer stringBuffer = new StringBuffer();
+    private static final StringBuilder stringBuilder = new StringBuilder();
 
     /**
      * {@inheritDoc}
@@ -72,7 +69,8 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
             new HttpEntity<>(deliveryRequestDto);
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-            .fromUriString("http://localhost:8083" + deliveryPostPath).encode();
+            .fromUriString(stringBuilder.append(deliveryUrl).append(deliveryPostPath).toString())
+            .encode();
 
         return deliveryAdaptor.postDelivery(uriComponentsBuilder.toUriString(), http);
     }
@@ -109,7 +107,8 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
                         Collectors.toList()));
 
         UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-            .fromUriString("http://localhost:8083" + deliveryPostPath).encode();
+            .fromUriString(stringBuilder.append(deliveryUrl).append(deliveryPostPath).toString())
+            .encode();
 
         List<DeliveryDetailResponseDto> result =
             deliveryAdaptor.postDeliveryList(uriComponentsBuilder.toUriString(), http);
@@ -128,7 +127,7 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
             DeliveryStatusHistory deliveryStatusHistory = DeliveryStatusHistory.builder()
                 .delivery(delivery)
                 .historyLocation(
-                    stringBuffer.append(
+                    stringBuilder.append(
                             Objects.requireNonNull(deliveryDetailResponseDtoQueue.peek())
                                 .getReceiverAddress())
                         .append(" ")
@@ -138,7 +137,7 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
                 .deliveryStatus(deliveryStatus)
                 .build();
 
-            stringBuffer.delete(0, stringBuffer.length());
+            stringBuilder.delete(0, stringBuilder.length());
 
             deliveryRepository.save(delivery);
             deliveryStatusHistoryRepository.save(deliveryStatusHistory);
