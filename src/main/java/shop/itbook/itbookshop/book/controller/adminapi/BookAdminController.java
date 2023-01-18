@@ -49,7 +49,7 @@ public class BookAdminController {
 
         CommonResponseBody<List<FindBookResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     ProductResultMessageEnum.ADD_SUCCESS.getMessage()), bookList);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
@@ -63,7 +63,7 @@ public class BookAdminController {
 
         CommonResponseBody<FindBookResponseDto> commonResponseBody =
             new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+                new CommonResponseBody.CommonHeader(
                     ProductResultMessageEnum.ADD_SUCCESS.getMessage()), book);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
@@ -86,7 +86,7 @@ public class BookAdminController {
             new AddProductResponseDto(bookService.addBook(requestDto, thumbnails, ebook));
 
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
