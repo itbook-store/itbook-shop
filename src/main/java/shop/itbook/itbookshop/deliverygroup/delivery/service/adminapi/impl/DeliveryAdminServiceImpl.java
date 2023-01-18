@@ -41,7 +41,7 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryStatusRepository deliveryStatusRepository;
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
-    private final DeliveryAdaptor<Void> deliveryAdaptor;
+    private final DeliveryAdaptor<DeliveryDetailResponseDto> deliveryAdaptor;
     @Value("${itbook-server-url.delivery-url}")
     private String deliveryUrl;
     @Value("${itbook-server-url.delivery-post-path}")

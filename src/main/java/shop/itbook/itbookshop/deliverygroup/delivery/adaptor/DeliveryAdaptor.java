@@ -17,13 +17,12 @@ import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetail
 /**
  * 배송 더미 서버와 Rest template 을 이용한 통신을 하기 위한 클래스입니다.
  *
- * @param <T> the type parameter
  * @author 정재원
  * @since 1.0
  */
 @RequiredArgsConstructor
 @Component
-public class DeliveryAdaptor<T> {
+public class DeliveryAdaptor<T extends DeliveryDetailResponseDto> {
 
     @Qualifier("DefaultRestTemplate")
     private final RestTemplate restTemplate;
@@ -36,10 +35,10 @@ public class DeliveryAdaptor<T> {
      * @return 배송 더미 서버로부터 받은 배송 등록 정보.
      * @author 정재원
      */
-    public DeliveryDetailResponseDto postDelivery(
+    public T postDelivery(
         String uri, HttpEntity<DeliveryServerRequestDto> http) {
 
-        ResponseEntity<CommonResponseBody<DeliveryDetailResponseDto>> exchange =
+        ResponseEntity<CommonResponseBody<T>> exchange =
             restTemplate.exchange(uri, HttpMethod.POST, http,
                 new ParameterizedTypeReference<>() {
                 });
@@ -57,14 +56,14 @@ public class DeliveryAdaptor<T> {
      * @return 배송 더미 서버로부터 받은 배송 등록 정보.
      * @author 정재원
      */
-    public List<DeliveryDetailResponseDto> postDeliveryList(
-        String uri, HttpEntity<DeliveryServerRequestDto> http) {
+    public List<T> postDeliveryList(
+        String uri, HttpEntity<List<DeliveryServerRequestDto>> http) {
 
-        ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> exchange =
+        ResponseEntity<CommonResponseBody<List<T>>> exchange =
             restTemplate.exchange(uri, HttpMethod.POST, http,
                 new ParameterizedTypeReference<>() {
                 });
 
-        return exchange.getBody().getResult();
+        return Objects.requireNonNull(exchange.getBody()).getResult();
     }
 }
