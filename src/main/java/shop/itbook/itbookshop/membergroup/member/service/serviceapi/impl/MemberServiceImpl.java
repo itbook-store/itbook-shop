@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
@@ -24,8 +25,9 @@ import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTran
  * @since 1.0
  */
 
-@Transactional(readOnly = true)
+@Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
@@ -63,6 +65,19 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void modifyMember(String memberId, MemberUpdateRequestDto requestDto) {
+//        Member member = memberRepository.findByMemberId(memberId)
+//            .orElseThrow(MemberNotFoundException::new);
+
+        Member member = memberRepository.querydslFindByMemberIdToMember(memberId).get();
+        log.info("member = {}", member);
+
+        member.setNickname(requestDto.getNickname());
+        member.setName(requestDto.getName());
+        member.setPassword(requestDto.getPassword());
+        member.setPhoneNumber(requestDto.getPhoneNumber());
+        member.setEmail(requestDto.getEmail());
+
+        log.info("member = {}", member);
 
     }
 

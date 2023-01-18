@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -10,6 +11,8 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * @since 1.0
  */
 public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
+
+    Optional<Member> findByMemberId(String memberId);
 
     /**
      * 회원 아이디를 통해 해당 회원이 존재 여부를 확인하는 메서드 입니다.

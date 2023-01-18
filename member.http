@@ -4,7 +4,7 @@ Accept: application/json
 
 ###
 
-GET /api/admin/members/testId
+GET /api/admin/members/user5
 Host: localhost:8082
 Accept: application/json
 
@@ -34,6 +34,21 @@ Content-Type: application/json
 }
 
 ###
+
 GET /api/service/members/sign-up/memberId/user4
 Host: localhost:8082
 Accept: application/json
+
+###
+
+PUT /api/service/members/user5
+Host: localhost:8082
+Content-Type: application/json
+
+{
+  "nickname" : "유저5",
+  "name":"짱구",
+  "password": "1234",
+  "phoneNumber": "010-4555-5443",
+  "email": "user5@test.com"
+}

@@ -7,12 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
@@ -64,6 +66,22 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    @PutMapping("/{memberId}")
+    public ResponseEntity<CommonResponseBody<Void>> memberModify(
+        @PathVariable("memberId") String memberId,
+        @Valid @RequestBody MemberUpdateRequestDto requestDto) {
+
+        memberService.modifyMember(memberId, requestDto);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()
+            ), null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
     /**
      * Auth 로그인 시 회원에 대한 정보를 반환받는 API 입니다.
      *
@@ -86,8 +104,7 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkMemberIdDuplicate(
         @PathVariable("memberId") String memberId) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true,
-                HttpStatus.OK.value(), ""), memberService.checkMemberIdDuplicate(memberId)
+            new CommonResponseBody.CommonHeader(""), memberService.checkMemberIdDuplicate(memberId)
         ));
     }
 
@@ -95,7 +112,7 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkNicknameDuplicate(
         @PathVariable("nickname") String nickname) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), ""),
+            new CommonResponseBody.CommonHeader(""),
             memberService.checkNickNameDuplicate(nickname)
         ));
     }
@@ -104,7 +121,7 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkEmailDuplicate(
         @PathVariable("email") String email) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), ""),
+            new CommonResponseBody.CommonHeader(""),
             memberService.checkEmailDuplicate(email)
         ));
     }
@@ -113,7 +130,7 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkPhoneNumber(
         @PathVariable("phoneNumber") String phoneNumber) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(true, HttpStatus.OK.value(), ""),
+            new CommonResponseBody.CommonHeader(""),
             memberService.checkPhoneNumberDuplicate(phoneNumber)
         ));
     }

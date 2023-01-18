@@ -28,7 +28,7 @@ public class MemberTransfer {
      */
     public static Member dtoToEntityInUpdate(MemberUpdateRequestDto memberUpdateRequestDto) {
         return Member.builder().nickname(memberUpdateRequestDto.getNickname())
-            .name(memberUpdateRequestDto.getName()).birth(memberUpdateRequestDto.getBirth())
+            .name(memberUpdateRequestDto.getName())
             .password(memberUpdateRequestDto.getPassword()).phoneNumber(
                 memberUpdateRequestDto.getPhoneNumber()).email(memberUpdateRequestDto.getEmail())
             .build();

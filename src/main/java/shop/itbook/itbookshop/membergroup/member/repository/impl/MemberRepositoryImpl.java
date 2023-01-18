@@ -64,12 +64,15 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
 
     @Override
     public Optional<Member> querydslFindByMemberIdToMember(String memberId) {
-        return Optional.of(jpaQueryFactory.select(Projections.fields(Member.class,
-            qmember.memberNo, qmembership, qmemberStatus, qmember.memberId, qmember.nickname,
-            qmember.name, qmember.isMan,
-            qmember.birth, qmember.password, qmember.phoneNumber, qmember.email,
-            qmember.memberCreatedAt
-        )).from(qmember).where(qmember.memberId.eq(memberId)).fetch().get(0));
+
+
+        return Optional.of(jpaQueryFactory.select(qmember).from(qmember)
+            .innerJoin(qmember.membership, qmembership)
+            .fetchJoin()
+            .innerJoin(qmember.memberStatus, qmemberStatus)
+            .fetchJoin()
+            .where(qmember.memberId.eq(memberId))
+            .fetchOne());
     }
 
     @Override
