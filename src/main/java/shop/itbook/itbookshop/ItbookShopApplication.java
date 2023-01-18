@@ -10,10 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import shop.itbook.itbookshop.config.RedisConfig;
 import shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepository.ProductSearchRepository;
 
-@EnableJpaRepositories(excludeFilters = @ComponentScan.Filter(
-    type = FilterType.ASSIGNABLE_TYPE,
-    classes = ProductSearchRepository.class
-))
 @SpringBootApplication
 @ConfigurationPropertiesScan
 public class ItbookShopApplication {

@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.controller.elastic;
 
-import static shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAdminController.SUCCESS_RESULT;
-
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,12 +9,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
-import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductSearchResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
 /**
+ * 상품을 검색하는 컨트롤러입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
@@ -25,6 +24,7 @@ import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearch
 @RequiredArgsConstructor
 public class ProductElasticController {
     private final ProductSearchService productSearchService;
+    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
     @GetMapping
     public ResponseEntity<CommonResponseBody<List<ProductSearchResponseDto>>> getProduct(
@@ -33,9 +33,9 @@ public class ProductElasticController {
         List<ProductSearchResponseDto> product = productSearchService.searchProductByTitle(name);
 
         CommonResponseBody<List<ProductSearchResponseDto>> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),
-                ProductResultMessageEnum.ADD_SUCCESS.getMessage()), product);
+            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+                ProductSearchResultMessageEnum.PRODUCT_SEARCH_SUCCESS.getMessage()), product);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 }

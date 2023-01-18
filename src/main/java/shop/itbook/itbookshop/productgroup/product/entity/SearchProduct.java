@@ -5,75 +5,76 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
 /**
  * 상품에 대한 엔티티 입니다.
  *
- * @author 노수연
- * @author 이하늬
+ * @author 송다혜
  * @since 1.0
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "product")
-@Entity
-public class Product {
+@Document(indexName = "itbook_product_nori_test7")
+@Setting(settingPath = "elastic/product-setting.json")
+@Mapping(mappingPath = "elastic/product-mapping.json")
+public class SearchProduct {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_no", nullable = false)
+    @Column
     private Long productNo;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
+    @Column
     private String name;
 
-    @Column(name = "simple_description", nullable = false)
+    @Column
     private String simpleDescription;
 
-    @Column(name = "details_description", columnDefinition = "text")
+    @Column
     private String detailsDescription;
 
-    @Column(name = "stock", nullable = false, columnDefinition = "integer default 0")
+    @Column
     private Integer stock;
 
-    @Column(name = "product_created_at", nullable = false, columnDefinition = "default now()")
+    @Column
+    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime productCreatedAt;
 
-    @Column(name = "is_selled", nullable = false)
+    @Column
     private Boolean isSelled;
 
-    @Column(name = "is_deleted", nullable = false)
+    @Column
     private Boolean isDeleted;
 
-    @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
+    @Column
     private String thumbnailUrl;
 
-    @Column(name = "daily_hits", nullable = false, columnDefinition = "bigint default 0")
+    @Column
     private Long dailyHits;
 
-    @Column(name = "fixed_price", nullable = false)
+    @Column
     private Long fixedPrice;
 
-    @Column(name = "increase_point_percent", nullable = false,
-        columnDefinition = "integer default 0")
+    @Column
     private Integer increasePointPercent;
 
-    @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
+    @Column
     private Double discountPercent;
 
-    @Column(name = "raw_price", nullable = false)
+    @Column
     private Long rawPrice;
 
     /**
@@ -96,19 +97,20 @@ public class Product {
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
-    public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
-                   String thumbnailUrl, Long dailyHits, Long fixedPrice,
-                   Integer increasePointPercent, Double discountPercent, Long rawPrice) {
+    public SearchProduct(Long productNo, String name, String simpleDescription, String detailsDescription, Integer stock,
+                         LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
+                         String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                         Integer increasePointPercent, Double discountPercent, Long rawPrice) {
+        this.productNo = productNo;
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
-        this.productCreatedAt = LocalDateTime.now();
+        this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isDeleted = isDeleted;
         this.thumbnailUrl = thumbnailUrl;
-        this.dailyHits = 0L;
+        this.dailyHits = dailyHits;
         this.fixedPrice = fixedPrice;
         this.increasePointPercent = increasePointPercent;
         this.discountPercent = discountPercent;
