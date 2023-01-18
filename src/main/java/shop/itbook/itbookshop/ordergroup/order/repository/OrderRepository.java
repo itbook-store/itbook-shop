@@ -9,5 +9,5 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * @author 정재원
  * @since 1.0
  */
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, CustomOrderRepository {
 }
