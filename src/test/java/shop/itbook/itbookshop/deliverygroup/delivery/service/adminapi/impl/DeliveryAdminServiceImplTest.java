@@ -7,9 +7,11 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
@@ -17,15 +19,19 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.config.ServerConfig;
 import shop.itbook.itbookshop.deliverygroup.delivery.adaptor.DeliveryAdaptor;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
+import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.repository.DeliveryStatusRepository;
+import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 
 /**
  * The type Delivery admin service impl test.
@@ -43,6 +49,10 @@ class DeliveryAdminServiceImplTest {
     DeliveryRepository deliveryRepository;
     @MockBean
     DeliveryAdaptor deliveryAdaptor;
+    @MockBean
+    DeliveryStatusRepository deliveryStatusRepository;
+    @MockBean
+    DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
 
     @Test
     @DisplayName("서버에 요청을 보내고 값을 받아오는 성공 케이스")
@@ -78,24 +88,24 @@ class DeliveryAdminServiceImplTest {
     }
 
     @Test
-    @DisplayName("모든 배송 정보 조회 성공")
+    @DisplayName("배송 대기 중인 배송 정보들 조회 성공")
     void findDeliveryListTest() {
-        Delivery delivery1 = DeliveryDummy.getDelivery();
-        Delivery delivery2 = DeliveryDummy.getDelivery();
 
-        delivery1.setDeliveryNo(11L);
-        delivery1.setDeliveryNo(12L);
+        DeliveryWithStatusResponseDto deliveryWithStatusResponseDto =
+            new DeliveryWithStatusResponseDto();
+        ReflectionTestUtils.setField(deliveryWithStatusResponseDto, "deliveryNo", 1L);
+        ReflectionTestUtils.setField(deliveryWithStatusResponseDto, "orderNo", 1L);
+        ReflectionTestUtils.setField(deliveryWithStatusResponseDto, "trackingNo", "123123123");
+        ReflectionTestUtils.setField(deliveryWithStatusResponseDto, "deliveryStatus", "배송 대기");
 
-        List<Delivery> deliveryList = new ArrayList<>();
-        deliveryList.add(delivery1);
-        deliveryList.add(delivery2);
+        List<DeliveryWithStatusResponseDto> deliveryWithStatusResponseDtoList = new ArrayList<>();
+        deliveryWithStatusResponseDtoList.add(deliveryWithStatusResponseDto);
 
-        given(deliveryRepository.findAll()).willReturn(deliveryList);
+        given(deliveryRepository.findDeliveryListWithStatusWait()).willReturn(
+            deliveryWithStatusResponseDtoList);
 
         assertThat(
-            deliveryService.findDeliveryListWithStatusWait().get(0).getDeliveryNo()).isEqualTo(
-            delivery1.getDeliveryNo());
-        assertThat(deliveryService.findDeliveryListWithStatus().get(1).getDeliveryNo()).isEqualTo(
-            delivery2.getDeliveryNo());
+            deliveryService.findDeliveryListWithStatusWait().get(0).getDeliveryStatus()).isEqualTo(
+            "배송 대기");
     }
 }

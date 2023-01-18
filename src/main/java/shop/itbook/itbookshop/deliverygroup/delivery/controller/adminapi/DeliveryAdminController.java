@@ -27,7 +27,6 @@ import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAd
 public class DeliveryAdminController {
 
     private final DeliveryAdminService deliveryService;
-    private static final Boolean SUCCESSED = Boolean.TRUE;
 
     /**
      * 개별 배송을 배송 서버에 요청합니다.
