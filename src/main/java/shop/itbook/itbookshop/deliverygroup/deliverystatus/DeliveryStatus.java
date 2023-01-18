@@ -1,9 +1,8 @@
-package shop.itbook.itbookshop.deliverygroup.deliverystatus.entity;
+package shop.itbook.itbookshop.deliverygroup.deliverystatus;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.deliverygroup.deliverystatus.converter.DeliveryStatusEnumConverter;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 
 /**
@@ -33,7 +33,7 @@ public class DeliveryStatus {
     @Column(name = "delivery_status_no", nullable = false)
     private Integer deliveryStatusNo;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = DeliveryStatusEnumConverter.class)
     @Column(name = "delivery_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private DeliveryStatusEnum deliveryStatusEnum;
 }

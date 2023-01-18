@@ -37,7 +37,7 @@ public class RestControllerAdvisor {
         Exception e) {
 
         CommonResponseBody<Void> exceptionCommonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(false, HttpStatus.BAD_REQUEST.value(),
+            new CommonResponseBody.CommonHeader(
                 e.getMessage()), null);
 
         return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
@@ -56,7 +56,7 @@ public class RestControllerAdvisor {
         RuntimeException e) {
 
         CommonResponseBody<Void> exceptionCommonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(false, HttpStatus.FORBIDDEN.value(),
+            new CommonResponseBody.CommonHeader(
                 e.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +74,7 @@ public class RestControllerAdvisor {
     public ResponseEntity<CommonResponseBody<Void>> internalErrorException500(Exception e) {
 
         CommonResponseBody<Void> exceptionCommonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(false, HttpStatus.INTERNAL_SERVER_ERROR.value(),
+            new CommonResponseBody.CommonHeader(
                 e.getMessage()), null);
 
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)

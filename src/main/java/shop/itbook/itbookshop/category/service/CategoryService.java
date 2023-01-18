@@ -37,9 +37,7 @@ public interface CategoryService {
     /**
      * 특정 카테고리 번호를 받아서 자식 카테고리들의 정보반환 처리를 담당하는 메서드입니다.
      *
-     * @param isHidden
      * @param categoryNo 부모 카테고리의 번호입니다.
-     * @param employee
      * @return 조건에 해당하는 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
@@ -82,6 +80,8 @@ public interface CategoryService {
      * @author 최겸준
      */
     void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
+
+    void modifyCategory(Integer categoryNo);
 
     /**
      * 카테고리 삭제에 관한 비지니스 로직을 담당하는 기능입니다.

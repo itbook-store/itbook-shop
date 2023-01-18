@@ -58,6 +58,7 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         Integer testNo = 1;
 
@@ -170,8 +171,7 @@ class CategoryAdminControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     @DisplayName("카테고리 삭제요청이 잘가고 결과가 잘 받아와진다.")
@@ -183,13 +183,13 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", true);
+        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         // when
         mvc.perform(delete("/api/admin/categories/1").contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
-            .andExpect(status().isNoContent())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.header.isSuccessful", equalTo(Boolean.TRUE)));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

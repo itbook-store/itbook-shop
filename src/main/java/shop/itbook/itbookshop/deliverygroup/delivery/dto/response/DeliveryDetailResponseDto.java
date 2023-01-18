@@ -5,14 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Delivery 엔티티의 모든 필드를 반환하는 Dto 입니다.
+ * 배송 정보와 주문자의 정보까지 상세한 정보를 반환하는 Dto
  *
  * @author 정재원
  * @since 1.0
  */
 @Getter
 @NoArgsConstructor
-public class DeliveryResponseDto {
+public class DeliveryDetailResponseDto {
 
     private Long deliveryNo;
     private Long orderNo;
@@ -34,9 +34,9 @@ public class DeliveryResponseDto {
      * @param trackingNo            운송장 번호
      */
     @Builder
-    public DeliveryResponseDto(Long deliveryNo, Long orderNo, String receiverName,
-                               String receiverAddress, String receiverDetailAddress,
-                               String receiverPhoneNumber, String trackingNo) {
+    public DeliveryDetailResponseDto(Long deliveryNo, Long orderNo, String receiverName,
+                                     String receiverAddress, String receiverDetailAddress,
+                                     String receiverPhoneNumber, String trackingNo) {
         this.deliveryNo = deliveryNo;
         this.orderNo = orderNo;
         this.receiverName = receiverName;

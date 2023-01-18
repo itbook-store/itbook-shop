@@ -50,7 +50,7 @@ public class ProductAdminController {
             new AddProductResponseDto(productService.addProduct(addProductRequestDto));
 
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.CREATED.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
         productSearchService.addSearchProduct(productService.findProduct(productPk.getProductNo()));
@@ -73,7 +73,7 @@ public class ProductAdminController {
         productService.modifyProduct(productId, modifyProductRequestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
         productSearchService.modifySearchProduct(productService.findProduct(productId));
@@ -93,7 +93,7 @@ public class ProductAdminController {
         productService.removeProduct(productId);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.NO_CONTENT.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
 
         productSearchService.removeSearchProduct(productId);
