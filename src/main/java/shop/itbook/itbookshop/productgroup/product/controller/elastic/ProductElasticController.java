@@ -33,7 +33,7 @@ public class ProductElasticController {
         List<ProductSearchResponseDto> product = productSearchService.searchProductByTitle(name);
 
         CommonResponseBody<List<ProductSearchResponseDto>> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(SUCCESS_RESULT, HttpStatus.OK.value(),
+            new CommonResponseBody.CommonHeader(
                 ProductSearchResultMessageEnum.PRODUCT_SEARCH_SUCCESS.getMessage()), product);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);

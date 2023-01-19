@@ -1,8 +1,15 @@
 {
   "analysis": {
+    "tokenizer": {
+      "nori_mixed": {
+        "type": "nori_tokenizer",
+        "decompound_mode": "mixed"
+      }
+    },
     "analyzer": {
       "korean": {
-        "type": "nori"
+        "type": "nori",
+        "stopwords": "_korean_"
       }
     }
   }

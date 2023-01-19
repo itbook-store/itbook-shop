@@ -5,11 +5,11 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
@@ -19,7 +19,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 @SpringBootTest
 class ProductSearchRepositoryTest {
     @Autowired
-    ProductSearchRepository repository;
+    ProductSearchRepository productSearchRepository;
 
 
     private SearchProduct elasticProduct;
@@ -47,8 +47,8 @@ class ProductSearchRepositoryTest {
 
     @Test
     void productSaveTest() {
-        repository.save(elasticProduct);
-        Optional<SearchProduct> result = repository.findById(elasticProduct.getProductNo());
+        productSearchRepository.save(elasticProduct);
+        Optional<SearchProduct> result = productSearchRepository.findById(elasticProduct.getProductNo());
         assertThat(result).isPresent();
         assertThat(result.get()).usingRecursiveComparison().isEqualTo(elasticProduct);
 
@@ -56,15 +56,16 @@ class ProductSearchRepositoryTest {
 
     @Test
     void productSearchTest() {
-        List<SearchProduct> searchProducts = repository.findByName("테스트");
+        List<SearchProduct> searchProducts = productSearchRepository.findByName("테스트");
         assertThat(searchProducts).hasSize(1);
     }
 
 
     @Test
     void deleteByIdTest() {
-        repository.deleteById(elasticProduct.getProductNo());
 
-        assertThat(repository.findById(elasticProduct.getProductNo())).isEmpty();
+        productSearchRepository.deleteById(elasticProduct.getProductNo());
+
+        assertThat(productSearchRepository.findById(elasticProduct.getProductNo())).isEmpty();
     }
 }

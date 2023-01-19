@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepo
 import java.util.List;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
