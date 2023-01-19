@@ -20,6 +20,6 @@ Content-Type: application/json
 ###
 
 # 이름 검색
-GET http://localhost:8082/api/admin/products/search?name=오해&size=10
+GET http://localhost:8082/api/products/search?name=오해&size=10
 Content-Type: application/json
 

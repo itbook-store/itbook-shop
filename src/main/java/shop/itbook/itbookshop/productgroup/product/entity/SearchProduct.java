@@ -28,7 +28,7 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document(indexName = "itbook_product_nori_test7")
+@Document(indexName = "#{@environment.getProperty('elastic.index.product')}")
 @Setting(settingPath = "elastic/product-setting.json")
 @Mapping(mappingPath = "elastic/product-mapping.json")
 public class SearchProduct {
