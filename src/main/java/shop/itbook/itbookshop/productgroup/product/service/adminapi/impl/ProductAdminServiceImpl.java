@@ -26,7 +26,6 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 public class ProductAdminServiceImpl implements ProductAdminService {
 
     private final ProductRepository productRepository;
-    private final BookAdminService bookService;
 
     /**
      * {@inheritDoc}

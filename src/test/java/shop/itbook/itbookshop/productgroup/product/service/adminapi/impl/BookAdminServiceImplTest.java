@@ -29,6 +29,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequest
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
@@ -38,7 +39,8 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {ProductAdminServiceImpl.class, BookAdminServiceImpl.class})
+@ContextConfiguration(classes = {ProductAdminServiceImpl.class, BookAdminServiceImpl.class,
+    FileService.class})
 class BookAdminServiceImplTest {
 
     @Autowired
@@ -46,6 +48,9 @@ class BookAdminServiceImplTest {
 
     @Autowired
     BookAdminService bookAdminService;
+
+    @Autowired
+    FileService fileService;
 
     @MockBean
     ProductRepository mockProductRepository;

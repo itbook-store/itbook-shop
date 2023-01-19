@@ -9,18 +9,20 @@ import java.io.OutputStream;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.service.adminapi.impl.BookAdminServiceImpl;
 
+
 /**
  * @author 이하늬
  * @since 1.0
  */
-@Service
 @Slf4j
+@Component
 public class FileService {
     @Value("${object.storage.storage-url}")
     private String storageUrl;
@@ -28,9 +30,6 @@ public class FileService {
     private String tokenId;
     @Value("${object.storage.container-name}")
     private String containerName;
-
-    @Value("${object.storage.folder-path.download}")
-    private String downloadPath;
 
 
     public String uploadFile(MultipartFile multipartFile,
@@ -50,19 +49,4 @@ public class FileService {
         return multipartFile.getOriginalFilename();
     }
 
-    public void download(String url) {
-        ObjectService objectService = new ObjectService(storageUrl, tokenId);
-        try {
-            InputStream inputStream = objectService.downloadObject(url);
-            byte[] buffer = new byte[inputStream.available()];
-            inputStream.read(buffer);
-            String uuid = url.substring(url.lastIndexOf("/") + 1);
-            File target = new File(downloadPath + "/" + uuid);
-            OutputStream outputStream = new FileOutputStream(target);
-            outputStream.write(buffer);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

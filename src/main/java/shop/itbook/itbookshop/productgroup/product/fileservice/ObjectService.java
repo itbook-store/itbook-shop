@@ -65,18 +65,4 @@ public class ObjectService {
         return url;
     }
 
-    public InputStream downloadObject(String url) {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Auth-Token", tokenId);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-
-        HttpEntity<String> requestHttpEntity = new HttpEntity<String>(null, headers);
-
-        ResponseEntity<byte[]> response
-            = this.restTemplate.exchange(url, HttpMethod.GET, requestHttpEntity, byte[].class);
-
-        return new ByteArrayInputStream(response.getBody());
-    }
-
 }
