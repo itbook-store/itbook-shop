@@ -1,10 +1,7 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
-import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 
 /**
@@ -16,8 +13,4 @@ import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.Delivery
 @RequiredArgsConstructor
 @Service
 public class DeliveryServiceImpl implements DeliveryService {
-
-    private final DeliveryRepository deliveryRepository;
-
-
 }

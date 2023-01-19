@@ -88,6 +88,8 @@ class DeliveryAdminServiceImplTest {
         List<DeliveryDetailResponseDto> responseDtoList =
             deliveryService.sendDeliveryListWithStatusWait();
 
+        assertThat(responseDtoList.get(0).getReceiverName()).isEqualTo(
+            deliveryResponseDto.getReceiverName());
         assertThat(responseDtoList.get(0).getTrackingNo()).isEqualTo(testTrackingNo);
     }
 
