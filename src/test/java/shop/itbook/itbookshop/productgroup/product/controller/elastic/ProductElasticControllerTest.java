@@ -53,7 +53,7 @@ class ProductElasticControllerTest {
         given(productSearchService.searchProductByTitle(anyString())).willReturn(List.of(
             responseDto, responseDto));
 
-        mockMvc.perform(get("/api/admin/products/search?name=테스트")
+        mockMvc.perform(get("/api/products/search?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -76,7 +76,7 @@ class ProductElasticControllerTest {
     @DisplayName("Get 메서드 실패 테스트")
     void productSearchNameTest_fail() throws Exception {
         given(productSearchService.searchProductByTitle(anyString())).willThrow(new SearchProductNotFoundException());
-        mockMvc.perform(get("/api/admin/products/search?name=테스트")
+        mockMvc.perform(get("/api/products/search?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())

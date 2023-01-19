@@ -61,4 +61,5 @@ public class ProductSearchServiceImpl implements ProductSearchService {
             .map(SearchProductTransfer::documentToDto)
             .collect(Collectors.toList());
     }
+
 }

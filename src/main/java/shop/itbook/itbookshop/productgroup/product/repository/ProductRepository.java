@@ -1,9 +1,11 @@
 package shop.itbook.itbookshop.productgroup.product.repository;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
  * 상품 Repository 클래스입니다.
