@@ -1,9 +1,8 @@
 package shop.itbook.itbookshop.role.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.productgroup.producttype.converter.impl.ProductTypeEnumConverter;
 import shop.itbook.itbookshop.role.roleenum.RoleEnum;
 
 /**
@@ -34,7 +34,8 @@ public class Role {
     @Column(name = "role_no")
     private Integer roleNo;
 
+
+    @Convert(converter = ProductTypeEnumConverter.class)
     @Column(name = "role_type", columnDefinition = "varchar(255)", unique = true, nullable = false)
-    @Enumerated(EnumType.STRING)
     private RoleEnum roleType;
 }
