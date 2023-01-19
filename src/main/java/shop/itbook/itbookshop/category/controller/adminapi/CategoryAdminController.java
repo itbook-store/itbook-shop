@@ -144,6 +144,20 @@ public class CategoryAdminController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
     }
 
+    @PutMapping("/{categoryNo}/hidden")
+    public ResponseEntity<CommonResponseBody<Void>> categoryModifyHidden(
+        @PathVariable Integer categoryNo) {
+
+        categoryService.modifyCategory(categoryNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
+                null);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
+    }
+
     /**
      * 카테고리 삭제요청을 처리하는 기능입니다.
      *
@@ -158,11 +172,11 @@ public class CategoryAdminController {
         categoryService.removeCategory(categoryNo);
 
         CommonResponseBody<Void> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    CategoryResultMessageEnum.CATEGORY_REMOVE_SUCCESS.getSuccessMessage()), null);
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                CategoryResultMessageEnum.CATEGORY_REMOVE_SUCCESS.getSuccessMessage()),
+                null);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT.value())
+        return ResponseEntity.status(HttpStatus.OK)
             .body(commonResponseBody);
     }
 }

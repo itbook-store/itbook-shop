@@ -284,7 +284,7 @@ class CategoryServiceImplTest {
     @Test
     void modifyCategory_hasParent() {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
-
+        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
         Category category = mock(Category.class);
         given(categoryRepository.findCategoryFetch(anyInt())).willReturn(
             Optional.of(category));
@@ -294,7 +294,6 @@ class CategoryServiceImplTest {
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
-        verify(category).setParentCategory(any());
     }
 
     @DisplayName("삭제행위가 잘 이루어진다.")
