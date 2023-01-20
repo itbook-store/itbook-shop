@@ -1,9 +1,9 @@
-package shop.itbook.itbookshop.init;
+package shop.itbook.itbookshop.productgroup.product.fileservice.init;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,18 +18,20 @@ import org.springframework.web.client.RestTemplate;
  */
 @Data
 @Component
-@RequiredArgsConstructor
-public class TokenManager {
-    private ItBookObjectStorageToken.Token itBookObjectStorageToken;
-    private RedisTemplate redisTemplate;
+public class TokenManager implements InitializingBean {
+    private final RedisTemplate<String, String> redisTemplate;
 
-    public void requestToken() throws JsonProcessingException {
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        requestToken();
+    }
+
+    public ItBookObjectStorageToken.Token requestToken() {
         String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
         String password = "itbook2023";
         String username = "109622@naver.com";
         String authUrl = "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
         RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper objectMapper = new ObjectMapper();
 
         TokenRequestDto tokenRequest = new TokenRequestDto();
         tokenRequest.getAuth().setTenantId(tenantId);
@@ -46,7 +48,21 @@ public class TokenManager {
             = restTemplate.exchange(authUrl, HttpMethod.POST, httpEntity,
             ItBookObjectStorageToken.class);
 
-        itBookObjectStorageToken = response.getBody().getAccess().getToken();
+        ItBookObjectStorageToken.Token itBookObjectStorageToken =
+            response.getBody().getAccess().getToken();
+
+        if (Objects.isNull(itBookObjectStorageToken)) {
+            throw new InvalidTokenException();
+        }
+
+        redisTemplate.opsForHash()
+            .put("ITBOOK-OBJECTSTORAGE_TOKEN", "tokenId", itBookObjectStorageToken.getId());
+        redisTemplate.opsForHash()
+            .put("ITBOOK-OBJECTSTORAGE_TOKEN", "tokenExpires",
+                itBookObjectStorageToken.getExpires());
+
+        return itBookObjectStorageToken;
     }
+
 
 }

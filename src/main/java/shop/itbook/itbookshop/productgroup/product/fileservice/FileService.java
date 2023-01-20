@@ -1,20 +1,14 @@
 package shop.itbook.itbookshop.productgroup.product.fileservice;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.service.adminapi.impl.BookAdminServiceImpl;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.ItBookObjectStorageToken;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 
 
 /**
@@ -23,17 +17,19 @@ import shop.itbook.itbookshop.book.service.adminapi.impl.BookAdminServiceImpl;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class FileService {
     @Value("${object.storage.storage-url}")
     private String storageUrl;
-    @Value("${object.storage.token-id}")
-    private String tokenId;
     @Value("${object.storage.container-name}")
     private String containerName;
+
+    private final TokenInterceptor tokenInterceptor;
 
 
     public String uploadFile(MultipartFile multipartFile,
                              String folderPath) {
+        String tokenId = tokenInterceptor.getTokenFields("tokenId");
         ObjectService objectService = new ObjectService(storageUrl, tokenId);
         String fileName = multipartFile.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.init;
+package shop.itbook.itbookshop.productgroup.product.fileservice.init;
 
 import lombok.Data;
 
@@ -16,7 +16,7 @@ public class ItBookObjectStorageToken {
     }
 
     @Data
-    static class Token {
+    public static class Token {
         private String id;
         private String expires;
     }
