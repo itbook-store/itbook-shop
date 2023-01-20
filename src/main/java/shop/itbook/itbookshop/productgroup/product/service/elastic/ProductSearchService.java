@@ -14,13 +14,10 @@ import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
  */
 public interface ProductSearchService {
 
-    @Transactional
     Long addSearchProduct(Product product);
 
-    @Transactional
     void modifySearchProduct(Product product);
 
-    @Transactional
     void removeSearchProduct(Long productNo);
 
     List<ProductSearchResponseDto> searchProductByTitle(String name);

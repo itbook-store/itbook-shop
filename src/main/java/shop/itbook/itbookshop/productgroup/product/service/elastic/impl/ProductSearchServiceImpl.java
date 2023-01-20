@@ -36,6 +36,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     @Override
     @Transactional
     public void modifySearchProduct(Product product) {
+
         SearchProduct searchProduct = SearchProductTransfer.entityToDocument(product);
 
         productSearchRepository.save(searchProduct);
@@ -44,6 +45,7 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     @Override
     @Transactional
     public void removeSearchProduct(Long productNo) {
+
         productSearchRepository.deleteById(productNo);
     }
 

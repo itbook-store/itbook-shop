@@ -32,7 +32,6 @@ import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearch
 public class ProductElasticController {
 
     private final ProductSearchService productSearchService;
-    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
     @GetMapping
     public ResponseEntity<CommonResponseBody<List<ProductSearchResponseDto>>> getProduct(
