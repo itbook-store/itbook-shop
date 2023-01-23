@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
+ * 상품 ProductSearchRepository 클래스입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */

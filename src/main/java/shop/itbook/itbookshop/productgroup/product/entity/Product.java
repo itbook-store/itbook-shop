@@ -12,9 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Mapping;
-import org.springframework.data.elasticsearch.annotations.Setting;
+
 
 /**
  * 상품에 대한 엔티티 입니다.

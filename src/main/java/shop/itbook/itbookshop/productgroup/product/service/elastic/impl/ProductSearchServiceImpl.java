@@ -14,6 +14,8 @@ import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearch
 import shop.itbook.itbookshop.productgroup.product.transfer.SearchProductTransfer;
 
 /**
+ * ProductSearchService 인터페이스를 구현한 상품 검색 Service 클래스입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
@@ -21,8 +23,12 @@ import shop.itbook.itbookshop.productgroup.product.transfer.SearchProductTransfe
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProductSearchServiceImpl implements ProductSearchService {
+
     private final ProductSearchRepository productSearchRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Long addSearchProduct(Product product) {
@@ -32,7 +38,9 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         return productSearchRepository.save(searchProduct).getProductNo();
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void modifySearchProduct(Product product) {
@@ -42,6 +50,9 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         productSearchRepository.save(searchProduct);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void removeSearchProduct(Long productNo) {
@@ -49,6 +60,9 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         productSearchRepository.deleteById(productNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProductSearchResponseDto> searchProductByTitle(String name) {
 

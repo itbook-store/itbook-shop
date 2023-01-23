@@ -2,12 +2,7 @@ package shop.itbook.itbookshop.productgroup.product.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,7 +15,7 @@ import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
 /**
- * 상품에 대한 엔티티 입니다.
+ * 상품에 대한 도큐먼트 입니다.
  *
  * @author 송다혜
  * @since 1.0
@@ -50,7 +45,7 @@ public class SearchProduct {
     private Integer stock;
 
     @Column
-    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
+    @Field(type = FieldType.Date, format = DateFormat.date_time)
     private LocalDateTime productCreatedAt;
 
     @Column
@@ -87,17 +82,18 @@ public class SearchProduct {
      * @param productCreatedAt     상품 등록 일자입니다.
      * @param isSelled             상품 판매 여부입니다.
      * @param isDeleted            상품 삭제 여부입니다.
-     * @param thumbnailUrl         상품 썸네일 url입니다.
+     * @param thumbnailUrl         상품 썸네일 url 입니다.
      * @param dailyHits            상품 조회수입니다.
      * @param fixedPrice           상품 정가입니다.
      * @param increasePointPercent 상품 포인트 적립율입니다.
      * @param discountPercent      상품 할인율입니다.
      * @param rawPrice             상품 매입원가입니다.
-     * @author 이하늬
+     * @author 송다혜
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
-    public SearchProduct(Long productNo, String name, String simpleDescription, String detailsDescription, Integer stock,
+    public SearchProduct(Long productNo, String name, String simpleDescription,
+                         String detailsDescription, Integer stock,
                          LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
                          String thumbnailUrl, Long dailyHits, Long fixedPrice,
                          Integer increasePointPercent, Double discountPercent, Long rawPrice) {

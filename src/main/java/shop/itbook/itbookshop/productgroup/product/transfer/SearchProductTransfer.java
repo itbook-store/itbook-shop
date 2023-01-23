@@ -1,17 +1,28 @@
 package shop.itbook.itbookshop.productgroup.product.transfer;
 
-import lombok.NoArgsConstructor;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
+ * 엘라스틱 서치의 도큐먼트와 상품의 엔터티와 DTO 간의 변환을 담당하는 클래스입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
-@NoArgsConstructor
 public class SearchProductTransfer {
-    public static SearchProduct entityToDocument(Product product){
+
+    private SearchProductTransfer() {
+
+    }
+
+    /**
+     * 상품 엔티티를 엘라스틱 서치의 상품 도큐먼트로 변환하는 기능을 하는 메서드입니다.
+     *
+     * @param product 상품 엔터티
+     * @return 엘라스틱 서치의 상품 도큐먼트
+     */
+    public static SearchProduct entityToDocument(Product product) {
         return SearchProduct.builder()
             .productNo(product.getProductNo())
             .productCreatedAt(product.getProductCreatedAt())
@@ -30,7 +41,13 @@ public class SearchProductTransfer {
             .build();
     }
 
-    public static ProductSearchResponseDto documentToDto(SearchProduct searchProduct){
+    /**
+     * 엘라스틱 서치의 도큐먼트를 DTO로 변환하는 기능을 담당하는 메소드입니다.
+     *
+     * @param searchProduct 엘라스틱 서치 상품 도큐먼트
+     * @return 엘라스틱 서치 도큐먼트를 담을 DTO입니다.
+     */
+    public static ProductSearchResponseDto documentToDto(SearchProduct searchProduct) {
         return ProductSearchResponseDto.builder()
             .productNo(searchProduct.getProductNo())
             .name(searchProduct.getName())
