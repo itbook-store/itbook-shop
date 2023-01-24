@@ -2,8 +2,6 @@ package shop.itbook.itbookshop.productgroup.product.service.elastic.impl;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -20,9 +18,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -32,6 +33,7 @@ import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFou
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepository.ProductSearchRepository;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
+import shop.itbook.itbookshop.productgroup.product.service.adminapi.impl.ProductAdminServiceImpl;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
@@ -39,7 +41,8 @@ import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
  * @author 송다혜
  * @since 1.0
  */
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = ProductSearchServiceImpl.class)
 class ProductSearchServiceImplTest {
 
     @Autowired

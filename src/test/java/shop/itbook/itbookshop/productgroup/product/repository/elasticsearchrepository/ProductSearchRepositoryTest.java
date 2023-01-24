@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepository;
 
-
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.PropertySource;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
