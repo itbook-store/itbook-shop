@@ -20,12 +20,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: assign NHN secure manager key to application.properties
-        shell : bash
-        run : |
-          echo ${{ secrets.NHN_SECURE_CLIENT_KEY }} >> ./src/main/resources/application.properties
-          cat ./src/main/resources/application.properties
-
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
@@ -68,22 +62,6 @@ jobs:
           script_stop: true
           script: "./startup.sh"
 
-      - name: Sleep for 10 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '10s'
-
-      - name : complete server1 deployment (excute shell script)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_IP }}
-          username: ${{ secrets.SSH_ID }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script_stop: true
-          script: "./deployed_server1.sh"
-
-
         ### phase 2
 
       - name : ready for deploy seconds server (excute shell script)
@@ -122,18 +100,3 @@ jobs:
           port: ${{ secrets.SSH_PORT2 }}
           script_stop: true
           script: "./startup.sh"
-
-      - name: Sleep for 10 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '10s'
-
-      - name : complete server2 deployment (excute shell script)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_IP2 }}
-          username: ${{ secrets.SSH_ID2 }}
-          key: ${{ secrets.SSH_KEY2 }}
-          port: ${{ secrets.SSH_PORT2 }}
-          script_stop: true
-          script: "./deployed_server2.sh"

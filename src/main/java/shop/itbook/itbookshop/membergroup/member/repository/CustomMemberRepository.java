@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -45,5 +46,5 @@ public interface CustomMemberRepository {
      * @return the member auth response dto
      * @author 강명관
      */
-    MemberAuthResponseDto findAuthInfoByMemberId(String memberId);
+    Optional<MemberAuthInfoResponseDto> findAuthInfoByMemberId(String memberId);
 }
