@@ -1,10 +1,12 @@
 package shop.itbook.itbookshop.productgroup.product.controller.adminapi;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -34,27 +35,6 @@ public class ProductAdminController {
 
     private final ProductService productService;
 
-//    /**
-//     * 상품 등록을 요청하는 메서드입니다.
-//     *
-//     * @param addProductRequestDto 상품 등록을 위한 정보를 바인딩 받는 dto 객체입니다.
-//     * @return 등록한 상품의 상품 번호를 response entity에 담아 반환합니다.
-//     * @author 이하늬
-//     */
-//    @PostMapping
-//    public ResponseEntity<CommonResponseBody<AddProductResponseDto>> productAdd(
-//        @Valid @RequestBody AddProductRequestDto addProductRequestDto) {
-//
-//        AddProductResponseDto productPk =
-//            new AddProductResponseDto(productService.addProduct(addProductRequestDto));
-//
-//        CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
-//            new CommonResponseBody.CommonHeader(
-//                ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
-//    }
-
     /**
      * 상품 및 도서 등록을 요청하는 메서드입니다.
      *
@@ -64,7 +44,7 @@ public class ProductAdminController {
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<AddProductResponseDto>> productAdd(
-        @RequestPart AddProductBookRequestDto requestDto,
+        @RequestPart ProductBookRequestDto requestDto,
         @RequestPart MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 
@@ -82,16 +62,19 @@ public class ProductAdminController {
     /**
      * 상품 수정을 요청하는 메서드입니다.
      *
-     * @param productId               상품 번호입니다.
+     * @param productNo               상품 번호입니다.
      * @param modifyProductRequestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @return 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
-    @PutMapping("/{productId}")
+    @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
-        @PathVariable Long productId,
-        @Valid @RequestBody ModifyProductRequestDto modifyProductRequestDto) {
-        productService.modifyProduct(productId, modifyProductRequestDto);
+        @PathVariable Long productNo,
+        @RequestPart ProductBookRequestDto modifyProductRequestDto,
+        @RequestPart MultipartFile thumbnails,
+        @RequestPart(required = false) MultipartFile ebook) {
+
+        productService.modifyProduct(productNo, modifyProductRequestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -103,18 +86,37 @@ public class ProductAdminController {
     /**
      * 상품 삭제를 요청하는 메서드입니다.
      *
-     * @param productId 상품 번호입니다.
+     * @param productNo 상품 번호입니다.
      * @return 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<CommonResponseBody<Void>> productRemove(@PathVariable Long productId) {
-        productService.removeProduct(productId);
+    @DeleteMapping("/{productNo}")
+    public ResponseEntity<CommonResponseBody<Void>> productRemove(@PathVariable Long productNo) {
+        productService.removeProduct(productNo);
 
-        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
 
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 상품 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 상품 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping
+    public ResponseEntity<CommonResponseBody<List<FindProductResponseDto>>> productList() {
+
+        List<FindProductResponseDto> productList = productService.findProductList();
+
+        CommonResponseBody<List<FindProductResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 }

@@ -10,7 +10,7 @@ import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
 /**
  * BookService 인터페이스를 구현한 도서 Service 클래스입니다.
@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public AddBookRequestDto toBookRequestDto(AddProductBookRequestDto requestDto) {
+    public AddBookRequestDto toBookRequestDto(ProductBookRequestDto requestDto) {
         return AddBookRequestDto.builder().isbn(requestDto.getIsbn())
             .pageCount(requestDto.getPageCount()).bookCreatedAt(requestDto.getBookCreatedAt())
             .isEbook(requestDto.isEbook()).ebookUrl(requestDto.getFileEbookUrl())

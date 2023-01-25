@@ -1,10 +1,9 @@
 package shop.itbook.itbookshop.book.service.adminapi;
 
 import java.util.List;
-import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.dto.request.AddBookRequestDto;
 import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
 /**
  * 상품 Service 인터페이스입니다.
@@ -37,5 +36,5 @@ public interface BookService {
      */
     FindBookResponseDto findBook(Long id);
 
-    AddBookRequestDto toBookRequestDto(AddProductBookRequestDto requestDto);
+    AddBookRequestDto toBookRequestDto(ProductBookRequestDto requestDto);
 }

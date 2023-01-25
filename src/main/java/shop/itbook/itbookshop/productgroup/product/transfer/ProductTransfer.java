@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.transfer;
 
 import java.time.LocalDateTime;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 

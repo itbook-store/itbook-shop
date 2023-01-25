@@ -26,4 +26,5 @@ public interface ProductCategoryService {
      */
     Category addProductCategory(Product product, List<Integer> categoryList);
 
+    void removeProductCategory(Long productNo);
 }

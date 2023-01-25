@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service.impl;
 
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,17 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
-import shop.itbook.itbookshop.category.service.CategoryService;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
-import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
 /**
@@ -34,7 +34,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final FileService fileService;
-    private final CategoryService categoryService;
     private final BookService bookService;
     private final ProductCategoryService productCategoryService;
     @Value("${object.storage.folder-path.thumbnail}")
@@ -48,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public Long addProduct(AddProductBookRequestDto requestDto, MultipartFile thumbnails,
+    public Long addProduct(ProductBookRequestDto requestDto, MultipartFile thumbnails,
                            MultipartFile ebook) {
         String thumbnailUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
         requestDto.setFileThumbnailsUrl(thumbnailUrl);
@@ -77,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void modifyProduct(Long productNo, ModifyProductRequestDto requestDto) {
+    public void modifyProduct(Long productNo, ProductBookRequestDto requestDto) {
         Product product = updateProduct(requestDto, productNo);
         productRepository.save(product);
     }
@@ -89,6 +88,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
+        productCategoryService.removeProductCategory(productNo);
         productRepository.deleteById(productNo);
     }
 
@@ -101,7 +101,16 @@ public class ProductServiceImpl implements ProductService {
             .orElseThrow(ProductNotFoundException::new);
     }
 
-    private AddProductRequestDto toProductRequestDto(AddProductBookRequestDto requestDto) {
+    @Override
+    public List<FindProductResponseDto> findProductList() {
+        return productRepository.findProductList();
+    }
+
+    public FindProductResponseDto findProduct(Long productNo) {
+        return productRepository.findProduct(productNo);
+    }
+
+    private AddProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
         return AddProductRequestDto.builder()
             .productName(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())
@@ -124,7 +133,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productNo  수정해야 할 상품 번호입니다.
      * @return 수정 완료된 상품을 반환합니다.
      */
-    private Product updateProduct(ModifyProductRequestDto requestDto, Long productNo) {
+    private Product updateProduct(ProductBookRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
         product.setName(requestDto.getProductName());

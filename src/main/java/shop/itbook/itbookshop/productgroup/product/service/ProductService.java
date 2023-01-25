@@ -1,10 +1,10 @@
 package shop.itbook.itbookshop.productgroup.product.service;
 
-import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -27,16 +27,16 @@ public interface ProductService {
      * @return Pk 값인 상품 번호를 반환합니다.
      * @author 이하늬
      */
-    Long addProduct(AddProductBookRequestDto requestDto, MultipartFile thumbnails,
+    Long addProduct(ProductBookRequestDto requestDto, MultipartFile thumbnails,
                     MultipartFile ebook);
-    
+
 
     /**
      * @param productNo  the product no
      * @param requestDto the request dto
      * @author
      */
-    void modifyProduct(Long productNo, ModifyProductRequestDto requestDto);
+    void modifyProduct(Long productNo, ProductBookRequestDto requestDto);
 
     /**
      * @param productNo 삭제할 상품 번호입니다.
@@ -50,4 +50,6 @@ public interface ProductService {
      * @author 이하늬
      */
     Product findProductEntity(Long productNo);
+
+    List<FindProductResponseDto> findProductList();
 }

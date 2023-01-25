@@ -1,9 +1,7 @@
 package shop.itbook.itbookshop.productgroup.productcategory.repository;
 
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 
 /**
@@ -15,5 +13,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategor
 @Repository
 public interface ProductCategoryRepository
     extends JpaRepository<ProductCategory, ProductCategory.Pk> {
+
+    void deleteByPk_productNo(Long productNo);
 
 }

@@ -1,12 +1,9 @@
 package shop.itbook.itbookshop.book.transfer;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.book.dto.request.AddBookRequestDto;
 import shop.itbook.itbookshop.book.entity.Book;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
 /**
  * 도서에 대한 엔티티와 dto 간의 변환을 담당하는 클래스입니다.
@@ -34,7 +31,7 @@ public class BookTransfer {
             .build();
     }
 
-    public static Book dtoToEntityAdd(AddProductBookRequestDto requestDto, Long productNo,
+    public static Book dtoToEntityAdd(ProductBookRequestDto requestDto, Long productNo,
                                       String ebookUrl) {
         LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
 

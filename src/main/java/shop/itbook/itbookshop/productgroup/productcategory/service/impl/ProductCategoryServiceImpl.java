@@ -8,7 +8,6 @@ import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
@@ -37,7 +36,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         Category parentCategory =
             categoryService.findCategoryEntity(categoryList.get(0)).getParentCategory();
         categoryList.add(parentCategory.getCategoryNo());
-        
+
         List<Category> categories = categoryRepository.findAllById(categoryList);
 
         for (Category category : categories) {
@@ -45,5 +44,12 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
 
         return parentCategory;
+    }
+
+
+    @Override
+    @Transactional
+    public void removeProductCategory(Long productNo) {
+        productCategoryRepository.deleteByPk_productNo(productNo);
     }
 }
