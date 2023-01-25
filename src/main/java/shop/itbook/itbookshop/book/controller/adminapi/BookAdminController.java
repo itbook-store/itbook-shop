@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
-import shop.itbook.itbookshop.book.service.adminapi.BookAdminService;
+import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
  * 관리자의 요청을 받고 반환하는 도서 Controller 클래스입니다.
@@ -30,11 +30,7 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdmin
 @RequiredArgsConstructor
 public class BookAdminController {
 
-    private final BookAdminService bookService;
-    private final ProductAdminService productService;
-
-    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
-
+    private final BookService bookService;
 
     /**
      * 도서 조회를 요청하는 메서드입니다.
@@ -55,6 +51,12 @@ public class BookAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * 도서 상세 정보 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 도서의 상세 정보를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
     @GetMapping("/api/admin/products/books/{id}")
     public ResponseEntity<CommonResponseBody<FindBookResponseDto>> bookDetails(
         @PathVariable Long id) {
@@ -69,26 +71,4 @@ public class BookAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
-    /**
-     * 도서 등록을 요청하는 메서드입니다.
-     *
-     * @param requestDto 상품 등록을 위한 정보를 바인딩 받는 dto 객체입니다.
-     * @return 등록한 상품의 상품 번호를 response entity에 담아 반환합니다.
-     * @author 이하늬
-     */
-    @PostMapping("/api/admin/products/books")
-    public ResponseEntity<CommonResponseBody<AddProductResponseDto>> BookAdd(
-        @RequestPart AddProductBookRequestDto requestDto,
-        @RequestPart MultipartFile thumbnails,
-        @RequestPart(required = false) MultipartFile ebook) {
-
-        AddProductResponseDto productPk =
-            new AddProductResponseDto(bookService.addBook(requestDto, thumbnails, ebook));
-
-        CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(
-                ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
-    }
 }

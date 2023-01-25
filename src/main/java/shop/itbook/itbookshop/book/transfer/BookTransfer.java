@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import shop.itbook.itbookshop.book.dto.request.AddBookRequestDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductBookRequestDto;
 
@@ -24,7 +25,7 @@ public class BookTransfer {
      * @return 엔티티로 변환된 상품 엔티티입니다.
      * @author
      */
-    public static Book dtoToEntityAdd(AddProductBookRequestDto requestDto, Long productNo) {
+    public static Book dtoToEntityAdd(AddBookRequestDto requestDto, Long productNo) {
         LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
 
         return Book.builder().isbn(requestDto.getIsbn()).pageCount(requestDto.getPageCount())

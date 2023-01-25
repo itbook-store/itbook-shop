@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAd
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
 /**
@@ -40,21 +42,22 @@ class ProductAdminControllerTest {
     ObjectMapper objectMapper;
 
     @MockBean
-    private ProductAdminService productService;
+    private ProductService productService;
     private AddProductRequestDto addProductRequestDto_success;
     private AddProductRequestDto addProductRequestDto_failure;
 
 
     @BeforeEach
     void setUp() {
+        List<Integer> categoryList = new ArrayList<>();
         addProductRequestDto_success = new AddProductRequestDto("객체지향의 사실과 오해",
             "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
-            "상세 설명", 1, Boolean.TRUE, Boolean.FALSE,
-            "testUrl", 20000L, 1, 10.0, 12000L);
+            "상세 설명", true, true, 0, categoryList,
+            1, 20000L, 12000L, 10.0, "testUrl");
 
         addProductRequestDto_failure = new AddProductRequestDto("객체지향의 사실과 오해",
-            null, "상세 설명", 1, Boolean.TRUE, Boolean.FALSE,
-            "testUrl", 20000L, 1, 10.0, 12000L);
+            null, "상세 설명", true, true, 0, categoryList,
+            1, 20000L, 12000L, 10.0, "testUrl");
     }
 
     @Test
@@ -90,9 +93,9 @@ class ProductAdminControllerTest {
     void productModifyTest_success() throws Exception {
         Long productNo_long = 1L;
 
-        given(productService.findProduct(productNo_long))
+        given(productService.findProductEntity(productNo_long))
             .willReturn(ProductTransfer.dtoToEntityAdd(addProductRequestDto_success));
-        Product product = productService.findProduct(productNo_long);
+        Product product = productService.findProductEntity(productNo_long);
         product.setRawPrice(20000L);
 
         mockMvc.perform(put("/api/admin/products/1")
@@ -109,9 +112,9 @@ class ProductAdminControllerTest {
     void productModifyTest_failure() throws Exception {
         Long productNo_long = 1L;
 
-        given(productService.findProduct(productNo_long))
+        given(productService.findProductEntity(productNo_long))
             .willReturn(ProductTransfer.dtoToEntityAdd(addProductRequestDto_success));
-        Product product = productService.findProduct(productNo_long);
+        Product product = productService.findProductEntity(productNo_long);
         product.setRawPrice(null);
 
         mockMvc.perform(put("/api/admin/products/1")
@@ -128,7 +131,7 @@ class ProductAdminControllerTest {
     void productDeleteTest_success() throws Exception {
         Long productNo_long = 1L;
 
-        given(productService.findProduct(productNo_long))
+        given(productService.findProductEntity(productNo_long))
             .willReturn(ProductTransfer.dtoToEntityAdd(addProductRequestDto_success));
 
         mockMvc.perform(delete("/api/admin/products/1")

@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,6 +24,7 @@ import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
 
 @WebMvcTest(CategoryAdminController.class)
 class CategoryRestControllerAdvisorTest {
@@ -38,6 +40,7 @@ class CategoryRestControllerAdvisorTest {
 
     @Autowired
     ObjectMapper objectMapper;
+    
 
     @DisplayName("MemberForbiddenException 이 발생할경우 잘 잡는다.")
     @Test

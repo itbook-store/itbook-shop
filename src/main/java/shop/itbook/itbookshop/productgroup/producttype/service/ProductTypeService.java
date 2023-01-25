@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.producttype.service.adminapi;
+package shop.itbook.itbookshop.productgroup.producttype.service;
 
 import java.util.List;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
@@ -9,7 +9,7 @@ import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
  * @author 이하늬
  * @since 1.0
  */
-public interface ProductTypeAdminService {
+public interface ProductTypeService {
 
     /**
      * 모든 상품유형 리스트를 조회를 담당하는 메서드입니다.
