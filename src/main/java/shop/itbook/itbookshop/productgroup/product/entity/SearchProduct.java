@@ -45,7 +45,7 @@ public class SearchProduct {
     private Integer stock;
 
     @Column
-    @Field(type = FieldType.Date, format = DateFormat.date_time)
+    @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime productCreatedAt;
 
     @Column
