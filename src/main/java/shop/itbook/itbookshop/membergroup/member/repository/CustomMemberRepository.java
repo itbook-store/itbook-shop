@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -25,7 +26,7 @@ public interface CustomMemberRepository {
      */
     Optional<MemberResponseProjectionDto> querydslFindByMemberId(String memberId);
 
-    //Optional<MemberResponseDto> querydslFindByIdAllInfo(String id);
+    Optional<MemberResponseDto> querydslFindByMemberIdAllInfo(String memberId);
 
     Optional<Member> querydslFindByMemberIdToMember(String memberId);
 

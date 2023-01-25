@@ -4,6 +4,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 
 /**
@@ -15,6 +16,8 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProj
 public interface MemberService {
 
     MemberResponseProjectionDto findMember(String memberId);
+
+    MemberResponseDto findMemberAllInfo(String memberId);
 
     Long addMember(MemberRequestDto requestDto);
 

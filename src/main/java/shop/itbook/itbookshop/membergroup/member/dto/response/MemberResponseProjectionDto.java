@@ -13,17 +13,17 @@ import lombok.Getter;
 @Getter
 public class MemberResponseProjectionDto {
 
-    Long memberNo;
-    String memberId;
-    String membershipGrade;
-    String memberStatusName;
-    String nickname;
-    String name;
-    Boolean isMan;
-    LocalDateTime birth;
-    String phoneNumber;
-    String email;
-    LocalDateTime memberCreatedAt;
+    private Long memberNo;
+    private String memberId;
+    private String membershipGrade;
+    private String memberStatusName;
+    private String nickname;
+    private String name;
+    private Boolean isMan;
+    private LocalDateTime birth;
+    private String phoneNumber;
+    private String email;
+    private LocalDateTime memberCreatedAt;
 
     @SuppressWarnings("java:S107") // 회원 테이블의 입력 받아야 될 필드값이 많기 때문
     @Builder

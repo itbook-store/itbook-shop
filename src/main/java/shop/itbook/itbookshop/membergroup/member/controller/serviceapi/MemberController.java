@@ -18,6 +18,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -48,8 +49,6 @@ public class MemberController {
             memberNoResponseDto
         );
 
-        System.out.println(">>>>>>>" + memberNoResponseDto.getMemberNo());
-
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
@@ -62,6 +61,17 @@ public class MemberController {
                     MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberService.findMember(memberId)
             );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping("/{memberId}/all")
+    public ResponseEntity<CommonResponseBody<MemberResponseDto>> memberAllDetails(
+        @PathVariable("memberId") String memberId) {
+        CommonResponseBody<MemberResponseDto> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
+                memberService.findMemberAllInfo(memberId));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -100,6 +110,7 @@ public class MemberController {
         ));
     }
 
+    // TODO sign-up-check 로 바꾸기
     @GetMapping("/sign-up/memberId/{memberId}")
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkMemberIdDuplicate(
         @PathVariable("memberId") String memberId) {

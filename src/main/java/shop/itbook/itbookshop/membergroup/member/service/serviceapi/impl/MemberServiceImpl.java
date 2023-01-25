@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -32,14 +33,18 @@ import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTran
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-
     private final MemberStatusAdminService memberStatusAdminService;
-
     private final MembershipAdminService membershipAdminService;
 
     @Override
     public MemberResponseProjectionDto findMember(String memberId) {
         return memberRepository.querydslFindByMemberId(memberId)
+            .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Override
+    public MemberResponseDto findMemberAllInfo(String memberId) {
+        return memberRepository.querydslFindByMemberIdAllInfo(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
 

@@ -3,8 +3,6 @@ package shop.itbook.itbookshop.membergroup.member.dto.response;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
-import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 
 /**
  * 멤버 정보를 반환할 Dto 클래스 입니다.
@@ -17,9 +15,9 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatus
 public class MemberResponseDto {
 
     private Long memberNo;
-    private MembershipResponseDto membership;
-    private MemberStatusResponseDto memberStatus;
     private String memberId;
+    private String membershipGrade;
+    private String memberStatusName;
     private String nickname;
     private String name;
     private Boolean isMan;
@@ -28,6 +26,5 @@ public class MemberResponseDto {
     private String phoneNumber;
     private String email;
     private LocalDateTime memberCreatedAt;
-
 
 }

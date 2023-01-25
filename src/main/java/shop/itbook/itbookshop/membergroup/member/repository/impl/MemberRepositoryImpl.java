@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
@@ -49,18 +50,17 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .fetchOne());
     }
 
-    /*@Override
-    public Optional<MemberResponseDto> querydslFindByIdAllInfo(String id) {
+    @Override
+    public Optional<MemberResponseDto> querydslFindByMemberIdAllInfo(String memberId) {
         return Optional.of(jpaQueryFactory.select(
-                Projections.constructor(MemberResponseDto.class, qmember.memberNo, qmembership,
-                    qmemberStatus, qmember.id, qmember.nickname, qmember.name, qmember.isMan,
-                    qmember.birth, qmember.password, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt)
-            ).from(qmember).join(qmember.membership, qmembership)
-            .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.id.eq(id))
-            .fetch().get(0));
-    }*/
+                Projections.constructor(MemberResponseDto.class, qmember.memberNo, qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
+                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt
+                )).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus).where(qmember.memberId.eq(memberId))
+            .fetchOne());
+    }
 
     @Override
     public Optional<Member> querydslFindByMemberIdToMember(String memberId) {
