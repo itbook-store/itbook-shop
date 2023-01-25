@@ -1,0 +1,19 @@
+package shop.itbook.itbookshop.coupongroup.coupon.service;
+
+import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
+
+/**
+ * @author 송다혜
+ * @since 1.0
+ */
+public interface CouponService {
+
+    Long addCoupon(CouponRequestDto couponRequestDto);
+
+    @Transactional
+    void deleteCoupon(Long couponNo);
+
+    CouponResponseDto findByCouponResponseDto(String code);
+}
