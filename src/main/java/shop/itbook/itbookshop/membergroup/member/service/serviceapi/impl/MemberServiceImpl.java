@@ -77,19 +77,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void modifyMember(String memberId, MemberUpdateRequestDto requestDto) {
-//        Member member = memberRepository.findByMemberId(memberId)
-//            .orElseThrow(MemberNotFoundException::new);
 
         Member member = memberRepository.querydslFindByMemberIdToMember(memberId).get();
-        log.info("member = {}", member);
 
         member.setNickname(requestDto.getNickname());
         member.setName(requestDto.getName());
         member.setPassword(requestDto.getPassword());
         member.setPhoneNumber(requestDto.getPhoneNumber());
         member.setEmail(requestDto.getEmail());
-
-        log.info("member = {}", member);
 
     }
 

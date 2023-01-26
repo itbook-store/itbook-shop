@@ -112,7 +112,7 @@ public class MemberController {
 
     // TODO sign-up-check 로 바꾸기
     @GetMapping("/sign-up/memberId/{memberId}")
-    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkMemberIdDuplicate(
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> memberIdDuplicateCheck(
         @PathVariable("memberId") String memberId) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(""), memberService.checkMemberIdDuplicate(memberId)
@@ -120,7 +120,7 @@ public class MemberController {
     }
 
     @GetMapping("/sign-up/nickname/{nickname}")
-    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkNicknameDuplicate(
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> nicknameDuplicateCheck(
         @PathVariable("nickname") String nickname) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(""),
@@ -129,7 +129,7 @@ public class MemberController {
     }
 
     @GetMapping("/sign-up/email/{email}")
-    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkEmailDuplicate(
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> emailDuplicateCheck(
         @PathVariable("email") String email) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(""),
@@ -138,7 +138,7 @@ public class MemberController {
     }
 
     @GetMapping("/sign-up/phoneNumber/{phoneNumber}")
-    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> checkPhoneNumber(
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> phoneNumberCheck(
         @PathVariable("phoneNumber") String phoneNumber) {
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(""),
