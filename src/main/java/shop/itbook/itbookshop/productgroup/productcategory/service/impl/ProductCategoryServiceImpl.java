@@ -1,14 +1,19 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
+import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
@@ -46,10 +51,35 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return parentCategory;
     }
 
+    @Override
+    @Transactional
+    public Category modifyProductCategory(Product product, List<Integer> categoryList) {
+        Category parentCategory =
+            categoryService.findCategoryEntity(categoryList.get(0)).getParentCategory();
+
+        productCategoryRepository.deleteByPk_productNo(product.getProductNo());
+        List<Category> categories = categoryRepository.findAllById(categoryList);
+
+        for (Category category : categories) {
+            productCategoryRepository.save(new ProductCategory(product, category));
+        }
+
+        return parentCategory;
+    }
 
     @Override
     @Transactional
     public void removeProductCategory(Long productNo) {
         productCategoryRepository.deleteByPk_productNo(productNo);
+    }
+
+    @Override
+    public List<CategoryDetailsResponseDto> findCategoryList(Long productNo) {
+        return productCategoryRepository.getCategoryListWithProductNo(productNo);
+    }
+
+    @Override
+    public List<ProductDetailsResponseDto> findProductList(Integer categoryNo) {
+        return productCategoryRepository.getProductListWithCategoryNo(categoryNo);
     }
 }

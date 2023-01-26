@@ -1,7 +1,10 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service;
 
 import java.util.List;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
+import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
@@ -27,4 +30,10 @@ public interface ProductCategoryService {
     Category addProductCategory(Product product, List<Integer> categoryList);
 
     void removeProductCategory(Long productNo);
+
+    Category modifyProductCategory(Product product, List<Integer> categoryNoList);
+
+    List<CategoryDetailsResponseDto> findCategoryList(Long productNo);
+
+    List<ProductDetailsResponseDto> findProductList(Integer categoryNo);
 }

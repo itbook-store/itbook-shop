@@ -1,8 +1,9 @@
 package shop.itbook.itbookshop.book.service.adminapi;
 
 import java.util.List;
-import shop.itbook.itbookshop.book.dto.request.AddBookRequestDto;
+import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
 import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
+import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
 /**
@@ -27,7 +28,7 @@ public interface BookService {
      * @return the long
      * @author
      */
-    Long addBook(AddBookRequestDto requestDto, Long productNo);
+    Long addBook(BookRequestDto requestDto, Long productNo);
 
     /**
      * @param id the id
@@ -36,5 +37,9 @@ public interface BookService {
      */
     FindBookResponseDto findBook(Long id);
 
-    AddBookRequestDto toBookRequestDto(ProductBookRequestDto requestDto);
+    Book findBookEntity(Long productNo);
+
+    BookRequestDto toBookRequestDto(ProductBookRequestDto requestDto);
+
+    void modifyBook(BookRequestDto requestDto, Long productNo);
 }

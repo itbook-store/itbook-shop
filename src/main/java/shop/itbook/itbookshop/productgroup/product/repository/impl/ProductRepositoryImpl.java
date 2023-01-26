@@ -4,11 +4,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
-import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.entity.QBook;
-import shop.itbook.itbookshop.book.repository.BookRepositoryCustom;
-import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepositoryCustom;
@@ -24,14 +21,14 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<FindProductResponseDto> findProductList() {
+    public List<ProductDetailsResponseDto> findProductList() {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
-        JPQLQuery<FindProductResponseDto> productList =
+        JPQLQuery<ProductDetailsResponseDto> productList =
             from(qBook)
                 .rightJoin(qBook.product, qProduct)
-                .select(Projections.constructor(FindProductResponseDto.class,
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isSelled, qProduct.isDeleted,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
@@ -42,14 +39,14 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public FindProductResponseDto findProduct(Long productNo) {
+    public ProductDetailsResponseDto findProduct(Long productNo) {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
-        JPQLQuery<FindProductResponseDto> product =
+        JPQLQuery<ProductDetailsResponseDto> product =
             from(qBook)
                 .rightJoin(qBook.product, qProduct)
-                .select(Projections.constructor(FindProductResponseDto.class,
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isSelled, qProduct.isDeleted,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddProductResponseDto {
+public class ProductNoResponseDto {
 
     private Long productNo;
 

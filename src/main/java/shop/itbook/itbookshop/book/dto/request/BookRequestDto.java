@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.book.dto.request;
 
-import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -16,7 +15,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Builder
 @AllArgsConstructor
-public class AddBookRequestDto {
+public class BookRequestDto {
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     private String isbn;

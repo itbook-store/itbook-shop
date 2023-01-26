@@ -2,8 +2,7 @@ package shop.itbook.itbookshop.productgroup.product.repository;
 
 import java.util.List;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 
 /**
  * @author 이하늬
@@ -11,7 +10,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductRespo
  */
 @NoRepositoryBean
 public interface ProductRepositoryCustom {
-    List<FindProductResponseDto> findProductList();
+    List<ProductDetailsResponseDto> findProductList();
 
-    FindProductResponseDto findProduct(Long id);
+    ProductDetailsResponseDto findProduct(Long id);
 }

@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.book.transfer;
 
 import java.time.LocalDateTime;
-import shop.itbook.itbookshop.book.dto.request.AddBookRequestDto;
+import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
@@ -22,7 +22,7 @@ public class BookTransfer {
      * @return 엔티티로 변환된 상품 엔티티입니다.
      * @author
      */
-    public static Book dtoToEntityAdd(AddBookRequestDto requestDto, Long productNo) {
+    public static Book dtoToEntityAdd(BookRequestDto requestDto, Long productNo) {
         LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
 
         return Book.builder().isbn(requestDto.getIsbn()).pageCount(requestDto.getPageCount())

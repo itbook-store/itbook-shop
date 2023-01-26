@@ -11,8 +11,7 @@ import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.FindProductResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
@@ -47,15 +46,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public Long addProduct(ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                           MultipartFile ebook) {
-        String thumbnailUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
-        requestDto.setFileThumbnailsUrl(thumbnailUrl);
-
-        if (!Objects.isNull(ebook)) {
-            String ebookUrl = fileService.uploadFile(ebook, folderPathEbook);
-            requestDto.setFileEbookUrl(ebookUrl);
-        }
+    public Long addProduct(ProductBookRequestDto requestDto,
+                           MultipartFile thumbnails, MultipartFile ebook) {
+        uploadAndSetFile(requestDto, thumbnails, ebook);
 
         Product product = ProductTransfer.dtoToEntityAdd(this.toProductRequestDto(requestDto));
         productRepository.save(product);
@@ -76,9 +69,31 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void modifyProduct(Long productNo, ProductBookRequestDto requestDto) {
+    public void modifyProduct(Long productNo, ProductBookRequestDto requestDto,
+                              MultipartFile thumbnails, MultipartFile ebook) {
+        uploadAndSetFile(requestDto, thumbnails, ebook);
+
         Product product = updateProduct(requestDto, productNo);
         productRepository.save(product);
+
+        Category parentCategory =
+            productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
+
+        if (parentCategory.getCategoryName().equals("도서")) {
+            bookService.modifyBook(bookService.toBookRequestDto(requestDto), productNo);
+        }
+
+    }
+
+    private void uploadAndSetFile(ProductBookRequestDto requestDto, MultipartFile thumbnails,
+                                  MultipartFile ebook) {
+        String thumbnailUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
+        requestDto.setFileThumbnailsUrl(thumbnailUrl);
+
+        if (!Objects.isNull(ebook)) {
+            String ebookUrl = fileService.uploadFile(ebook, folderPathEbook);
+            requestDto.setFileEbookUrl(ebookUrl);
+        }
     }
 
 
@@ -101,13 +116,21 @@ public class ProductServiceImpl implements ProductService {
             .orElseThrow(ProductNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<FindProductResponseDto> findProductList() {
+    public List<ProductDetailsResponseDto> findProductList() {
         return productRepository.findProductList();
     }
 
-    public FindProductResponseDto findProduct(Long productNo) {
-        return productRepository.findProduct(productNo);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductDetailsResponseDto findProduct(Long productNo) {
+        ProductDetailsResponseDto productResponseDto = productRepository.findProduct(productNo);
+        return productResponseDto;
     }
 
     private AddProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
