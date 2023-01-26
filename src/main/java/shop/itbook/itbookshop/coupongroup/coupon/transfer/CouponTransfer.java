@@ -19,6 +19,7 @@ public class CouponTransfer {
             .name(dto.getName())
             .amount(dto.getAmount())
             .percent(dto.getPercent())
+            .point(dto.getPoint())
             .standardAmount(dto.getStandardAmount())
             .maxDiscountAmount(dto.getMaxDiscountAmount())
             .couponCreatedAt(dto.getCouponCreatedAt())
