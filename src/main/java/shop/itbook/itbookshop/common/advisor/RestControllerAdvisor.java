@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
@@ -30,7 +31,9 @@ public class RestControllerAdvisor {
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
-        MembershipNotFoundException.class})
+        MembershipNotFoundException.class,
+        InvalidAuthRequestException.class
+    })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
 
