@@ -5,11 +5,13 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
+import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
@@ -27,7 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private static final int NO_PARENT_NUMBER = 0;
     private static final int MAIN_CATEGORY_LEVEL = 0;
-    private static final long INIT_ZERO = 0L;
+    private static final int CHILD_CATEGORY_LEVEL = MAIN_CATEGORY_LEVEL + 1;
 
     private final CategoryRepository categoryRepository;
 
@@ -39,11 +41,20 @@ public class CategoryServiceImpl implements CategoryService {
     public Integer addCategory(CategoryRequestDto categoryRequestDto) {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
+
         boolean isNoParentCategory =
             Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
 
+        return saveCategoryAndGetCategoryNo(categoryRequestDto, category,
+            isNoParentCategory);
+    }
+
+    private Integer saveCategoryAndGetCategoryNo(CategoryRequestDto categoryRequestDto,
+                                                 Category category, boolean isNoParentCategory) {
         if (isNoParentCategory) {
             category.setLevel(MAIN_CATEGORY_LEVEL);
+            categoryRepository.modifyMainCategorySequence(1);
+
             category = categoryRepository.save(category);
             category.setParentCategory(category);
 
@@ -51,7 +62,10 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         settingParentCategory(categoryRequestDto.getParentCategoryNo(), category);
+        categoryRepository.modifyChildCategorySequence(category.getParentCategory().getCategoryNo(),
+            1);
         category = categoryRepository.save(category);
+
         return category.getCategoryNo();
     }
 
@@ -67,9 +81,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category parentCategory = this.findCategoryEntity(parentCategoryNo);
         category.setParentCategory(parentCategory);
-
-        Integer parentCategoryLevel = parentCategory.getLevel();
-        category.setLevel(++parentCategoryLevel);
+        category.setLevel(CHILD_CATEGORY_LEVEL);
     }
 
     /**
@@ -78,7 +90,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryListResponseDto> findCategoryListByEmployee() {
 
-        return categoryRepository.findCategoryListByEmployee();
+        List<CategoryListResponseDto> categoryListByEmployee =
+            categoryRepository.findCategoryListByEmployee();
+
+        settingMainCategoryCount(categoryListByEmployee);
+
+        return categoryListByEmployee;
     }
 
     @Override
@@ -86,7 +103,33 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryListResponseDto> categoryListByNotEmployee =
             categoryRepository.findCategoryListByNotEmployee();
 
+        settingMainCategoryCount(categoryListByNotEmployee);
+
         return categoryListByNotEmployee;
+    }
+
+    private static void settingMainCategoryCount(
+        List<CategoryListResponseDto> categoryList) {
+
+        CategoryListResponseDto mainCategoryDto = null;
+        Long sum = 0L;
+        for (CategoryListResponseDto categoryListResponseDto : categoryList) {
+            if (Objects.equals(categoryListResponseDto.getLevel(), MAIN_CATEGORY_LEVEL)) {
+                if (sum != 0L) {
+                    mainCategoryDto.setCount(sum);
+                    sum = 0L;
+                }
+                mainCategoryDto = categoryListResponseDto;
+                continue;
+            }
+
+            sum += categoryListResponseDto.getCount();
+        }
+
+        if (Objects.isNull(mainCategoryDto)) {
+            return;
+        }
+        mainCategoryDto.setCount(sum);
     }
 
     /**
@@ -135,16 +178,69 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     @Transactional
-    public void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto) {
+    public void modifyCategory(Integer categoryNo, CategoryModifyRequestDto categoryRequestDto) {
         Category category = findCategoryEntityFetch(categoryNo);
         category.setCategoryName(categoryRequestDto.getCategoryName());
         category.setIsHidden(categoryRequestDto.getIsHidden());
-        category.setSequence(categoryRequestDto.getSequence());
     }
 
     @Override
     @Transactional
-    public void modifyCategory(Integer categoryNo) {
+    public void modifyChildSequence(Integer categoryNo, Integer hopingPositionCategoryNo) {
+        Category hopingPositionCategory = this.findCategoryEntity(hopingPositionCategoryNo);
+        Integer hopingSequence = hopingPositionCategory.getSequence();
+
+        Category currentCategory = getSequenceNotSameCategory(categoryNo, hopingSequence);
+        if (Objects.isNull(currentCategory)) {
+            return;
+        }
+
+        Category parentCategoryOfCurrentCategory = currentCategory.getParentCategory();
+        if (Objects.isNull(parentCategoryOfCurrentCategory)) {
+            throw new NoParentCategoryException();
+        }
+
+        Category ParentCategoryOfhopingPositionCategory =
+            hopingPositionCategory.getParentCategory();
+        Integer parentCategoryNoOfHopingPositionCategory =
+            ParentCategoryOfhopingPositionCategory.getCategoryNo();
+        Integer parentCategoryNoOfCurrentCategory = parentCategoryOfCurrentCategory.getCategoryNo();
+
+        categoryRepository.modifyChildCategorySequence(parentCategoryNoOfHopingPositionCategory,
+            hopingSequence);
+        currentCategory.setSequence(hopingSequence);
+        if (Objects.equals(parentCategoryNoOfCurrentCategory,
+            parentCategoryNoOfHopingPositionCategory)) {
+            return;
+        }
+
+        currentCategory.setParentCategory(ParentCategoryOfhopingPositionCategory);
+    }
+
+    @Override
+    @Transactional
+    public void modifyMainSequence(Integer categoryNo, Integer sequence) {
+
+        Category category = getSequenceNotSameCategory(categoryNo, sequence);
+        if (Objects.isNull(category)) {
+            return;
+        }
+
+        categoryRepository.modifyMainCategorySequence(sequence);
+        category.setSequence(sequence);
+    }
+
+    private Category getSequenceNotSameCategory(Integer categoryNo, Integer sequence) {
+        Category category = this.findCategoryEntity(categoryNo);
+        if (Objects.equals(category.getSequence(), sequence)) {
+            return null;
+        }
+        return category;
+    }
+
+    @Override
+    @Transactional
+    public void modifyCategoryHidden(Integer categoryNo) {
         Category category = findCategoryEntityFetch(categoryNo);
         category.setIsHidden(!category.getIsHidden());
     }

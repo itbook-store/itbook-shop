@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
@@ -117,10 +118,12 @@ class CategoryServiceImplTest {
         CategoryListResponseDto category1 = new CategoryListResponseDto();
         ReflectionTestUtils.setField(category1, "categoryNo", 1);
         ReflectionTestUtils.setField(category1, "categoryName", "도서");
+        ReflectionTestUtils.setField(category1, "count", 0L);
 
         CategoryListResponseDto category2 = new CategoryListResponseDto();
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
+        ReflectionTestUtils.setField(category2, "count", 0L);
 
         given(categoryRepository.findCategoryListByEmployee())
             .willReturn(List.of(category1, category2));
@@ -269,12 +272,14 @@ class CategoryServiceImplTest {
     @DisplayName("부모카테고리가 없는경우 카테고리 수정 메서드가 잘 동작한다.")
     @Test
     void modifyCategory() {
-        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 0);
+        CategoryModifyRequestDto categoryModifyRequestDto = new CategoryModifyRequestDto();
+        ReflectionTestUtils.setField(categoryModifyRequestDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryModifyRequestDto, "categoryName", "홍길동");
 
         Category category = mock(Category.class);
         given(categoryRepository.findCategoryFetch(anyInt())).willReturn(
             Optional.of(category));
-        categoryService.modifyCategory(1, categoryRequestDto);
+        categoryService.modifyCategory(1, categoryModifyRequestDto);
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
@@ -283,14 +288,17 @@ class CategoryServiceImplTest {
     @DisplayName("부모카테고리가 있는경우 카테고리 수정 메서드가 잘 동작한다.")
     @Test
     void modifyCategory_hasParent() {
-        ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
-        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
+
+        CategoryModifyRequestDto categoryModifyRequestDto = new CategoryModifyRequestDto();
+        ReflectionTestUtils.setField(categoryModifyRequestDto, "isHidden", false);
+        ReflectionTestUtils.setField(categoryModifyRequestDto, "categoryName", "홍길동");
+
         Category category = mock(Category.class);
         given(categoryRepository.findCategoryFetch(anyInt())).willReturn(
             Optional.of(category));
         given(categoryRepository.findById(anyInt()))
             .willReturn(Optional.of(category));
-        categoryService.modifyCategory(1, categoryRequestDto);
+        categoryService.modifyCategory(1, categoryModifyRequestDto);
 
         verify(category).setCategoryName(anyString());
         verify(category).setIsHidden(anyBoolean());
