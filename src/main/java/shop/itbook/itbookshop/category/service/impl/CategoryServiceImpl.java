@@ -1,15 +1,19 @@
 package shop.itbook.itbookshop.category.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
+import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
@@ -93,9 +97,37 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryListResponseDto> categoryListByEmployee =
             categoryRepository.findCategoryListByEmployee();
 
-        settingMainCategoryCount(categoryListByEmployee);
+        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
+
+        settingCount(categoryListByEmployee, categoryNoAndProductNoDtoList);
 
         return categoryListByEmployee;
+    }
+
+    private static void settingCount(List<CategoryListResponseDto> categoryListByEmployee,
+                                     List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList) {
+        Map<Integer, Long> mainCategoryNoCountMap = new HashMap<>();
+
+        for (CategoryNoAndProductNoDto dto : categoryNoAndProductNoDtoList) {
+            Integer categoryNo = dto.getCategoryNo();
+            mainCategoryNoCountMap.put(categoryNo,
+                mainCategoryNoCountMap.getOrDefault(categoryNo, 0L) + 1);
+        }
+
+        for (CategoryListResponseDto dto : categoryListByEmployee) {
+            if (!Objects.equals(dto.getLevel(), MAIN_CATEGORY_LEVEL)) {
+                continue;
+            }
+
+            Integer categoryNo = dto.getCategoryNo();
+            Long productCount = mainCategoryNoCountMap.get(categoryNo);
+            if (Objects.isNull(productCount)) {
+                continue;
+            }
+
+            dto.setCount(productCount);
+        }
     }
 
     @Override
@@ -103,34 +135,9 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryListResponseDto> categoryListByNotEmployee =
             categoryRepository.findCategoryListByNotEmployee();
 
-        settingMainCategoryCount(categoryListByNotEmployee);
-
         return categoryListByNotEmployee;
     }
 
-    private static void settingMainCategoryCount(
-        List<CategoryListResponseDto> categoryList) {
-
-        CategoryListResponseDto mainCategoryDto = null;
-        Long sum = 0L;
-        for (CategoryListResponseDto categoryListResponseDto : categoryList) {
-            if (Objects.equals(categoryListResponseDto.getLevel(), MAIN_CATEGORY_LEVEL)) {
-                if (sum != 0L) {
-                    mainCategoryDto.setCount(sum);
-                    sum = 0L;
-                }
-                mainCategoryDto = categoryListResponseDto;
-                continue;
-            }
-
-            sum += categoryListResponseDto.getCount();
-        }
-
-        if (Objects.isNull(mainCategoryDto)) {
-            return;
-        }
-        mainCategoryDto.setCount(sum);
-    }
 
     /**
      * {@inheritDoc}
@@ -187,10 +194,9 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void modifyChildSequence(Integer categoryNo, Integer hopingPositionCategoryNo) {
-        Category hopingPositionCategory = this.findCategoryEntity(hopingPositionCategoryNo);
-        Integer hopingSequence = hopingPositionCategory.getSequence();
 
-        Category currentCategory = getSequenceNotSameCategory(categoryNo, hopingSequence);
+        Category currentCategory =
+            getSequenceNotSameSubCategory(categoryNo, hopingPositionCategoryNo);
         if (Objects.isNull(currentCategory)) {
             return;
         }
@@ -200,14 +206,18 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NoParentCategoryException();
         }
 
+        Category hopingPositionCategory = this.findCategoryEntityFetch(hopingPositionCategoryNo);
+        Integer hopingSequence = hopingPositionCategory.getSequence();
+
+
         Category ParentCategoryOfhopingPositionCategory =
             hopingPositionCategory.getParentCategory();
         Integer parentCategoryNoOfHopingPositionCategory =
             ParentCategoryOfhopingPositionCategory.getCategoryNo();
-        Integer parentCategoryNoOfCurrentCategory = parentCategoryOfCurrentCategory.getCategoryNo();
-
         categoryRepository.modifyChildCategorySequence(parentCategoryNoOfHopingPositionCategory,
             hopingSequence);
+
+        Integer parentCategoryNoOfCurrentCategory = parentCategoryOfCurrentCategory.getCategoryNo();
         currentCategory.setSequence(hopingSequence);
         if (Objects.equals(parentCategoryNoOfCurrentCategory,
             parentCategoryNoOfHopingPositionCategory)) {
@@ -217,11 +227,21 @@ public class CategoryServiceImpl implements CategoryService {
         currentCategory.setParentCategory(ParentCategoryOfhopingPositionCategory);
     }
 
+    private Category getSequenceNotSameSubCategory(Integer categoryNo,
+                                                   Integer hopingPositionCategoryNo) {
+
+        Category category = this.findCategoryEntityFetch(categoryNo);
+        if (Objects.equals(categoryNo, hopingPositionCategoryNo)) {
+            return null;
+        }
+        return category;
+    }
+
     @Override
     @Transactional
     public void modifyMainSequence(Integer categoryNo, Integer sequence) {
 
-        Category category = getSequenceNotSameCategory(categoryNo, sequence);
+        Category category = getSequenceNotSameMainCategory(categoryNo, sequence);
         if (Objects.isNull(category)) {
             return;
         }
@@ -230,7 +250,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setSequence(sequence);
     }
 
-    private Category getSequenceNotSameCategory(Integer categoryNo, Integer sequence) {
+    private Category getSequenceNotSameMainCategory(Integer categoryNo, Integer sequence) {
         Category category = this.findCategoryEntity(categoryNo);
         if (Objects.equals(category.getSequence(), sequence)) {
             return null;
@@ -251,11 +271,46 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void removeCategory(Integer categoryNo) {
+
+        Category category = this.findCategoryEntityFetch(categoryNo);
+
+        if (Objects.equals(category.getLevel(), MAIN_CATEGORY_LEVEL)) {
+            checkMainCategoryContainsProducts(categoryNo);
+            categoryRepository.deleteById(categoryNo);
+            return;
+        }
+
+        checkSubCategoryContainsProducts(categoryNo);
         categoryRepository.deleteById(categoryNo);
+    }
+
+    private void checkSubCategoryContainsProducts(Integer categoryNo) {
+        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
+            categoryRepository.getSubCategoryNoAndProductNoDtoForContainsProducts(categoryNo);
+
+        if (!categoryNoAndProductNoDtoList.isEmpty()) {
+            throw new CategoryContainsProductsException();
+        }
+    }
+
+    private void checkMainCategoryContainsProducts(Integer categoryNo) {
+        CategoryNoAndProductNoDto categoryNoAndProductNoDto =
+            categoryRepository.getMainCategoryNoAndProductNoDtoForContainsProducts(categoryNo);
+
+        if (Objects.nonNull(categoryNoAndProductNoDto)
+            && Objects.nonNull(categoryNoAndProductNoDto.getCategoryNo())) {
+            throw new CategoryContainsProductsException();
+        }
     }
 
     @Override
     public List<CategoryListResponseDto> findMainCategoryList() {
-        return categoryRepository.findMainCategoryList();
+
+        List<CategoryListResponseDto> mainCategoryList = categoryRepository.findMainCategoryList();
+        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
+
+        settingCount(mainCategoryList, categoryNoAndProductNoDtoList);
+        return mainCategoryList;
     }
 }
