@@ -40,7 +40,7 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
             from(qProductCategory)
                 .innerJoin(qProductCategory.category, qCategory)
                 .innerJoin(qProductCategory.product, qProduct)
-                .rightJoin(qProduct.book, qBook)
+                .leftJoin(qProduct.book, qBook)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
@@ -61,17 +61,20 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
         QProductCategory qProductCategory = QProductCategory.productCategory;
         QCategory qCategory = QCategory.category;
         QProduct qProduct = QProduct.product;
+        QCategory qParentCategory = new QCategory("parentCategory");
 
         JPQLQuery<CategoryDetailsResponseDto> categoryList =
             from(qProductCategory)
-                .innerJoin(qProductCategory.category, qCategory)
                 .innerJoin(qProductCategory.product, qProduct)
+                .innerJoin(qProductCategory.category, qCategory)
+                .innerJoin(qCategory.parentCategory, qParentCategory)
                 .select(Projections.constructor(CategoryDetailsResponseDto.class,
                     qCategory.categoryNo, qCategory.categoryName, qCategory.isHidden,
-                    qCategory.level, qCategory.parentCategory.categoryNo,
-                    qCategory.parentCategory.categoryName,
-                    qCategory.parentCategory.isHidden, qCategory.parentCategory.level))
-                .where(qProduct.productNo.eq(productNo));
+                    qCategory.level, qCategory.sequence, qParentCategory.categoryNo,
+                    qParentCategory.categoryName,
+                    qParentCategory.isHidden, qParentCategory.level,
+                    qParentCategory.sequence))
+                .where(qProductCategory.product.productNo.eq(productNo));
 
         return categoryList.fetch();
     }

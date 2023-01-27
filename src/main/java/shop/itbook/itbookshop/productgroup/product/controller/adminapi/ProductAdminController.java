@@ -67,7 +67,8 @@ public class ProductAdminController {
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
-        productSearchService.addSearchProduct(productService.findProductEntity(productPk.getProductNo()));
+        productSearchService.addSearchProduct(
+            productService.findProductEntity(productPk.getProductNo()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
@@ -244,7 +245,5 @@ public class ProductAdminController {
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()), categoryList);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
-
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
 }
