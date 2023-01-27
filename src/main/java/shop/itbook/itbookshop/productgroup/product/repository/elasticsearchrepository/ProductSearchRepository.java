@@ -11,7 +11,6 @@ import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
  * @author 송다혜
  * @since 1.0
  */
-@Repository
 public interface ProductSearchRepository extends ElasticsearchRepository<SearchProduct, Long> {
     List<SearchProduct> findByName(String name);
 }
