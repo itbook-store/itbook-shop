@@ -30,10 +30,12 @@ public class CategoryTransfer {
             .categoryName(category.getCategoryName())
             .isHidden(category.getIsHidden())
             .level(category.getLevel())
+            .sequence(category.getSequence())
             .parentCategoryNo(category.getParentCategory().getCategoryNo())
             .parentCategoryName(category.getParentCategory().getCategoryName())
             .parentCategoryIsHidden(category.getParentCategory().getIsHidden())
             .parentCategoryLevel(category.getParentCategory().getLevel())
+            .parentSequence(category.getParentCategory().getSequence())
             .build();
     }
 
@@ -49,6 +51,7 @@ public class CategoryTransfer {
         return Category.builder()
             .categoryName(categoryRequestDto.getCategoryName())
             .isHidden(categoryRequestDto.getIsHidden())
+            .sequence(1)
             .build();
     }
 }

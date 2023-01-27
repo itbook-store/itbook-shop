@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
 import java.util.List;
+import java.util.Objects;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
@@ -132,9 +136,44 @@ public class CategoryAdminController {
      */
     @PutMapping("/{categoryNo}")
     public ResponseEntity<CommonResponseBody<Void>> categoryModify(
-        @PathVariable Integer categoryNo, @RequestBody CategoryRequestDto categoryRequestDto) {
+        @PathVariable Integer categoryNo,
+        @Valid @RequestBody CategoryModifyRequestDto categoryRequestDto) {
 
         categoryService.modifyCategory(categoryNo, categoryRequestDto);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
+                null);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
+    }
+
+    @PutMapping("/{categoryNo}/child-sequence")
+    public ResponseEntity<CommonResponseBody<Void>> childCategorySequenceModify(
+        @PathVariable Integer categoryNo,
+        @RequestParam Integer hopingPositionCategoryNo) {
+
+        categoryService.modifyChildSequence(categoryNo, hopingPositionCategoryNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
+                null);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
+    }
+
+    @PutMapping("/{categoryNo}/main-sequence")
+    public ResponseEntity<CommonResponseBody<Void>> mainCategorySequenceModify(
+        @PathVariable Integer categoryNo,
+        @RequestParam Integer sequence) {
+
+        if (Objects.isNull(sequence) || sequence <= 0) {
+            throw new ValidationException("sequence 번호는 null일수 없으며 최솟값이 1입니다.");
+        }
+
+        categoryService.modifyMainSequence(categoryNo, sequence);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
@@ -148,7 +187,7 @@ public class CategoryAdminController {
     public ResponseEntity<CommonResponseBody<Void>> categoryModifyHidden(
         @PathVariable Integer categoryNo) {
 
-        categoryService.modifyCategory(categoryNo);
+        categoryService.modifyCategoryHidden(categoryNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
