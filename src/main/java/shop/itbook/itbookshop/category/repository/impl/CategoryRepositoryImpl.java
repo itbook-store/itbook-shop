@@ -33,44 +33,44 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     public List<CategoryListResponseDto> findCategoryListByEmployee() {
 
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qChildCategory = new QCategory("parentCategory");
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        return getCategoryListJPQLQuery(qCategory, qParentCategory, qProductCategory)
+        return getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory)
             .fetch();
     }
 
     public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
 
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qChildCategory = new QCategory("parentCategory");
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        return getCategoryListJPQLQuery(qCategory, qParentCategory, qProductCategory)
+        return getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory)
             .where(qCategory.isHidden.eq(false)
-                .and(qParentCategory.isHidden.eq(false)))
+                .and(qChildCategory.isHidden.eq(false)))
             .fetch();
     }
 
     private JPQLQuery<CategoryListResponseDto> getCategoryListJPQLQuery(QCategory qCategory,
-                                                                        QCategory qParentCategory,
+                                                                        QCategory qChildCategory,
                                                                         QProductCategory qProductCategory) {
         return from(qCategory)
-            .leftJoin(qParentCategory)
-            .on(qCategory.categoryNo.eq(qParentCategory.parentCategory.categoryNo))
+            .leftJoin(qChildCategory)
+            .on(qCategory.categoryNo.eq(qChildCategory.parentCategory.categoryNo))
             .leftJoin(qProductCategory)
-            .on(qProductCategory.category.categoryNo.eq(qParentCategory.categoryNo))
+            .on(qProductCategory.category.categoryNo.eq(qChildCategory.categoryNo))
             .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
-            .groupBy(qCategory.categoryNo, qParentCategory.categoryNo)
-            .orderBy(qCategory.sequence.asc(), qParentCategory.level.asc(),
-                qParentCategory.sequence.asc(), qParentCategory.categoryNo.desc())
+            .groupBy(qCategory.categoryNo, qChildCategory.categoryNo)
+            .orderBy(qCategory.sequence.asc(), qChildCategory.level.asc(),
+                qChildCategory.sequence.asc())
             .select(Projections.fields(CategoryListResponseDto.class,
-                qParentCategory.categoryNo,
-                qParentCategory.parentCategory.categoryNo.as("parent_category_no"),
-                qParentCategory.categoryName,
-                qParentCategory.isHidden,
-                qParentCategory.level,
-                qParentCategory.sequence,
+                qChildCategory.categoryNo,
+                qChildCategory.parentCategory.categoryNo.as("parent_category_no"),
+                qChildCategory.categoryName,
+                qChildCategory.isHidden,
+                qChildCategory.level,
+                qChildCategory.sequence,
                 qProductCategory.category.categoryNo.count().as("count")));
     }
 
@@ -87,7 +87,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
             .leftJoin(qProductCategory)
             .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
             .where(qCategory.parentCategory.categoryNo.eq(parentCategoryNo))
-            .orderBy(qCategory.level.asc(), qCategory.sequence.asc(), qCategory.categoryNo.desc())
+            .orderBy(qCategory.level.asc(), qCategory.sequence.asc())
             .groupBy(qCategory.categoryNo)
             .select(Projections.fields(CategoryListResponseDto.class,
                 qCategory.categoryNo,
@@ -104,21 +104,41 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     @Override
     public List<CategoryListResponseDto> findMainCategoryList() {
         QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("qParentCategory");
         QProductCategory qProductCategory = QProductCategory.productCategory;
+
+//        return from(qCategory)
+//            .leftJoin(qProductCategory)
+//            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
+//            .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
+//            .orderBy(qCategory.sequence.asc(), qCategory.categoryNo.desc())
+//            .groupBy(qCategory.categoryNo)
+//            .select(Projections.fields(CategoryListResponseDto.class,
+//                qCategory.categoryNo,
+//                qCategory.parentCategory.categoryNo.as("parent_category_no"),
+//                qCategory.categoryName,
+//                qCategory.isHidden,
+//                qCategory.level,
+//                qCategory.sequence,
+//                qProductCategory.category.categoryNo.count().as("count")
+//            ))
+//            .fetch();
+
 
         return from(qCategory)
             .leftJoin(qProductCategory)
             .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
-            .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
-            .orderBy(qCategory.sequence.asc(), qCategory.categoryNo.desc())
-            .groupBy(qCategory.categoryNo)
+            .innerJoin(qParentCategory)
+            .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
+            .groupBy(qCategory.parentCategory.categoryNo)
+            .orderBy(qParentCategory.sequence.asc())
             .select(Projections.fields(CategoryListResponseDto.class,
-                qCategory.categoryNo,
-                qCategory.parentCategory.categoryNo.as("parent_category_no"),
-                qCategory.categoryName,
-                qCategory.isHidden,
-                qCategory.level,
-                qCategory.sequence,
+                qParentCategory.categoryNo,
+                qParentCategory.parentCategory.categoryNo.as("parent_category_no"),
+                qParentCategory.categoryName,
+                qParentCategory.isHidden,
+                qParentCategory.level,
+                qParentCategory.sequence,
                 qProductCategory.category.categoryNo.count().as("count")
             ))
             .fetch();

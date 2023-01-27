@@ -28,4 +28,12 @@ Content-Type: application/json
 
 DELETE http://localhost:8082/api/admin/categories/49
 
+###
 
+PUT http://localhost:8082/api/admin/categories/60/main-sequence?sequence=6
+
+###
+
+PUT http://localhost:8082/api/admin/categories/3/child-sequence?hopingPositionCategoryNo=6
+
+###
