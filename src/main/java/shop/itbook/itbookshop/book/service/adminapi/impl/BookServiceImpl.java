@@ -6,19 +6,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
-import shop.itbook.itbookshop.book.dto.response.FindBookResponseDto;
+import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 
 /**
  * BookService 인터페이스를 구현한 도서 Service 클래스입니다.
  *
- * @author 이하늬
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
 @Service
@@ -28,10 +27,13 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<FindBookResponseDto> findBookList() {
-        List<FindBookResponseDto> bookList = bookRepository.findBookList();
-        for (FindBookResponseDto b : bookList) {
+    public List<BookDetailsResponseDto> findBookList() {
+        List<BookDetailsResponseDto> bookList = bookRepository.findBookList();
+        for (BookDetailsResponseDto b : bookList) {
             b.setSelledPrice((long) (b.getFixedPrice() * ((100 - b.getDiscountPercent()) * 0.01)));
             String fileThumbnailsUrl = b.getFileThumbnailsUrl();
             b.setThumbnailsName(
@@ -40,6 +42,9 @@ public class BookServiceImpl implements BookService {
         return bookList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Long addBook(BookRequestDto requestDto, Long productNo) {
@@ -48,6 +53,9 @@ public class BookServiceImpl implements BookService {
         return productNo;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void modifyBook(BookRequestDto requestDto, Long productNo) {
@@ -61,7 +69,7 @@ public class BookServiceImpl implements BookService {
         book.setIsbn(requestDto.getIsbn());
         book.setPageCount(requestDto.getPageCount());
         book.setBookCreatedAt(LocalDateTime.parse(requestDto.getBookCreatedAt()));
-        book.setIsEbook(requestDto.isEbook());
+        book.setIsEbook(requestDto.getIsEbook());
         book.setEbookUrl(requestDto.getEbookUrl());
         book.setPublisherName(requestDto.getPublisherName());
         book.setAuthorName(requestDto.getAuthorName());
@@ -69,22 +77,31 @@ public class BookServiceImpl implements BookService {
         return book;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public FindBookResponseDto findBook(Long id) {
-        return bookRepository.findBook(id);
+    public BookDetailsResponseDto findBook(Long productNo) {
+        return bookRepository.findBook(productNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Book findBookEntity(Long productNo) {
         return bookRepository.findById(productNo)
             .orElseThrow(BookNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BookRequestDto toBookRequestDto(ProductBookRequestDto requestDto) {
         return BookRequestDto.builder().isbn(requestDto.getIsbn())
             .pageCount(requestDto.getPageCount()).bookCreatedAt(requestDto.getBookCreatedAt())
-            .isEbook(requestDto.isEbook()).ebookUrl(requestDto.getFileEbookUrl())
+            .isEbook(requestDto.getIsEbook()).ebookUrl(requestDto.getFileEbookUrl())
             .publisherName(requestDto.getPublisherName()).authorName(requestDto.getAuthorName())
             .build();
     }

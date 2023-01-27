@@ -9,6 +9,8 @@ import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
 /**
+ * 도서를 등록하기 위한 데이터를 전달하는 requestDto 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */
@@ -28,7 +30,7 @@ public class BookRequestDto {
     private String bookCreatedAt;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isEbook;
+    private Boolean isEbook;
 
     private String ebookUrl;
 

@@ -58,7 +58,7 @@ public class Book {
     private String authorName;
 
     /**
-     * 빌터 패턴을 적용한 생성자입니다.
+     * 빌더 패턴을 적용한 생성자입니다.
      *
      * @param productNo     상품 번호입니다.
      * @param product       상품입니다.

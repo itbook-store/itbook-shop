@@ -38,7 +38,7 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                 .rightJoin(qProduct.book, qBook)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isDeleted,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
@@ -52,16 +52,18 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
     public List<CategoryDetailsResponseDto> getCategoryListWithProductNo(Long productNo) {
         QProductCategory qProductCategory = QProductCategory.productCategory;
         QCategory qCategory = QCategory.category;
+        QProduct qProduct = QProduct.product;
 
         JPQLQuery<CategoryDetailsResponseDto> categoryList =
             from(qProductCategory)
                 .innerJoin(qProductCategory.category, qCategory)
+                .innerJoin(qProductCategory.product, qProduct)
                 .select(Projections.constructor(CategoryDetailsResponseDto.class,
                     qCategory.categoryNo, qCategory.categoryName, qCategory.isHidden,
                     qCategory.level, qCategory.parentCategory.categoryNo,
                     qCategory.parentCategory.categoryName,
                     qCategory.parentCategory.isHidden, qCategory.parentCategory.level))
-                .where(qProductCategory.product.productNo.eq(productNo));
+                .where(qProduct.productNo.eq(productNo));
 
         return categoryList.fetch();
     }

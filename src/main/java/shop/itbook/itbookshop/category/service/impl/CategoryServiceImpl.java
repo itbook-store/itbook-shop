@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Integer addCategory(CategoryRequestDto categoryRequestDto) {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
-        boolean isNoParentCategory =
+        Boolean isNoParentCategory =
             Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
 
         if (isNoParentCategory) {

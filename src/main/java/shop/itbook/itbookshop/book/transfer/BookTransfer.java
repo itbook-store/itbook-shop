@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.book.transfer;
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
 import shop.itbook.itbookshop.book.entity.Book;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
 /**
  * 도서에 대한 엔티티와 dto 간의 변환을 담당하는 클래스입니다.
@@ -20,24 +19,13 @@ public class BookTransfer {
      *
      * @param requestDto 엔티티에 담을 dto입니다.
      * @return 엔티티로 변환된 상품 엔티티입니다.
-     * @author
+     * @author 이하늬
      */
     public static Book dtoToEntityAdd(BookRequestDto requestDto, Long productNo) {
         LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
 
         return Book.builder().isbn(requestDto.getIsbn()).pageCount(requestDto.getPageCount())
-            .isEbook(requestDto.isEbook()).authorName(requestDto.getAuthorName())
-            .bookCreatedAt(date).publisherName(requestDto.getPublisherName()).productNo(productNo)
-            .build();
-    }
-
-    public static Book dtoToEntityAdd(ProductBookRequestDto requestDto, Long productNo,
-                                      String ebookUrl) {
-        LocalDateTime date = LocalDateTime.parse(requestDto.getBookCreatedAt());
-
-        return Book.builder().isbn(requestDto.getIsbn()).pageCount(requestDto.getPageCount())
-            .isEbook(requestDto.isEbook()).authorName(requestDto.getAuthorName())
-            .ebookUrl(ebookUrl)
+            .isEbook(requestDto.getIsEbook()).authorName(requestDto.getAuthorName())
             .bookCreatedAt(date).publisherName(requestDto.getPublisherName()).productNo(productNo)
             .build();
     }

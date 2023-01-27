@@ -30,10 +30,10 @@ public class ProductBookRequestDto {
     private String detailsDescription;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isSelled;
+    private Boolean isExposed;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isDeleted;
+    private Boolean isForceSoldOut;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     @PositiveOrZero(message = "재고는 0개 이상이어야 합니다.")
@@ -69,7 +69,7 @@ public class ProductBookRequestDto {
     private String bookCreatedAt;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isEbook;
+    private Boolean isEbook;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(max = 255, message = "이름 길이는 1자-20자가 되어야 합니다.")

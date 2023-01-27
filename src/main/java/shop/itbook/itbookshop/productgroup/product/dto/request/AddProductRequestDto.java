@@ -35,10 +35,10 @@ public class AddProductRequestDto {
     private String detailsDescription;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isSelled;
+    private Boolean isExposed;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private boolean isDeleted;
+    private Boolean isForceSoldOut;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     @PositiveOrZero(message = "재고는 0개 이상이어야 합니다.")

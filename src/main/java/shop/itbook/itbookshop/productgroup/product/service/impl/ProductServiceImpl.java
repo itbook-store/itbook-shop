@@ -139,8 +139,8 @@ public class ProductServiceImpl implements ProductService {
             .simpleDescription(requestDto.getSimpleDescription())
             .detailsDescription(requestDto.getDetailsDescription())
             .stock(requestDto.getStock())
-            .isSelled(requestDto.isSelled())
-            .isDeleted(requestDto.isDeleted())
+            .isExposed(requestDto.getIsExposed())
+            .isForceSoldOut(requestDto.getIsForceSoldOut())
             .fixedPrice(requestDto.getFixedPrice())
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent())
@@ -163,8 +163,8 @@ public class ProductServiceImpl implements ProductService {
         product.setSimpleDescription(requestDto.getSimpleDescription());
         product.setDetailsDescription(requestDto.getDetailsDescription());
         product.setStock(requestDto.getStock());
-        product.setIsSelled(requestDto.isSelled());
-        product.setIsDeleted(requestDto.isDeleted());
+        product.setIsExposed(requestDto.getIsExposed());
+        product.setIsForceSoldOut(requestDto.getIsForceSoldOut());
         product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         product.setFixedPrice(requestDto.getFixedPrice());
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());

@@ -30,7 +30,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .rightJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isDeleted,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
@@ -48,7 +48,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .rightJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isDeleted,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,

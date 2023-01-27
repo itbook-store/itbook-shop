@@ -2,20 +2,22 @@ package shop.itbook.itbookshop.book.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
 /**
- * @author 이하늬
+ * 도서 상세 정보를 조회하기 위한 ResponseDto 클래스입니다.
+ *
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class FindBookResponseDto {
+public class BookDetailsResponseDto {
 
     private Long productNo;
 
@@ -25,9 +27,9 @@ public class FindBookResponseDto {
 
     private String detailsDescription;
 
-    private Boolean isSelled;
+    private Boolean isExposed;
 
-    private Boolean isDeleted;
+    private Boolean isForceSoldOut;
 
     private Integer stock;
 
@@ -61,20 +63,23 @@ public class FindBookResponseDto {
     @Setter
     String thumbnailsName;
 
-    public FindBookResponseDto(Long productNo, String productName, String simpleDescription,
-                               String detailsDescription, Boolean isSelled, Boolean isDeleted,
-                               Integer stock, Integer increasePointPercent, Long rawPrice,
-                               Long fixedPrice, Double discountPercent,
-                               String fileThumbnailsUrl,
-                               String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
-                               Boolean isEbook, String fileEbookUrl, String publisherName,
-                               String authorName) {
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
+    @Builder
+    public BookDetailsResponseDto(Long productNo, String productName, String simpleDescription,
+                                  String detailsDescription, Boolean isExposed,
+                                  Boolean isForceSoldOut,
+                                  Integer stock, Integer increasePointPercent, Long rawPrice,
+                                  Long fixedPrice, Double discountPercent,
+                                  String fileThumbnailsUrl,
+                                  String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
+                                  Boolean isEbook, String fileEbookUrl, String publisherName,
+                                  String authorName) {
         this.productNo = productNo;
         this.productName = productName;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
-        this.isSelled = isSelled;
-        this.isDeleted = isDeleted;
+        this.isExposed = isExposed;
+        this.isForceSoldOut = isForceSoldOut;
         this.stock = stock;
         this.increasePointPercent = increasePointPercent;
         this.rawPrice = rawPrice;

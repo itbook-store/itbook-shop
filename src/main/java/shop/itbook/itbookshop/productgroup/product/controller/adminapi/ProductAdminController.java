@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
+import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
@@ -27,7 +29,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCatego
 /**
  * 관리자의 요청을 받고 반환하는 상품 Controller 클래스입니다.
  *
- * @author 이하늬 * @since 1.0
+ * @author 이하늬
  * @since 1.0
  */
 @RestController
@@ -36,6 +38,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCatego
 public class ProductAdminController {
 
     private final ProductService productService;
+    private final BookService bookService;
     private final ProductCategoryService productCategoryService;
 
     /**
@@ -128,6 +131,46 @@ public class ProductAdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
+
+    /**
+     * 도서 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 도서 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping("/books")
+    public ResponseEntity<CommonResponseBody<List<BookDetailsResponseDto>>> bookList() {
+
+        List<BookDetailsResponseDto> bookList = bookService.findBookList();
+
+        CommonResponseBody<List<BookDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductResultMessageEnum.ADD_SUCCESS.getMessage()), bookList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 도서 상세 정보 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 도서의 상세 정보를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping("/books/{productNo}")
+    public ResponseEntity<CommonResponseBody<BookDetailsResponseDto>> bookDetails(
+        @PathVariable Long productNo) {
+
+        BookDetailsResponseDto book = bookService.findBook(productNo);
+
+        CommonResponseBody<BookDetailsResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductResultMessageEnum.ADD_SUCCESS.getMessage()), book);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
 
     /**
      * 모든 상품 조회를 요청하는 메서드입니다.
