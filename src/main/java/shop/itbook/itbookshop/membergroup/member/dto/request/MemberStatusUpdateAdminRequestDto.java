@@ -2,7 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
+import lombok.Setter;
 
 /**
  * 관리자 api에서는 멤버 상태만을 변경할 수 있도록 설계한 dto 입니다.
@@ -11,8 +11,12 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  * @since 1.0
  */
 @Getter
+@Setter
 @NoArgsConstructor
-public class MemberUpdateAdminRequestDto {
+public class MemberStatusUpdateAdminRequestDto {
 
-    MemberStatusEnum MemberStatusName;
+    private String memberStatusName;
+
+    private String statusChangedReason;
+
 }

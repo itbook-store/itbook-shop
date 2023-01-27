@@ -3,10 +3,9 @@ package shop.itbook.itbookshop.membergroup.member.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
@@ -19,17 +18,33 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 public interface CustomMemberRepository {
 
     /**
-     * memberNo로 특정 멤버 정보를 찾는 메서드입니다.
+     * memberId로 특정 멤버 정보를 찾는 메서드입니다.
+     * 프론트 서버에서 관리자가 특정 회원의 정보를 열람할 때 비밀번호를 제외한 모든 필드들의 값을 볼 수 있게 합니다.
      *
-     * @param memberId member id로 테이블에서 멤버를 찾습니다.
-     * @return Dto로 받아와 반환합니다.
+     * @param memberId memberId로 테이블에서 멤버를 찾습니다.
+     * @return 멤버 Dto로 반환합니다.
      * @author 노수연
      */
-    Optional<MemberResponseProjectionDto> querydslFindByMemberId(String memberId);
+    Optional<MemberExceptPwdResponseDto> findByMemberId(String memberId);
 
-    Optional<MemberResponseDto> querydslFindByMemberIdAllInfo(String memberId);
+    /**
+     * memberId로 특정 멤버 정보를 찾는 메서드입니다.
+     * 프론트 서버에서 유저가 비밀번호를 포함하여 자신의 모든 개인정보를 조회할 수 있도록 멤버 엔티티의 모든 필드들을 dto를 통해 반환합니다.
+     *
+     * @param memberId memberId로 테이블에서 멤버를 찾습니다.
+     * @return 멤버 Dto로 반환합니다.
+     * @author 노수연
+     */
+    Optional<MemberResponseDto> findByMemberIdAllInfo(String memberId);
 
-    Optional<Member> querydslFindByMemberIdToMember(String memberId);
+    /**
+     * 멤버를 수정할 때 특정 멤버 아이디로 멤버 엔티티를 불러와 dirty checking 일어날 수 있도록 Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.
+     *
+     * @param memberId memberId로 테이블에서 멤버를 찾습니다.
+     * @return Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.
+     * @author 노수연
+     */
+    Optional<Member> findByMemberIdReceiveMember(String memberId);
 
     /**
      * 모든 회원 리스트를 가져오는 메서드입니다.
@@ -37,7 +52,7 @@ public interface CustomMemberRepository {
      * @return 회원 리스트를 받아옵니다.
      * @author 노수연
      */
-    List<MemberResponseProjectionDto> querydslFindAll();
+    List<MemberExceptPwdResponseDto> findMemberList();
 
     /**
      * 회원 아이디로 로그인에 필요한 정보를 가져오는 메서드 입니다.

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateAdminRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 
@@ -38,10 +38,10 @@ public class MemberAdminController {
      * @author 노수연
      */
     @GetMapping("/{memberId}")
-    public ResponseEntity<CommonResponseBody<MemberResponseProjectionDto>> memberDetails(
+    public ResponseEntity<CommonResponseBody<MemberExceptPwdResponseDto>> memberDetails(
         @PathVariable("memberId") String memberId) {
 
-        CommonResponseBody<MemberResponseProjectionDto> commonResponseBody =
+        CommonResponseBody<MemberExceptPwdResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
@@ -58,9 +58,9 @@ public class MemberAdminController {
      * @author 노수연
      */
     @GetMapping()
-    public ResponseEntity<CommonResponseBody<List<MemberResponseProjectionDto>>> memberList() {
+    public ResponseEntity<CommonResponseBody<List<MemberExceptPwdResponseDto>>> memberList() {
 
-        CommonResponseBody<List<MemberResponseProjectionDto>> commonResponseBody =
+        CommonResponseBody<List<MemberExceptPwdResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
@@ -79,10 +79,9 @@ public class MemberAdminController {
      * @author 노수연
      */
     @PutMapping("/{memberId}")
-    public ResponseEntity<CommonResponseBody<Void>> memberModify(
+    public ResponseEntity<CommonResponseBody<Void>> memberStatusModify(
         @PathVariable("memberId") String memberId,
-        @Valid @RequestBody
-        MemberUpdateAdminRequestDto requestDto) {
+        @Valid @RequestBody MemberStatusUpdateAdminRequestDto requestDto) {
 
         memberAdminService.modifyMember(memberId, requestDto);
 

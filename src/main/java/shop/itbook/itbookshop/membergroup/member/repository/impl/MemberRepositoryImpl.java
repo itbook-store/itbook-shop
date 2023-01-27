@@ -5,10 +5,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.membergroup.member.repository.CustomMemberRepository;
@@ -34,11 +33,14 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     QMembership qmembership = QMembership.membership;
     QMemberStatus qmemberStatus = QMemberStatus.memberStatus;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<MemberResponseProjectionDto> querydslFindByMemberId(String memberId) {
+    public Optional<MemberExceptPwdResponseDto> findByMemberId(String memberId) {
 
         return Optional.of(jpaQueryFactory.select(
-                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberNo,
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
@@ -51,10 +53,14 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .fetchOne());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<MemberResponseDto> querydslFindByMemberIdAllInfo(String memberId) {
+    public Optional<MemberResponseDto> findByMemberIdAllInfo(String memberId) {
         return Optional.of(jpaQueryFactory.select(
-                Projections.constructor(MemberResponseDto.class, qmember.memberNo, qmember.memberId,
+                Projections.constructor(MemberResponseDto.class, qmember.memberNo,
+                    qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
                     qmember.phoneNumber, qmember.email, qmember.memberCreatedAt
@@ -63,8 +69,11 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .fetchOne());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Optional<Member> querydslFindByMemberIdToMember(String memberId) {
+    public Optional<Member> findByMemberIdReceiveMember(String memberId) {
 
 
         return Optional.of(jpaQueryFactory.select(qmember).from(qmember)
@@ -76,10 +85,13 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .fetchOne());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public List<MemberResponseProjectionDto> querydslFindAll() {
+    public List<MemberExceptPwdResponseDto> findMemberList() {
         return jpaQueryFactory.select(
-                Projections.constructor(MemberResponseProjectionDto.class, qmember.memberNo,
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,

@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
@@ -58,8 +58,8 @@ class MemberAdminServiceImplTest {
     @Test
     void findMember() {
         //given
-        MemberResponseProjectionDto memberDto =
-            new MemberResponseProjectionDto(1L, "user1", "white",
+        MemberExceptPwdResponseDto memberDto =
+            new MemberExceptPwdResponseDto(1L, "user1", "white",
                 MemberStatusEnum.NORMAL.getMemberStatus(), "유저1", "홍길동", true,
                 LocalDateTime.of(2000, 1, 1, 0, 0, 0),
                 "010-0000-0000", "user1@test.com", LocalDateTime.now());
@@ -70,9 +70,9 @@ class MemberAdminServiceImplTest {
                     LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
                 .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
 
-        given(memberRepository.querydslFindByMemberId("user1")).willReturn(Optional.of(memberDto));
+        given(memberRepository.findByMemberId("user1")).willReturn(Optional.of(memberDto));
 
-        MemberResponseProjectionDto testMember = memberAdminService.findMember("user1");
+        MemberExceptPwdResponseDto testMember = memberAdminService.findMember("user1");
 
         assertThat(testMember.getMemberId()).isEqualTo("user1");
     }

@@ -2,8 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.transfer;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
@@ -20,20 +19,12 @@ public class MemberTransfer {
     }
 
     /**
-     * 수장하는 로직이 실행될 때 Dto를 멤버 엔티티로 변경하는 메서드입니다.
+     * 서비스 클래스에서 멤버를 저장하는 메서드가 실행될 때의 파라미터 DTO를 엔티티로 변환하는 메서드입니다.
      *
-     * @param memberUpdateRequestDto entity로 변경하기위한 정보를 담은 dto입니다.
-     * @return 멤버 엔티티를 만들어서 반환합니다.
+     * @param memberRequestDto 엔티티로 변경하기 위한 DTO 클래스입니다.
+     * @return 멤버 엔티티를 반환합니다.
      * @author 노수연
      */
-    public static Member dtoToEntityInUpdate(MemberUpdateRequestDto memberUpdateRequestDto) {
-        return Member.builder().nickname(memberUpdateRequestDto.getNickname())
-            .name(memberUpdateRequestDto.getName())
-            .password(memberUpdateRequestDto.getPassword()).phoneNumber(
-                memberUpdateRequestDto.getPhoneNumber()).email(memberUpdateRequestDto.getEmail())
-            .build();
-    }
-
     public static Member dtoToEntity(MemberRequestDto memberRequestDto) {
         return Member.builder().memberId(memberRequestDto.getMemberId()).nickname(
                 memberRequestDto.getNickname()).name(memberRequestDto.getName())
@@ -51,8 +42,8 @@ public class MemberTransfer {
      * @return 멤버 dto로 만들어서 반환합니다.
      * @author 노수연
      */
-    public static MemberResponseProjectionDto entityToDto(Member member) {
-        return MemberResponseProjectionDto.builder()
+    public static MemberExceptPwdResponseDto entityToDto(Member member) {
+        return MemberExceptPwdResponseDto.builder()
             .membershipGrade(
                 MembershipTransfer.entityToDto(member.getMembership()).getMembershipGrade())
             .memberStatusName(

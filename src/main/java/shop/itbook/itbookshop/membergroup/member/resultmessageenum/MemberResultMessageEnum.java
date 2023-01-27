@@ -14,8 +14,7 @@ public enum MemberResultMessageEnum {
     MEMBER_SAVE_SUCCESS_MESSAGE("멤버 삽입에 성공하였습니다."),
     MEMBER_FIND_SUCCESS_MESSAGE("특정 멤버를 불러오는데 성공하였습니다."),
     MEMBER_LIST_SUCCESS_MESSAGE("모든 멤버 반환에 성공하였습니다."),
-    MEMBER_MODIFY_SUCCESS_MESSAGE("멤버 수정에 성공하였습니다."),
-    MEMBER_REMOVE_SUCCESS_MESSAGE("멤버 삭제에 성공하였습니다.");
+    MEMBER_MODIFY_SUCCESS_MESSAGE("멤버 수정에 성공하였습니다.");
 
     private String successMessage;
 

@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseProjectionDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 
@@ -30,12 +30,17 @@ import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberServic
  * @since 1.0
  */
 @RestController
-@RequestMapping("/api/service/members")
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
+    /**
+     * @param requestDto the request dto
+     * @return the response entity
+     * @author
+     */
     @PostMapping("/sign-up")
     public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> memberAdd(
         @Valid @RequestBody MemberRequestDto requestDto) {
@@ -52,19 +57,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<CommonResponseBody<MemberResponseProjectionDto>> memberDetails(
-        @PathVariable("memberId") String memberId) {
-        CommonResponseBody<MemberResponseProjectionDto> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
-                memberService.findMember(memberId)
-            );
 
-        return ResponseEntity.ok().body(commonResponseBody);
-    }
-
+    /**
+     * @param memberId the member id
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/{memberId}/all")
     public ResponseEntity<CommonResponseBody<MemberResponseDto>> memberAllDetails(
         @PathVariable("memberId") String memberId) {
@@ -76,12 +74,39 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * @param memberId   the member id
+     * @param requestDto the request dto
+     * @return the response entity
+     * @author
+     */
     @PutMapping("/{memberId}/info")
     public ResponseEntity<CommonResponseBody<Void>> memberModify(
         @PathVariable("memberId") String memberId,
         @Valid @RequestBody MemberUpdateRequestDto requestDto) {
 
         memberService.modifyMember(memberId, requestDto);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()
+            ), null
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * @param memberId   the member id
+     * @param requestDto the request dto
+     * @return the response entity
+     * @author
+     */
+    @PutMapping("/{memberId}/withdraw")
+    public ResponseEntity<CommonResponseBody<Void>> memberWithdraw(
+        @PathVariable("memberId") String memberId, @Valid @RequestBody
+    MemberStatusUpdateAdminRequestDto requestDto) {
+        memberService.withDrawMember(memberId, requestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -110,7 +135,12 @@ public class MemberController {
         ));
     }
 
-    // TODO sign-up-check 로 바꾸기
+    /**
+     * @param memberId the member id
+     * @return the response entity
+     * @author
+     */
+// TODO sign-up-check 로 바꾸기
     @GetMapping("/sign-up/memberId/{memberId}")
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> memberIdDuplicateCheck(
         @PathVariable("memberId") String memberId) {
@@ -119,6 +149,11 @@ public class MemberController {
         ));
     }
 
+    /**
+     * @param nickname the nickname
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/sign-up/nickname/{nickname}")
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> nicknameDuplicateCheck(
         @PathVariable("nickname") String nickname) {
@@ -128,6 +163,11 @@ public class MemberController {
         ));
     }
 
+    /**
+     * @param email the email
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/sign-up/email/{email}")
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> emailDuplicateCheck(
         @PathVariable("email") String email) {
@@ -137,6 +177,11 @@ public class MemberController {
         ));
     }
 
+    /**
+     * @param phoneNumber the phone number
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/sign-up/phoneNumber/{phoneNumber}")
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> phoneNumberCheck(
         @PathVariable("phoneNumber") String phoneNumber) {

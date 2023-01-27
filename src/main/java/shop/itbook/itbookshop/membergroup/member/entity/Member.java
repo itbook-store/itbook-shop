@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
@@ -29,6 +30,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 @Getter
 @Setter
 @ToString
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
