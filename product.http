@@ -1,0 +1,25 @@
+POST /api/admin/products
+Host: localhost:8082
+Content-Type: application/json
+
+{
+  "name" : "객체 지향 사실과 오해이다 apple",
+  "simpleDescription" : "객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.",
+  "detailsDescription" : "상세 설명",
+  "stock" : 0,
+  "isSelled" : true,
+  "isDeleted" : false,
+  "thumbnailUrl" : "testUrl",
+  "fixedPrice" : 20000,
+  "increasePointPercent" : 1,
+  "discountPercent" : 10.1,
+  "rawPrice" : 12000
+}
+
+
+###
+
+# 이름 검색
+GET http://localhost:8082/api/products/search?name=오해&size=10
+Content-Type: application/json
+

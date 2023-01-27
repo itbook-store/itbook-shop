@@ -17,6 +17,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequ
 import shop.itbook.itbookshop.productgroup.product.dto.response.AddProductResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
+import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
 /**
  * 관리자의 요청을 받고 반환하는 상품 Controller 클래스입니다.
@@ -30,6 +31,9 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdmin
 public class ProductAdminController {
 
     private final ProductAdminService productService;
+    private final ProductSearchService productSearchService;
+
+    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
     /**
      * 상품 등록을 요청하는 메서드입니다.
@@ -48,6 +52,8 @@ public class ProductAdminController {
         CommonResponseBody<AddProductResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
+
+        productSearchService.addSearchProduct(productService.findProduct(productPk.getProductNo()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
@@ -70,6 +76,8 @@ public class ProductAdminController {
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
+        productSearchService.modifySearchProduct(productService.findProduct(productId));
+
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
@@ -87,6 +95,8 @@ public class ProductAdminController {
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
+
+        productSearchService.removeSearchProduct(productId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
