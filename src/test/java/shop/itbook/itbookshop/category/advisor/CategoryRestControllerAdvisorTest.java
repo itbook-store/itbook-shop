@@ -51,7 +51,6 @@ class CategoryRestControllerAdvisorTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
-        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willThrow(new MemberForbiddenException());
@@ -77,7 +76,6 @@ class CategoryRestControllerAdvisorTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
-        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willThrow(new CategoryNotFoundException());
@@ -126,7 +124,7 @@ class CategoryRestControllerAdvisorTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
-        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
+//        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         given(categoryService.addCategory(any(CategoryRequestDto.class)))
             .willThrow(new RuntimeException("test message"));

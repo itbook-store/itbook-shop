@@ -25,6 +25,7 @@ import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCate
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
+import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
 /**
  * 관리자의 요청을 받고 반환하는 상품 Controller 클래스입니다.
@@ -40,6 +41,9 @@ public class ProductAdminController {
     private final ProductService productService;
     private final BookService bookService;
     private final ProductCategoryService productCategoryService;
+    private final ProductSearchService productSearchService;
+
+    public static final Boolean SUCCESS_RESULT = Boolean.TRUE;
 
     /**
      * 상품 및 도서 등록을 요청하는 메서드입니다.
@@ -62,6 +66,8 @@ public class ProductAdminController {
         CommonResponseBody<ProductNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
+
+        productSearchService.addSearchProduct(productService.findProductEntity(productPk.getProductNo()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
@@ -90,6 +96,8 @@ public class ProductAdminController {
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
+        productSearchService.modifySearchProduct(productService.findProductEntity(productNo));
+
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
@@ -103,6 +111,7 @@ public class ProductAdminController {
     @DeleteMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productRemove(@PathVariable Long productNo) {
         productService.removeProduct(productNo);
+        productSearchService.removeSearchProduct(productNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
@@ -235,5 +244,7 @@ public class ProductAdminController {
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()), categoryList);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
 }
