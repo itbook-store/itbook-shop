@@ -1,12 +1,15 @@
 package shop.itbook.itbookshop.productgroup.product.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -15,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.book.entity.Book;
+import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 
 /**
  * 상품에 대한 엔티티 입니다.
@@ -78,6 +82,10 @@ public class Product {
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.REMOVE)
     private Book book;
+
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "product_no")
+    private List<ProductCategory> productCategoryList;
 
     /**
      * 빌터 패턴을 적용한 생성자입니다.

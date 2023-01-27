@@ -31,8 +31,6 @@ public class FindBookResponseDto {
 
     private Integer stock;
 
-//    private String category;
-
     private Integer increasePointPercent;
 
     private Long rawPrice;

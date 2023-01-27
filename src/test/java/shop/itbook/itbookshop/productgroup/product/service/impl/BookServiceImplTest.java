@@ -20,7 +20,6 @@ import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.adminapi.BookService;
 import shop.itbook.itbookshop.book.service.adminapi.impl.BookServiceImpl;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
 
 /**

@@ -9,7 +9,6 @@ import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.entity.QCategory;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
-import shop.itbook.itbookshop.productgroup.product.repository.ProductRepositoryCustom;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.QProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepositoryCustom;
@@ -30,11 +29,13 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
         QProductCategory qProductCategory = QProductCategory.productCategory;
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
+        QCategory qCategory = QCategory.category;
 
         JPQLQuery<ProductDetailsResponseDto> productList =
-            from(qBook)
-                .rightJoin(qBook.product, qProduct)
-                .rightJoin(qProductCategory.product, qProduct)
+            from(qProductCategory)
+                .innerJoin(qProductCategory.category, qCategory)
+                .innerJoin(qProductCategory.product, qProduct)
+                .rightJoin(qProduct.book, qBook)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isSelled, qProduct.isDeleted,
@@ -42,7 +43,7 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName))
-                .where(qProductCategory.category.categoryNo.eq(categoryNo));
+                .where(qCategory.categoryNo.eq(categoryNo));
 
         return productList.fetch();
     }
