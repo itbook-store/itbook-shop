@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
-        productCategoryService.removeProductCategory(productNo);
+//        productCategoryService.removeProductCategory(productNo);
         productRepository.deleteById(productNo);
     }
 
@@ -129,7 +129,8 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public ProductDetailsResponseDto findProduct(Long productNo) {
-        return productRepository.findProduct(productNo);
+        return productRepository.findProductDetails(productNo)
+            .orElseThrow(ProductNotFoundException::new);
     }
 
     private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {

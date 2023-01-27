@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -19,6 +20,7 @@ import org.hibernate.validator.constraints.Length;
  */
 @Getter
 @AllArgsConstructor
+@Builder
 public class ProductBookRequestDto {
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")

@@ -61,7 +61,7 @@ class ProductRepositoryTest {
 
     @Test
     @DisplayName("상품 삭제 테스트")
-    void Delete_Product_ByProductNo() {
+    void delete_Product_ByProductNo() {
         productRepository.deleteById(dummyProductSuccess.getProductNo());
         Optional<Product> product =
             productRepository.findById(dummyProductSuccess.getProductNo());
