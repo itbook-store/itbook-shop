@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Setter
 @Configuration
-@PropertySource("application-prod.properties")
+@PropertySource("classpath:/application-prod.properties")
 @ConfigurationProperties(prefix = "itbook-server-url")
 public class ServerConfig {
 

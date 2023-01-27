@@ -3,6 +3,8 @@ package shop.itbook.itbookshop.productgroup.product.controller;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,6 +27,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequest
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
+import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
 /**
@@ -41,6 +44,8 @@ class ProductAdminControllerTest {
 
     @MockBean
     private ProductAdminService productService;
+    @MockBean
+    private ProductSearchService productSearchService;
     private AddProductRequestDto addProductRequestDto_success;
     private AddProductRequestDto addProductRequestDto_failure;
 
@@ -66,6 +71,9 @@ class ProductAdminControllerTest {
         given(productService.addProduct(any(AddProductRequestDto.class))).willReturn(
             productNo_long);
 
+        given(productSearchService.addSearchProduct(any(Product.class))).willReturn(
+            productNo_long);
+
         mockMvc.perform(post("/api/admin/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -78,6 +86,7 @@ class ProductAdminControllerTest {
     @Test
     @DisplayName("POST 메서드 실패 테스트 - notnull 컬럼에 null 값 저장")
     void productAddTest_failure() throws Exception {
+
         mockMvc.perform(post("/api/products")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)

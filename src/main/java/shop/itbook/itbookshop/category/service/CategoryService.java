@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.category.service;
 
 import java.util.List;
+import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
@@ -79,9 +80,13 @@ public interface CategoryService {
      * @return true 혹은 false 값을 반환합니다.
      * @author 최겸준
      */
-    void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
+    void modifyCategory(Integer categoryNo, CategoryModifyRequestDto categoryRequestDto);
 
-    void modifyCategory(Integer categoryNo);
+    void modifyChildSequence(Integer categoryNo, Integer hopingPositionCategoryNo);
+
+    void modifyMainSequence(Integer categoryNo, Integer sequence);
+
+    void modifyCategoryHidden(Integer categoryNo);
 
     /**
      * 카테고리 삭제에 관한 비지니스 로직을 담당하는 기능입니다.

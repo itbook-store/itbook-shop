@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @author 최겸준
  * @since 1.0
  */
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -26,6 +25,8 @@ public class CategoryDetailsResponseDto {
 
     private Integer level;
 
+    private Integer sequence;
+
     private Integer parentCategoryNo;
 
     private String parentCategoryName;
@@ -33,5 +34,7 @@ public class CategoryDetailsResponseDto {
     private Boolean parentCategoryIsHidden;
 
     private Integer parentCategoryLevel;
+
+    private Integer parentSequence;
 
 }
