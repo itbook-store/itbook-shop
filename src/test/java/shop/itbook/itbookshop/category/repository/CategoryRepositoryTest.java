@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +38,6 @@ class CategoryRepositoryTest {
         categoryRepository.save(categoryDummyStuff);
 
         categoryDummyStuff.setParentCategory(categoryDummyBook);
-
-//        categoryDummyBook.setParentCategory(categoryDummyStuff);
-//        categoryDummyStuff.setParentCategory(categoryDummyBook);
 
         testEntityManager.flush();
         testEntityManager.clear();
@@ -162,27 +160,61 @@ class CategoryRepositoryTest {
             .isEqualTo(categoryDummyStuff.getParentCategory().getCategoryNo());
     }
 
-    @DisplayName("메인카테고리를 갯수까지 순서에맞게 잘 가져온다.")
+    @DisplayName("메인카테고리인 도서하나를 잘 가져온다.")
     @Test
     void findMainCategoryList() {
 
         List<CategoryListResponseDto> mainCategoryList = categoryRepository.findMainCategoryList();
 
         assertThat(mainCategoryList)
-            .hasSize(2);
+            .hasSize(1);
         assertThat(mainCategoryList.get(0).getCategoryNo())
             .isEqualTo(categoryDummyBook.getCategoryNo());
         assertThat(mainCategoryList.get(0).getCategoryName())
             .isEqualTo(categoryDummyBook.getCategoryName());
         assertThat(mainCategoryList.get(0).getCount())
             .isEqualTo(0);
-
-        assertThat(mainCategoryList.get(1).getCategoryNo())
-            .isEqualTo(categoryDummyStuff.getCategoryNo());
-        assertThat(mainCategoryList.get(1).getCategoryName())
-            .isEqualTo(categoryDummyStuff.getCategoryName());
-        assertThat(mainCategoryList.get(1).getCount())
-            .isEqualTo(0);
     }
 
+    @DisplayName("시퀀스번호가 2였던 잡화가 자신 시퀀스번호이상부터 1식 시퀀스를 추가하는 동작이 잘 수행된다 자기자신의 번호가 한번호 밀린다.( 3번이 된다.)")
+    @Test
+    void modifySequence_child() {
+
+        // given
+        Integer sequence = categoryDummyStuff.getSequence();
+        Category stuff = categoryRepository.findById(categoryDummyStuff.getCategoryNo()).get();
+        stuff.setLevel(1);
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        // when
+        categoryRepository.modifyChildCategorySequence(
+            categoryDummyStuff.getParentCategory().getCategoryNo(),
+            categoryDummyStuff.getSequence());
+
+        // then
+        testEntityManager.flush();
+        testEntityManager.clear();
+        Category category = categoryRepository.findById(categoryDummyStuff.getCategoryNo()).get();
+        assertThat(category.getSequence())
+            .isEqualTo(sequence + 1);
+    }
+
+    @DisplayName("시퀀스가 1인 책(메인카테고리)의 시퀀스번호 이상부터 1식 증가하여 자기자신 번호가 2가된다.")
+    @Test
+    void modifySequence_main() {
+        // given
+        Integer sequence = categoryDummyBook.getSequence();
+
+        // when
+        categoryRepository.modifyMainCategorySequence(
+            categoryDummyBook.getSequence());
+
+        // then
+        testEntityManager.flush();
+        testEntityManager.clear();
+        Category category = categoryRepository.findById(categoryDummyBook.getCategoryNo()).get();
+        assertThat(category.getSequence())
+            .isEqualTo(sequence + 1);
+    }
 }
