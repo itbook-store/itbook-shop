@@ -14,6 +14,8 @@ import shop.itbook.itbookshop.productgroup.productcategory.entity.QProductCatego
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepositoryCustom;
 
 /**
+ * ProductCategoryRepositoryCustom을 구현한 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */
@@ -24,6 +26,9 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
         super(ProductCategory.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProductDetailsResponseDto> getProductListWithCategoryNo(Integer categoryNo) {
         QProductCategory qProductCategory = QProductCategory.productCategory;
@@ -48,6 +53,9 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
         return productList.fetch();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CategoryDetailsResponseDto> getCategoryListWithProductNo(Long productNo) {
         QProductCategory qProductCategory = QProductCategory.productCategory;

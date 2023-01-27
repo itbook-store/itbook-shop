@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.book.service.adminapi;
+package shop.itbook.itbookshop.book.service;
 
 import java.util.List;
 import shop.itbook.itbookshop.book.dto.request.BookRequestDto;

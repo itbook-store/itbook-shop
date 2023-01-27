@@ -7,12 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.ItBookObjectStorageToken;
 import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 
 
 /**
- * @author 이하늬
+ * 지정한 컨테이너에 오브젝트를 업로드하는 서비스 클래스입니다.
+ *
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
 @Slf4j
@@ -20,13 +21,20 @@ import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterce
 @RequiredArgsConstructor
 public class FileService {
     @Value("${object.storage.storage-url}")
-    private String storageUrl;
+    private static String storageUrl;
     @Value("${object.storage.container-name}")
-    private String containerName;
+    private static String containerName;
 
     private final TokenInterceptor tokenInterceptor;
 
-
+    /**
+     * 파일 업로드 기능을 담당하는 메서드입니다.
+     *
+     * @param multipartFile 업로드할 파일입니다.
+     * @param folderPath    업로드할 폴더 경로입니다.
+     * @return 업로드 된 파일의 url입니다.
+     * @author 이하늬
+     */
     public String uploadFile(MultipartFile multipartFile,
                              String folderPath) {
         String tokenId = tokenInterceptor.getTokenFields("tokenId");
@@ -36,9 +44,7 @@ public class FileService {
         String savedName = UUID.randomUUID() + "." + ext;
         try {
             InputStream inputStream = multipartFile.getInputStream();
-            String fileStorageUrl =
-                objectService.uploadObject(containerName, folderPath, savedName, inputStream);
-            return fileStorageUrl;
+            return objectService.uploadObject(containerName, folderPath, savedName, inputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }

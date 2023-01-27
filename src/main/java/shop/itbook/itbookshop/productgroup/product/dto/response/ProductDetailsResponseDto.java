@@ -1,15 +1,15 @@
 package shop.itbook.itbookshop.productgroup.product.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
-
 
 /**
+ * 상품 상세정보를 담은 dto 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */
@@ -63,6 +63,8 @@ public class ProductDetailsResponseDto {
     @Setter
     String thumbnailsName;
 
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
+    @Builder
     public ProductDetailsResponseDto(Long productNo, String productName, String simpleDescription,
                                      String detailsDescription, Boolean isExposed,
                                      Boolean isForceSoldOut,

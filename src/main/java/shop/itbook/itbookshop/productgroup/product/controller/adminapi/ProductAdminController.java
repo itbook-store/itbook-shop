@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
-import shop.itbook.itbookshop.book.service.adminapi.BookService;
+import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;

@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.productgroup.productcategory.exception;
 
 /**
- * 상품이 존재하지 않을 때 발생시킬 예외 클래스입니다.
+ * 상품카테고리가 존재하지 않을 때 발생시킬 예외 클래스입니다.
  *
  * @author 이하늬
  * @since 1.0

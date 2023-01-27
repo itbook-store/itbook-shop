@@ -1,7 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.transfer;
 
 import java.time.LocalDateTime;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -21,7 +22,7 @@ public class ProductTransfer {
      * @return 엔티티로 변환된 상품 엔티티입니다.
      * @author
      */
-    public static Product dtoToEntityAdd(AddProductRequestDto requestDto) {
+    public static Product dtoToEntityAdd(ProductRequestDto requestDto) {
         return Product.builder()
             .name(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())
@@ -31,7 +32,6 @@ public class ProductTransfer {
             .isForceSoldOut(requestDto.getIsForceSoldOut())
             .thumbnailUrl(requestDto.getFileThumbnailsUrl())
             .fixedPrice(requestDto.getFixedPrice())
-            .dailyHits(0L)
             .productCreatedAt(LocalDateTime.now())
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent())
@@ -39,19 +39,21 @@ public class ProductTransfer {
             .build();
     }
 
-//    public static Product dtoToEntityAdd(AddProductBookRequestDto requestDto) {
-//
-//        return Product.builder().name(requestDto.getProductName())
-//            .simpleDescription(requestDto.getSimpleDescription())
-//            .detailsDescription(requestDto.getDetailsDescription()).stock(requestDto.getStock())
-//            .isExposed(requestDto.isExposed()).isDeleted(requestDto.isDeleted())
-//            .thumbnailUrl(requestDto.getFileThumbnailsUrl())
-//            .fixedPrice(requestDto.getFixedPrice()).dailyHits(0L)
-//            .productCreatedAt(LocalDateTime.now())
-//            .increasePointPercent(requestDto.getIncreasePointPercent())
-//            .discountPercent(requestDto.getDiscountPercent()).rawPrice(requestDto.getRawPrice())
-//            .build();
-//    }
+    public static Product dtoToEntityAdd(ProductBookRequestDto requestDto) {
+
+        return Product.builder().name(requestDto.getProductName())
+            .simpleDescription(requestDto.getSimpleDescription())
+            .detailsDescription(requestDto.getDetailsDescription())
+            .stock(requestDto.getStock())
+            .isExposed(requestDto.getIsExposed())
+            .isForceSoldOut(requestDto.getIsForceSoldOut())
+            .thumbnailUrl(requestDto.getFileThumbnailsUrl())
+            .fixedPrice(requestDto.getFixedPrice())
+            .productCreatedAt(LocalDateTime.now())
+            .increasePointPercent(requestDto.getIncreasePointPercent())
+            .discountPercent(requestDto.getDiscountPercent()).rawPrice(requestDto.getRawPrice())
+            .build();
+    }
 
 
 }

@@ -17,7 +17,6 @@ public class ProductTypeEnumConverter implements AttributeConverter<ProductTypeE
 
     @Override
     public ProductTypeEnum convertToEntityAttribute(String dbData) {
-        ProductTypeEnum productTypeEnum = ProductTypeEnum.stringToEnum(dbData);
-        return productTypeEnum;
+        return ProductTypeEnum.stringToEnum(dbData);
     }
 }

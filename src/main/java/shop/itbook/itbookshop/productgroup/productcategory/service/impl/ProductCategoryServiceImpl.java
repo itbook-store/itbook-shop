@@ -1,19 +1,16 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
-import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
@@ -32,7 +29,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private final CategoryRepository categoryRepository;
 
     /**
-     * {inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional
@@ -51,6 +48,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return parentCategory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Category modifyProductCategory(Product product, List<Integer> categoryList) {
@@ -67,17 +67,26 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return parentCategory;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void removeProductCategory(Long productNo) {
         productCategoryRepository.deleteByPk_productNo(productNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<CategoryDetailsResponseDto> findCategoryList(Long productNo) {
         return productCategoryRepository.getCategoryListWithProductNo(productNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProductDetailsResponseDto> findProductList(Integer categoryNo) {
         return productCategoryRepository.getProductListWithCategoryNo(categoryNo);

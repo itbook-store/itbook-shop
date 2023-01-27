@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.service.impl;
+package shop.itbook.itbookshop.book.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -17,8 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
-import shop.itbook.itbookshop.book.service.adminapi.BookService;
-import shop.itbook.itbookshop.book.service.adminapi.impl.BookServiceImpl;
+import shop.itbook.itbookshop.book.service.impl.BookServiceImpl;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
 

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 /**
- * The type Token interceptor.
+ * 토큰이 유효한지 유효하지 않은지 판단하여 토큰을 갱신하는 토큰 인터셉터입니다.
  *
  * @author 이하늬 * @since 1.0
  */
@@ -50,15 +50,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         LocalDateTime tokenExpiresTime = LocalDateTime.parse(tokenExpires, sdf);
         LocalDateTime fiveMinutesBefore = LocalDateTime.now().minusMinutes(5);
 
-        if (!tokenExpiresTime.isAfter(fiveMinutesBefore)) {
-            return false;
-        }
-        return true;
+        return tokenExpiresTime.isAfter(fiveMinutesBefore);
     }
 
     /**
-     * @param fieldName the field name
-     * @return the token fields
+     * 레디스에서 특정 필드 값을 가져오는 메서드입니다.
+     *
+     * @param fieldName 필드 이름
+     * @return 레디스에서 얻은 값을 반환합니다.
      * @author 이하늬
      */
     public String getTokenFields(String fieldName) {
@@ -67,8 +66,11 @@ public class TokenInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * @return the boolean
-     * @author
+     * 토큰이 존재하는지 판단하는 메서드입니다.
+     * 토큰 아이디가 null이면 예외를 발생시킵니다.
+     *
+     * @return 토큰 존재 여부에 따른 boolean을 반환합니다.
+     * @author 이하늬
      */
     public boolean isTokenExist() {
         String tokenId = getTokenFields("tokenId");

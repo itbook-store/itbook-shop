@@ -11,10 +11,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.util.LinkedMultiValueMap;
 
 /**
- * 상품을 등록하기 위한 데이터를 전달하는 requestDto 클래스입니다.
+ * 상품을 등록 및 수정하기 위한 데이터를 전달하는 requestDto 클래스입니다.
  *
  * @author 이하늬
  * @since 1.0
@@ -22,7 +21,7 @@ import org.springframework.util.LinkedMultiValueMap;
 @Getter
 @Builder
 @AllArgsConstructor
-public class AddProductRequestDto {
+public class ProductRequestDto {
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")

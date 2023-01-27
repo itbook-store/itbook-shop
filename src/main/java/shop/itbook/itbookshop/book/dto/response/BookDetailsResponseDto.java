@@ -63,8 +63,6 @@ public class BookDetailsResponseDto {
     @Setter
     String thumbnailsName;
 
-    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
-    @Builder
     public BookDetailsResponseDto(Long productNo, String productName, String simpleDescription,
                                   String detailsDescription, Boolean isExposed,
                                   Boolean isForceSoldOut,

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.book.service.adminapi.impl;
+package shop.itbook.itbookshop.book.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +10,7 @@ import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.book.repository.BookRepository;
-import shop.itbook.itbookshop.book.service.adminapi.BookService;
+import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 

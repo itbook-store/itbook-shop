@@ -3,6 +3,8 @@ package shop.itbook.itbookshop.productgroup.product.fileservice.init;
 import lombok.Data;
 
 /**
+ * 오브젝트 스토리지 토큰에 대한 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */

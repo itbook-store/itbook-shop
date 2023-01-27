@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.service.adminapi.BookService;
+import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
@@ -129,12 +129,11 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public ProductDetailsResponseDto findProduct(Long productNo) {
-        ProductDetailsResponseDto productResponseDto = productRepository.findProduct(productNo);
-        return productResponseDto;
+        return productRepository.findProduct(productNo);
     }
 
-    private AddProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
-        return AddProductRequestDto.builder()
+    private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
+        return ProductRequestDto.builder()
             .productName(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())
             .detailsDescription(requestDto.getDetailsDescription())

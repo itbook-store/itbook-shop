@@ -11,6 +11,8 @@ import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepositoryCustom;
 
 /**
+ * ProductRepositoryCustom을 구현한 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */
@@ -20,6 +22,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         super(Product.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<ProductDetailsResponseDto> findProductList() {
         QProduct qProduct = QProduct.product;
@@ -38,6 +43,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         return productList.fetch();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProductDetailsResponseDto findProduct(Long productNo) {
         QProduct qProduct = QProduct.product;

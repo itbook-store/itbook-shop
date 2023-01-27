@@ -12,6 +12,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 /**
+ * 상품을 등록 및 수정하기 위한 데이터를 전달하는 상품과 도서 정보가 담긴 requestDto 클래스입니다.
+ *
  * @author 이하늬
  * @since 1.0
  */

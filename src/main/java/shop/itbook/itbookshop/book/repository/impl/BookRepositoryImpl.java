@@ -21,6 +21,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         super(Book.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<BookDetailsResponseDto> findBookList() {
         QBook qBook = QBook.book;
@@ -39,6 +42,9 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
         return bookList.fetch();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public BookDetailsResponseDto findBook(Long productNo) {
         QBook qBook = QBook.book;
