@@ -83,8 +83,8 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.REMOVE)
     private Book book;
 
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "product_no")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+//    @JoinColumn(name = "product_no")
     private List<ProductCategory> productCategoryList;
 
     /**

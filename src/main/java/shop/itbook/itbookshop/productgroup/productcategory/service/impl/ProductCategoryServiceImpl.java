@@ -37,7 +37,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
         Category parentCategory =
             categoryService.findCategoryEntity(categoryList.get(0)).getParentCategory();
-        categoryList.add(parentCategory.getCategoryNo());
 
         List<Category> categories = categoryRepository.findAllById(categoryList);
 
