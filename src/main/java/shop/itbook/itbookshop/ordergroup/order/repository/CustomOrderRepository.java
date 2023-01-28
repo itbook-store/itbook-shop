@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.repository;
 
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderWriteResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaperResponseDto;
 
 /**
  * 주문 엔티티 관련 쿼리 dsl 을 처리합니다.
@@ -12,5 +12,5 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderWriteResponseDt
 @NoRepositoryBean
 public interface CustomOrderRepository {
 
-    public OrderWriteResponseDto findOrderInfo();
+    public OrderPaperResponseDto findOrderPaperInfo();
 }

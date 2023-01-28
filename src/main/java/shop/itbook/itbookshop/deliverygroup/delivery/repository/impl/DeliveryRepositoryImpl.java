@@ -24,6 +24,9 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
         super(Delivery.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<DeliveryWithStatusResponseDto> findDeliveryListWithStatus() {
         QDelivery delivery = QDelivery.delivery;
@@ -45,12 +48,15 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
             .fetch();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait() {
         QDelivery delivery = QDelivery.delivery;
         QDeliveryStatusHistory deliveryStatusHistory = QDeliveryStatusHistory.deliveryStatusHistory;
         QDeliveryStatus deliveryStatus = QDeliveryStatus.deliveryStatus;
-
+        
         return from(delivery)
             .innerJoin(deliveryStatusHistory)
             .on(delivery.deliveryNo.eq(deliveryStatusHistory.delivery.deliveryNo))
@@ -68,6 +74,9 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
             .fetch();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Delivery> findDeliveryEntityListWithStatusWait() {
         QDelivery delivery = QDelivery.delivery;

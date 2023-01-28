@@ -21,6 +21,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * 회원 배송지에 대한 엔티티 입니다.
  *
  * @author 강명관
+ * @author 정재원
  * @since 1.0
  */
 @Getter
@@ -56,12 +57,13 @@ public class MemberDestination {
     /**
      * 회원 배송지 테이블에 대한 엔티티 생성자 입니다.
      *
-     * @param deliveryDestination     the delivery destination
-     * @param member                  the member
-     * @param recipientName           the recipient name
-     * @param recipientPhoneNumber    the recipient phone number
-     * @param recipientAddressDetails the recipient address details
+     * @param deliveryDestination     도로명 주소 정보
+     * @param member                  해당 회원
+     * @param recipientName           수령인 이름
+     * @param recipientPhoneNumber    수령인의 핸드폰 번호
+     * @param recipientAddressDetails 수령인의 상세 주소
      * @author 강명관
+     * @author 정재원
      */
     @Builder
     public MemberDestination(DeliveryDestination deliveryDestination, Member member,

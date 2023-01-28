@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.deliverygroup.delivery.controller.adminapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -79,6 +80,6 @@ public class DeliveryAdminController {
                 deliveryService.sendDeliveryListWithStatusWait()
             );
 
-        return ResponseEntity.ok().body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 }
