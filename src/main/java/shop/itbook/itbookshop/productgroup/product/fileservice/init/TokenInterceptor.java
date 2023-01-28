@@ -37,7 +37,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     /**
      * 토큰 유효 여부를 확인.
-     * 토큰 만료 시간이 현재 시간의 5분 전보다 후이면 유효 토큰이라고 판단
+     * 현재 시간의 5분 후보다 토큰 만료 시간이 더 늦으면 유효 토큰이라고 판단
      *
      * @return true: 유효 토큰 / false: 유효하지 않은 토큰
      * @author 이하늬
@@ -45,7 +45,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean isTokenValid() {
 
         if (!isTokenExist()) {
-            return false;
+            tokenManager.requestToken();
         }
 
         String tokenExpires = getTokenFields("tokenExpires");
@@ -69,7 +69,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     /**
      * 토큰이 존재하는지 판단하는 메서드입니다.
-     * 토큰 아이디가 null이면 예외를 발생시킵니다.
+     * 토큰 아이디가 null이면 토큰을 발급 받아 레디스에 저장합니다.
      *
      * @return 토큰 존재 여부에 따른 boolean을 반환합니다.
      * @author 이하늬
@@ -77,7 +77,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean isTokenExist() {
         String tokenId = getTokenFields("tokenId");
         if (Objects.isNull(tokenId)) {
-            throw new InvalidTokenException();
+            return false;
         }
         return true;
     }

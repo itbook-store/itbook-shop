@@ -35,7 +35,7 @@ public class TokenManager implements InitializingBean {
     }
 
     /**
-     * rest template으로 토큰 발급 요청을 하여 발급 받은 토큰의 id, 만료시간을 레디스에 저장합니다.
+     * rest template으로 토큰 발급 요청을 하여 발급 받은 토큰의 id, 만료 시간을 레디스에 저장합니다.
      *
      * @return 발급 받은 오브젝트 스토리지 토큰을 반환합니다.
      * @author 이하늬
