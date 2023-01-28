@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
@@ -31,6 +32,7 @@ public class RestControllerAdvisor {
      * @author 최겸준
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
+        CategoryContainsProductsException.class,
         NoParentCategoryException.class,
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
