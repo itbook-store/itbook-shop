@@ -26,7 +26,7 @@ public class TokenManager implements InitializingBean {
         "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
     private final RestTemplate restTemplate = new RestTemplate();
     private final RedisTemplate<String, String> redisTemplate;
-    private static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
+    public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
 
 
     @Override

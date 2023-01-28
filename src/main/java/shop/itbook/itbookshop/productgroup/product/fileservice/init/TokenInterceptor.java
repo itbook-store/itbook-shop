@@ -23,7 +23,6 @@ public class TokenInterceptor implements HandlerInterceptor {
     private final RedisTemplate<String, String> redisTemplate;
     private DateTimeFormatter dateTimeFormatter =
         DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -45,7 +44,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     public boolean isTokenValid() {
 
         if (!isTokenExist()) {
-            tokenManager.requestToken();
+            return false;
         }
 
         String tokenExpires = getTokenFields("tokenExpires");
@@ -64,7 +63,7 @@ public class TokenInterceptor implements HandlerInterceptor {
      */
     public String getTokenFields(String fieldName) {
         return (String) redisTemplate.opsForHash()
-            .get(TOKEN_NAME, fieldName);
+            .get(TokenManager.TOKEN_NAME, fieldName);
     }
 
     /**
