@@ -28,7 +28,6 @@ public class TokenManager implements InitializingBean {
     private final RedisTemplate<String, String> redisTemplate;
     public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
 
-
     @Override
     public void afterPropertiesSet() {
         requestToken();

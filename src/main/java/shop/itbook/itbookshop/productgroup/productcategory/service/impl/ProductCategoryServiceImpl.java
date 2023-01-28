@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service.impl;
 
+import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setSelledPrice;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -88,6 +90,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      */
     @Override
     public List<ProductDetailsResponseDto> findProductList(Integer categoryNo) {
-        return productCategoryRepository.getProductListWithCategoryNo(categoryNo);
+        List<ProductDetailsResponseDto> productList =
+            productCategoryRepository.getProductListWithCategoryNo(categoryNo);
+        setSelledPrice(productList);
+        return productList;
     }
 }
