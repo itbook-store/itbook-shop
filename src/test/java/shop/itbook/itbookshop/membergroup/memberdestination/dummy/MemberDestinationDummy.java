@@ -12,7 +12,7 @@ public class MemberDestinationDummy {
     public static MemberDestination getMemberDestination() {
         return MemberDestination.builder()
             .deliveryDestination(DeliveryDestinationDummy.getDeliveryDestination())
-            .member(MemberDummy.getMember())
+            .member(MemberDummy.getMember1())
             .recipientName("테스트 수령인")
             .recipientPhoneNumber("010-xxxx-xxxx")
             .recipientAddressDetails("303호")

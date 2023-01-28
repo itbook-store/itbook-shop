@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 관리자 api 에서 멤버를 조회할 때 정보를 받아올 dto 입니다.
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class MemberExceptPwdResponseDto {
 
