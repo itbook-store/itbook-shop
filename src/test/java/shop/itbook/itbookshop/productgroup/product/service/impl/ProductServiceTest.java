@@ -9,10 +9,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -31,17 +29,13 @@ import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
-import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
-import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
 /**
@@ -84,7 +78,7 @@ class ProductServiceTest {
 
         mockImageFile = new MockMultipartFile("image", "test.png", imageContentType,
             new FileInputStream(path + "test.png"));
-        mockImageFile = new MockMultipartFile("pdf", "test.pdf", pdfContentType,
+        mockPdfFile = new MockMultipartFile("pdf", "test.pdf", pdfContentType,
             new FileInputStream(path + "test.pdf"));
 
         productRequestDto = ProductBookRequestDummy.getProductBookRequest();
@@ -94,7 +88,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 등록 테스트")
-    void add_Product() {
+    void addProductTest_success() {
         Product product = ProductTransfer.dtoToEntityAdd(productRequestDto);
         given(mockProductCategoryService.addProductCategory(any(Product.class), anyList()))
             .willReturn(CategoryDummy.getCategoryNoHiddenBook());
@@ -110,7 +104,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 수정 테스트")
-    void modify_Product() {
+    void modifyProductTest_success() {
         Product product = mock(Product.class);
         given(mockProductRepository.findById(anyLong()))
             .willReturn(Optional.of(product));
@@ -130,7 +124,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 삭제 테스트")
-    void delete_Product() {
+    void deleteProductTest_success() {
         productService.removeProduct(1L);
 
         then(mockProductRepository).should().deleteById(1L);
@@ -139,7 +133,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 단건 조회 시 실패 테스트 - 상품이 없을 시 예외 발생")
-    void find_Product_Failure() {
+    void findProductTest_failure() {
         given(mockProductRepository.findById(anyLong())).willReturn(Optional.empty());
         Assertions.assertThatThrownBy(() -> productService.findProduct(1L))
             .isInstanceOf(ProductNotFoundException.class)
@@ -148,7 +142,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 엔티티 단건 조회 테스트")
-    void find_ProductEntity_Success() {
+    void findProductEntityTest_success() {
         Product product = ProductTransfer.dtoToEntityAdd(productRequestDto);
 
         given(mockProductRepository.findById(anyLong())).willReturn(Optional.of(product));

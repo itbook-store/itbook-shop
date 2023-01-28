@@ -25,6 +25,7 @@ import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.config.WebMvcConfig;
 import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
 
 /**
@@ -34,6 +35,9 @@ import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager
 
 @WebMvcTest(controllers = CategoryController.class)
 class CategoryControllerTest {
+
+    @MockBean
+    TokenInterceptor tokenInterceptor;
 
     @Autowired
     MockMvc mvc;

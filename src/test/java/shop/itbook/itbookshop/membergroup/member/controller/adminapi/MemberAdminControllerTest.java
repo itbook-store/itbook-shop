@@ -24,10 +24,13 @@ import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
 
 @WebMvcTest(MemberAdminController.class)
 class MemberAdminControllerTest {
+    @MockBean
+    TokenInterceptor tokenInterceptor;
 
     @Autowired
     MockMvc mvc;

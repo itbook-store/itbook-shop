@@ -21,7 +21,9 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     private final TokenManager tokenManager;
     private final RedisTemplate<String, String> redisTemplate;
-    private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private DateTimeFormatter dateTimeFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -47,10 +49,10 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
 
         String tokenExpires = getTokenFields("tokenExpires");
-        LocalDateTime tokenExpiresTime = LocalDateTime.parse(tokenExpires, sdf);
-        LocalDateTime fiveMinutesBefore = LocalDateTime.now().minusMinutes(5);
+        LocalDateTime tokenExpiresTime = LocalDateTime.parse(tokenExpires, dateTimeFormatter);
+        LocalDateTime fiveMinutesLater = LocalDateTime.now().plusMinutes(5);
 
-        return tokenExpiresTime.isAfter(fiveMinutesBefore);
+        return tokenExpiresTime.isAfter(fiveMinutesLater);
     }
 
     /**
@@ -62,7 +64,7 @@ public class TokenInterceptor implements HandlerInterceptor {
      */
     public String getTokenFields(String fieldName) {
         return (String) redisTemplate.opsForHash()
-            .get("ITBOOK-OBJECTSTORAGE_TOKEN", fieldName);
+            .get(TOKEN_NAME, fieldName);
     }
 
     /**

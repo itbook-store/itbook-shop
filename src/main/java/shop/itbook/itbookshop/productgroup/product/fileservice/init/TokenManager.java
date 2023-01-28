@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -21,13 +22,15 @@ import org.springframework.web.client.RestTemplate;
 @Data
 @Component
 public class TokenManager implements InitializingBean {
-    private final String authUrl =
+    private final String AUTH_URL =
         "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
     private final RestTemplate restTemplate = new RestTemplate();
     private final RedisTemplate<String, String> redisTemplate;
+    private static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
+
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         requestToken();
     }
 
@@ -48,13 +51,13 @@ public class TokenManager implements InitializingBean {
         tokenRequest.getAuth().getPasswordCredentials().setPassword(password);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Type", "application/json");
+        headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 
         HttpEntity<TokenRequestDto> httpEntity
             = new HttpEntity<>(tokenRequest, headers);
 
         ResponseEntity<ItBookObjectStorageToken> response
-            = restTemplate.exchange(authUrl, HttpMethod.POST, httpEntity,
+            = restTemplate.exchange(AUTH_URL, HttpMethod.POST, httpEntity,
             ItBookObjectStorageToken.class);
 
         ItBookObjectStorageToken.Token itBookObjectStorageToken =
@@ -65,9 +68,9 @@ public class TokenManager implements InitializingBean {
         }
 
         redisTemplate.opsForHash()
-            .put("ITBOOK-OBJECTSTORAGE_TOKEN", "tokenId", itBookObjectStorageToken.getId());
+            .put(TOKEN_NAME, "tokenId", itBookObjectStorageToken.getId());
         redisTemplate.opsForHash()
-            .put("ITBOOK-OBJECTSTORAGE_TOKEN", "tokenExpires",
+            .put(TOKEN_NAME, "tokenExpires",
                 itBookObjectStorageToken.getExpires());
 
         return itBookObjectStorageToken;

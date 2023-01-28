@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -14,15 +15,20 @@ import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager
  */
 @Configuration
 @RequiredArgsConstructor
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final TokenManager tokenManager;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor(tokenManager, redisTemplate))
-            .addPathPatterns("/**");
+    @Bean
+    public WebMvcConfigurer webMvcConfigurerInterceptors() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(new TokenInterceptor(tokenManager, redisTemplate))
+                    .addPathPatterns("/**");
+            }
+        };
     }
 }
 

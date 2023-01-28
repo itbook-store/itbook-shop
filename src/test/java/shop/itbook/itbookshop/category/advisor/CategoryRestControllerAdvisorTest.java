@@ -24,6 +24,7 @@ import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
 
 @WebMvcTest(CategoryAdminController.class)
@@ -35,12 +36,15 @@ class CategoryRestControllerAdvisorTest {
     @MockBean
     CategoryService categoryService;
 
+    @MockBean
+    TokenInterceptor tokenInterceptor;
+
     @Autowired
     MockMvc mvc;
 
     @Autowired
     ObjectMapper objectMapper;
-    
+
 
     @DisplayName("MemberForbiddenException 이 발생할경우 잘 잡는다.")
     @Test
