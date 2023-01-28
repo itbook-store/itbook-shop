@@ -13,5 +13,5 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberD
 @NoRepositoryBean
 public interface CustomMemberDestinationRepository {
 
-    List<MemberDestinationResponseDto> getMemberDestinationResponseDtoByMemberNo(Long memberNo);
+    List<MemberDestinationResponseDto> findMemberDestinationResponseDtoByMemberNo(Long memberNo);
 }

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.dto.response;
+package shop.itbook.itbookshop.ordergroup.ordersheet.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -13,8 +13,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberD
  */
 @Getter
 @AllArgsConstructor
-public class OrderPaperResponseDto {
-    // TODO: 2023/01/27 상품 응답 Dto
-
+public class OrderSheetResponseDto {
+    private List<OrderSheetProductResponseDto> productResponseDtoList;
     private List<MemberDestinationResponseDto> memberDestinationResponseDtoList;
 }

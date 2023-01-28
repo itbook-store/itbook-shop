@@ -22,7 +22,7 @@ public class MemberDestinationRepositoryImpl extends QuerydslRepositorySupport i
     }
 
     @Override
-    public List<MemberDestinationResponseDto> getMemberDestinationResponseDtoByMemberNo(
+    public List<MemberDestinationResponseDto> findMemberDestinationResponseDtoByMemberNo(
         Long memberNo) {
 
         QMemberDestination qMemberDestination = QMemberDestination.memberDestination;
