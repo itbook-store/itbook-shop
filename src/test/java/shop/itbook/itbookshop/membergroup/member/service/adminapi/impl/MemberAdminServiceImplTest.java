@@ -22,6 +22,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
+import shop.itbook.itbookshop.membergroup.memberstatushistory.repository.MemberStatusHistoryRepository;
 
 @ExtendWith(SpringExtension.class)
 @Import(MemberAdminServiceImpl.class)
@@ -37,6 +38,8 @@ class MemberAdminServiceImplTest {
     MembershipRepository membershipRepository;
     @MockBean
     MemberStatusRepository memberStatusRepository;
+    @MockBean
+    MemberStatusHistoryRepository memberStatusHistoryRepository;
 
 
     Membership membership;
