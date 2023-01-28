@@ -38,7 +38,8 @@ public interface CustomMemberRepository {
     Optional<MemberResponseDto> findByMemberIdAllInfo(String memberId);
 
     /**
-     * 멤버를 수정할 때 특정 멤버 아이디로 멤버 엔티티를 불러와 dirty checking 일어날 수 있도록 Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.
+     * 멤버를 수정할 때 특정 멤버 아이디로 멤버 엔티티를 불러와 dirty checking 일어날 수 있도록
+     * Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.
      *
      * @param memberId memberId로 테이블에서 멤버를 찾습니다.
      * @return Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.

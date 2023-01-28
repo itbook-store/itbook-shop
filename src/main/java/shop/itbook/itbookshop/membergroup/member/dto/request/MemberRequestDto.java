@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 /**
+ * 회원가입할 때 유저의 정보를 받아오는 DTO 입니다.
+ *
  * @author 노수연
  * @since 1.0
  */

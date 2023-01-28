@@ -71,11 +71,12 @@ public class MemberAdminController {
     }
 
     /**
-     * 멤버 정보를 수정하는 메서드입니다.
+     * 멤버상태 값을 수정하는 메서드입니다.
+     * 관리자는 개별 멤버별로 차단회원, 정상회원 상태 값을 변경할 수 있습니다.
      *
-     * @param memberId   멤버 아이디로 해당 멤버의 정보를 수정합니다.
-     * @param requestDto 멤버를 수정하기 위한 dto 입니다.
-     * @return null을 ResponseEntity에 담아 반환합니다.
+     * @param memberId   멤버 아이디로 해당 멤버의 상태정보를 수정합니다.
+     * @param requestDto 멤버상태 값이 담긴 dto 입니다. 차단회원, 정상회원 2개의 상태가 담길 수 있습니다.
+     * @return ResponseEntity에 아무것도 담지 않고 반환합니다.
      * @author 노수연
      */
     @PutMapping("/{memberId}")

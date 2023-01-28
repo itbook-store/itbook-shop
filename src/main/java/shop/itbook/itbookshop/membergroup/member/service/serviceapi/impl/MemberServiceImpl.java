@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -32,7 +33,7 @@ import shop.itbook.itbookshop.membergroup.memberstatushistory.entity.MemberStatu
 import shop.itbook.itbookshop.membergroup.memberstatushistory.repository.MemberStatusHistoryRepository;
 
 /**
- * 서비스 API 멤버 서비스 인터페이스를 구현한 클래스입니다
+ * 서비스 API 멤버 서비스 인터페이스를 구현한 클래스입니다.
  *
  * @author 노수연
  * @since 1.0
@@ -58,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
      * {@inheritDoc}
      */
     @Override
-    public MemberResponseDto findMemberAllInfo(String memberId) {
+    public MemberResponseDto findMember(String memberId) {
         return memberRepository.findByMemberIdAllInfo(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
@@ -115,15 +116,22 @@ public class MemberServiceImpl implements MemberService {
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
             memberStatusAdminService.findMemberStatus(requestDto.getMemberStatusName()));
 
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmss");
+
         UUID uuid = UUID.randomUUID();
+        
         String replace = Integer.toString(ByteBuffer.wrap(uuid.toString().getBytes()).getInt(), 9);
+        replace = now.format(formatter) + replace;
 
         member.setMemberStatus(memberStatus);
         member.setNickname(replace);
         member.setName("탈퇴한 사용자");
         member.setBirth(LocalDateTime.of(1900, 1, 1, 0, 0, 0));
+        member.setPassword(replace);
         member.setPhoneNumber(replace);
         member.setEmail(replace);
+        member.setMemberCreatedAt(LocalDateTime.of(1900, 1, 1, 0, 0, 0));
 
         MemberStatusHistory memberStatusHistory =
             MemberStatusHistory.builder().member(member).memberStatus(memberStatus)

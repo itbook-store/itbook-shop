@@ -22,7 +22,7 @@ public interface MemberService {
      * @return 테이블의 필드들을 MemberResponseDto로 받아와 반환합니다.
      * @author 노수연
      */
-    MemberResponseDto findMemberAllInfo(String memberId);
+    MemberResponseDto findMember(String memberId);
 
     /**
      * 프론트 서버에서 DTO를 통해 유저가 입력한 정보들이 넘어오면 이를 테이블에 저장하는 메서드입니다.
