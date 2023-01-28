@@ -140,21 +140,21 @@ public class ProductAdminController {
     /**
      * 상품 및 도서 수정을 요청하는 메서드입니다.
      *
-     * @param productNo               수정할 상품 번호입니다.
-     * @param modifyProductRequestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
-     * @param thumbnails              the thumbnails
-     * @param ebook                   the ebook
+     * @param productNo  수정할 상품 번호입니다.
+     * @param requestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
+     * @param thumbnails the thumbnails
+     * @param ebook      the ebook
      * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart ProductBookRequestDto modifyProductRequestDto,
+        @RequestPart ProductBookRequestDto requestDto,
         @RequestPart MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 
-        productService.modifyProduct(productNo, modifyProductRequestDto, thumbnails, ebook);
+        productService.modifyProduct(productNo, requestDto, thumbnails, ebook);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
