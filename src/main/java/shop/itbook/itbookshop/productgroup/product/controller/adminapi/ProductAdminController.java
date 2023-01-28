@@ -2,6 +2,9 @@ package shop.itbook.itbookshop.productgroup.product.controller.adminapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,11 +53,13 @@ public class ProductAdminController {
      * @author 이하늬
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<ProductDetailsResponseDto>>> productList() {
+    public ResponseEntity<CommonResponseBody<Page<ProductDetailsResponseDto>>> productList(
+        Pageable pageable) {
 
-        List<ProductDetailsResponseDto> productList = productService.findProductList();
+        Pageable page = PageRequest.of(pageable.getPageNumber(), 5);
+        Page<ProductDetailsResponseDto> productList = productService.findProductList(page);
 
-        CommonResponseBody<List<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<Page<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductResultMessageEnum.GET_SUCCESS.getMessage()), productList);

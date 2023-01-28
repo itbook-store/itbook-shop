@@ -4,7 +4,10 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -27,11 +30,11 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> findProductList() {
+    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable) {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
-        JPQLQuery<ProductDetailsResponseDto> productList =
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
             from(qBook)
                 .rightJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
@@ -41,7 +44,13 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName));
-        return productList.fetch();
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
     }
 
     /**

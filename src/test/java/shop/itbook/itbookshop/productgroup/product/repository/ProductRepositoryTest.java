@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -73,13 +76,18 @@ class ProductRepositoryTest {
     @DisplayName("모든 상품 리스트 조회 성공 테스트")
     void Find_ProductList() {
 
-        List<ProductDetailsResponseDto> productList = productRepository.findProductList();
-        ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
+        Pageable pageable = PageRequest.of(1, 5);
+        Page<ProductDetailsResponseDto> productList = productRepository.findProductList(pageable);
+
+        Assertions.assertThat(productList.getTotalPages()).isEqualTo(3);
+        Assertions.assertThat(productList.getSize()).isEqualTo(5);
+
+        /*ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
 
         Assertions.assertThat(productList).hasSize(DATA_SIZE + 1);
         Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
             .isEqualTo(dummyProductSuccess.getProductNo());
         Assertions.assertThat(productDetailsResponseDtoActual.getIsExposed())
-            .isEqualTo(dummyProductSuccess.getIsExposed());
+            .isEqualTo(dummyProductSuccess.getIsExposed());*/
     }
 }

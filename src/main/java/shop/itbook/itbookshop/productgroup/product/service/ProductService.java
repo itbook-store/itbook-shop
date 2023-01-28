@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -67,7 +69,7 @@ public interface ProductService {
      * @return 찾은 상품 entity를 반환합니다.
      * @author 이하늬
      */
-    List<ProductDetailsResponseDto> findProductList();
+    Page<ProductDetailsResponseDto> findProductList(Pageable pageable);
 
     /**
      * 상품 조회를 담당하는 메서드입니다.

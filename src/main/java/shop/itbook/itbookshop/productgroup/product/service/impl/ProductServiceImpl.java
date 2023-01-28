@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -120,8 +122,8 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> findProductList() {
-        return productRepository.findProductList();
+    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable) {
+        return productRepository.findProductList(pageable);
     }
 
     /**
@@ -158,7 +160,7 @@ public class ProductServiceImpl implements ProductService {
      */
     private Product updateProduct(ProductBookRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
-        
+
         product.setDailyHits(0L);
         product.setName(requestDto.getProductName());
         product.setSimpleDescription(requestDto.getSimpleDescription());
