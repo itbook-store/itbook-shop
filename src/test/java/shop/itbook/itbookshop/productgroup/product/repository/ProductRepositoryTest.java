@@ -29,7 +29,7 @@ class ProductRepositoryTest {
     TestEntityManager entityManager;
 
     Product dummyProductSuccess;
-    static final Integer DATA_SIZE = 6;
+    static final Integer DATA_SIZE = 7;
 
     @BeforeEach
     void setUp() {
