@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
-import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
-import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
@@ -22,6 +18,8 @@ import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultM
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 
 /**
+ * 관리자의 쿠폰 서비스 컨트롤러 클레스입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
@@ -32,6 +30,12 @@ public class CouponAdminController {
 
     private final CouponService couponService;
 
+    /**
+     * 쿠폰 탬플릿을 발급하는 메소드입니다.
+     *
+     * @param couponRequestDto 쿠폰의 정보를 담고있는 dto 객체입니다.
+     * @return 저장한 쿠폰 번호를 ResponseEntity 에 담아 반환합니다.
+     */
     @PostMapping
     public ResponseEntity<CommonResponseBody<CouponNoResponseDto>> couponAdd(
         @Valid @RequestBody CouponRequestDto couponRequestDto) {
@@ -47,6 +51,11 @@ public class CouponAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
+    /**
+     * 쿠폰의 리스트를 반환하는 메소드 입니다.
+     *
+     * @return 쿠폰 정보의 리스트를 ResponseEntity 에 담아 반환합니다.
+     */
     @GetMapping
     public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> categoryList() {
 

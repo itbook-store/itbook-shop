@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 쿠폰의 정보를
  * @author 송다혜
  * @since 1.0
  */

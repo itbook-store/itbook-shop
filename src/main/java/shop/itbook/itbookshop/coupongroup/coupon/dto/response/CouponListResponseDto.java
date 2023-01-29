@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
+ * 쿠폰 조회 페이지에 반환한 값을 담을 response dto 객체입니다.
  * @author 송다혜
  * @since 1.0
  */
