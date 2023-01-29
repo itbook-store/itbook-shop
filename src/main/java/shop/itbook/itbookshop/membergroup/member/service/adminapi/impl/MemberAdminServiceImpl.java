@@ -74,4 +74,12 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
         memberStatusHistoryRepository.save(memberStatusHistory);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId) {
+        return memberRepository.findMemberListByMemberId(memberId);
+    }
 }

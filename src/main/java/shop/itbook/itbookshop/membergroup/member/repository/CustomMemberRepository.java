@@ -63,4 +63,15 @@ public interface CustomMemberRepository {
      * @author 강명관
      */
     Optional<MemberAuthInfoResponseDto> findAuthInfoByMemberId(String memberId);
+
+
+    /**
+     * 프론트 관리자 페이지에서 멤버 아이디로 검색하였을 때
+     * 테이블에서 입력된 검색어 기준으로 데이터들을 가져옵니다.
+     *
+     * @param memberId 검색한 단어가 포함되는 멤버 아이디를 찾습니다.
+     * @return 검색된 단어가 포함된 멤버 아이디가 있는 데이터 리스트들을 반환합니다.
+     * @author 노수연
+     */
+    List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId);
 }

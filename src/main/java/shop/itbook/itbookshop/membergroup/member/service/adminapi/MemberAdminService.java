@@ -39,4 +39,15 @@ public interface MemberAdminService {
      */
     void modifyMember(String memberId, MemberStatusUpdateAdminRequestDto requestDto);
 
+
+    /**
+     * 관리자는 관리자 페이지의 회원 목록 페이지에서 멤버 아이디 기준으로 검색하였을때
+     * 검색어가 포함된 멤버 리스트들을 볼 수 있습니다.
+     *
+     * @param memberId 관리자가 검색한 멤버 아이디 단어 입니다.
+     * @return 검색어가 포함된 멤버 아이디들의 데이터를 리스트로 반환합니다.
+     * @author 노수연
+     */
+    List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId);
+
 }

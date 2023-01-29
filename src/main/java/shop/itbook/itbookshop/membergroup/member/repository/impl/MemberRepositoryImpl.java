@@ -117,4 +117,20 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                 qmember.password
             )).fetchOne());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId) {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
+                    qmember.email,
+                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberId.like(memberId)).fetch();
+    }
 }
