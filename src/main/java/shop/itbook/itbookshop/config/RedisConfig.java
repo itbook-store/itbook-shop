@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.config;
 
 import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
- * redis 에대한 설정 파일입니다.
+ * redis에 대한 설정 파일입니다.
  *
  * @author 이하늬
  * @since 1.0
@@ -20,8 +21,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @ConfigurationProperties(prefix = "redis")
 public class RedisConfig implements BeanClassLoaderAware {
-    private String host;
     private int port;
+    private String host;
     private String password;
     private int database;
     private ClassLoader classLoader;
@@ -38,7 +39,6 @@ public class RedisConfig implements BeanClassLoaderAware {
         return new LettuceConnectionFactory(configuration);
     }
 
-    @SuppressWarnings("java:S1452") // 레디스의 key value의 타입을 자유롭게 지정하기 위함.
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
