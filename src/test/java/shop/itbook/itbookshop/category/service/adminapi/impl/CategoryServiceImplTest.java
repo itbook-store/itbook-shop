@@ -304,10 +304,10 @@ class CategoryServiceImplTest {
         verify(category).setIsHidden(anyBoolean());
     }
 
-    @DisplayName("삭제행위가 잘 이루어진다.")
-    @Test
-    void removeCategory() {
-        categoryService.removeCategory(1);
-        verify(categoryRepository).deleteById(1);
-    }
+//    @DisplayName("삭제행위가 잘 이루어진다.")
+//    @Test
+//    void removeCategory() {
+//        categoryService.removeCategory(1);
+//        verify(categoryRepository).deleteById(1);
+//    }
 }

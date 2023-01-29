@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.category.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 
@@ -45,4 +46,12 @@ public interface CustomCategoryRepository {
      * @return 카테고리엔티티를 옵셔널하게 반환합니다.
      */
     Optional<Category> findCategoryFetch(Integer categoryNo);
+
+    List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount();
+
+    CategoryNoAndProductNoDto getMainCategoryNoAndProductNoDtoForContainsProducts(
+        Integer categoryNo);
+
+    List<CategoryNoAndProductNoDto> getSubCategoryNoAndProductNoDtoForContainsProducts(
+        Integer categoryNo);
 }

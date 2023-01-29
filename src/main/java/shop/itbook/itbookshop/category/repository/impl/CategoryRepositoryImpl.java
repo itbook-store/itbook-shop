@@ -5,6 +5,7 @@ import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.entity.QCategory;
@@ -154,11 +155,60 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QCategory qParentCategory = new QCategory("parentCategory");
 
         Optional<Category> category = Optional.of(from(qCategory)
-            .leftJoin(qCategory.parentCategory, qParentCategory)
+            .innerJoin(qCategory.parentCategory, qParentCategory)
             .fetchJoin()
             .where(qCategory.categoryNo.eq(categoryNo))
             .select(qCategory)
             .fetchOne());
         return category;
+    }
+
+    @Override
+    public List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount() {
+
+        QCategory qCategory = QCategory.category;
+        QProductCategory qProductCategory = QProductCategory.productCategory;
+
+        return from(qProductCategory)
+            .innerJoin(qCategory)
+            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
+            .groupBy(qProductCategory.product.productNo, qCategory.parentCategory.categoryNo)
+            .select(Projections.fields(CategoryNoAndProductNoDto.class,
+                qProductCategory.product.productNo,
+                qCategory.parentCategory.categoryNo
+            ))
+            .fetch();
+    }
+
+    @Override
+    public CategoryNoAndProductNoDto getMainCategoryNoAndProductNoDtoForContainsProducts(
+        Integer categoryNo) {
+
+        QProductCategory qProductCategory = QProductCategory.productCategory;
+        QCategory qCategory = QCategory.category;
+
+        return from(qProductCategory)
+            .innerJoin(qCategory)
+            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
+            .where(qCategory.parentCategory.categoryNo.eq(categoryNo))
+            .groupBy(qCategory.parentCategory.categoryNo)
+            .select(Projections.fields(CategoryNoAndProductNoDto.class,
+                qCategory.parentCategory.categoryNo))
+            .fetchOne();
+    }
+
+    @Override
+    public List<CategoryNoAndProductNoDto> getSubCategoryNoAndProductNoDtoForContainsProducts(
+        Integer categoryNo) {
+
+        QProductCategory qProductCategory = QProductCategory.productCategory;
+        QCategory qCategory = QCategory.category;
+
+        return from(qProductCategory)
+            .where(qProductCategory.category.categoryNo.eq(categoryNo))
+            .select(Projections.fields(CategoryNoAndProductNoDto.class,
+                qProductCategory.product.productNo,
+                qCategory.categoryNo))
+            .fetch();
     }
 }
