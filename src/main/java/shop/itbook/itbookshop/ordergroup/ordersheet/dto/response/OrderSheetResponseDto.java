@@ -14,6 +14,6 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberD
 @Getter
 @AllArgsConstructor
 public class OrderSheetResponseDto {
-    private List<OrderSheetProductResponseDto> productResponseDtoList;
+    private List<OrderSheetProductResponseDto> orderSheetProductResponseDtoList;
     private List<MemberDestinationResponseDto> memberDestinationResponseDtoList;
 }

@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.ordersheet.controller;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdmin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/order-sheet")
+@Slf4j
 public class OrderSheetController {
     private final ProductAdminService productAdminService;
     private final MemberDestinationService memberDestinationService;
@@ -42,14 +44,13 @@ public class OrderSheetController {
      */
     @GetMapping
     public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderWrite(
-        @RequestParam("ProductNo") Long productNo, @RequestParam("memberNo") Long memberNo) {
+        @RequestParam("productNo") Long productNo, @RequestParam("memberNo") Long memberNo) {
 
         List<OrderSheetProductResponseDto> orderSheetProductResponseDtoList = new ArrayList<>();
 
-        Product product = productAdminService.findProduct(productNo);
-
         orderSheetProductResponseDtoList.add(
-            OrderSheetTransfer.productEntityToOrderSheetResponseDto(product));
+            OrderSheetTransfer.productEntityToOrderSheetResponseDto(
+                productAdminService.findProduct(productNo)));
 
         List<MemberDestinationResponseDto> memberDestinationResponseDtoList =
             memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
