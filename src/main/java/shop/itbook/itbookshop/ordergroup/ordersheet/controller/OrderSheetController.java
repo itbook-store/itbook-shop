@@ -11,14 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
-import shop.itbook.itbookshop.membergroup.memberdestination.repository.MemberDestinationRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
-import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetProductResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.resultmessageenum.OrderSheetMessageEnum;
 import shop.itbook.itbookshop.ordergroup.ordersheet.transfer.OrderSheetTransfer;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
  * 주문서 작성에 관한 요청을 담당하고 처리하는 컨트롤러
@@ -31,7 +29,7 @@ import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdmin
 @RequestMapping("/api/order-sheet")
 @Slf4j
 public class OrderSheetController {
-    private final ProductAdminService productAdminService;
+    private final ProductService productService;
     private final MemberDestinationService memberDestinationService;
 
     /**
@@ -46,11 +44,13 @@ public class OrderSheetController {
     public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderWrite(
         @RequestParam("productNo") Long productNo, @RequestParam("memberNo") Long memberNo) {
 
-        List<OrderSheetProductResponseDto> orderSheetProductResponseDtoList = new ArrayList<>();
+        List<ProductDetailsResponseDto> orderSheetProductResponseDtoList = new ArrayList<>();
 
-        orderSheetProductResponseDtoList.add(
-            OrderSheetTransfer.productEntityToOrderSheetResponseDto(
-                productAdminService.findProduct(productNo)));
+        ProductDetailsResponseDto product = productService.findProduct(productNo);
+        product.setSelledPrice(
+            (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01)));
+
+        orderSheetProductResponseDtoList.add(product);
 
         List<MemberDestinationResponseDto> memberDestinationResponseDtoList =
             memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
