@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.category.controller.adminapi;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -87,7 +86,7 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
-        given(categoryService.findCategoryListByEmployee())
+        given(categoryService.findCategoryListByEmployee(any()))
             .willReturn(List.of(category1, category2));
 
         mvc.perform(get("/api/admin/categories"))

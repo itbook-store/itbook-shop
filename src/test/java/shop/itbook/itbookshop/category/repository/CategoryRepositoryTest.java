@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -69,11 +70,12 @@ class CategoryRepositoryTest {
     void findCategoryList() {
 
         // when
-        List<CategoryListResponseDto> categoryList =
-            categoryRepository.findCategoryListByEmployee();
+        Page<CategoryListResponseDto> categoryList =
+            categoryRepository.findCategoryListByEmployee(null);
+
 
         // then
-        CategoryListResponseDto actual = categoryList.get(0);
+        CategoryListResponseDto actual = categoryList.getContent().get(0);
 
         assertThat(actual.getCategoryNo())
             .isEqualTo(categoryDummyStuff.getCategoryNo());

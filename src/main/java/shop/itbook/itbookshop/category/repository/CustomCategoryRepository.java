@@ -1,7 +1,10 @@
 package shop.itbook.itbookshop.category.repository;
 
+
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
@@ -23,7 +26,7 @@ public interface CustomCategoryRepository {
      * @return 모든 카테고리 리스트를 반환합니다.
      * @author 최겸준
      */
-    List<CategoryListResponseDto> findCategoryListByEmployee();
+    Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable);
 
     List<CategoryListResponseDto> findCategoryListByNotEmployee();
 

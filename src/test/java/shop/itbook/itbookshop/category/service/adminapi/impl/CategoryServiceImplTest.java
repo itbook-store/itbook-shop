@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
@@ -125,11 +126,12 @@ class CategoryServiceImplTest {
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
         ReflectionTestUtils.setField(category2, "count", 0L);
 
-        given(categoryRepository.findCategoryListByEmployee())
-            .willReturn(List.of(category1, category2));
+        given(categoryRepository.findCategoryListByEmployee(any()))
+            .willReturn(new PageImpl<>(List.of(category1, category2)));
 
         // when
-        List<CategoryListResponseDto> categoryList = categoryService.findCategoryListByEmployee();
+        List<CategoryListResponseDto> categoryList = categoryService.findCategoryListByEmployee(
+            null);
 
         // then
         assertThat(categoryList.get(0).getCategoryNo())

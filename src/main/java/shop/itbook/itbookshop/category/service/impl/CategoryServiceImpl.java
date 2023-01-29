@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
@@ -92,17 +94,22 @@ public class CategoryServiceImpl implements CategoryService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryListResponseDto> findCategoryListByEmployee() {
+    public Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable) {
 
-        List<CategoryListResponseDto> categoryListByEmployee =
-            categoryRepository.findCategoryListByEmployee();
+        Page<CategoryListResponseDto> page =
+            categoryRepository.findCategoryListByEmployee(pageable);
+
+        List<CategoryListResponseDto> categoryListByEmployee = page.getContent();
 
         List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
             categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
 
+        // TODO : 실제 넘어온 대분류 숫자만큼만 조회해오기 그래야 갯수세는 로직의 연산이 훨씬 줄어든다 필요없는거 까지 Map에 저장할 필요가 없다.
         settingCount(categoryListByEmployee, categoryNoAndProductNoDtoList);
 
-        return categoryListByEmployee;
+
+//        return categoryListByEmployee;
+        return page;
     }
 
     private static void settingCount(List<CategoryListResponseDto> categoryListByEmployee,

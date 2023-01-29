@@ -5,6 +5,9 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,7 @@ import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 
 /**
  * 관리자에 대한 요청을 받고 반환하는 컨트롤러 클래스입니다.
@@ -67,16 +71,47 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
+    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList(
+        @PageableDefault
+        Pageable pageable) {
+
+        Long offset = pageable.getOffset();
+        Integer pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        boolean a = pageable.hasPrevious();
 
         CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findCategoryListByEmployee());
+                categoryService.findCategoryListByEmployee(pageable).getContent());
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
+//    @GetMapping
+//    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> categoryList(
+//        @PageableDefault
+//        Pageable pageable) {
+//
+//        Long offset = pageable.getOffset();
+//        Integer pageSize = pageable.getPageSize();
+//        int pageNumber = pageable.getPageNumber();
+//        boolean a = pageable.hasPrevious();
+//
+//        Page<CategoryListResponseDto> page =
+//            categoryService.findCategoryListByEmployee(pageable);
+//
+//        PageResponse<CategoryListResponseDto> pageResponse =
+//            new PageResponse<>(page);
+//
+//        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
+//            new CommonResponseBody<>(
+//                new CommonResponseBody.CommonHeader(
+//                    CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+//                pageResponse);
+//
+//        return ResponseEntity.ok().body(commonResponseBody);
+//    }
 
     @GetMapping("/main-categories")
     public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> mainCategoryList() {

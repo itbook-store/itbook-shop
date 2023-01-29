@@ -2,9 +2,14 @@ package shop.itbook.itbookshop.category.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+
+
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -31,14 +36,23 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryListResponseDto> findCategoryListByEmployee() {
+    public Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable) {
 
         QCategory qCategory = QCategory.category;
         QCategory qChildCategory = new QCategory("parentCategory");
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        return getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory)
-            .fetch();
+        JPQLQuery<CategoryListResponseDto> categoryListJPQLQuery =
+            getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory);
+
+        List<CategoryListResponseDto> content =
+            categoryListJPQLQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable,
+            () -> from(qCategory).fetchCount());
     }
 
     public List<CategoryListResponseDto> findCategoryListByNotEmployee() {

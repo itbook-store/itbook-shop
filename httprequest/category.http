@@ -4,7 +4,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8082/api/admin/categories
+GET http://localhost:8082/api/admin/categories?page=0&size=3
 Accept: application/json
 Content-Type: application/json
 

@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.category.service;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
@@ -30,7 +32,7 @@ public interface CategoryService {
      * @return 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryListResponseDto> findCategoryListByEmployee();
+    Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable);
 
     List<CategoryListResponseDto> findCategoryListByNotEmployee();
 
