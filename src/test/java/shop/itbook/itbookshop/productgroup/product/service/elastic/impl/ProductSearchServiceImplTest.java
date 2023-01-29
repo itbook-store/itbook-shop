@@ -24,16 +24,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ModifyProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepository.ProductSearchRepository;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.ProductAdminService;
-import shop.itbook.itbookshop.productgroup.product.service.adminapi.impl.ProductAdminServiceImpl;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 
@@ -59,9 +55,9 @@ class ProductSearchServiceImplTest {
     void setUp() {
         product = Product.builder().name("test 테스트북")
             .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
-            .detailsDescription("상세 설명").stock(1).isSelled(true).isDeleted(false)
+            .detailsDescription("상세 설명").stock(1).isExposed(true).isForceSoldOut(false)
             .thumbnailUrl("testUrl").fixedPrice(20000L)
-            .increasePointPercent(1).discountPercent(10.0).rawPrice(12000L).dailyHits(0L)
+            .increasePointPercent(1).discountPercent(10.0).rawPrice(12000L)
             .productCreatedAt(LocalDateTime.now()).build();
         product.setProductNo(256L);
         elasticProduct = SearchProduct.builder()
@@ -81,7 +77,8 @@ class ProductSearchServiceImplTest {
         given(mockProductSearchRepository.save(any(SearchProduct.class)))
             .willReturn(elasticProduct);
 
-        assertThat(productSearchService.addSearchProduct(product)).isEqualTo(elasticProduct.getProductNo());
+        assertThat(productSearchService.addSearchProduct(product)).isEqualTo(
+            elasticProduct.getProductNo());
     }
 
     @Test
@@ -107,12 +104,14 @@ class ProductSearchServiceImplTest {
     @DisplayName("상품 이름 검색 테스트")
     void findProductTest() {
 
-        given(mockProductSearchRepository.findByName(anyString())).willReturn(List.of(elasticProduct,elasticProduct));
+        given(mockProductSearchRepository.findByName(anyString())).willReturn(
+            List.of(elasticProduct, elasticProduct));
 
         List<SearchProduct> results = mockProductSearchRepository.findByName("test");
 
         assertThat(productSearchService.searchProductByTitle("test"))
-            .usingRecursiveComparison().isEqualTo(List.of(documentToDto(elasticProduct),documentToDto(elasticProduct)));
+            .usingRecursiveComparison()
+            .isEqualTo(List.of(documentToDto(elasticProduct), documentToDto(elasticProduct)));
 
     }
 

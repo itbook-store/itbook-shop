@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 public enum ProductResultMessageEnum {
-
+    GET_SUCCESS("상품 조회 성공!"),
     ADD_SUCCESS("상품 등록 성공!"),
     MODIFY_SUCCESS("상품 수정 성공!"),
     DELETE_SUCCESS("상품 삭제 성공!");
