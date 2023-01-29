@@ -17,12 +17,15 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookReques
 public interface BookService {
 
     /**
-     * 도서 전체를 조회하는 메서드입니다.
+     * 모든 도서 조회를 담당하는 메서드입니다.
+     * isFiltered가 true인 경우 노출 여부가 true인 도서 리스트를 반환합니다.
+     * isFiltered가 false인 경우 모든 도서 리스트를 반환합니다.
      *
-     * @return 도서에 대한 모든 정보를 담아 리스트로 반환합니다.
+     * @param isFiltered 필터링 여부입니다.
+     * @return isFiltered에 따라 필터링한 도서 리스트를 반환합니다.
      * @author 이하늬
      */
-    List<BookDetailsResponseDto> findBookList();
+    List<BookDetailsResponseDto> findBookList(boolean isFiltered);
 
     /**
      * 상품이 도서일 경우 상품 번호를 받아 추가적으로 도서 정보를 등록하는 기능을 담당합니다.

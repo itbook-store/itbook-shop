@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.productgroup.product.service.impl;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -104,7 +105,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
-//        productCategoryService.removeProductCategory(productNo);
         productRepository.deleteById(productNo);
     }
 
@@ -121,9 +121,16 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> findProductList() {
+    public List<ProductDetailsResponseDto> findProductList(boolean isFiltered) {
         List<ProductDetailsResponseDto> productList = productRepository.findProductList();
         setSelledPrice(productList);
+
+        if (isFiltered) {
+            return productList.stream()
+                .filter(product -> product.getIsExposed() == Boolean.TRUE)
+                .collect(Collectors.toList());
+        }
+
         return productList;
     }
 
