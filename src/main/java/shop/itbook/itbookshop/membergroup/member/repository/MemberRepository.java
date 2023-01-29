@@ -32,7 +32,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CustomMem
     /**
      * 이메일로 테이블에 해당 이메일을 가진 회원이 존재하는지 확인하는 메서드입니다.
      *
-     * @param email the email
+     * @param email 이메일로 테이블에 회원 데이터가 있는지 확인합니다.
      * @return 존재하면 true 없으면 false를 반환합니다.
      * @author 노수연
      */
@@ -41,7 +41,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CustomMem
     /**
      * 핸드폰번호로 테이블에 해당 핸드폰번호를 가진 회원이 존재하는지 확인하는 메서드입니다.
      *
-     * @param phoneNumber the phone number
+     * @param phoneNumber 핸드폰번호로 테이블에 회원 데이터가 있는지 확인합니다.
      * @return 존재하면 true 없으면 false를 반환합니다.
      * @author 노수연
      */
