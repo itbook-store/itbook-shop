@@ -32,6 +32,7 @@ public class MemberTransfer {
                 memberRequestDto.getPassword()).phoneNumber(memberRequestDto.getPhoneNumber())
             .email(
                 memberRequestDto.getEmail()).memberCreatedAt(LocalDateTime.now())
+            .isSocial(memberRequestDto.getIsSocial())
             .build();
     }
 

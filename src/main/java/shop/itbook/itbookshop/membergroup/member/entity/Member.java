@@ -77,6 +77,9 @@ public class Member {
     @Column(name = "member_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime memberCreatedAt;
 
+    @Column(name = "is_social")
+    private Boolean isSocial;
+
     /**
      * 회원 테이블에 대한 엔티티 생성자 입니다.
      *
@@ -99,7 +102,7 @@ public class Member {
                   String nickname,
                   String name, Boolean isMan, LocalDateTime birth, String password,
                   String phoneNumber,
-                  String email, LocalDateTime memberCreatedAt) {
+                  String email, LocalDateTime memberCreatedAt, Boolean isSocial) {
         this.membership = membership;
         this.memberStatus = memberStatus;
         this.memberId = memberId;
@@ -111,6 +114,7 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.memberCreatedAt = memberCreatedAt;
+        this.isSocial = isSocial;
     }
 
 }
