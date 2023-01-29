@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -55,6 +56,12 @@ public interface CustomMemberRepository {
      */
     List<MemberExceptPwdResponseDto> findMemberList();
 
+    boolean existsByEmailAndIsSocial(String email);
+
+    boolean existsByMemberIdAndIsSocial(String memberId);
+
+    Optional<MemberOauthLoginResponseDto> findOauthInfoByMemberId(String memberId);
+
     /**
      * 회원 아이디로 로그인에 필요한 정보를 가져오는 메서드 입니다.
      *
@@ -74,4 +81,12 @@ public interface CustomMemberRepository {
      * @author 노수연
      */
     List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId);
+
+    List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname);
+
+    List<MemberExceptPwdResponseDto> findMemberListByName(String name);
+
+    List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber);
+
+    List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
 }

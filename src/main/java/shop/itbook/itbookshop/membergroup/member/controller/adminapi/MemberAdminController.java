@@ -112,10 +112,27 @@ public class MemberAdminController {
         @PathVariable("searchRequirement") String searchRequirement,
         @PathVariable("searchWord") String searchWord
     ) {
+
         List<MemberExceptPwdResponseDto> memberList = new ArrayList<>();
 
         if (searchRequirement.equals("memberId")) {
             memberList = memberAdminService.findMemberListByMemberId(searchWord);
+        }
+
+        if (searchRequirement.equals("nickname")) {
+            memberList = memberAdminService.findMemberListByNickname(searchWord);
+        }
+
+        if (searchRequirement.equals("name")) {
+            memberList = memberAdminService.findMemberListByName(searchWord);
+        }
+
+        if (searchRequirement.equals("phoneNumber")) {
+            memberList = memberAdminService.findMemberListByPhoneNumber(searchWord);
+        }
+
+        if (searchRequirement.equals("everything")) {
+            memberList = memberAdminService.findMemberListBySearchWord(searchWord);
         }
 
         CommonResponseBody<List<MemberExceptPwdResponseDto>> commonResponseBody =

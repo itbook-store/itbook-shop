@@ -50,4 +50,12 @@ public interface MemberAdminService {
      */
     List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId);
 
+    List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname);
+
+    List<MemberExceptPwdResponseDto> findMemberListByName(String name);
+
+    List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber);
+
+    List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
+
 }
