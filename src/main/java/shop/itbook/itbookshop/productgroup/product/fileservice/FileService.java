@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.productgroup.product.fileservice;
 
 import java.io.InputStream;
 import java.util.UUID;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +19,13 @@ import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterce
  */
 @Slf4j
 @Component
+@Getter
 @RequiredArgsConstructor
 public class FileService {
     @Value("${object.storage.storage-url}")
-    private static String storageUrl;
+    private String storageUrl;
     @Value("${object.storage.container-name}")
-    private static String containerName;
+    private String containerName;
 
     private final TokenInterceptor tokenInterceptor;
 
