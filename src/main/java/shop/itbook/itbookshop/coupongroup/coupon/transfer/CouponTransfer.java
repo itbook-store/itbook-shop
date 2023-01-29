@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.coupongroup.coupon.transfer;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
@@ -14,6 +16,12 @@ public class CouponTransfer {
     }
 
     public static Coupon dtoToEntity(CouponRequestDto dto) {
+        LocalDateTime createAt = LocalDateTime.parse(dto.getCouponCreatedAt());
+        LocalDateTime expiredAt = LocalDateTime.parse(dto.getCouponExpiredAt());
+        LocalDateTime modifiedAt = null;
+        if (!Objects.isNull(dto.getCouponModifiedAt())) {
+            modifiedAt = LocalDateTime.parse(dto.getCouponModifiedAt());
+        }
 
         return Coupon.builder()
             .name(dto.getName())
@@ -22,9 +30,9 @@ public class CouponTransfer {
             .point(dto.getPoint())
             .standardAmount(dto.getStandardAmount())
             .maxDiscountAmount(dto.getMaxDiscountAmount())
-            .couponCreatedAt(dto.getCouponCreatedAt())
-            .couponExpiredAt(dto.getCouponExpiredAt())
-            .couponModifiedAt(dto.getCouponModifiedAt())
+            .couponCreatedAt(createAt)
+            .couponExpiredAt(expiredAt)
+            .couponModifiedAt(modifiedAt)
             .image(dto.getImage())
             .code(dto.getCode())
             .isReserved(dto.isReserved())

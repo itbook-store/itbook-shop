@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
@@ -39,20 +40,22 @@ public class CouponRequestDto {
     private Long maxDiscountAmount;
 
     @NotNull(message = "")
-    private LocalDateTime couponCreatedAt;
+    private String couponCreatedAt;
 
     @NotNull(message = "")
-    private LocalDateTime couponExpiredAt;
+    private String couponExpiredAt;
 
-    @NotNull(message = "")
-    private LocalDateTime couponModifiedAt;
+    private String couponModifiedAt;
 
     private String image;
 
-    @NotNull(message = "")
+//    @NotNull(message = "")
     @Length(min = 1, max = 255, message = "")
     private String code;
 
     @NotNull(message = "")
     private boolean isReserved;
+
+    @Positive(message = "쿠폰 발급수량이 음수 일 수는 없습니다.")
+    private Long quantity;
 }

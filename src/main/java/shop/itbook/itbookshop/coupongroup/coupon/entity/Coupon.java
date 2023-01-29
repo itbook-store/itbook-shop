@@ -58,7 +58,7 @@ public class Coupon {
     @Column(name = "coupon_expired_at", nullable = false)
     private LocalDateTime couponExpiredAt;
 
-    @Column(name = "coupon_modified_at", nullable = false)
+    @Column(name = "coupon_modified_at")
     private LocalDateTime couponModifiedAt;
 
     @Column(name = "image", columnDefinition = "text")

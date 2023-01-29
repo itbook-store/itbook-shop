@@ -1,10 +1,12 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service.impl;
 
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -45,5 +47,10 @@ public class CouponServiceImpl implements CouponService {
 
         return CouponTransfer.entityToDto(couponRepository.findCouponByCode(code)
             .orElseThrow(CouponNotFoundException::new));
+    }
+
+    @Override
+    public List<CouponListResponseDto> findByCouponList() {
+        return couponRepository.findCouponList();
     }
 }
