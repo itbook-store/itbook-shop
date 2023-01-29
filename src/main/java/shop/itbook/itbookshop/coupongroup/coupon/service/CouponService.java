@@ -14,7 +14,6 @@ public interface CouponService {
 
     Long addCoupon(CouponRequestDto couponRequestDto);
 
-    @Transactional
     void deleteCoupon(Long couponNo);
 
     CouponResponseDto findByCouponResponseDto(String code);

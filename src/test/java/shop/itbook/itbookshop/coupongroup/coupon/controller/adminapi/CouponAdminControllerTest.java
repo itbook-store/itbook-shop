@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.category.controller.adminapi.CategoryAdminController;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 
 /**
  * 
@@ -40,6 +41,9 @@ class CouponAdminControllerTest {
     CouponAdminController couponAdminController;
 
     @MockBean
+    TokenInterceptor tokenInterceptor;
+
+    @MockBean
     CouponService couponService;
 
     @Autowired
@@ -53,9 +57,9 @@ class CouponAdminControllerTest {
         ReflectionTestUtils.setField(couponRequestDto, "amount", 1000L);
         ReflectionTestUtils.setField(couponRequestDto, "percent", 0);
         ReflectionTestUtils.setField(couponRequestDto, "point", 0L);
-        ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt", LocalDateTime.now());
-        ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt", LocalDateTime.now());
-        ReflectionTestUtils.setField(couponRequestDto, "couponModifiedAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt", LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt", LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponModifiedAt", LocalDateTime.now().toString());
         ReflectionTestUtils.setField(couponRequestDto, "code", UUID.randomUUID().toString());
         ReflectionTestUtils.setField(couponRequestDto, "isReserved", false);
 

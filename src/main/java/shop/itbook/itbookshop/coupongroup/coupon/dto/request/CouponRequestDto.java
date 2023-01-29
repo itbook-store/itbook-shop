@@ -49,7 +49,6 @@ public class CouponRequestDto {
 
     private String image;
 
-//    @NotNull(message = "")
     @Length(min = 1, max = 255, message = "")
     private String code;
 

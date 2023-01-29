@@ -56,6 +56,10 @@ class CouponServiceImplTest {
         //given
         percentDummyCoupon.setCouponNo(1L);
 
+        ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt", LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt", LocalDateTime.now().toString());
+
+
         given(couponRepository.save(any(Coupon.class)))
             .willReturn(percentDummyCoupon);
 
