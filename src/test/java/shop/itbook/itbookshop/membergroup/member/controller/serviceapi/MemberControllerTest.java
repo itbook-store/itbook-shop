@@ -64,6 +64,7 @@ class MemberControllerTest {
         ReflectionTestUtils.setField(memberRequestDto, "password", "1234");
         ReflectionTestUtils.setField(memberRequestDto, "phoneNumber", "010-9999-9999");
         ReflectionTestUtils.setField(memberRequestDto, "email", "user1000@test.com");
+        ReflectionTestUtils.setField(memberRequestDto, "isSocial", false);
 
         Long testNo = 1L;
 

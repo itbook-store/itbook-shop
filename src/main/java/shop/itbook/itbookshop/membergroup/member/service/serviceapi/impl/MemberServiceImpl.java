@@ -120,7 +120,7 @@ public class MemberServiceImpl implements MemberService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmss");
 
         UUID uuid = UUID.randomUUID();
-        
+
         String replace = Integer.toString(ByteBuffer.wrap(uuid.toString().getBytes()).getInt(), 9);
         replace = now.format(formatter) + replace;
 
@@ -141,6 +141,17 @@ public class MemberServiceImpl implements MemberService {
 
         memberStatusHistoryRepository.save(memberStatusHistory);
 
+    }
+
+    @Override
+    public MemberBooleanResponseDto checkMemberOauthEmailExists(String email) {
+        return new MemberBooleanResponseDto(memberRepository.existsByEmailAndIsSocial(email));
+    }
+
+    @Override
+    public MemberBooleanResponseDto checkMemberOauthInfoExists(String memberId) {
+
+        return new MemberBooleanResponseDto(memberRepository.existsByMemberIdAndIsSocial(memberId));
     }
 
     /**

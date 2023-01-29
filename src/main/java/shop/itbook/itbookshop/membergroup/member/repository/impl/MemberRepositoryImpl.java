@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.persistence.EntityManager;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
@@ -103,6 +104,31 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .fetch();
     }
 
+    @Override
+    public boolean existsByEmailAndIsSocial(String email) {
+        return jpaQueryFactory.from(qmember)
+            .where(qmember.email.eq(email).and(qmember.isSocial.eq(false)))
+            .select(qmember.email).fetchFirst() != null;
+    }
+
+    @Override
+    public boolean existsByMemberIdAndIsSocial(String memberId) {
+        return jpaQueryFactory.from(qmember)
+            .where(qmember.memberId.eq(memberId).and(qmember.isSocial.eq(true)))
+            .select(qmember.memberId).fetchFirst() != null;
+
+    }
+
+    @Override
+    public Optional<MemberOauthLoginResponseDto> findOauthInfoByMemberId(String memberId) {
+        return Optional.ofNullable(jpaQueryFactory.select(
+                Projections.constructor(MemberOauthLoginResponseDto.class, qmember.memberId,
+                    qmember.password))
+            .from(qmember)
+            .where(qmember.memberId.eq(memberId)
+                .and(qmember.isSocial.eq(true))).fetchOne());
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -131,6 +157,62 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.email,
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberId.like(memberId)).fetch();
+            .where(qmember.memberId.contains(memberId)).fetch();
+    }
+
+    @Override
+    public List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname) {
+
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
+                    qmember.email,
+                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.nickname.contains(nickname)).fetch();
+    }
+
+    @Override
+    public List<MemberExceptPwdResponseDto> findMemberListByName(String name) {
+
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
+                    qmember.email,
+                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.name.contains(name)).fetch();
+    }
+
+    @Override
+    public List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber) {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
+                    qmember.email,
+                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.phoneNumber.contains(phoneNumber)).fetch();
+    }
+
+    @Override
+    public List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord) {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
+                    qmember.email,
+                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberId.contains(searchWord).or(qmember.nickname.contains(searchWord))
+                .or(qmember.name.contains(searchWord)).or(qmember.phoneNumber.contains(searchWord)))
+            .fetch();
     }
 }

@@ -1,7 +1,20 @@
-package shop.itbook.itbookshop.membergroup.member.dto.response;/**
- * 
- * 
+package shop.itbook.itbookshop.membergroup.member.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+/**
  * @author 노수연
  * @since 1.0
- */public class MemberOauthLoginResponseDto {
+ */
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class MemberOauthLoginResponseDto {
+
+    private String memberId;
+
+    private String password;
+
 }

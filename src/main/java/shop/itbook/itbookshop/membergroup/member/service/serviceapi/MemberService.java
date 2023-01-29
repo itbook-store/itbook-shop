@@ -51,6 +51,10 @@ public interface MemberService {
      */
     void withDrawMember(String memberId, MemberStatusUpdateAdminRequestDto requestDto);
 
+    MemberBooleanResponseDto checkMemberOauthEmailExists(String email);
+
+    MemberBooleanResponseDto checkMemberOauthInfoExists(String memberId);
+
     /**
      * 인증에 대한 회원 정보를 반환받는 메서드 입니다.
      *
