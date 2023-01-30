@@ -1,7 +1,8 @@
 package shop.itbook.itbookshop.membergroup.member.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 /**
  * 소셜 로그인할 때 아이디가 테이블에 존재하는지 찾기위한 DTO 입니다.
@@ -10,9 +11,11 @@ import lombok.Setter;
  * @since 1.0
  */
 @Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberOauthLoginRequestDto {
 
-    String memberId;
+    String email;
+    String encodedEmail;
 
 }

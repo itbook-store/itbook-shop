@@ -60,6 +60,7 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     public MemberResponseDto findMember(String memberId) {
+
         return memberRepository.findByMemberIdAllInfo(memberId)
             .orElseThrow(MemberNotFoundException::new);
     }
@@ -144,14 +145,32 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberBooleanResponseDto checkMemberOauthEmailExists(String email) {
-        return new MemberBooleanResponseDto(memberRepository.existsByEmailAndIsSocial(email));
+    public Boolean checkMemberOauthEmailExists(String email) {
+
+        return memberRepository.existsByEmailAndIsSocial(email);
     }
 
     @Override
-    public MemberBooleanResponseDto checkMemberOauthInfoExists(String memberId) {
+    public Boolean checkMemberOauthInfoExists(String email) {
 
-        return new MemberBooleanResponseDto(memberRepository.existsByMemberIdAndIsSocial(memberId));
+        return memberRepository.existsByMemberIdAndIsSocial(email);
+    }
+
+    @Override
+    public Long socialMemberAdd(String email, String encodedEmail) {
+
+        Membership membership = membershipAdminService.findMembership(428);
+
+        MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
+            memberStatusAdminService.findMemberStatusWithMemberStatusNo(392));
+
+        Member member =
+            Member.builder().membership(membership).memberStatus(memberStatus).memberId(email)
+                .nickname(email).name(email).isMan(true).birth(LocalDateTime.now())
+                .password(encodedEmail).phoneNumber(email).email(email)
+                .memberCreatedAt(LocalDateTime.now()).isSocial(true).build();
+
+        return memberRepository.save(member).getMemberNo();
     }
 
     /**

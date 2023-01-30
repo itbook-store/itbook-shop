@@ -131,22 +131,25 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
-    @GetMapping("/oauth/login/find")
-    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> OauthLogin(
+    @PostMapping("/oauth/login/find")
+    public ResponseEntity<CommonResponseBody<Boolean>> OauthLogin(
         @RequestBody MemberOauthLoginRequestDto requestDto) {
 
-        if (memberService.checkMemberOauthEmailExists(requestDto.getMemberId()).getIsExists()) {
+        if (memberService.checkMemberOauthEmailExists(requestDto.getEmail())) {
             return ResponseEntity.ok()
                 .body(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_EMAIL_EXISTS_TRUE_MESSAGE.getSuccessMessage()
-                ), memberService.checkMemberOauthEmailExists(requestDto.getMemberId())));
+                ), false));
+        }
+
+        if (!memberService.checkMemberOauthInfoExists(requestDto.getEmail())) {
+            memberService.socialMemberAdd(requestDto.getEmail(), requestDto.getEncodedEmail());
         }
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_SOCIAL_LOGIN_MESSAGE.getSuccessMessage()
-            ), memberService.checkMemberOauthInfoExists(
-            requestDto.getMemberId())
+            ), true
         ));
 
     }

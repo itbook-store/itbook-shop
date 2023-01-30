@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
@@ -14,6 +15,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.membergroup.member.repository.CustomMemberRepository;
 import shop.itbook.itbookshop.membergroup.membership.entity.QMembership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.QMemberStatus;
+import shop.itbook.itbookshop.membergroup.memberstatushistory.entity.QMemberStatusHistory;
 
 /**
  * MemberRepositoryCustom 인터페이스를 구현한 클래스입니다.
@@ -33,6 +35,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     QMember qmember = QMember.member;
     QMembership qmembership = QMembership.membership;
     QMemberStatus qmemberStatus = QMemberStatus.memberStatus;
+
+    QMemberStatusHistory qMemberStatusHistory = QMemberStatusHistory.memberStatusHistory;
 
     /**
      * {@inheritDoc}
@@ -112,9 +116,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }
 
     @Override
-    public boolean existsByMemberIdAndIsSocial(String memberId) {
+    public boolean existsByMemberIdAndIsSocial(String email) {
         return jpaQueryFactory.from(qmember)
-            .where(qmember.memberId.eq(memberId).and(qmember.isSocial.eq(true)))
+            .where(qmember.memberId.eq(email).and(qmember.isSocial.eq(true)))
             .select(qmember.memberId).fetchFirst() != null;
 
     }
@@ -214,5 +218,22 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .where(qmember.memberId.contains(searchWord).or(qmember.nickname.contains(searchWord))
                 .or(qmember.name.contains(searchWord)).or(qmember.phoneNumber.contains(searchWord)))
             .fetch();
+    }
+
+    @Override
+    public List<MemberExceptPwdBlockResponseDto> findBlockMemberList() {
+        /*return jpaQueryFactory.select(
+            Projections.constructor(MemberExceptPwdBlockResponseDto.class, qmember.memberNo,
+                qmember.memberId, qmembership.membershipGrade,
+                qmemberStatus.memberStatusEnum.stringValue(), qmember.nickname, qmember.name,
+                qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
+                qmember.memberCreatedAt, qMemberStatusHistory.statusChangedReason,
+                qMemberStatusHistory.memberStatusHistoryCreatedAt)).from(qmember)
+            .join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .join(qMemberStatusHistory.member, qmember)
+            .where().in());*/
+
+        return null;
     }
 }
