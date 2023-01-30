@@ -92,7 +92,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public List<ProductDetailsResponseDto> findProductList(Integer categoryNo) {
         List<ProductDetailsResponseDto> productList =
             productCategoryRepository.getProductListWithCategoryNo(categoryNo);
-        setExtraFields(productList);
+        for (ProductDetailsResponseDto product : productList) {
+            setExtraFields(product);
+        }
         return productList;
     }
 }

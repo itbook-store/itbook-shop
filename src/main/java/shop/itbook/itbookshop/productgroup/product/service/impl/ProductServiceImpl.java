@@ -122,8 +122,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDetailsResponseDto> findProductList(boolean isFiltered) {
         List<ProductDetailsResponseDto> productList = productRepository.findProductList();
-        setExtraFields(productList);
+        for (ProductDetailsResponseDto product : productList) {
 
+            setExtraFields(product);
+        }
         if (isFiltered) {
             return productList.stream()
                 .filter(product -> product.getIsExposed() == Boolean.TRUE)
@@ -133,13 +135,11 @@ public class ProductServiceImpl implements ProductService {
         return productList;
     }
 
-    public static void setExtraFields(
-        List<ProductDetailsResponseDto> productList) {
-        for (ProductDetailsResponseDto product : productList) {
-            setSelledPrice(product);
-            setThumbnailsName(product);
-        }
+    public static void setExtraFields(ProductDetailsResponseDto product) {
+        setSelledPrice(product);
+        setThumbnailsName(product);
     }
+
 
     private static void setSelledPrice(ProductDetailsResponseDto product) {
         product.setSelledPrice(

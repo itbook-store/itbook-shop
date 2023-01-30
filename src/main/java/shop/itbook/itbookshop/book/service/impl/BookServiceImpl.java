@@ -35,7 +35,9 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookDetailsResponseDto> findBookList(boolean isFiltered) {
         List<BookDetailsResponseDto> bookList = bookRepository.findBookList();
-        setSelledPrice(bookList);
+        for (BookDetailsResponseDto book : bookList) {
+            setExtraFields(book);
+        }
 
         if (isFiltered) {
             return bookList.stream()
@@ -46,20 +48,13 @@ public class BookServiceImpl implements BookService {
         return bookList;
     }
 
-    private void setSelledPrice(
-        List<BookDetailsResponseDto> bookList) {
-        for (BookDetailsResponseDto b : bookList) {
-            setExtraField(b);
-        }
-    }
-
-    private void setExtraField(BookDetailsResponseDto b) {
-        b.setSelledPrice((long) (b.getFixedPrice() * ((100 - b.getDiscountPercent()) * 0.01)));
-        String fileThumbnailsUrl = b.getFileThumbnailsUrl();
-        b.setThumbnailsName(
+    private void setExtraFields(BookDetailsResponseDto book) {
+        book.setSelledPrice(
+            (long) (book.getFixedPrice() * ((100 - book.getDiscountPercent()) * 0.01)));
+        String fileThumbnailsUrl = book.getFileThumbnailsUrl();
+        book.setThumbnailsName(
             fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
     }
-
 
     /**
      * {@inheritDoc}
@@ -103,7 +98,7 @@ public class BookServiceImpl implements BookService {
     public BookDetailsResponseDto findBook(Long productNo) {
         BookDetailsResponseDto book = bookRepository.findBook(productNo)
             .orElseThrow(BookNotFoundException::new);
-        setExtraField(book);
+        this.setExtraFields(book);
         return book;
     }
 
