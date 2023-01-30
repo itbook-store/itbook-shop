@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
@@ -123,7 +122,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDetailsResponseDto> findProductList(boolean isFiltered) {
         List<ProductDetailsResponseDto> productList = productRepository.findProductList();
-        setSelledPrice(productList);
+        setExtraFields(productList);
 
         if (isFiltered) {
             return productList.stream()
@@ -134,15 +133,23 @@ public class ProductServiceImpl implements ProductService {
         return productList;
     }
 
-    public static void setSelledPrice(
+    public static void setExtraFields(
         List<ProductDetailsResponseDto> productList) {
         for (ProductDetailsResponseDto product : productList) {
-            product.setSelledPrice(
-                (long) (product.getFixedPrice() * ((100 - product.getDiscountPercent()) * 0.01)));
-            String fileThumbnailsUrl = product.getFileThumbnailsUrl();
-            product.setThumbnailsName(
-                fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
+            setSelledPrice(product);
+            setThumbnailsName(product);
         }
+    }
+
+    private static void setSelledPrice(ProductDetailsResponseDto product) {
+        product.setSelledPrice(
+            (long) (product.getFixedPrice() * ((100 - product.getDiscountPercent()) * 0.01)));
+    }
+
+    private static void setThumbnailsName(ProductDetailsResponseDto product) {
+        String fileThumbnailsUrl = product.getFileThumbnailsUrl();
+        product.setThumbnailsName(
+            fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
     }
 
     /**
@@ -150,8 +157,12 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public ProductDetailsResponseDto findProduct(Long productNo) {
-        return productRepository.findProductDetails(productNo)
-            .orElseThrow(ProductNotFoundException::new);
+        ProductDetailsResponseDto product =
+            productRepository.findProductDetails(productNo)
+                .orElseThrow(ProductNotFoundException::new);
+        setSelledPrice(product);
+        setThumbnailsName(product);
+        return product;
     }
 
     private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
@@ -180,7 +191,7 @@ public class ProductServiceImpl implements ProductService {
     private Product updateProduct(ProductBookRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
-        product.setDailyHits(0L);
+//        product.setDailyHits(0L);
         product.setName(requestDto.getProductName());
         product.setSimpleDescription(requestDto.getSimpleDescription());
         product.setDetailsDescription(requestDto.getDetailsDescription());

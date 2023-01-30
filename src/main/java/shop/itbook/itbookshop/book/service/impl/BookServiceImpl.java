@@ -49,11 +49,15 @@ public class BookServiceImpl implements BookService {
     private void setSelledPrice(
         List<BookDetailsResponseDto> bookList) {
         for (BookDetailsResponseDto b : bookList) {
-            b.setSelledPrice((long) (b.getFixedPrice() * ((100 - b.getDiscountPercent()) * 0.01)));
-            String fileThumbnailsUrl = b.getFileThumbnailsUrl();
-            b.setThumbnailsName(
-                fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
+            setExtraField(b);
         }
+    }
+
+    private void setExtraField(BookDetailsResponseDto b) {
+        b.setSelledPrice((long) (b.getFixedPrice() * ((100 - b.getDiscountPercent()) * 0.01)));
+        String fileThumbnailsUrl = b.getFileThumbnailsUrl();
+        b.setThumbnailsName(
+            fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
     }
 
 
@@ -97,7 +101,10 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDetailsResponseDto findBook(Long productNo) {
-        return bookRepository.findBook(productNo);
+        BookDetailsResponseDto book = bookRepository.findBook(productNo)
+            .orElseThrow(BookNotFoundException::new);
+        setExtraField(book);
+        return book;
     }
 
     /**
