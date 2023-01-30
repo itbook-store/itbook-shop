@@ -130,6 +130,7 @@ public class CategoryServiceImpl implements CategoryService {
             Integer categoryNo = dto.getCategoryNo();
             Long productCount = mainCategoryNoCountMap.get(categoryNo);
             if (Objects.isNull(productCount)) {
+                dto.setCount(0L);
                 continue;
             }
 
@@ -138,9 +139,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
-        List<CategoryListResponseDto> categoryListByNotEmployee =
-            categoryRepository.findCategoryListByNotEmployee();
+    public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
+        Page<CategoryListResponseDto> categoryListByNotEmployee =
+            categoryRepository.findCategoryListByNotEmployee(pageable);
 
         return categoryListByNotEmployee;
     }
@@ -150,12 +151,10 @@ public class CategoryServiceImpl implements CategoryService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo) {
+    public Page<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo,
+                                                                    Pageable pageable) {
 
-        List<CategoryListResponseDto> categoryListAboutChild =
-            categoryRepository.findCategoryListAboutChild(categoryNo);
-
-        return categoryListAboutChild;
+        return categoryRepository.findCategoryListAboutChild(categoryNo, pageable);
     }
 
     /**
@@ -311,13 +310,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryListResponseDto> findMainCategoryList() {
+    public Page<CategoryListResponseDto> findMainCategoryList(Pageable pageable) {
 
-        List<CategoryListResponseDto> mainCategoryList = categoryRepository.findMainCategoryList();
+        Page<CategoryListResponseDto> mainCategoryListPage =
+            categoryRepository.findMainCategoryList(pageable);
+
+
         List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
             categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
 
-        settingCount(mainCategoryList, categoryNoAndProductNoDtoList);
-        return mainCategoryList;
+        settingCount(mainCategoryListPage.getContent(), categoryNoAndProductNoDtoList);
+        return mainCategoryListPage;
     }
 }

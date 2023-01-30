@@ -20,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -86,16 +89,19 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(category1, category2), pageRequest, 10);
         given(categoryService.findCategoryListByEmployee(any()))
-            .willReturn(List.of(category1, category2));
+            .willReturn(page);
+
 
         mvc.perform(get("/api/admin/categories"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].categoryNo", equalTo(1)))
-            .andExpect(jsonPath("$.result[0].categoryName", equalTo("도서")))
-            .andExpect(jsonPath("$.result[1].categoryNo", equalTo(2)))
-            .andExpect(jsonPath("$.result[1].categoryName", equalTo("잡화")));
+            .andExpect(jsonPath("$.result.content[0].categoryNo", equalTo(1)))
+            .andExpect(jsonPath("$.result.content[0].categoryName", equalTo("도서")))
+            .andExpect(jsonPath("$.result.content[1].categoryNo", equalTo(2)))
+            .andExpect(jsonPath("$.result.content[1].categoryName", equalTo("잡화")));
     }
 
     @DisplayName("특정 카테고리의 자식카테고리들이 모두 반환된다.")
@@ -112,16 +118,16 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(response2, "categoryNo", 4);
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
-        given(categoryService.findCategoryListAboutChild(anyInt()))
-            .willReturn(List.of(response1, response2));
+        given(categoryService.findCategoryListAboutChild(anyInt(), any()))
+            .willReturn(new PageImpl<>(List.of(response1, response2)));
 
         mvc.perform(get("/api/admin/categories/1/child-categories"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].categoryNo", equalTo(3)))
-            .andExpect(jsonPath("$.result[0].categoryName", equalTo("객체지향의사실과오해")))
-            .andExpect(jsonPath("$.result[1].categoryNo", equalTo(4)))
-            .andExpect(jsonPath("$.result[1].categoryName", equalTo("자바로배우는자료구조")));
+            .andExpect(jsonPath("$.result.content[0].categoryNo", equalTo(3)))
+            .andExpect(jsonPath("$.result.content[0].categoryName", equalTo("객체지향의사실과오해")))
+            .andExpect(jsonPath("$.result.content[1].categoryNo", equalTo(4)))
+            .andExpect(jsonPath("$.result.content[1].categoryName", equalTo("자바로배우는자료구조")));
     }
 
     @DisplayName("카테거리 단건조회 요청이 잘 받아지고 원하는 형태로 잘 반환된다.")

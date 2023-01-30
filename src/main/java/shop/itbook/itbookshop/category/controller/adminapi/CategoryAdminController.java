@@ -71,56 +71,37 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList(
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> categoryList(
         @PageableDefault
         Pageable pageable) {
 
-        Long offset = pageable.getOffset();
-        Integer pageSize = pageable.getPageSize();
-        int pageNumber = pageable.getPageNumber();
-        boolean a = pageable.hasPrevious();
+        Page<CategoryListResponseDto> page =
+            categoryService.findCategoryListByEmployee(pageable);
 
-        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+        PageResponse<CategoryListResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findCategoryListByEmployee(pageable).getContent());
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
-//    @GetMapping
-//    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> categoryList(
-//        @PageableDefault
-//        Pageable pageable) {
-//
-//        Long offset = pageable.getOffset();
-//        Integer pageSize = pageable.getPageSize();
-//        int pageNumber = pageable.getPageNumber();
-//        boolean a = pageable.hasPrevious();
-//
-//        Page<CategoryListResponseDto> page =
-//            categoryService.findCategoryListByEmployee(pageable);
-//
-//        PageResponse<CategoryListResponseDto> pageResponse =
-//            new PageResponse<>(page);
-//
-//        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
-//            new CommonResponseBody<>(
-//                new CommonResponseBody.CommonHeader(
-//                    CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-//                pageResponse);
-//
-//        return ResponseEntity.ok().body(commonResponseBody);
-//    }
 
     @GetMapping("/main-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> mainCategoryList() {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> mainCategoryList(
+        @PageableDefault Pageable pageable) {
 
-        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+        Page<CategoryListResponseDto> mainCategoryListPage =
+            categoryService.findMainCategoryList(pageable);
+
+        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findMainCategoryList());
+                new PageResponse(mainCategoryListPage));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -133,13 +114,16 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}/child-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>>
-    categoryChildList(@PathVariable Integer categoryNo) {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>>
+    categoryChildList(@PathVariable Integer categoryNo, @PageableDefault Pageable pageable) {
+
+        Page<CategoryListResponseDto> categoryListAboutChild =
+            categoryService.findCategoryListAboutChild(categoryNo, pageable);
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 CategoryResultMessageEnum.CATEGORY_CHILD_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-            categoryService.findCategoryListAboutChild(categoryNo)));
+            new PageResponse<>(categoryListAboutChild)));
     }
 
     /**
