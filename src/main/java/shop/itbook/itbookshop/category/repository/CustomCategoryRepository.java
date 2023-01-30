@@ -52,7 +52,8 @@ public interface CustomCategoryRepository {
      */
     Optional<Category> findCategoryFetch(Integer categoryNo);
 
-    List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount();
+    List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount(
+        List<Integer> mainCategoryNoList);
 
     CategoryNoAndProductNoDto getMainCategoryNoAndProductNoDtoForContainsProducts(
         Integer categoryNo);

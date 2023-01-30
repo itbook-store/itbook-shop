@@ -175,7 +175,8 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount() {
+    public List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount(
+        List<Integer> mainCategoryNoList) {
 
         QCategory qCategory = QCategory.category;
         QProductCategory qProductCategory = QProductCategory.productCategory;
@@ -184,6 +185,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qCategory)
             .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
             .groupBy(qProductCategory.product.productNo, qCategory.parentCategory.categoryNo)
+            .where(qCategory.parentCategory.categoryNo.in(mainCategoryNoList))
             .select(Projections.fields(CategoryNoAndProductNoDto.class,
                 qProductCategory.product.productNo,
                 qCategory.parentCategory.categoryNo

@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.category.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,20 +101,46 @@ public class CategoryServiceImpl implements CategoryService {
             categoryRepository.findCategoryListByEmployee(pageable);
 
         List<CategoryListResponseDto> categoryListByEmployee = page.getContent();
+        List<Integer> mainCategoryNoList = getMainCategoryNoList(categoryListByEmployee);
 
         List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
-            categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount(mainCategoryNoList);
 
-        // TODO : 실제 넘어온 대분류 숫자만큼만 조회해오기 그래야 갯수세는 로직의 연산이 훨씬 줄어든다 필요없는거 까지 Map에 저장할 필요가 없다.
         settingCount(categoryListByEmployee, categoryNoAndProductNoDtoList);
 
-
-//        return categoryListByEmployee;
         return page;
+    }
+
+    @Override
+    public Page<CategoryListResponseDto> findMainCategoryList(Pageable pageable) {
+
+        Page<CategoryListResponseDto> mainCategoryListPage =
+            categoryRepository.findMainCategoryList(pageable);
+
+        List<CategoryListResponseDto> mainCategoryList = mainCategoryListPage.getContent();
+        List<Integer> mainCategoryNoList = getMainCategoryNoList(mainCategoryList);
+
+        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount(mainCategoryNoList);
+
+        settingCount(mainCategoryListPage.getContent(), categoryNoAndProductNoDtoList);
+        return mainCategoryListPage;
+    }
+
+    private List<Integer> getMainCategoryNoList(List<CategoryListResponseDto> content) {
+        List<Integer> mainCategoryNoList = new ArrayList<>();
+        for (CategoryListResponseDto dto : content) {
+            if (Objects.equals(dto.getLevel(), MAIN_CATEGORY_LEVEL)) {
+                mainCategoryNoList.add(dto.getCategoryNo());
+            }
+        }
+
+        return mainCategoryNoList;
     }
 
     private static void settingCount(List<CategoryListResponseDto> categoryListByEmployee,
                                      List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList) {
+
         Map<Integer, Long> mainCategoryNoCountMap = new HashMap<>();
 
         for (CategoryNoAndProductNoDto dto : categoryNoAndProductNoDtoList) {
@@ -309,17 +336,5 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    @Override
-    public Page<CategoryListResponseDto> findMainCategoryList(Pageable pageable) {
 
-        Page<CategoryListResponseDto> mainCategoryListPage =
-            categoryRepository.findMainCategoryList(pageable);
-
-
-        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
-            categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
-
-        settingCount(mainCategoryListPage.getContent(), categoryNoAndProductNoDtoList);
-        return mainCategoryListPage;
-    }
 }
