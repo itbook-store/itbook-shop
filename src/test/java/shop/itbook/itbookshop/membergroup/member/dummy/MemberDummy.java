@@ -2,11 +2,6 @@ package shop.itbook.itbookshop.membergroup.member.dummy;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
-import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
-import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
-import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
-import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * MemberDummy 클래스입니다.
@@ -16,13 +11,32 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  */
 public class MemberDummy {
 
-    public static Member getMember() {
-        Membership membership = MembershipDummy.getMembership();
-        MemberStatus memberStatus = MemberStatusDummy.getMemberStatus();
+    public static Member getMember1() {
 
-        return new Member(membership, memberStatus, "user4", "유저4", "김유리", true,
-            LocalDateTime.of(2000, 1, 1, 0, 0, 0), "1234", "010-4000-0000", "user4@test1.com",
-            LocalDateTime.now());
+        return Member.builder()
+            .memberId("user1000")
+            .nickname("감자")
+            .name("신짱구")
+            .isMan(true)
+            .birth(LocalDateTime.of(2000, 1, 1, 0, 0, 0))
+            .password("1234")
+            .phoneNumber("010-9999-9999")
+            .email("user1000@test.com")
+            .memberCreatedAt(LocalDateTime.now())
+            .build();
     }
 
+    public static Member getMember2() {
+        return Member.builder()
+            .memberId("user2")
+            .nickname("유저2")
+            .name("김철수")
+            .isMan(true)
+            .birth(LocalDateTime.of(2000, 1, 1, 0, 0, 0))
+            .password("2345")
+            .phoneNumber("010-1000-0000")
+            .email("user2@test.com")
+            .memberCreatedAt(LocalDateTime.now())
+            .build();
+    }
 }

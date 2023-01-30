@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnumConverter;
 
@@ -23,6 +24,7 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnumConve
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "member_status")

@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.QMemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.CustomMemberStatusRepository;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * MemberStatusRepositoryCustom 인터페이스를 구현한 클래스입니다.
@@ -29,10 +28,10 @@ public class MemberStatusRepositoryImpl implements CustomMemberStatusRepository 
     @Override
     public Optional<MemberStatusResponseDto> querydslFindByName(String memberStatusName) {
         return Optional.of(jpaQueryFactory.select(
-            Projections.constructor(MemberStatusResponseDto.class,
-                qMemberStatus.memberStatusNo, qMemberStatus.memberStatusEnum.stringValue())
-        ).from(qMemberStatus).where(qMemberStatus.memberStatusEnum.eq(
-            MemberStatusEnum.valueOf(memberStatusName))).fetch().get(0));
+                Projections.constructor(MemberStatusResponseDto.class,
+                    qMemberStatus.memberStatusNo, qMemberStatus.memberStatusEnum.stringValue())
+            ).from(qMemberStatus)
+            .where(qMemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)).fetchOne());
     }
 
     @Override

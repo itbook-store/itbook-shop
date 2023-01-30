@@ -1,5 +1,8 @@
 package shop.itbook.itbookshop.membergroup.member.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
@@ -22,117 +28,125 @@ class MemberRepositoryTest {
     MemberRepository memberRepository;
 
     @Autowired
+    MemberStatusRepository memberStatusRepository;
+
+    @Autowired
+    MembershipRepository membershipRepository;
+
+    @Autowired
     TestEntityManager testEntityManager;
 
-    Member testMember1;
-    Member testMember2;
     Membership membership;
-    MemberStatus memberStatus;
 
-    @Autowired
-    private MemberStatusRepository memberStatusRepository;
-    @Autowired
-    private MembershipRepository membershipRepository;
+    MemberStatus normalMemberStatus;
 
-    @MockBean
-    private CustomMemberRepository customMemberRepository;
+    Member member;
 
     @BeforeEach
     void setup() {
 
-        /*membership =
-            Membership.builder().membershipGrade("white").membershipStandardAmount(100_000L)
-                .membershipPoint(10_000L).build();
-
+        //given
+        membership = MembershipDummy.getMembership();
         membershipRepository.save(membership);
 
-        memberStatus = MemberStatus.builder().memberStatusEnum(MemberStatusEnum.NORMAL).build();
+        normalMemberStatus = memberStatusRepository.findById(392).orElseThrow();
 
-        memberStatusRepository.save(memberStatus);
-
-        testMember1 =
-            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user134")
-                .nickname("유저134").name("홍길동").isMan(true).birth(
-                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234")
-                .phoneNumber("010-03440-0000")
-                .email("user1342@test1.com").memberCreatedAt(LocalDateTime.now()).build();
-
-        memberRepository.save(testMember1);
-
-        testMember2 =
-            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user2")
-                .nickname("유저2").name("김철수").isMan(true).birth(
-                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-1000-0000")
-                .email("user2@test1.com").memberCreatedAt(LocalDateTime.now()).build();
-
-        memberRepository.save(testMember2);
+        member = MemberDummy.getMember1();
+        member.setMembership(membership);
+        member.setMemberStatus(normalMemberStatus);
+        memberRepository.save(member);
 
         testEntityManager.flush();
-        testEntityManager.clear();*/
+        testEntityManager.clear();
+
     }
 
-    /*@Test
-    @DisplayName("멤버no로 특정 멤버를 찾기")
-    void findById() {
+    @Test
+    @DisplayName("멤버 아이디로 특정 멤버를 찾기")
+    void findByMemberId() {
 
         // when
-        Member member = memberRepository.findById(testMember1.getMemberNo()).orElseThrow();
+        MemberExceptPwdResponseDto
+            testMember = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
 
-        //then
-        assertThat(member.getMemberNo()).isEqualTo(testMember1.getMemberNo());
+        // then
+        assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
+    }
 
-    }*/
+    @Test
+    @DisplayName("멤버아이디로 멤버 모든 정보 가져오기")
+    void findByMemberIdAllInfo() {
 
-    /*@Test
+        // when
+        MemberResponseDto testMember =
+            memberRepository.findByMemberIdAllInfo(member.getMemberId()).orElseThrow();
+
+        // then
+        assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
+    }
+
+    @Test
+    @DisplayName("멤버아이디로 멤버 모든 정보 가져오기")
+    void findByMemberIdReceiveMember() {
+
+        // when
+        Member testMember =
+            memberRepository.findByMemberIdReceiveMember(member.getMemberId()).orElseThrow();
+
+        // then
+        assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
+
+    }
+
+    @Test
     @DisplayName("모든 멤버 리스트 찾기")
     void findAllBy() {
 
         //when
-        List<MemberResponseProjectionDto> memberList = memberRepository.findAllBy();
+        List<MemberExceptPwdResponseDto> memberList = memberRepository.findMemberList();
 
         //then
-        assertThat(memberList.size()).isEqualTo(2);
-    }*/
-
-    @Test
-    @DisplayName("멤버 저장 테스트")
-    void save() {
-        /*Member member =
-            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user3")
-                .nickname("유저3").name("김유리").isMan(true).birth(
-                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-2000-0000")
-                .email("user3@test1.com").memberCreatedAt(LocalDateTime.now()).build();
-
-        memberRepository.save(member);
-
-        Member testMember = memberRepository.findById(member.getMemberNo()).orElseThrow();
-        System.out.println(testMember.getName());
-
-        assertThat(testMember.getName()).isEqualTo("김유리");*/
+        assertThat(memberList.size()).isNotIn(0);
     }
 
-    /*@Test
-    @DisplayName("멤버 삭제 테스트")
-    void delete() {
+    @Test
+    @DisplayName("해당 멤버 아이디가 테이블에 존재하는지 확인하기")
+    void existsByMemberId() {
 
-        Member member =
-            Member.builder().membership(membership).memberStatus(memberStatus).id("user4")
-                .nickname("유저4").name("김짱구").isMan(true).birth(
-                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-4000-0000")
-                .email("user4@test.com").memberCreatedAt(LocalDateTime.now()).build();
+        String memberId = "user1000";
 
-        memberRepository.save(member);
+        //then
+        assertThat(memberRepository.existsByMemberId(memberId)).isTrue();
+    }
 
-        List<MemberResponseProjectionDto> memberList = customMemberRepository.querydslFindAll();
+    @Test
+    @DisplayName("해당 닉네임이 테이블에 존재하는지 확인하기")
+    void existsByNickname() {
 
-        assertThat(memberList.size()).isEqualTo(3);
+        String nickname = "감자";
 
-        memberRepository.deleteById(member.getMemberNo());
+        //then
+        assertThat(memberRepository.existsByNickname(nickname)).isTrue();
+    }
 
-        memberList = customMemberRepository.querydslFindAll();
+    @Test
+    @DisplayName("해당 이메일이 테이블에 존재하는지 확인하기")
+    void existsByEmail() {
 
-        assertThat(memberList.size()).isEqualTo(2);
+        String email = "user1000@test.com";
 
-    }*/
+        //then
+        assertThat(memberRepository.existsByEmail(email)).isTrue();
+    }
+
+    @Test
+    @DisplayName("해당 핸드폰 번호가 테이블에 존재하는지 확인하기")
+    void existsByPhoneNumber() {
+
+        String phoneNumber = "010-9999-9999";
+
+        //then
+        assertThat(memberRepository.existsByPhoneNumber(phoneNumber)).isTrue();
+    }
 
 }
