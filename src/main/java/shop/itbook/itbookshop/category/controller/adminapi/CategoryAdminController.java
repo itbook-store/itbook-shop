@@ -5,6 +5,9 @@ import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +27,7 @@ import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 
 /**
  * 관리자에 대한 요청을 받고 반환하는 컨트롤러 클래스입니다.
@@ -67,25 +71,37 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> categoryList(
+        @PageableDefault
+        Pageable pageable) {
 
-        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+        Page<CategoryListResponseDto> page =
+            categoryService.findCategoryListByEmployee(pageable);
+
+        PageResponse<CategoryListResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findCategoryListByEmployee());
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
     @GetMapping("/main-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> mainCategoryList() {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> mainCategoryList(
+        @PageableDefault Pageable pageable) {
 
-        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+        Page<CategoryListResponseDto> mainCategoryListPage =
+            categoryService.findMainCategoryList(pageable);
+
+        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findMainCategoryList());
+                new PageResponse(mainCategoryListPage));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -98,13 +114,16 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}/child-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>>
-    categoryChildList(@PathVariable Integer categoryNo) {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>>
+    categoryChildList(@PathVariable Integer categoryNo, @PageableDefault Pageable pageable) {
+
+        Page<CategoryListResponseDto> categoryListAboutChild =
+            categoryService.findCategoryListAboutChild(categoryNo, pageable);
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 CategoryResultMessageEnum.CATEGORY_CHILD_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-            categoryService.findCategoryListAboutChild(categoryNo)));
+            new PageResponse<>(categoryListAboutChild)));
     }
 
     /**

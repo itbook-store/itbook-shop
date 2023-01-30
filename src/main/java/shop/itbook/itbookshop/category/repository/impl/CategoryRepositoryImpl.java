@@ -2,9 +2,14 @@ package shop.itbook.itbookshop.category.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+
+
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -31,26 +36,44 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryListResponseDto> findCategoryListByEmployee() {
+    public Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable) {
 
         QCategory qCategory = QCategory.category;
         QCategory qChildCategory = new QCategory("parentCategory");
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        return getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory)
-            .fetch();
+        JPQLQuery<CategoryListResponseDto> categoryListJPQLQuery =
+            getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory);
+
+        List<CategoryListResponseDto> content =
+            categoryListJPQLQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable,
+            () -> from(qCategory).fetchCount());
     }
 
-    public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
+    public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
 
         QCategory qCategory = QCategory.category;
         QCategory qChildCategory = new QCategory("parentCategory");
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        return getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory)
-            .where(qCategory.isHidden.eq(false)
-                .and(qChildCategory.isHidden.eq(false)))
-            .fetch();
+        JPQLQuery<CategoryListResponseDto> jpqlQuery =
+            getCategoryListJPQLQuery(qCategory, qChildCategory, qProductCategory)
+                .where(qCategory.isHidden.eq(false)
+                    .and(qChildCategory.isHidden.eq(false)));
+
+        List<CategoryListResponseDto> categoryList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        return PageableExecutionUtils.getPage(categoryList, pageable, jpqlQuery::fetchCount);
     }
 
     private JPQLQuery<CategoryListResponseDto> getCategoryListJPQLQuery(QCategory qCategory,
@@ -79,15 +102,18 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     /**
      * {@inheritDoc}
      */
-    public List<CategoryListResponseDto> findCategoryListAboutChild(
-        Integer parentCategoryNo) {
+    public Page<CategoryListResponseDto> findCategoryListAboutChild(
+        Integer parentCategoryNo, Pageable pageable) {
         QCategory qCategory = QCategory.category;
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
-        return from(qCategory)
+        JPQLQuery<Category> jpqlQuery = from(qCategory)
+            .where(qCategory.parentCategory.categoryNo.eq(parentCategoryNo)
+                .and(qCategory.categoryNo.eq(parentCategoryNo).not()));
+
+        List<CategoryListResponseDto> childCategoryList = jpqlQuery
             .leftJoin(qProductCategory)
             .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
-            .where(qCategory.parentCategory.categoryNo.eq(parentCategoryNo))
             .orderBy(qCategory.level.asc(), qCategory.sequence.asc())
             .groupBy(qCategory.categoryNo)
             .select(Projections.fields(CategoryListResponseDto.class,
@@ -99,50 +125,35 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
                 qCategory.sequence,
                 qProductCategory.category.categoryNo.count().as("count")
             ))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .fetch();
+
+        return PageableExecutionUtils.getPage(childCategoryList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
-    public List<CategoryListResponseDto> findMainCategoryList() {
+    public Page<CategoryListResponseDto> findMainCategoryList(Pageable pageable) {
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("qParentCategory");
-        QProductCategory qProductCategory = QProductCategory.productCategory;
 
-//        return from(qCategory)
-//            .leftJoin(qProductCategory)
-//            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
-//            .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL))
-//            .orderBy(qCategory.sequence.asc(), qCategory.categoryNo.desc())
-//            .groupBy(qCategory.categoryNo)
-//            .select(Projections.fields(CategoryListResponseDto.class,
-//                qCategory.categoryNo,
-//                qCategory.parentCategory.categoryNo.as("parent_category_no"),
-//                qCategory.categoryName,
-//                qCategory.isHidden,
-//                qCategory.level,
-//                qCategory.sequence,
-//                qProductCategory.category.categoryNo.count().as("count")
-//            ))
-//            .fetch();
+        JPQLQuery<Category> jpqlQuery = from(qCategory)
+            .where(qCategory.level.eq(MAIN_CATEGORY_LEVEL));
 
-
-        return from(qCategory)
-            .leftJoin(qProductCategory)
-            .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
-            .innerJoin(qParentCategory)
-            .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
-            .groupBy(qCategory.parentCategory.categoryNo)
-            .orderBy(qParentCategory.sequence.asc())
+        List<CategoryListResponseDto> mainCategoryList = jpqlQuery
+            .orderBy(qCategory.sequence.asc())
             .select(Projections.fields(CategoryListResponseDto.class,
-                qParentCategory.categoryNo,
-                qParentCategory.parentCategory.categoryNo.as("parent_category_no"),
-                qParentCategory.categoryName,
-                qParentCategory.isHidden,
-                qParentCategory.level,
-                qParentCategory.sequence,
-                qProductCategory.category.categoryNo.count().as("count")
+                qCategory.categoryNo,
+                qCategory.parentCategory.categoryNo.as("parentCategoryNo"),
+                qCategory.categoryName,
+                qCategory.isHidden,
+                qCategory.level,
+                qCategory.sequence
             ))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .fetch();
+
+        return PageableExecutionUtils.getPage(mainCategoryList, pageable, jpqlQuery::fetchCount);
     }
 
     /**
@@ -164,7 +175,8 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount() {
+    public List<CategoryNoAndProductNoDto> getMainCategoryNoAndProductNoForSettingCount(
+        List<Integer> mainCategoryNoList) {
 
         QCategory qCategory = QCategory.category;
         QProductCategory qProductCategory = QProductCategory.productCategory;
@@ -173,6 +185,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qCategory)
             .on(qProductCategory.category.categoryNo.eq(qCategory.categoryNo))
             .groupBy(qProductCategory.product.productNo, qCategory.parentCategory.categoryNo)
+            .where(qCategory.parentCategory.categoryNo.in(mainCategoryNoList))
             .select(Projections.fields(CategoryNoAndProductNoDto.class,
                 qProductCategory.product.productNo,
                 qCategory.parentCategory.categoryNo

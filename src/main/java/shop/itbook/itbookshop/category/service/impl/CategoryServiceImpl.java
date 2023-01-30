@@ -1,10 +1,13 @@
 package shop.itbook.itbookshop.category.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
@@ -92,21 +95,52 @@ public class CategoryServiceImpl implements CategoryService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryListResponseDto> findCategoryListByEmployee() {
+    public Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable) {
 
-        List<CategoryListResponseDto> categoryListByEmployee =
-            categoryRepository.findCategoryListByEmployee();
+        Page<CategoryListResponseDto> page =
+            categoryRepository.findCategoryListByEmployee(pageable);
+
+        List<CategoryListResponseDto> categoryListByEmployee = page.getContent();
+        List<Integer> mainCategoryNoList = getMainCategoryNoList(categoryListByEmployee);
 
         List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
-            categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount(mainCategoryNoList);
 
         settingCount(categoryListByEmployee, categoryNoAndProductNoDtoList);
 
-        return categoryListByEmployee;
+        return page;
+    }
+
+    @Override
+    public Page<CategoryListResponseDto> findMainCategoryList(Pageable pageable) {
+
+        Page<CategoryListResponseDto> mainCategoryListPage =
+            categoryRepository.findMainCategoryList(pageable);
+
+        List<CategoryListResponseDto> mainCategoryList = mainCategoryListPage.getContent();
+        List<Integer> mainCategoryNoList = getMainCategoryNoList(mainCategoryList);
+
+        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount(mainCategoryNoList);
+
+        settingCount(mainCategoryListPage.getContent(), categoryNoAndProductNoDtoList);
+        return mainCategoryListPage;
+    }
+
+    private List<Integer> getMainCategoryNoList(List<CategoryListResponseDto> content) {
+        List<Integer> mainCategoryNoList = new ArrayList<>();
+        for (CategoryListResponseDto dto : content) {
+            if (Objects.equals(dto.getLevel(), MAIN_CATEGORY_LEVEL)) {
+                mainCategoryNoList.add(dto.getCategoryNo());
+            }
+        }
+
+        return mainCategoryNoList;
     }
 
     private static void settingCount(List<CategoryListResponseDto> categoryListByEmployee,
                                      List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList) {
+
         Map<Integer, Long> mainCategoryNoCountMap = new HashMap<>();
 
         for (CategoryNoAndProductNoDto dto : categoryNoAndProductNoDtoList) {
@@ -123,6 +157,7 @@ public class CategoryServiceImpl implements CategoryService {
             Integer categoryNo = dto.getCategoryNo();
             Long productCount = mainCategoryNoCountMap.get(categoryNo);
             if (Objects.isNull(productCount)) {
+                dto.setCount(0L);
                 continue;
             }
 
@@ -131,9 +166,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryListResponseDto> findCategoryListByNotEmployee() {
-        List<CategoryListResponseDto> categoryListByNotEmployee =
-            categoryRepository.findCategoryListByNotEmployee();
+    public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
+        Page<CategoryListResponseDto> categoryListByNotEmployee =
+            categoryRepository.findCategoryListByNotEmployee(pageable);
 
         return categoryListByNotEmployee;
     }
@@ -143,12 +178,10 @@ public class CategoryServiceImpl implements CategoryService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo) {
+    public Page<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo,
+                                                                    Pageable pageable) {
 
-        List<CategoryListResponseDto> categoryListAboutChild =
-            categoryRepository.findCategoryListAboutChild(categoryNo);
-
-        return categoryListAboutChild;
+        return categoryRepository.findCategoryListAboutChild(categoryNo, pageable);
     }
 
     /**
@@ -303,14 +336,5 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    @Override
-    public List<CategoryListResponseDto> findMainCategoryList() {
 
-        List<CategoryListResponseDto> mainCategoryList = categoryRepository.findMainCategoryList();
-        List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
-            categoryRepository.getMainCategoryNoAndProductNoForSettingCount();
-
-        settingCount(mainCategoryList, categoryNoAndProductNoDtoList);
-        return mainCategoryList;
-    }
 }
