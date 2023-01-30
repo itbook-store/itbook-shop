@@ -31,6 +31,7 @@ class ProductElasticControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockBean
     TokenInterceptor tokenInterceptor;
 

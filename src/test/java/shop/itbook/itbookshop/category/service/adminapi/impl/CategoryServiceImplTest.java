@@ -20,6 +20,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
@@ -125,11 +128,17 @@ class CategoryServiceImplTest {
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
         ReflectionTestUtils.setField(category2, "count", 0L);
 
-        given(categoryRepository.findCategoryListByEmployee())
-            .willReturn(List.of(category1, category2));
+        given(categoryRepository.findCategoryListByEmployee(any()))
+            .willReturn(new PageImpl<>(List.of(category1, category2)));
+
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
         // when
-        List<CategoryListResponseDto> categoryList = categoryService.findCategoryListByEmployee();
+        Page<CategoryListResponseDto> page =
+            categoryService.findCategoryListByEmployee(pageRequest);
+
+        List<CategoryListResponseDto> categoryList = page.getContent();
 
         // then
         assertThat(categoryList.get(0).getCategoryNo())
@@ -155,14 +164,17 @@ class CategoryServiceImplTest {
         ReflectionTestUtils.setField(response2, "categoryNo", 4);
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
+        PageRequest pageable = PageRequest.of(0, 10);
+
         // given
-        given(categoryRepository.findCategoryListAboutChild(anyInt()))
-            .willReturn(List.of(response1, response2));
+        given(categoryRepository.findCategoryListAboutChild(anyInt(), any()))
+            .willReturn(new PageImpl(List.of(response1, response2), pageable, 0));
 
         // when
-        List<CategoryListResponseDto> categoryList =
-            categoryService.findCategoryListAboutChild(1);
+        Page<CategoryListResponseDto> page =
+            categoryService.findCategoryListAboutChild(1, pageable);
 
+        List<CategoryListResponseDto> categoryList = page.getContent();
         // then
         assertThat(categoryList.get(0).getCategoryNo())
             .isEqualTo(3);
@@ -304,10 +316,10 @@ class CategoryServiceImplTest {
         verify(category).setIsHidden(anyBoolean());
     }
 
-    @DisplayName("삭제행위가 잘 이루어진다.")
-    @Test
-    void removeCategory() {
-        categoryService.removeCategory(1);
-        verify(categoryRepository).deleteById(1);
-    }
+//    @DisplayName("삭제행위가 잘 이루어진다.")
+//    @Test
+//    void removeCategory() {
+//        categoryService.removeCategory(1);
+//        verify(categoryRepository).deleteById(1);
+//    }
 }

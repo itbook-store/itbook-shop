@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.book.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 
 /**
  * BookService 인터페이스를 구현한 도서 Service 클래스입니다.
@@ -31,15 +33,27 @@ public class BookServiceImpl implements BookService {
      * {@inheritDoc}
      */
     @Override
-    public List<BookDetailsResponseDto> findBookList() {
+    public List<BookDetailsResponseDto> findBookList(boolean isFiltered) {
         List<BookDetailsResponseDto> bookList = bookRepository.findBookList();
-        for (BookDetailsResponseDto b : bookList) {
-            b.setSelledPrice((long) (b.getFixedPrice() * ((100 - b.getDiscountPercent()) * 0.01)));
-            String fileThumbnailsUrl = b.getFileThumbnailsUrl();
-            b.setThumbnailsName(
-                fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
+        for (BookDetailsResponseDto book : bookList) {
+            setExtraFields(book);
         }
+
+        if (isFiltered) {
+            return bookList.stream()
+                .filter(product -> product.getIsExposed() == Boolean.TRUE)
+                .collect(Collectors.toList());
+        }
+
         return bookList;
+    }
+
+    private void setExtraFields(BookDetailsResponseDto book) {
+        book.setSelledPrice(
+            (long) (book.getFixedPrice() * ((100 - book.getDiscountPercent()) * 0.01)));
+        String fileThumbnailsUrl = book.getFileThumbnailsUrl();
+        book.setThumbnailsName(
+            fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
     }
 
     /**
@@ -82,7 +96,10 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDetailsResponseDto findBook(Long productNo) {
-        return bookRepository.findBook(productNo);
+        BookDetailsResponseDto book = bookRepository.findBook(productNo)
+            .orElseThrow(BookNotFoundException::new);
+        this.setExtraFields(book);
+        return book;
     }
 
     /**

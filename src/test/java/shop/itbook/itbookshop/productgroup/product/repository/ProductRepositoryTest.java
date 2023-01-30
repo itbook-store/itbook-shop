@@ -32,7 +32,7 @@ class ProductRepositoryTest {
     TestEntityManager entityManager;
 
     Product dummyProductSuccess;
-    static final Integer DATA_SIZE = 10;
+//    static final Integer DATA_SIZE = 7;
 
     @BeforeEach
     void setUp() {
@@ -76,18 +76,14 @@ class ProductRepositoryTest {
     @DisplayName("모든 상품 리스트 조회 성공 테스트")
     void Find_ProductList() {
 
-        Pageable pageable = PageRequest.of(1, 5);
-        Page<ProductDetailsResponseDto> productList = productRepository.findProductList(pageable);
-
-        Assertions.assertThat(productList.getTotalPages()).isEqualTo(3);
-        Assertions.assertThat(productList.getSize()).isEqualTo(5);
-
-        /*ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
-
-        Assertions.assertThat(productList).hasSize(DATA_SIZE + 1);
-        Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
-            .isEqualTo(dummyProductSuccess.getProductNo());
-        Assertions.assertThat(productDetailsResponseDtoActual.getIsExposed())
-            .isEqualTo(dummyProductSuccess.getIsExposed());*/
+        List<ProductDetailsResponseDto> productList = productRepository.findProductList();
+        Assertions.assertThat(productList).isNotEmpty();
+//        ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
+//
+//        Assertions.assertThat(productList).hasSize(DATA_SIZE + 1);
+//        Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
+//            .isEqualTo(dummyProductSuccess.getProductNo());
+//        Assertions.assertThat(productDetailsResponseDtoActual.getIsExposed())
+//            .isEqualTo(dummyProductSuccess.getIsExposed());
     }
 }

@@ -12,9 +12,6 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  */
 public class MemberStatusTransfer {
 
-    /**
-     * @author 노수연
-     */
     private MemberStatusTransfer() {
     }
 
