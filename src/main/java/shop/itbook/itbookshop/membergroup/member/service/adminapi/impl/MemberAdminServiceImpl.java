@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -80,28 +81,39 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      */
     @Override
     public List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId) {
-        System.out.println(
-            ">>" + memberRepository.findMemberListByMemberId(memberId).size());
+
         return memberRepository.findMemberListByMemberId(memberId);
     }
 
     @Override
     public List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname) {
+
         return memberRepository.findMemberListByNickname(nickname);
     }
 
     @Override
     public List<MemberExceptPwdResponseDto> findMemberListByName(String name) {
+
         return memberRepository.findMemberListByName(name);
     }
 
     @Override
     public List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber) {
+
         return memberRepository.findMemberListByPhoneNumber(phoneNumber);
     }
 
     @Override
     public List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord) {
+
         return memberRepository.findMemberListBySearchWord(searchWord);
     }
+
+    @Override
+    public MemberExceptPwdBlockResponseDto findBlockMember(String memberId) {
+
+        return memberRepository.findBlockMemberByMemberId(memberId);
+    }
+
+
 }

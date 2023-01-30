@@ -91,5 +91,5 @@ public interface CustomMemberRepository {
 
     List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
 
-    List<MemberExceptPwdBlockResponseDto> findBlockMemberList();
+    MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId);
 }
