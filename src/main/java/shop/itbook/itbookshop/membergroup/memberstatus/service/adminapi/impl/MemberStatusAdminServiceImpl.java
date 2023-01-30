@@ -7,7 +7,6 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatus
 import shop.itbook.itbookshop.membergroup.memberstatus.exception.MemberStatusNotFound;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 
 /**
  * 멤버 상태 서비스 인터페이스를 상속받아 구현한 클래스입니다.
@@ -22,8 +21,8 @@ public class MemberStatusAdminServiceImpl implements MemberStatusAdminService {
     private final MemberStatusRepository memberStatusRepository;
 
     @Override
-    public MemberStatusResponseDto findMemberStatus(MemberStatusEnum memberStatusEnum) {
-        return memberStatusRepository.querydslFindByName(memberStatusEnum.getMemberStatus())
+    public MemberStatusResponseDto findMemberStatus(String memberStatusName) {
+        return memberStatusRepository.querydslFindByName(memberStatusName)
             .orElseThrow(MemberStatusNotFound::new);
     }
 

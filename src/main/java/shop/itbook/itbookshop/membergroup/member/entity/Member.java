@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 
@@ -29,6 +30,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 @Getter
 @Setter
 @ToString
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -48,7 +50,7 @@ public class Member {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(15)", unique = true)
+    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String memberId;
 
     @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
@@ -66,7 +68,7 @@ public class Member {
     @Column(name = "password", nullable = false, columnDefinition = "varchar(255)")
     private String password;
 
-    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(14)", unique = true)
+    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String phoneNumber;
 
     @Column(name = "email", nullable = false, columnDefinition = "varchar(255)", unique = true)
@@ -74,6 +76,9 @@ public class Member {
 
     @Column(name = "member_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime memberCreatedAt;
+
+    @Column(name = "is_social")
+    private Boolean isSocial;
 
     /**
      * 회원 테이블에 대한 엔티티 생성자 입니다.
@@ -97,7 +102,7 @@ public class Member {
                   String nickname,
                   String name, Boolean isMan, LocalDateTime birth, String password,
                   String phoneNumber,
-                  String email, LocalDateTime memberCreatedAt) {
+                  String email, LocalDateTime memberCreatedAt, Boolean isSocial) {
         this.membership = membership;
         this.memberStatus = memberStatus;
         this.memberId = memberId;
@@ -109,6 +114,7 @@ public class Member {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.memberCreatedAt = memberCreatedAt;
+        this.isSocial = isSocial;
     }
 
 }
