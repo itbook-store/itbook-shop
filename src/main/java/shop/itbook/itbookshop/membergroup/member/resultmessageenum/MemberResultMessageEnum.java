@@ -15,7 +15,8 @@ public enum MemberResultMessageEnum {
     MEMBER_FIND_SUCCESS_MESSAGE("특정 멤버를 불러오는데 성공하였습니다."),
     MEMBER_LIST_SUCCESS_MESSAGE("모든 멤버 반환에 성공하였습니다."),
     MEMBER_MODIFY_SUCCESS_MESSAGE("멤버 수정에 성공하였습니다."),
-    MEMBER_REMOVE_SUCCESS_MESSAGE("멤버 삭제에 성공하였습니다.");
+    MEMBER_EMAIL_EXISTS_TRUE_MESSAGE("이미 존재하는 이메일입니다."),
+    MEMBER_SOCIAL_LOGIN_MESSAGE("소셜 로그인이나 소셜 회원가입이 가능합니다.");
 
     private String successMessage;
 

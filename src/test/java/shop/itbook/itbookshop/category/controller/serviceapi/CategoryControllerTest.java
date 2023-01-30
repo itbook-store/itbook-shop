@@ -12,23 +12,34 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.service.CategoryService;
+import shop.itbook.itbookshop.config.WebMvcConfig;
+import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
 
 /**
  * @author 최겸준
  * @since 1.0
  */
 
-@WebMvcTest(CategoryController.class)
+@WebMvcTest(controllers = CategoryController.class)
 class CategoryControllerTest {
+
+    @MockBean
+    TokenInterceptor tokenInterceptor;
 
     @Autowired
     MockMvc mvc;

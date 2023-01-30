@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.transfer;
 
-import shop.itbook.itbookshop.productgroup.product.dto.request.AddProductRequestDto;
+import java.time.LocalDateTime;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -20,16 +22,38 @@ public class ProductTransfer {
      * @return 엔티티로 변환된 상품 엔티티입니다.
      * @author
      */
-    public static Product dtoToEntityAdd(AddProductRequestDto requestDto) {
-        return Product.builder().name(requestDto.getName())
+    public static Product dtoToEntityAdd(ProductRequestDto requestDto) {
+        return Product.builder()
+            .name(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())
-            .detailsDescription(requestDto.getDetailsDescription()).stock(requestDto.getStock())
-            .isSelled(requestDto.isSelled()).isDeleted(requestDto.isDeleted())
-            .thumbnailUrl(requestDto.getThumbnailUrl())
+            .detailsDescription(requestDto.getDetailsDescription())
+            .stock(requestDto.getStock())
+            .isExposed(requestDto.getIsExposed())
+            .isForceSoldOut(requestDto.getIsForceSoldOut())
+            .thumbnailUrl(requestDto.getFileThumbnailsUrl())
             .fixedPrice(requestDto.getFixedPrice())
+            .productCreatedAt(LocalDateTime.now())
+            .increasePointPercent(requestDto.getIncreasePointPercent())
+            .discountPercent(requestDto.getDiscountPercent())
+            .rawPrice(requestDto.getRawPrice())
+            .build();
+    }
+
+    public static Product dtoToEntityAdd(ProductBookRequestDto requestDto) {
+
+        return Product.builder().name(requestDto.getProductName())
+            .simpleDescription(requestDto.getSimpleDescription())
+            .detailsDescription(requestDto.getDetailsDescription())
+            .stock(requestDto.getStock())
+            .isExposed(requestDto.getIsExposed())
+            .isForceSoldOut(requestDto.getIsForceSoldOut())
+            .thumbnailUrl(requestDto.getFileThumbnailsUrl())
+            .fixedPrice(requestDto.getFixedPrice())
+            .productCreatedAt(LocalDateTime.now())
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent()).rawPrice(requestDto.getRawPrice())
             .build();
     }
+
 
 }
