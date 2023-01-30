@@ -50,7 +50,7 @@ public class Member {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(15)", unique = true)
+    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String memberId;
 
     @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
@@ -68,7 +68,7 @@ public class Member {
     @Column(name = "password", nullable = false, columnDefinition = "varchar(255)")
     private String password;
 
-    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(14)", unique = true)
+    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String phoneNumber;
 
     @Column(name = "email", nullable = false, columnDefinition = "varchar(255)", unique = true)
