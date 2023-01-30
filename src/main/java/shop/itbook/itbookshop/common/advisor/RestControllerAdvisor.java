@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
+import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -27,7 +28,6 @@ public class RestControllerAdvisor {
     /**
      * 400에 해당하는 예외들을 한번에 처리하는 메소드입니다.
      *
-     * @param e 실제 발생한 예외객체입니다.
      * @return 에러메세지를 response entity 에 담아서 전송합니다.
      * @author 최겸준
      */
@@ -36,7 +36,8 @@ public class RestControllerAdvisor {
         NoParentCategoryException.class,
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
-        MembershipNotFoundException.class})
+        MembershipNotFoundException.class,
+        AlreadyAddedCategoryNameException.class})
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
 
