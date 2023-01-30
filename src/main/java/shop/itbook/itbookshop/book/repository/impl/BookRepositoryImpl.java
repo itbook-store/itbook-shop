@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.book.repository.impl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.entity.Book;
@@ -46,7 +47,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
      * {@inheritDoc}
      */
     @Override
-    public BookDetailsResponseDto findBook(Long productNo) {
+    public Optional<BookDetailsResponseDto> findBook(Long productNo) {
         QBook qBook = QBook.book;
         QProduct qProduct = QProduct.product;
 
@@ -61,6 +62,6 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,
                     qBook.publisherName, qBook.authorName))
                 .where(qProduct.productNo.eq(productNo));
-        return book.fetchOne();
+        return Optional.ofNullable(book.fetchOne());
     }
 }
