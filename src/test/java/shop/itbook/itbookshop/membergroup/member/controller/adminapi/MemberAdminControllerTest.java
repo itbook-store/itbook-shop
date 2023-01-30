@@ -3,10 +3,11 @@ package shop.itbook.itbookshop.membergroup.member.controller.adminapi;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,13 +17,21 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
+import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
+import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
+import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
+import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
+import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
 import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
@@ -36,42 +45,50 @@ class MemberAdminControllerTest {
     MockMvc mvc;
 
     @Autowired
-    private MemberAdminController memberAdminController;
-
-    @MockBean
-    MemberAdminService memberAdminService;
+    MemberAdminController memberAdminController;
 
     @Autowired
     ObjectMapper objectMapper;
 
+    @MockBean
+    MemberAdminService memberAdminService;
+
+    @MockBean
+    MemberStatusAdminService memberStatusAdminService;
+
+    @MockBean
+    MemberRepository memberRepository;
+
+    @MockBean
+    MembershipRepository membershipRepository;
+
+    @MockBean
+    MemberStatusRepository memberStatusRepository;
+
     Membership membership;
-    MemberStatus memberStatus;
+    MemberStatus normalMemberStatus;
     Member member1;
     Member member2;
 
     @BeforeEach
     void setup() {
-        membership =
-            Membership.builder().membershipGrade("white").membershipStandardAmount(100_000L)
-                .membershipPoint(10_000L).build();
+        membership = MembershipDummy.getMembership();
+        membershipRepository.save(membership);
 
-        memberStatus = MemberStatus.builder().memberStatusEnum(MemberStatusEnum.NORMAL).build();
+        normalMemberStatus = MemberStatusDummy.getNormalMemberStatus();
+        memberStatusRepository.save(normalMemberStatus);
 
-        member1 =
-            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user1")
-                .nickname("유저1").name("홍길동").isMan(true).birth(
-                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("1234").phoneNumber("010-0000-0000")
-                .email("user1@test1.com").memberCreatedAt(LocalDateTime.now()).build();
+        member1 = MemberDummy.getMember1();
+        member1.setMembership(membership);
+        member1.setMemberStatus(normalMemberStatus);
 
-        member2 =
-            Member.builder().membership(membership).memberStatus(memberStatus).memberId("user2")
-                .nickname("유저2").name("김철수").isMan(true).birth(
-                    LocalDateTime.of(2000, 1, 1, 0, 0, 0)).password("2345").phoneNumber("010-1000-0000")
-                .email("user2@test.com").memberCreatedAt(LocalDateTime.now()).build();
+        member2 = MemberDummy.getMember2();
+        member2.setMembership(membership);
+        member2.setMemberStatus(normalMemberStatus);
     }
 
     @Test
-    @DisplayName("특정 멤버 조회 테스트")
+    @DisplayName("멤버 개별 조회 테스트")
     void memberDetails() throws Exception {
 
         given(memberAdminService.findMember(any())).willReturn(MemberTransfer.entityToDto(member1));
@@ -96,18 +113,19 @@ class MemberAdminControllerTest {
     }
 
     @Test
-    @DisplayName("멤버 저장 테스트")
-    void memberSave() {
-    }
-
-    @Test
     @DisplayName("멤버 수정 테스트")
-    void memberUpdate() {
+    void memberUpdate() throws Exception {
 
-    }
+        MemberStatusUpdateAdminRequestDto memberStatusUpdateAdminRequestDto =
+            new MemberStatusUpdateAdminRequestDto();
+        ReflectionTestUtils.setField(memberStatusUpdateAdminRequestDto, "memberStatusName", "차단회원");
+        ReflectionTestUtils.setField(memberStatusUpdateAdminRequestDto, "statusChangedReason",
+            "악성 민원");
 
-    @Test
-    @DisplayName("멤버 삭제 테스트")
-    void memberDelete() {
+        mvc.perform(put("/api/admin/members/1").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(memberStatusUpdateAdminRequestDto)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }
