@@ -6,11 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.resultmessageenum.DeliveryResultMessageEnum;
@@ -40,7 +38,7 @@ public class DeliveryAdminController {
         CommonResponseBody<List<DeliveryWithStatusResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage()),
                 deliveryService.findDeliveryListWithStatus()
             );
 
@@ -58,7 +56,7 @@ public class DeliveryAdminController {
         CommonResponseBody<List<DeliveryWithStatusResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage()),
                 deliveryService.findDeliveryListWithStatusWait()
             );
 
@@ -76,7 +74,7 @@ public class DeliveryAdminController {
         CommonResponseBody<List<DeliveryDetailResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage()),
                 deliveryService.sendDeliveryListWithStatusWait()
             );
 

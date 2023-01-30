@@ -74,9 +74,9 @@ class MemberDestinationRepositoryTest {
         memberDestination.setMember(member);
         memberDestinationRepository.save(memberDestination);
 
-        assertThat(memberDestinationRepository.findMemberDestinationsByMember_MemberNo(
+        assertThat(memberDestinationRepository.findMemberDestinationResponseDtoByMemberNo(
                 member.getMemberNo()).get(1)
-            .getRecipientAddressDetails()).isEqualTo(
+            .getDetailAddress()).isEqualTo(
             memberDestination.getRecipientAddressDetails());
     }
 }
