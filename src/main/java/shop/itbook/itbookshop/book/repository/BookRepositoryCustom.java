@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.book.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 
@@ -28,5 +29,5 @@ public interface BookRepositoryCustom {
      * @return 조회한 도서의 상세정보를 반환합니다.
      * @author 이하늬
      */
-    BookDetailsResponseDto findBook(Long productNo);
+    Optional<BookDetailsResponseDto> findBook(Long productNo);
 }
