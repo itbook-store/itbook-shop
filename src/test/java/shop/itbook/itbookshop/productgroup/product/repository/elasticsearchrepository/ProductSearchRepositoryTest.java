@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepository;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +47,8 @@ class ProductSearchRepositoryTest {
     @Test
     void productSaveTest() {
         productSearchRepository.save(elasticProduct);
-        Optional<SearchProduct> result = productSearchRepository.findById(elasticProduct.getProductNo());
+        Optional<SearchProduct> result =
+            productSearchRepository.findById(elasticProduct.getProductNo());
         assertThat(result).isPresent();
         assertThat(result.get()).usingRecursiveComparison().isEqualTo(elasticProduct);
 
