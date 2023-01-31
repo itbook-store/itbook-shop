@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.book.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -28,13 +27,9 @@ import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.impl.BookServiceImpl;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
-import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
-import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
-import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
+import shop.itbook.itbookshop.fileservice.FileService;
 
 /**
  * @author 이하늬

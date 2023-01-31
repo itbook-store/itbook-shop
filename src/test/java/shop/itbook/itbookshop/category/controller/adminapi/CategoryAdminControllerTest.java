@@ -30,7 +30,7 @@ import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.service.CategoryService;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
  * @author 최겸준
