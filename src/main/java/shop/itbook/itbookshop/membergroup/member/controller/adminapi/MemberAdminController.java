@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
@@ -143,5 +144,21 @@ public class MemberAdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
+
+    @GetMapping("/{memberId}/block")
+    public ResponseEntity<CommonResponseBody<MemberExceptPwdBlockResponseDto>> blockMemberDetails(
+        @PathVariable("memberId") String memberId
+    ) {
+
+        CommonResponseBody<MemberExceptPwdBlockResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                memberAdminService.findBlockMember(memberId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+
+    }
+
 
 }
