@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
@@ -28,6 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
 import shop.itbook.itbookshop.book.service.BookService;
+import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
@@ -131,7 +133,7 @@ class ProductServiceTest {
 
         then(mockProductRepository).should().deleteById(1L);
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-        Assertions.assertThat(mockProductCategoryService.findCategoryList(pageable, 1L)).isEmpty();
+        Assertions.assertThat(mockProductCategoryService.findCategoryList(pageable, 1L)).isNull();
     }
 
     @Test
