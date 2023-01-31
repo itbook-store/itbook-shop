@@ -10,6 +10,7 @@ import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
+import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -38,7 +39,8 @@ public class RestControllerAdvisor {
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
         MembershipNotFoundException.class,
-        InvalidAuthRequestException.class
+        InvalidAuthRequestException.class,
+        AlreadyAddedCategoryNameException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
