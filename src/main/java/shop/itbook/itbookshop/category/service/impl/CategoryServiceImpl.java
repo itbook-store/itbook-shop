@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -71,7 +72,20 @@ public class CategoryServiceImpl implements CategoryService {
         settingParentCategory(categoryRequestDto.getParentCategoryNo(), category);
         categoryRepository.modifyChildCategorySequence(category.getParentCategory().getCategoryNo(),
             1);
-        category = categoryRepository.save(category);
+
+        try {
+            category = categoryRepository.save(category);
+        } catch (DataIntegrityViolationException e) {
+            Throwable rootCause = e.getRootCause();
+            String message = rootCause.getMessage();
+
+            if (message.contains("category.parentNoAndCategoryName")) {
+                throw new AlreadyAddedCategoryNameException();
+            }
+
+            throw e;
+        }
+
 
         return category.getCategoryNo();
     }
