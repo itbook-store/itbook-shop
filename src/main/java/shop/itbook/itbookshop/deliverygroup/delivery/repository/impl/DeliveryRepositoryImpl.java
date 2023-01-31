@@ -25,7 +25,10 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.QDelive
  */
 public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
     CustomDeliveryRepository {
-    
+
+    /**
+     * Instantiates a new Delivery repository.
+     */
     public DeliveryRepositoryImpl() {
         super(Delivery.class);
     }
