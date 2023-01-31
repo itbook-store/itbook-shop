@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -115,5 +116,21 @@ public class MemberAdminServiceImpl implements MemberAdminService {
         return memberRepository.findBlockMemberByMemberId(memberId);
     }
 
+    @Override
+    public MemberCountResponseDto memberCount() {
 
+        return memberRepository.MemberCountBy();
+    }
+
+    @Override
+    public MemberCountResponseDto blockMemberCount() {
+
+        return memberRepository.blockMemberCountBy();
+    }
+
+    @Override
+    public MemberCountResponseDto withdrawMemberCount() {
+
+        return memberRepository.withdrawMemberCountBy();
+    }
 }

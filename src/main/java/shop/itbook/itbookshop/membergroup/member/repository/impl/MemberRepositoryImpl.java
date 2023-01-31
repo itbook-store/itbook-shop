@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
@@ -247,5 +248,30 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                         .and(qmember.memberId.eq(memberId)))
                     .groupBy(qmember.memberNo))
             ).orderBy(qmember.memberNo.desc()).fetchOne();
+    }
+
+    @Override
+    public MemberCountResponseDto MemberCountBy() {
+        return jpaQueryFactory.select(
+            Projections.constructor(MemberCountResponseDto.class, qmember.count())
+        ).from(qmember).fetchFirst();
+    }
+
+    @Override
+    public MemberCountResponseDto blockMemberCountBy() {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberCountResponseDto.class, qmember.count())
+            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("차단회원"))
+            .fetchOne();
+    }
+
+    @Override
+    public MemberCountResponseDto withdrawMemberCountBy() {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberCountResponseDto.class, qmember.count())
+            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"))
+            .fetchOne();
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
@@ -92,4 +93,10 @@ public interface CustomMemberRepository {
     List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
 
     MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId);
+
+    MemberCountResponseDto MemberCountBy();
+
+    MemberCountResponseDto blockMemberCountBy();
+
+    MemberCountResponseDto withdrawMemberCountBy();
 }
