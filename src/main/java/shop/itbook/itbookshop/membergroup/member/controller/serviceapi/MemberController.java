@@ -21,6 +21,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponse
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberSuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 
@@ -132,25 +133,31 @@ public class MemberController {
     }
 
     @PostMapping("/oauth/login/find")
-    public ResponseEntity<CommonResponseBody<Boolean>> OauthLogin(
+    public ResponseEntity<CommonResponseBody<MemberSuccessfulResponseDto>> OauthLogin(
         @RequestBody MemberOauthLoginRequestDto requestDto) {
 
-        // TODO 바로 Boolean 값이 아니라 DTO로 보내기
+        MemberSuccessfulResponseDto memberSuccessfulResponseDto = new MemberSuccessfulResponseDto();
+
         if (memberService.checkMemberOauthEmailExists(requestDto.getEmail())) {
+            memberSuccessfulResponseDto.setIsSuccessful(false);
+
             return ResponseEntity.ok()
                 .body(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
-                    MemberResultMessageEnum.MEMBER_EMAIL_EXISTS_TRUE_MESSAGE.getSuccessMessage()
-                ), false));
+                    MemberResultMessageEnum.MEMBER_EMAIL_EXISTS_TRUE_MESSAGE.getSuccessMessage()),
+                    memberSuccessfulResponseDto
+                ));
         }
 
         if (!memberService.checkMemberOauthInfoExists(requestDto.getEmail())) {
             memberService.socialMemberAdd(requestDto.getEmail(), requestDto.getEncodedEmail());
         }
 
+        memberSuccessfulResponseDto.setIsSuccessful(true);
+
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_SOCIAL_LOGIN_MESSAGE.getSuccessMessage()
-            ), true
+            ), memberSuccessfulResponseDto
         ));
 
     }
