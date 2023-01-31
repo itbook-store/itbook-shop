@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
+import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.fileservice.init.TokenManager;
 
 /**
  * @author 이하늬

@@ -3,7 +3,10 @@ package shop.itbook.itbookshop.productgroup.productcategory.repository.impl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.entity.QCategory;
@@ -30,13 +33,14 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> getProductListWithCategoryNo(Integer categoryNo) {
+    public Page<ProductDetailsResponseDto> getProductListWithCategoryNo(Pageable pageable,
+                                                                        Integer categoryNo) {
         QProductCategory qProductCategory = QProductCategory.productCategory;
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
         QCategory qCategory = QCategory.category;
 
-        JPQLQuery<ProductDetailsResponseDto> productList =
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
             from(qProductCategory)
                 .innerJoin(qProductCategory.category, qCategory)
                 .innerJoin(qProductCategory.product, qProduct)
@@ -50,20 +54,26 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName))
                 .where(qCategory.categoryNo.eq(categoryNo));
 
-        return productList.fetch();
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> productList.size());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryDetailsResponseDto> getCategoryListWithProductNo(Long productNo) {
+    public Page<CategoryDetailsResponseDto> getCategoryListWithProductNo(Pageable pageable,
+                                                                         Long productNo) {
         QProductCategory qProductCategory = QProductCategory.productCategory;
         QCategory qCategory = QCategory.category;
         QProduct qProduct = QProduct.product;
         QCategory qParentCategory = new QCategory("parentCategory");
 
-        JPQLQuery<CategoryDetailsResponseDto> categoryList =
+        JPQLQuery<CategoryDetailsResponseDto> categoryListQuery =
             from(qProductCategory)
                 .innerJoin(qProductCategory.product, qProduct)
                 .innerJoin(qProductCategory.category, qCategory)
@@ -76,6 +86,11 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qParentCategory.sequence))
                 .where(qProductCategory.product.productNo.eq(productNo));
 
-        return categoryList.fetch();
+        List<CategoryDetailsResponseDto> categoryList = categoryListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(categoryList, pageable,
+            () -> categoryList.size());
     }
 }

@@ -1,7 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.repository;
 
-import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 
@@ -19,7 +20,15 @@ public interface ProductRepositoryCustom {
      * @return 모든 상품 리스트를 반환합니다.
      * @author 이하늬
      */
-    List<ProductDetailsResponseDto> findProductList();
+    Page<ProductDetailsResponseDto> findProductListAdmin(Pageable pageable);
+
+    /**
+     * 노출여부가 true인 모든 상품들의 상세 정보를 담아 리스트로 반환하는 기능을 담당합니다.
+     *
+     * @return 사용자가 상품을 조회하기 위해 노출 여부가 false인 모든 상품 리스트를 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductDetailsResponseDto> findProductListUser(Pageable pageable);
 
     /**
      * 상품 번호로 상품을 조회해 상품의 상세정보를 담아 반환하는 기능을 담당합니다.

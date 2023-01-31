@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.coupon.controller.adminapi;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -12,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,14 +18,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.itbook.itbookshop.category.controller.adminapi.CategoryAdminController;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
- * 
- * 
  * @author 송다혜
  * @since 1.0
  */
@@ -57,9 +52,12 @@ class CouponAdminControllerTest {
         ReflectionTestUtils.setField(couponRequestDto, "amount", 1000L);
         ReflectionTestUtils.setField(couponRequestDto, "percent", 0);
         ReflectionTestUtils.setField(couponRequestDto, "point", 0L);
-        ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt", LocalDateTime.now().toString());
-        ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt", LocalDateTime.now().toString());
-        ReflectionTestUtils.setField(couponRequestDto, "couponModifiedAt", LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt",
+            LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt",
+            LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponModifiedAt",
+            LocalDateTime.now().toString());
         ReflectionTestUtils.setField(couponRequestDto, "code", UUID.randomUUID().toString());
         ReflectionTestUtils.setField(couponRequestDto, "isReserved", false);
 

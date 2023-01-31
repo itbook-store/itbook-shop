@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.adaptor;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class DeliveryAdaptor<T extends DeliveryDetailResponseDto> {
      * @author 정재원
      */
     public List<T> postDeliveryList(
-        String uri, HttpEntity<List<DeliveryServerRequestDto>> http) {
+        URI uri, HttpEntity<List<DeliveryServerRequestDto>> http) {
 
         ResponseEntity<CommonResponseBody<List<T>>> exchange =
             restTemplate.exchange(uri, HttpMethod.POST, http,

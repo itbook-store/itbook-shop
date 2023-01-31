@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +24,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
@@ -32,9 +32,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
-import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
+import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 @WebMvcTest(MemberAdminController.class)
 class MemberAdminControllerTest {
@@ -64,6 +62,9 @@ class MemberAdminControllerTest {
 
     @MockBean
     MemberStatusRepository memberStatusRepository;
+
+    @MockBean
+    MemberRoleService memberRoleService;
 
     Membership membership;
     MemberStatus normalMemberStatus;
