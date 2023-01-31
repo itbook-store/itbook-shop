@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.membergroup.member.dto.response;
+package shop.itbook.itbookshop.common.response;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +9,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class MemberSuccessfulResponseDto {
+public class SuccessfulResponseDto {
+
     private Boolean isSuccessful;
+
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberOauthLoginRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -21,7 +22,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponse
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberSuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 
@@ -133,18 +133,18 @@ public class MemberController {
     }
 
     @PostMapping("/oauth/login/find")
-    public ResponseEntity<CommonResponseBody<MemberSuccessfulResponseDto>> OauthLogin(
+    public ResponseEntity<CommonResponseBody<SuccessfulResponseDto>> OauthLogin(
         @RequestBody MemberOauthLoginRequestDto requestDto) {
 
-        MemberSuccessfulResponseDto memberSuccessfulResponseDto = new MemberSuccessfulResponseDto();
+        SuccessfulResponseDto successfulResponseDto = new SuccessfulResponseDto();
 
         if (memberService.checkMemberOauthEmailExists(requestDto.getEmail())) {
-            memberSuccessfulResponseDto.setIsSuccessful(false);
+            successfulResponseDto.setIsSuccessful(false);
 
             return ResponseEntity.ok()
                 .body(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_EMAIL_EXISTS_TRUE_MESSAGE.getSuccessMessage()),
-                    memberSuccessfulResponseDto
+                    successfulResponseDto
                 ));
         }
 
@@ -152,12 +152,12 @@ public class MemberController {
             memberService.socialMemberAdd(requestDto.getEmail(), requestDto.getEncodedEmail());
         }
 
-        memberSuccessfulResponseDto.setIsSuccessful(true);
+        successfulResponseDto.setIsSuccessful(true);
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_SOCIAL_LOGIN_MESSAGE.getSuccessMessage()
-            ), memberSuccessfulResponseDto
+            ), successfulResponseDto
         ));
 
     }
