@@ -156,12 +156,14 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByMemberIdAndIsSocial(email);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Long socialMemberAdd(String email, String encodedEmail) {
 
+        // TODO Membership 서비스에서 멤버십 받아오기
         Membership membership = membershipAdminService.findMembership(428);
 
+        // TODO MemberStatus 서비스에서 멤버상태 받아오기
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
             memberStatusAdminService.findMemberStatusWithMemberStatusNo(392));
 

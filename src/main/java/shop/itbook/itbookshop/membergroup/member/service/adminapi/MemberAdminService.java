@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 
 import java.util.List;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 
 /**
@@ -57,5 +59,13 @@ public interface MemberAdminService {
     List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber);
 
     List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
+
+    MemberExceptPwdBlockResponseDto findBlockMember(String memberId);
+
+    MemberCountResponseDto memberCount();
+
+    MemberCountResponseDto blockMemberCount();
+
+    MemberCountResponseDto withdrawMemberCount();
 
 }
