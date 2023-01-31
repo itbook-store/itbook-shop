@@ -50,5 +50,10 @@ public class CategoryCouponServiceImpl implements CategoryCouponService {
         categoryCouponRepository.deleteById(couponNo);
     }
 
+    @Override
+    public Page<CategoryCouponListDto> findCategoryCouponList(Pageable pageable) {
+
+        return categoryCouponRepository.findCategoryCouponList(pageable);
+    }
 
 }

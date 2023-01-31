@@ -1,0 +1,7 @@
+GET /api/coupon/category-coupon
+Host: localhost:8082
+Content-Type: application/json
+
+
+
+
