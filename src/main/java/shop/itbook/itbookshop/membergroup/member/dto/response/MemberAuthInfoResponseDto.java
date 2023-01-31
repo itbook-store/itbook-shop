@@ -17,9 +17,7 @@ import lombok.NoArgsConstructor;
 public class MemberAuthInfoResponseDto {
 
     private Long memberNo;
-
     private String memberId;
-
     private String password;
 
 

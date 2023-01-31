@@ -1,11 +1,14 @@
 package shop.itbook.itbookshop.membergroup.member.repository.impl;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
@@ -221,19 +224,54 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }
 
     @Override
-    public List<MemberExceptPwdBlockResponseDto> findBlockMemberList() {
-        /*return jpaQueryFactory.select(
-            Projections.constructor(MemberExceptPwdBlockResponseDto.class, qmember.memberNo,
-                qmember.memberId, qmembership.membershipGrade,
-                qmemberStatus.memberStatusEnum.stringValue(), qmember.nickname, qmember.name,
-                qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                qmember.memberCreatedAt, qMemberStatusHistory.statusChangedReason,
-                qMemberStatusHistory.memberStatusHistoryCreatedAt)).from(qmember)
+    public MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId) {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdBlockResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(), qmember.nickname, qmember.name,
+                    qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
+                    qmember.memberCreatedAt, qMemberStatusHistory.statusChangedReason,
+                    qMemberStatusHistory.memberStatusHistoryCreatedAt)).from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .join(qMemberStatusHistory.member, qmember)
-            .where().in());*/
+            .join(qMemberStatusHistory)
+            .on(qmember.memberNo.eq(qMemberStatusHistory.member.memberNo))
+            .where(Expressions.list(qmember.memberNo,
+                qMemberStatusHistory.memberStatusHistoryCreatedAt).in(
+                JPAExpressions.select(qmember.memberNo,
+                        qMemberStatusHistory.memberStatusHistoryCreatedAt.max())
+                    .from(qmember)
+                    .join(qmember.memberStatus, qmemberStatus)
+                    .join(qMemberStatusHistory)
+                    .on(qmember.memberNo.eq(qMemberStatusHistory.member.memberNo))
+                    .where(qmemberStatus.memberStatusEnum.stringValue().eq("차단회원")
+                        .and(qmember.memberId.eq(memberId)))
+                    .groupBy(qmember.memberNo))
+            ).orderBy(qmember.memberNo.desc()).fetchOne();
+    }
 
-        return null;
+    @Override
+    public MemberCountResponseDto MemberCountBy() {
+        return jpaQueryFactory.select(
+            Projections.constructor(MemberCountResponseDto.class, qmember.count())
+        ).from(qmember).fetchFirst();
+    }
+
+    @Override
+    public MemberCountResponseDto blockMemberCountBy() {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberCountResponseDto.class, qmember.count())
+            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("차단회원"))
+            .fetchOne();
+    }
+
+    @Override
+    public MemberCountResponseDto withdrawMemberCountBy() {
+        return jpaQueryFactory.select(
+                Projections.constructor(MemberCountResponseDto.class, qmember.count())
+            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"))
+            .fetchOne();
     }
 }
