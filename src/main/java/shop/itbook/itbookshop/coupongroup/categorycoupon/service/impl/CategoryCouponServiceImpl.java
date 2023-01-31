@@ -28,18 +28,15 @@ public class CategoryCouponServiceImpl implements CategoryCouponService {
 
     private final CategoryCouponRepository categoryCouponRepository;
     private final CategoryRepository categoryRepository;
-    private final CouponRepository couponRepository;
 
     @Override
     @Transactional
     public Long addCategoryCoupon(CategoryCouponRequestDto couponRequestDto) {
 
-        Coupon coupon = couponRepository.findById(couponRequestDto.getCouponNo())
-            .orElseThrow(CouponNotFoundException::new);
         Category category = categoryRepository.findById(couponRequestDto.getCategoryNo())
             .orElseThrow(CategoryNotFoundException::new);
         CategoryCoupon categoryCoupon =
-            new CategoryCoupon(couponRequestDto.getCouponNo(), coupon, category);
+            new CategoryCoupon(couponRequestDto.getCouponNo(), category);
         return categoryCouponRepository.save(categoryCoupon).getCouponNo();
     }
 

@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.coupongroup.categorycoupon.controller.adminapi;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 
@@ -33,10 +35,20 @@ public class CategoryCouponController {
     private final CategoryCouponService categoryCouponService;
 
     @GetMapping
-    public List<CategoryCouponListDto> findCategoryCouponList(@PageableDefault
-                                                                  Pageable pageable) {
+    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> findCategoryCouponList(
+        @PageableDefault Pageable pageable) {
 
-        return categoryCouponService.findCategoryCouponList(pageable).getContent();
+        List<CouponListResponseDto> couponList =
+            categoryCouponService.findCategoryCouponList(pageable).getContent()
+                .stream().map(CategoryCouponListDto::getCoupon).collect(Collectors.toList());
+
+        CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                couponList);
+
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 
     @PostMapping("/add")
@@ -44,7 +56,8 @@ public class CategoryCouponController {
         @Valid @RequestBody CategoryCouponRequestDto categoryCouponRequestDto) {
 
         CouponNoResponseDto couponNoResponseDto =
-            new CouponNoResponseDto(categoryCouponService.addCategoryCoupon(categoryCouponRequestDto));
+            new CouponNoResponseDto(
+                categoryCouponService.addCategoryCoupon(categoryCouponRequestDto));
 
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
