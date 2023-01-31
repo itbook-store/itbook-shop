@@ -18,6 +18,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlo
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 
 /**
  * 관리자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -31,6 +32,8 @@ import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminSer
 public class MemberAdminController {
 
     private final MemberAdminService memberAdminService;
+
+    private final MemberRoleService memberRoleService;
 
     /**
      * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.

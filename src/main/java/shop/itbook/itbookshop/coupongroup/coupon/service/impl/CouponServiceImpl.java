@@ -15,6 +15,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
 
 /**
+ * 쿠폰의
  * @author 송다혜
  * @since 1.0
  */

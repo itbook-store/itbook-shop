@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 /**
  * 쿠폰에 대한 엔터티입니다.
@@ -71,6 +70,7 @@ public class Coupon {
     @Column(name = "is_reserved", nullable = false)
     private Boolean isReserved;
 
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Coupon(String name, Long amount, Integer percent, Long point, Long standardAmount,
                   Long maxDiscountAmount, LocalDateTime couponCreatedAt,

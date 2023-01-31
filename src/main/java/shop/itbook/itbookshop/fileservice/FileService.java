@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice;
+package shop.itbook.itbookshop.fileservice;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.fileservice.init.Token;
+import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 
 /**
@@ -39,17 +40,23 @@ public class FileService {
      */
     public String uploadFile(MultipartFile multipartFile,
                              String folderPath) {
-        String tokenId = tokenInterceptor.getTokenFields("tokenId");
+        Token token = tokenInterceptor.getToken();
+
+        String tokenId = token.getId();
+
         ObjectService objectService = new ObjectService(storageUrl, tokenId);
+        
         String fileName = multipartFile.getOriginalFilename();
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
         String savedName = UUID.randomUUID() + "." + ext;
+
         try {
             InputStream inputStream = multipartFile.getInputStream();
             return objectService.uploadObject(containerName, folderPath, savedName, inputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return multipartFile.getOriginalFilename();
     }
 

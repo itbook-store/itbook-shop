@@ -2,6 +2,9 @@ package shop.itbook.itbookshop.productgroup.product.controller.serviceapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCategoryResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
@@ -27,7 +31,6 @@ import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCatego
 @RequiredArgsConstructor
 public class ProductServiceController {
     private final ProductService productService;
-    private final BookService bookService;
     private final ProductCategoryService productCategoryService;
 
 
@@ -37,36 +40,17 @@ public class ProductServiceController {
      * @return 노출 여부로의 필터링 여부에 따라 조회한 상품 리스트를 response dto에 담아 반환합니다.
      * @author 이하늬
      */
-    @GetMapping()
-    public ResponseEntity<CommonResponseBody<List<ProductDetailsResponseDto>>> productList(
-        @RequestParam Boolean isFiltered) {
+    @GetMapping
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
+        @PageableDefault Pageable pageable) {
 
-        List<ProductDetailsResponseDto> productList = productService.findProductList(isFiltered);
+        Page<ProductDetailsResponseDto> productList = productService.findProductListUser(pageable);
 
-        CommonResponseBody<List<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.GET_SUCCESS.getMessage()), productList);
-
-        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
-    }
-
-    /**
-     * 모든 도서 조회를 요청하는 메서드입니다.
-     *
-     * @return 노출 여부로의 필터링 여부에 따라 조회한 도서 리스트를 response dto에 반환합니다.
-     * @author 이하늬
-     */
-    @GetMapping("/books")
-    public ResponseEntity<CommonResponseBody<List<BookDetailsResponseDto>>> bookList(
-        @RequestParam Boolean isFiltered) {
-
-        List<BookDetailsResponseDto> bookList = bookService.findBookList(isFiltered);
-
-        CommonResponseBody<List<BookDetailsResponseDto>> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.ADD_SUCCESS.getMessage()), bookList);
+                    ProductResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse(productList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
@@ -80,16 +64,17 @@ public class ProductServiceController {
      * @author 이하늬
      */
     @GetMapping(params = "categoryNo")
-    public ResponseEntity<CommonResponseBody<List<ProductDetailsResponseDto>>> productList(
-        @RequestParam Integer categoryNo) {
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
+        @PageableDefault Pageable pageable, @RequestParam Integer categoryNo) {
 
-        List<ProductDetailsResponseDto> productList =
-            productCategoryService.findProductList(categoryNo);
+        Page<ProductDetailsResponseDto> productList =
+            productCategoryService.findProductList(pageable, categoryNo);
 
-        CommonResponseBody<List<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()), productList);
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(productList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
@@ -103,16 +88,17 @@ public class ProductServiceController {
      * @author 이하늬
      */
     @GetMapping(params = "productNo")
-    public ResponseEntity<CommonResponseBody<List<CategoryDetailsResponseDto>>> productList(
-        @RequestParam Long productNo) {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryDetailsResponseDto>>> productList(
+        @PageableDefault Pageable pageable, @RequestParam Long productNo) {
 
-        List<CategoryDetailsResponseDto> categoryList =
-            productCategoryService.findCategoryList(productNo);
+        Page<CategoryDetailsResponseDto> categoryList =
+            productCategoryService.findCategoryList(pageable, productNo);
 
-        CommonResponseBody<List<CategoryDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<CategoryDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()), categoryList);
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(categoryList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

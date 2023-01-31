@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
@@ -61,7 +63,7 @@ class ProductCategoryRepositoryTest {
 
         Product savedProduct = productRepository.save(dummyProduct);
         Category savedSubCategory = categoryRepository.save(dummySubCategory);
-        
+
         dummyProductCategory = new ProductCategory(savedProduct, savedSubCategory);
         productCategoryRepository.save(dummyProductCategory);
 
@@ -82,9 +84,10 @@ class ProductCategoryRepositoryTest {
     @Test
     @DisplayName("카테고리 번호에 해당하는 모든 상품 리스트 조회 성공 테스트")
     void Find_ProductList_ByCategoryNo() {
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
         List<ProductDetailsResponseDto> productList
-            = productCategoryRepository.getProductListWithCategoryNo(
-            dummySubCategory.getCategoryNo());
+            = productCategoryRepository.getProductListWithCategoryNo(pageable,
+            dummySubCategory.getCategoryNo()).getContent();
         ProductDetailsResponseDto actual = productList.get(0);
 
         Assertions.assertThat(productList).hasSize(1);
@@ -94,10 +97,12 @@ class ProductCategoryRepositoryTest {
     @Test
     @DisplayName("상품 번호에 해당하는 모든 카테고리 리스트 조회 성공 테스트")
     void Find_CategoryList_ByProductNo() {
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
 
         Long productNo = dummyProduct.getProductNo();
         List<CategoryDetailsResponseDto> categoryList
-            = productCategoryRepository.getCategoryListWithProductNo(productNo);
+            = productCategoryRepository.getCategoryListWithProductNo(pageable, productNo)
+            .getContent();
         CategoryDetailsResponseDto actual = categoryList.get(0);
 
         Assertions.assertThat(categoryList).hasSize(1);

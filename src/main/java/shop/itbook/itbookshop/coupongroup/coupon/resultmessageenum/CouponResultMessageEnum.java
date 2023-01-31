@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum;
 import lombok.Getter;
 
 /**
+ * 쿠폰의 결과 메세지를 담은 enum 클레스입니다.
  * @author 송다혜
  * @since 1.0
  */

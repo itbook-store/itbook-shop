@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice;
+package shop.itbook.itbookshop.fileservice;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

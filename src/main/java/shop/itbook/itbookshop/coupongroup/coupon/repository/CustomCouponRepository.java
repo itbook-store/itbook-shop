@@ -5,10 +5,18 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 
 /**
+ * 쿼리 dsl 을 처리하기 위한 레포지토리 인터페이스입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
 @NoRepositoryBean
 public interface CustomCouponRepository {
+
+    /**
+     * 쿠폰의 목록을 반환하기 위한 클레스입니다..
+     *
+     * @return 쿠폰목록입니다.
+     */
     List<CouponListResponseDto> findCouponList();
 }
