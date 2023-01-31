@@ -4,6 +4,8 @@ import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductSe
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
@@ -81,17 +83,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
      * {@inheritDoc}
      */
     @Override
-    public List<CategoryDetailsResponseDto> findCategoryList(Long productNo) {
-        return productCategoryRepository.getCategoryListWithProductNo(productNo);
+    public Page<CategoryDetailsResponseDto> findCategoryList(Pageable pageable, Long productNo) {
+        return productCategoryRepository.getCategoryListWithProductNo(pageable, productNo);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> findProductList(Integer categoryNo) {
-        List<ProductDetailsResponseDto> productList =
-            productCategoryRepository.getProductListWithCategoryNo(categoryNo);
+    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, Integer categoryNo) {
+        Page<ProductDetailsResponseDto> productList =
+            productCategoryRepository.getProductListWithCategoryNo(pageable, categoryNo);
         for (ProductDetailsResponseDto product : productList) {
             setExtraFields(product);
         }

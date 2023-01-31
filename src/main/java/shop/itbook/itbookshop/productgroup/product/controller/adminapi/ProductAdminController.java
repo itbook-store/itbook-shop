@@ -2,6 +2,9 @@ package shop.itbook.itbookshop.productgroup.product.controller.adminapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +21,7 @@ import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
@@ -39,8 +43,77 @@ import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearch
 public class ProductAdminController {
 
     private final ProductService productService;
-    private final BookService bookService;
+    private final ProductCategoryService productCategoryService;
     private final ProductSearchService productSearchService;
+
+    /**
+     * 모든 상품 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 상품 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
+        @PageableDefault Pageable pageable) {
+
+        Page<ProductDetailsResponseDto> productList = productService.findProductListAdmin(pageable);
+
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse(productList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 카테고리별로 상품 조회를 요청하는 메서드입니다.
+     * 쿼리스트링으로 카테고리 번호가 파라미터로 들어올 시, 해당 카테고리 번호의 상품들을 조회합니다.
+     *
+     * @param categoryNo 조회할 카테고리 번호입니다.
+     * @return 카테고리 번호에 해당하는 상품 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping(params = "categoryNo")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByCategoryNo(
+        @PageableDefault Pageable pageable, @RequestParam Integer categoryNo) {
+
+        Page<ProductDetailsResponseDto> productList =
+            productCategoryService.findProductList(pageable, categoryNo);
+
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(productList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 상품별로 카테고리 조회를 요청하는 메서드입니다.
+     * 쿼리스트링으로 상품 번호가 파라미터로 들어올 시, 해당 상품의 카테고리들을 조회합니다.
+     *
+     * @param productNo 조회할 상품 번호입니다.
+     * @return 상품 번호에 해당하는 상품의 카테고리 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping(params = "productNo")
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryDetailsResponseDto>>> productListFilteredByProductNo(
+        @PageableDefault Pageable pageable, @RequestParam Long productNo) {
+
+        Page<CategoryDetailsResponseDto> categoryList =
+            productCategoryService.findCategoryList(pageable, productNo);
+
+        CommonResponseBody<PageResponse<CategoryDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(categoryList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
 
     /**
      * 상품 및 도서 등록을 요청하는 메서드입니다.
@@ -48,7 +121,7 @@ public class ProductAdminController {
      * @param requestDto 상품(도서) 등록을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @param thumbnails the thumbnails
      * @param ebook      the ebook
-     * @return 성공 시 성공 메세지와 등록한 상품의 상품 번호를 response dto에 담아 반환합니다.
+     * @return 성공 시 성공 메세지와 등록한 상품의 상품 번호를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @PostMapping
@@ -78,7 +151,7 @@ public class ProductAdminController {
      * @param requestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @param thumbnails the thumbnails
      * @param ebook      the ebook
-     * @return 성공 시 성공 메세지를 response dto에 담아 반환합니다.
+     * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @PutMapping("/{productNo}")
@@ -103,7 +176,7 @@ public class ProductAdminController {
      * 상품 삭제를 요청하는 메서드입니다.
      *
      * @param productNo 삭제할 상품 번호입니다.
-     * @return 성공 시 성공 메세지를 response dto에 담아 반환합니다.
+     * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @DeleteMapping("/{productNo}")
@@ -122,7 +195,7 @@ public class ProductAdminController {
      * 상품 조회를 요청하는 메서드입니다.
      *
      * @param productNo 조회할 상품 번호입니다.
-     * @return 성공 시 성공 메세지와 조회한 상품의 정보를 response dto에 담아 반환합니다.
+     * @return 성공 시 성공 메세지와 조회한 상품의 정보를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @GetMapping("/{productNo}")
@@ -135,27 +208,6 @@ public class ProductAdminController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductResultMessageEnum.GET_SUCCESS.getMessage()), product);
-
-        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
-    }
-
-
-    /**
-     * 도서 상세 정보 조회를 요청하는 메서드입니다.
-     *
-     * @return 조회한 도서의 상세 정보를 response dto에 담아 반환합니다.
-     * @author 이하늬
-     */
-    @GetMapping("/books/{productNo}")
-    public ResponseEntity<CommonResponseBody<BookDetailsResponseDto>> bookDetails(
-        @PathVariable Long productNo) {
-
-        BookDetailsResponseDto book = bookService.findBook(productNo);
-
-        CommonResponseBody<BookDetailsResponseDto> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.ADD_SUCCESS.getMessage()), book);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -73,7 +76,9 @@ class ProductRepositoryTest {
     @DisplayName("모든 상품 리스트 조회 성공 테스트")
     void Find_ProductList() {
 
-        List<ProductDetailsResponseDto> productList = productRepository.findProductList();
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        Page<ProductDetailsResponseDto> productList =
+            productRepository.findProductListUser(pageable);
         Assertions.assertThat(productList).isNotEmpty();
 //        ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
 //

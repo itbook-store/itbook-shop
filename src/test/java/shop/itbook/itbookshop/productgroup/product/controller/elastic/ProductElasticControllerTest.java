@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
 /**

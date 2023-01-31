@@ -1,10 +1,10 @@
 package shop.itbook.itbookshop.productgroup.product.service.impl;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +15,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
-import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
+import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
 
         Long productNo = product.getProductNo();
-        if (parentCategory.getCategoryName().equals("도서")) {
+        if (parentCategory.getCategoryName().contains("도서")) {
             bookService.addBook(bookService.toBookRequestDto(requestDto), productNo);
         }
 
@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
         Category parentCategory =
             productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
 
-        if (parentCategory.getCategoryName().equals("도서")) {
+        if (parentCategory.getCategoryName().contains("도서")) {
             bookService.modifyBook(bookService.toBookRequestDto(requestDto), productNo);
         }
 
@@ -120,19 +120,26 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> findProductList(boolean isFiltered) {
-        List<ProductDetailsResponseDto> productList = productRepository.findProductList();
-        for (ProductDetailsResponseDto product : productList) {
-
+    public Page<ProductDetailsResponseDto> findProductListAdmin(Pageable pageable) {
+        Page<ProductDetailsResponseDto> productListAdmin =
+            productRepository.findProductListAdmin(pageable);
+        for (ProductDetailsResponseDto product : productListAdmin) {
             setExtraFields(product);
         }
-        if (isFiltered) {
-            return productList.stream()
-                .filter(product -> product.getIsExposed() == Boolean.TRUE)
-                .collect(Collectors.toList());
-        }
+        return productListAdmin;
+    }
 
-        return productList;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListUser(Pageable pageable) {
+        Page<ProductDetailsResponseDto> productListUser =
+            productRepository.findProductListUser(pageable);
+        for (ProductDetailsResponseDto product : productListUser) {
+            setExtraFields(product);
+        }
+        return productListUser;
     }
 
     public static void setExtraFields(ProductDetailsResponseDto product) {

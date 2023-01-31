@@ -1,5 +1,9 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice.init;
+package shop.itbook.itbookshop.fileservice.init;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -21,8 +25,6 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     private final TokenManager tokenManager;
     private final RedisTemplate<String, String> redisTemplate;
-    private DateTimeFormatter dateTimeFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -47,23 +49,31 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        String tokenExpires = getTokenFields("tokenExpires");
-        LocalDateTime tokenExpiresTime = LocalDateTime.parse(tokenExpires, dateTimeFormatter);
+        LocalDateTime tokenExpiresTime = getToken().getExpires();
+
         LocalDateTime fiveMinutesLater = LocalDateTime.now().plusMinutes(5);
 
         return tokenExpiresTime.isAfter(fiveMinutesLater);
     }
 
     /**
-     * 레디스에서 특정 필드 값을 가져오는 메서드입니다.
+     * 레디스에서 토큰을 가져오는 메서드입니다.
      *
-     * @param fieldName 필드 이름
      * @return 레디스에서 얻은 값을 반환합니다.
      * @author 이하늬
      */
-    public String getTokenFields(String fieldName) {
-        return (String) redisTemplate.opsForHash()
-            .get(TokenManager.TOKEN_NAME, fieldName);
+    public Token getToken() {
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        try {
+            return mapper.readValue((String) redisTemplate.opsForHash()
+                .get(TokenManager.TOKEN_NAME, "token"), Token.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -74,7 +84,7 @@ public class TokenInterceptor implements HandlerInterceptor {
      * @author 이하늬
      */
     public boolean isTokenExist() {
-        String tokenId = getTokenFields("tokenId");
+        String tokenId = getToken().getId();
         if (Objects.isNull(tokenId)) {
             return false;
         }

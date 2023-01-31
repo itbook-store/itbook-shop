@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -84,7 +83,6 @@ public class Product {
     private Book book;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-//    @JoinColumn(name = "product_no")
     private List<ProductCategory> productCategoryList;
 
     /**
