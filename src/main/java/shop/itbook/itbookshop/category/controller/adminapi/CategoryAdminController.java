@@ -1,8 +1,13 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
 import java.util.List;
+import java.util.Objects;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryNoResponseDto;
@@ -20,6 +27,7 @@ import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 
 /**
  * 관리자에 대한 요청을 받고 반환하는 컨트롤러 클래스입니다.
@@ -63,25 +71,37 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> categoryList() {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> categoryList(
+        @PageableDefault
+        Pageable pageable) {
 
-        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+        Page<CategoryListResponseDto> page =
+            categoryService.findCategoryListByEmployee(pageable);
+
+        PageResponse<CategoryListResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findCategoryListByEmployee());
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
     @GetMapping("/main-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>> mainCategoryList() {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> mainCategoryList(
+        @PageableDefault Pageable pageable) {
 
-        CommonResponseBody<List<CategoryListResponseDto>> commonResponseBody =
+        Page<CategoryListResponseDto> mainCategoryListPage =
+            categoryService.findMainCategoryList(pageable);
+
+        CommonResponseBody<PageResponse<CategoryListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                categoryService.findMainCategoryList());
+                new PageResponse(mainCategoryListPage));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -94,13 +114,16 @@ public class CategoryAdminController {
      * @author 최겸준
      */
     @GetMapping("/{categoryNo}/child-categories")
-    public ResponseEntity<CommonResponseBody<List<CategoryListResponseDto>>>
-    categoryChildList(@PathVariable Integer categoryNo) {
+    public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>>
+    categoryChildList(@PathVariable Integer categoryNo, @PageableDefault Pageable pageable) {
+
+        Page<CategoryListResponseDto> categoryListAboutChild =
+            categoryService.findCategoryListAboutChild(categoryNo, pageable);
 
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 CategoryResultMessageEnum.CATEGORY_CHILD_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-            categoryService.findCategoryListAboutChild(categoryNo)));
+            new PageResponse<>(categoryListAboutChild)));
     }
 
     /**
@@ -132,9 +155,44 @@ public class CategoryAdminController {
      */
     @PutMapping("/{categoryNo}")
     public ResponseEntity<CommonResponseBody<Void>> categoryModify(
-        @PathVariable Integer categoryNo, @RequestBody CategoryRequestDto categoryRequestDto) {
+        @PathVariable Integer categoryNo,
+        @Valid @RequestBody CategoryModifyRequestDto categoryRequestDto) {
 
         categoryService.modifyCategory(categoryNo, categoryRequestDto);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
+                null);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
+    }
+
+    @PutMapping("/{categoryNo}/child-sequence")
+    public ResponseEntity<CommonResponseBody<Void>> childCategorySequenceModify(
+        @PathVariable Integer categoryNo,
+        @RequestParam Integer hopingPositionCategoryNo) {
+
+        categoryService.modifyChildSequence(categoryNo, hopingPositionCategoryNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                CategoryResultMessageEnum.CATEGORY_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
+                null);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
+    }
+
+    @PutMapping("/{categoryNo}/main-sequence")
+    public ResponseEntity<CommonResponseBody<Void>> mainCategorySequenceModify(
+        @PathVariable Integer categoryNo,
+        @RequestParam Integer sequence) {
+
+        if (Objects.isNull(sequence) || sequence <= 0) {
+            throw new ValidationException("sequence 번호는 null일수 없으며 최솟값이 1입니다.");
+        }
+
+        categoryService.modifyMainSequence(categoryNo, sequence);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
@@ -148,7 +206,7 @@ public class CategoryAdminController {
     public ResponseEntity<CommonResponseBody<Void>> categoryModifyHidden(
         @PathVariable Integer categoryNo) {
 
-        categoryService.modifyCategory(categoryNo);
+        categoryService.modifyCategoryHidden(categoryNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(

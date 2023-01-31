@@ -11,8 +11,21 @@ import shop.itbook.itbookshop.membergroup.memberstatusenum.MemberStatusEnum;
  */
 public class MemberStatusDummy {
 
-    public static MemberStatus getMemberStatus() {
+    public static MemberStatus getNormalMemberStatus() {
 
-        return new MemberStatus(1, MemberStatusEnum.NORMAL);
+        return MemberStatus.builder().memberStatusEnum(MemberStatusEnum.NORMAL)
+            .build();
+    }
+
+    public static MemberStatus getBlockMemberStatus() {
+
+        return MemberStatus.builder().memberStatusNo(2).memberStatusEnum(MemberStatusEnum.BLOCK)
+            .build();
+    }
+
+    public static MemberStatus getWithdrawMemberStatus() {
+
+        return MemberStatus.builder().memberStatusNo(3).memberStatusEnum(MemberStatusEnum.WITHDRAW)
+            .build();
     }
 }

@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.category.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.category.dto.request.CategoryModifyRequestDto;
 import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
@@ -29,9 +31,9 @@ public interface CategoryService {
      * @return 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryListResponseDto> findCategoryListByEmployee();
+    Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable);
 
-    List<CategoryListResponseDto> findCategoryListByNotEmployee();
+    Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable);
 
 
     /**
@@ -41,7 +43,7 @@ public interface CategoryService {
      * @return 조건에 해당하는 모든 카테고리를 리스트에 담아서 반환합니다.
      * @author 최겸준
      */
-    List<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo);
+    Page<CategoryListResponseDto> findCategoryListAboutChild(Integer categoryNo, Pageable pageable);
 
     /**
      * 카테고리 엔티티를 찾고 존재한다면 카테고리를 반환하고 존재하지 않는다면 예외를 발생시키는 기능을 담당합니다.
@@ -79,9 +81,13 @@ public interface CategoryService {
      * @return true 혹은 false 값을 반환합니다.
      * @author 최겸준
      */
-    void modifyCategory(int categoryNo, CategoryRequestDto categoryRequestDto);
+    void modifyCategory(Integer categoryNo, CategoryModifyRequestDto categoryRequestDto);
 
-    void modifyCategory(Integer categoryNo);
+    void modifyChildSequence(Integer categoryNo, Integer hopingPositionCategoryNo);
+
+    void modifyMainSequence(Integer categoryNo, Integer sequence);
+
+    void modifyCategoryHidden(Integer categoryNo);
 
     /**
      * 카테고리 삭제에 관한 비지니스 로직을 담당하는 기능입니다.
@@ -91,5 +97,5 @@ public interface CategoryService {
      */
     void removeCategory(Integer categoryNo);
 
-    List<CategoryListResponseDto> findMainCategoryList();
+    Page<CategoryListResponseDto> findMainCategoryList(Pageable pageable);
 }

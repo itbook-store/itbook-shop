@@ -11,6 +11,7 @@ import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 public class MembershipDummy {
     public static Membership getMembership() {
 
-        return new Membership("white", 100_000L, 10_000L);
+        return Membership.builder().membershipGrade("white").membershipStandardAmount(100_000L)
+            .membershipPoint(10_000L).build();
     }
 }

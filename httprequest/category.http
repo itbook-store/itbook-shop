@@ -1,20 +1,20 @@
-GET http://localhost:8082/api/categories
+GET http://localhost:8082/api/categories?page=1&size=3
 Accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8082/api/admin/categories
+GET http://localhost:8082/api/admin/categories?page=1&size=10
 Accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8082/api/admin/categories/main-categories
+GET http://localhost:8082/api/admin/categories/main-categories?page=1&size=3
 
 ###
 
-GET http://localhost:8082/api/admin/categories/1/child-categories
+GET http://localhost:8082/api/admin/categories/2/child-categories?page=2&size=2
 Accept: application/json
 Content-Type: application/json
 
@@ -28,4 +28,12 @@ Content-Type: application/json
 
 DELETE http://localhost:8082/api/admin/categories/49
 
+###
 
+PUT http://localhost:8082/api/admin/categories/60/main-sequence?sequence=6
+
+###
+
+PUT http://localhost:8082/api/admin/categories/3/child-sequence?hopingPositionCategoryNo=6
+
+###

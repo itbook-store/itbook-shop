@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.ProductTypeRegistration;
 
 /**
  * 상품과 카테고리의 관계테이블입니다.
@@ -43,6 +45,12 @@ public class ProductCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_no", nullable = false)
     private Category category;
+
+    public ProductCategory(Product product, Category category) {
+        this.product = product;
+        this.category = category;
+        this.setPk(new ProductCategory.Pk(product.getProductNo(), category.getCategoryNo()));
+    }
 
     /**
      * ProductCategory entity를 식별하기 위한 PK 클래스입니다.

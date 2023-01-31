@@ -1,17 +1,24 @@
 package shop.itbook.itbookshop.productgroup.product.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.book.entity.Book;
+import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 
 /**
  * 상품에 대한 엔티티 입니다.
@@ -49,10 +56,10 @@ public class Product {
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_selled", nullable = false)
-    private Boolean isSelled;
+    private Boolean isExposed;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted;
+    private Boolean isForceSoldOut;
 
     @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
     private String thumbnailUrl;
@@ -73,18 +80,24 @@ public class Product {
     @Column(name = "raw_price", nullable = false)
     private Long rawPrice;
 
+    @OneToOne(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private Book book;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+//    @JoinColumn(name = "product_no")
+    private List<ProductCategory> productCategoryList;
+
     /**
-     * 빌터 패턴을 적용한 생성자입니다.
+     * 빌더 패턴을 적용한 생성자입니다.
      *
      * @param name                 상품명입니다.
      * @param simpleDescription    상품 간단 설명입니다.
      * @param detailsDescription   상품 상세 설명입니다.
      * @param stock                상품 재고입니다.
      * @param productCreatedAt     상품 등록 일자입니다.
-     * @param isSelled             상품 판매 여부입니다.
-     * @param isDeleted            상품 삭제 여부입니다.
+     * @param isExposed            상품 판매 여부입니다.
+     * @param isForceSoldOut       상품 삭제 여부입니다.
      * @param thumbnailUrl         상품 썸네일 url입니다.
-     * @param dailyHits            상품 조회수입니다.
      * @param fixedPrice           상품 정가입니다.
      * @param increasePointPercent 상품 포인트 적립율입니다.
      * @param discountPercent      상품 할인율입니다.
@@ -94,18 +107,17 @@ public class Product {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
-                   String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                   LocalDateTime productCreatedAt, Boolean isExposed, Boolean isForceSoldOut,
+                   String thumbnailUrl, Long fixedPrice,
                    Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
         this.productCreatedAt = productCreatedAt;
-        this.isSelled = isSelled;
-        this.isDeleted = isDeleted;
+        this.isExposed = isExposed;
+        this.isForceSoldOut = isForceSoldOut;
         this.thumbnailUrl = thumbnailUrl;
-        this.dailyHits = dailyHits;
         this.fixedPrice = fixedPrice;
         this.increasePointPercent = increasePointPercent;
         this.discountPercent = discountPercent;

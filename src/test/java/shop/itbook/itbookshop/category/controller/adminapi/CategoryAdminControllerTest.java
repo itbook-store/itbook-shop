@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.category.controller.adminapi;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -21,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +30,7 @@ import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.service.CategoryService;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 
 /**
  * @author 최겸준
@@ -38,6 +41,9 @@ class CategoryAdminControllerTest {
 
     @Autowired
     MockMvc mvc;
+
+    @MockBean
+    TokenInterceptor tokenInterceptor;
 
     @Autowired
     CategoryAdminController categoryAdminController;
@@ -58,7 +64,7 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", false);
-        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
+//        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         Integer testNo = 1;
 
@@ -87,16 +93,19 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(category2, "categoryNo", 2);
         ReflectionTestUtils.setField(category2, "categoryName", "잡화");
 
-        given(categoryService.findCategoryListByEmployee())
-            .willReturn(List.of(category1, category2));
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(category1, category2), pageRequest, 10);
+        given(categoryService.findCategoryListByEmployee(any()))
+            .willReturn(page);
+
 
         mvc.perform(get("/api/admin/categories"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].categoryNo", equalTo(1)))
-            .andExpect(jsonPath("$.result[0].categoryName", equalTo("도서")))
-            .andExpect(jsonPath("$.result[1].categoryNo", equalTo(2)))
-            .andExpect(jsonPath("$.result[1].categoryName", equalTo("잡화")));
+            .andExpect(jsonPath("$.result.content[0].categoryNo", equalTo(1)))
+            .andExpect(jsonPath("$.result.content[0].categoryName", equalTo("도서")))
+            .andExpect(jsonPath("$.result.content[1].categoryNo", equalTo(2)))
+            .andExpect(jsonPath("$.result.content[1].categoryName", equalTo("잡화")));
     }
 
     @DisplayName("특정 카테고리의 자식카테고리들이 모두 반환된다.")
@@ -113,16 +122,16 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(response2, "categoryNo", 4);
         ReflectionTestUtils.setField(response2, "categoryName", "자바로배우는자료구조");
 
-        given(categoryService.findCategoryListAboutChild(anyInt()))
-            .willReturn(List.of(response1, response2));
+        given(categoryService.findCategoryListAboutChild(anyInt(), any()))
+            .willReturn(new PageImpl<>(List.of(response1, response2)));
 
         mvc.perform(get("/api/admin/categories/1/child-categories"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].categoryNo", equalTo(3)))
-            .andExpect(jsonPath("$.result[0].categoryName", equalTo("객체지향의사실과오해")))
-            .andExpect(jsonPath("$.result[1].categoryNo", equalTo(4)))
-            .andExpect(jsonPath("$.result[1].categoryName", equalTo("자바로배우는자료구조")));
+            .andExpect(jsonPath("$.result.content[0].categoryNo", equalTo(3)))
+            .andExpect(jsonPath("$.result.content[0].categoryName", equalTo("객체지향의사실과오해")))
+            .andExpect(jsonPath("$.result.content[1].categoryNo", equalTo(4)))
+            .andExpect(jsonPath("$.result.content[1].categoryName", equalTo("자바로배우는자료구조")));
     }
 
     @DisplayName("카테거리 단건조회 요청이 잘 받아지고 원하는 형태로 잘 반환된다.")
@@ -183,7 +192,7 @@ class CategoryAdminControllerTest {
         ReflectionTestUtils.setField(categoryRequestDto, "parentCategoryNo", 1);
         ReflectionTestUtils.setField(categoryRequestDto, "categoryName", "도서");
         ReflectionTestUtils.setField(categoryRequestDto, "isHidden", true);
-        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
+//        ReflectionTestUtils.setField(categoryRequestDto, "sequence", 1);
 
         // when
         mvc.perform(delete("/api/admin/categories/1").contentType(MediaType.APPLICATION_JSON)

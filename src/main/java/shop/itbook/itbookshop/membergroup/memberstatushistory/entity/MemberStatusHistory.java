@@ -55,16 +55,19 @@ public class MemberStatusHistory {
     /**
      * 회원 상태 이력 엔티티에 대한 생성자입니다.
      *
-     * @param member              the member
-     * @param memberStatus        the member status
-     * @param statusChangedReason the status changed reason
+     * @param member                       the member
+     * @param memberStatus                 the member status
+     * @param statusChangedReason          the status changed reason
+     * @param memberStatusHistoryCreatedAt 멤버상태기록이 저장된 시간입니다.
      * @author 강명관
      */
     @Builder
     public MemberStatusHistory(Member member, MemberStatus memberStatus,
+                               LocalDateTime memberStatusHistoryCreatedAt,
                                String statusChangedReason) {
         this.member = member;
         this.memberStatus = memberStatus;
+        this.memberStatusHistoryCreatedAt = memberStatusHistoryCreatedAt;
         this.statusChangedReason = statusChangedReason;
     }
 }
