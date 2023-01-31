@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.config.RedisConfig;
-import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager;
+import shop.itbook.itbookshop.fileservice.init.TokenManager;
 
 /**
  * @author 이하늬

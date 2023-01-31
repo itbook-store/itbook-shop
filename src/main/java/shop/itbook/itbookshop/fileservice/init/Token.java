@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice.init;
+package shop.itbook.itbookshop.fileservice.init;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice.init;
+package shop.itbook.itbookshop.fileservice.init;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,18 +62,11 @@ public class TokenManager implements InitializingBean {
             = restTemplate.exchange(AUTH_URL, HttpMethod.POST, httpEntity,
             ItBookObjectStorageToken.class);
 
-        Token itBookObjectStorageToken =
-            response.getBody().getAccess().getToken();
+        Token itBookObjectStorageToken = response.getBody().getAccess().getToken();
 
         if (Objects.isNull(itBookObjectStorageToken)) {
             throw new InvalidTokenException();
         }
-
-//        redisTemplate.opsForHash()
-//            .put(TOKEN_NAME, "tokenId", itBookObjectStorageToken.getId());
-//        redisTemplate.opsForHash()
-//            .put(TOKEN_NAME, "tokenExpires",
-//                itBookObjectStorageToken.getExpires());
 
         ObjectMapper mapper = new ObjectMapper();
 

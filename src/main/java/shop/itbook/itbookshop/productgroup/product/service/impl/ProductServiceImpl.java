@@ -15,7 +15,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
-import shop.itbook.itbookshop.productgroup.product.fileservice.FileService;
+import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
@@ -58,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
 
         Long productNo = product.getProductNo();
-        if (parentCategory.getCategoryName().equals("도서")) {
+        if (parentCategory.getCategoryName().contains("도서")) {
             bookService.addBook(bookService.toBookRequestDto(requestDto), productNo);
         }
 
@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
         Category parentCategory =
             productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
 
-        if (parentCategory.getCategoryName().equals("도서")) {
+        if (parentCategory.getCategoryName().contains("도서")) {
             bookService.modifyBook(bookService.toBookRequestDto(requestDto), productNo);
         }
 

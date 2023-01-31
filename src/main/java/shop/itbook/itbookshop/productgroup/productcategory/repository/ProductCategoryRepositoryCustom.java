@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.productcategory.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -22,7 +24,8 @@ public interface ProductCategoryRepositoryCustom {
      * @return 카테고리 번호로 필터링한 상품 리스트를 반환합니다.
      * @author 이하늬
      */
-    List<ProductDetailsResponseDto> getProductListWithCategoryNo(Integer categoryNo);
+    Page<ProductDetailsResponseDto> getProductListWithCategoryNo(Pageable pageable,
+                                                                 Integer categoryNo);
 
     /**
      * 상품 별 카테고리 리스트를 조회하는 기능을 담당합니다.
@@ -31,5 +34,6 @@ public interface ProductCategoryRepositoryCustom {
      * @return 상품 번호로 필터링한 카테고리 리스트를 반환합니다.
      * @author 이하늬
      */
-    List<CategoryDetailsResponseDto> getCategoryListWithProductNo(Long productNo);
+    Page<CategoryDetailsResponseDto> getCategoryListWithProductNo(Pageable pageable,
+                                                                  Long productNo);
 }

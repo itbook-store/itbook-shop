@@ -1,8 +1,6 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice.init;
+package shop.itbook.itbookshop.fileservice.init;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**

@@ -1,9 +1,5 @@
-package shop.itbook.itbookshop.productgroup.product.fileservice.init;
+package shop.itbook.itbookshop.fileservice.init;
 
-import static shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenManager.TOKEN_NAME;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -29,8 +25,6 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     private final TokenManager tokenManager;
     private final RedisTemplate<String, String> redisTemplate;
-    private DateTimeFormatter dateTimeFormatter =
-        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -55,9 +49,6 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
-//        String tokenExpires = getTokenFields("tokenExpires");
-//        LocalDateTime tokenExpiresTime = LocalDateTime.parse(tokenExpires, dateTimeFormatter);
-
         LocalDateTime tokenExpiresTime = getToken().getExpires();
 
         LocalDateTime fiveMinutesLater = LocalDateTime.now().plusMinutes(5);
@@ -79,7 +70,7 @@ public class TokenInterceptor implements HandlerInterceptor {
 
         try {
             return mapper.readValue((String) redisTemplate.opsForHash()
-                .get(TOKEN_NAME, "token"), Token.class);
+                .get(TokenManager.TOKEN_NAME, "token"), Token.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
