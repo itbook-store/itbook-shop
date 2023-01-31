@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.repository.impl;
 
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
 
@@ -15,5 +16,12 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
     public OrderRepositoryImpl() {
         super(Order.class);
+    }
+
+
+    @Override
+    public OrderSheetResponseDto findOrderPaperInfo() {
+
+        return null;
     }
 }
