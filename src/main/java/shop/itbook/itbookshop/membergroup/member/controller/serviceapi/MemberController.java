@@ -135,6 +135,7 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<Boolean>> OauthLogin(
         @RequestBody MemberOauthLoginRequestDto requestDto) {
 
+        // TODO 바로 Boolean 값이 아니라 DTO로 보내기
         if (memberService.checkMemberOauthEmailExists(requestDto.getEmail())) {
             return ResponseEntity.ok()
                 .body(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
