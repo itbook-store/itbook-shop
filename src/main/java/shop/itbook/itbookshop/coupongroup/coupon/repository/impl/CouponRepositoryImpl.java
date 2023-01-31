@@ -9,6 +9,8 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CustomCouponRepository;
 
 /**
+ * customCouponRepository 의 기능을 구현하기 위해 만든 class 입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
