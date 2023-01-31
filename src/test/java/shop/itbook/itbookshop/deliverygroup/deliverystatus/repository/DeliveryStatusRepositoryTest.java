@@ -20,5 +20,6 @@ class DeliveryStatusRepositoryTest {
     @Test
     @DisplayName("Enum 을 이용해서 배송 상태 테이블에서 배송 상태 엔티티 정보 가져오기 성공")
     void findByDeliveryStatusEnumSuccessTest() {
+        
     }
 }

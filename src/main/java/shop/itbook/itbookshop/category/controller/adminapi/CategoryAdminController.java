@@ -47,7 +47,7 @@ public class CategoryAdminController {
      *
      * @param categoryRequestDto 저장을 위한 정보를 바인딩받는 객체입니다.
      * @return 저장한 카테고리의 번호를 ResponseEntity 에 담아 반환합니다
-     * @author 최겸준
+     * @author 최겸준 *
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<CategoryNoResponseDto>> categoryAdd(
@@ -67,8 +67,9 @@ public class CategoryAdminController {
     /**
      * 카테고리의 모든 리스트를 조회하는 메서드입니다.
      *
+     * @param pageable 페이징을 위한 객체
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
-     * @author 최겸준
+     * @author 최겸준 *
      */
     @GetMapping
     public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> categoryList(
@@ -90,6 +91,13 @@ public class CategoryAdminController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * Main category list response entity.
+     *
+     * @param pageable 페이징을 위한 객체
+     * @return the response entity
+     * @author 정재원 *
+     */
     @GetMapping("/main-categories")
     public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>> mainCategoryList(
         @PageableDefault Pageable pageable) {
@@ -110,8 +118,9 @@ public class CategoryAdminController {
      * 부모카테고리의 번호를 받아서 해당 카테고리의 자식카테고리들을 반환하는 요청을 처리하는 메서드입니다.
      *
      * @param categoryNo 부모카테고리의 번호입니다.
+     * @param pageable   the pageable
      * @return 카테고리정보의 리스트를 ResponseEntity 에 담아 반환합니다.
-     * @author 최겸준
+     * @author 최겸준 *
      */
     @GetMapping("/{categoryNo}/child-categories")
     public ResponseEntity<CommonResponseBody<PageResponse<CategoryListResponseDto>>>
@@ -131,7 +140,7 @@ public class CategoryAdminController {
      *
      * @param categoryNo 세부조회할 카테고리의 번호입니다.
      * @return 카테고리의 세부정보를 ResponseEntity에 담아 반환합니다.
-     * @author 최겸준
+     * @author 최겸준 *
      */
     @GetMapping("/{categoryNo}")
     public ResponseEntity<CommonResponseBody<CategoryDetailsResponseDto>> categoryDetails(
@@ -149,9 +158,10 @@ public class CategoryAdminController {
     /**
      * 카테고리 수정요청시 요청을 받고 반환하는 역할을 담당합니다.
      *
-     * @param categoryNo 수정해야할 카테고리 번호입니다.
+     * @param categoryNo         수정해야할 카테고리 번호입니다.
+     * @param categoryRequestDto the category request dto
      * @return 성공여부 및 기본적인 반환정보를 클라이언트에게 반환합니다. 성공시 204
-     * @author 최겸준
+     * @author 최겸준 *
      */
     @PutMapping("/{categoryNo}")
     public ResponseEntity<CommonResponseBody<Void>> categoryModify(
@@ -168,6 +178,14 @@ public class CategoryAdminController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
     }
 
+    /**
+     * Child category sequence modify response entity.
+     *
+     * @param categoryNo               the category no
+     * @param hopingPositionCategoryNo the hoping position category no
+     * @return the response entity
+     * @author 정재원 *
+     */
     @PutMapping("/{categoryNo}/child-sequence")
     public ResponseEntity<CommonResponseBody<Void>> childCategorySequenceModify(
         @PathVariable Integer categoryNo,
@@ -183,6 +201,14 @@ public class CategoryAdminController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
     }
 
+    /**
+     * Main category sequence modify response entity.
+     *
+     * @param categoryNo the category no
+     * @param sequence   the sequence
+     * @return the response entity
+     * @author 정재원 *
+     */
     @PutMapping("/{categoryNo}/main-sequence")
     public ResponseEntity<CommonResponseBody<Void>> mainCategorySequenceModify(
         @PathVariable Integer categoryNo,
@@ -202,6 +228,13 @@ public class CategoryAdminController {
         return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
     }
 
+    /**
+     * Category modify hidden response entity.
+     *
+     * @param categoryNo the category no
+     * @return the response entity
+     * @author 정재원 *
+     */
     @PutMapping("/{categoryNo}/hidden")
     public ResponseEntity<CommonResponseBody<Void>> categoryModifyHidden(
         @PathVariable Integer categoryNo) {
@@ -221,7 +254,7 @@ public class CategoryAdminController {
      *
      * @param categoryNo 삭제 해야하는 카테고리의 번호입니다.
      * @return 카테고리 삭제여부 등의 갑을 넣어 클라이언트에게 반환합니다.
-     * @author 최겸준
+     * @author 최겸준 *
      */
     @DeleteMapping("/{categoryNo}")
     public ResponseEntity<CommonResponseBody<Void>> categoryRemove(

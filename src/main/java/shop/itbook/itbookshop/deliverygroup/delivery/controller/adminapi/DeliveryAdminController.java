@@ -2,6 +2,9 @@ package shop.itbook.itbookshop.deliverygroup.delivery.controller.adminapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.resultmessageenum.DeliveryResultMessageEnum;
@@ -33,14 +37,19 @@ public class DeliveryAdminController {
      * @return 최신 상태가 포함된 배송 정보
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<DeliveryWithStatusResponseDto>>> getDeliveryListWithStatus() {
+    public ResponseEntity<CommonResponseBody<PageResponse<DeliveryWithStatusResponseDto>>> getDeliveryListWithStatus(
+        @PageableDefault Pageable pageable) {
 
-        CommonResponseBody<List<DeliveryWithStatusResponseDto>> commonResponseBody =
+        Page<DeliveryWithStatusResponseDto> deliveryList =
+            deliveryService.findDeliveryListWithStatus(pageable);
+
+        PageResponse<DeliveryWithStatusResponseDto> pageResponse = new PageResponse<>(deliveryList);
+
+        CommonResponseBody<PageResponse<DeliveryWithStatusResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage()),
-                deliveryService.findDeliveryListWithStatus()
-            );
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -51,14 +60,20 @@ public class DeliveryAdminController {
      * @return 상태가 배송대기인 배송 정보 리스트
      */
     @GetMapping("/wait")
-    public ResponseEntity<CommonResponseBody<List<DeliveryWithStatusResponseDto>>> getDeliveryListWithStatusWait() {
+    public ResponseEntity<CommonResponseBody<PageResponse<DeliveryWithStatusResponseDto>>> getDeliveryListWithStatusWait(
+        @PageableDefault Pageable pageable) {
 
-        CommonResponseBody<List<DeliveryWithStatusResponseDto>> commonResponseBody =
+        Page<DeliveryWithStatusResponseDto> deliveryWaitList =
+            deliveryService.findDeliveryListWithStatusWait(pageable);
+
+        PageResponse<DeliveryWithStatusResponseDto> pageResponse =
+            new PageResponse<>(deliveryWaitList);
+
+        CommonResponseBody<PageResponse<DeliveryWithStatusResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage()),
-                deliveryService.findDeliveryListWithStatusWait()
-            );
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

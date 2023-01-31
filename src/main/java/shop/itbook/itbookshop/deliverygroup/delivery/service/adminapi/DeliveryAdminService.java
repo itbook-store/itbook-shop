@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 
@@ -18,7 +20,7 @@ public interface DeliveryAdminService {
      * @return the list
      * @author 정재원 *
      */
-    List<DeliveryWithStatusResponseDto> findDeliveryListWithStatus();
+    Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatus(Pageable pageable);
 
     /**
      * 배송 엔티티의 리스트에서 배송 상태가 배송대기인 것만  반환합니다.
@@ -26,7 +28,7 @@ public interface DeliveryAdminService {
      * @return the list
      * @author 정재원 *
      */
-    List<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait();
+    Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait(Pageable pageable);
 
 
     /**

@@ -7,6 +7,8 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,16 +52,16 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<DeliveryWithStatusResponseDto> findDeliveryListWithStatus() {
-        return deliveryRepository.findDeliveryListWithStatus();
+    public Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatus(Pageable pageable) {
+        return deliveryRepository.findDeliveryListWithStatus(pageable);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait() {
-        return deliveryRepository.findDeliveryListWithStatusWait();
+    public Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait(Pageable pageable) {
+        return deliveryRepository.findDeliveryListWithStatusWait(pageable);
     }
 
     /**
