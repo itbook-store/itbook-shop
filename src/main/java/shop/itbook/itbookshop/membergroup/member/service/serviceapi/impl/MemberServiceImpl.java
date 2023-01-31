@@ -31,6 +31,8 @@ import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberSt
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatushistory.entity.MemberStatusHistory;
 import shop.itbook.itbookshop.membergroup.memberstatushistory.repository.MemberStatusHistoryRepository;
+import shop.itbook.itbookshop.role.entity.Role;
+import shop.itbook.itbookshop.role.service.RoleService;
 
 /**
  * 서비스 API 멤버 서비스 인터페이스를 구현한 클래스입니다.
@@ -54,6 +56,8 @@ public class MemberServiceImpl implements MemberService {
     private final MembershipAdminService membershipAdminService;
 
     private final MemberRoleService memberRoleService;
+
+    private final RoleService roleService;
 
     /**
      * {@inheritDoc}
@@ -83,7 +87,14 @@ public class MemberServiceImpl implements MemberService {
         member.setMembership(membership);
         member.setMemberStatus(memberStatus);
 
-        return memberRepository.save(member).getMemberNo();
+        Long memberNo = memberRepository.save(member).getMemberNo();
+
+        Role role = roleService.findRole("USER");
+        log.info("role = {}", role);
+
+        memberRoleService.addMemberRole(member, role);
+
+        return memberNo;
     }
 
     /**
@@ -157,10 +168,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Long socialMemberAdd(String email, String encodedEmail) {
 
+        // TODO Membership 서비스에서 멤버십 받아오기
         Membership membership = membershipAdminService.findMembership(428);
 
+        // TODO MemberStatus 서비스에서 멤버상태 받아오기
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
             memberStatusAdminService.findMemberStatusWithMemberStatusNo(392));
 

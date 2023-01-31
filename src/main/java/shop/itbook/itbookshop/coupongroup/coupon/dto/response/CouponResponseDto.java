@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 쿠폰의 정보를
+ * 쿠폰의 정보를 저장하는 response dto 객체 입니다.
  * @author 송다혜
  * @since 1.0
  */

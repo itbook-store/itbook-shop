@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 
 /**
  * 관리자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -30,6 +32,8 @@ import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminSer
 public class MemberAdminController {
 
     private final MemberAdminService memberAdminService;
+
+    private final MemberRoleService memberRoleService;
 
     /**
      * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.
@@ -143,5 +147,21 @@ public class MemberAdminController {
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
+
+    @GetMapping("/{memberId}/block")
+    public ResponseEntity<CommonResponseBody<MemberExceptPwdBlockResponseDto>> blockMemberDetails(
+        @PathVariable("memberId") String memberId
+    ) {
+
+        CommonResponseBody<MemberExceptPwdBlockResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                memberAdminService.findBlockMember(memberId));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+
+    }
+
 
 }

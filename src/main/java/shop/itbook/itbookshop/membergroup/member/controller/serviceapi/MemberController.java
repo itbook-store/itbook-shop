@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberOauthLoginRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -132,24 +133,31 @@ public class MemberController {
     }
 
     @PostMapping("/oauth/login/find")
-    public ResponseEntity<CommonResponseBody<Boolean>> OauthLogin(
+    public ResponseEntity<CommonResponseBody<SuccessfulResponseDto>> OauthLogin(
         @RequestBody MemberOauthLoginRequestDto requestDto) {
 
+        SuccessfulResponseDto successfulResponseDto = new SuccessfulResponseDto();
+
         if (memberService.checkMemberOauthEmailExists(requestDto.getEmail())) {
+            successfulResponseDto.setIsSuccessful(false);
+
             return ResponseEntity.ok()
                 .body(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
-                    MemberResultMessageEnum.MEMBER_EMAIL_EXISTS_TRUE_MESSAGE.getSuccessMessage()
-                ), false));
+                    MemberResultMessageEnum.MEMBER_EMAIL_EXISTS_TRUE_MESSAGE.getSuccessMessage()),
+                    successfulResponseDto
+                ));
         }
 
         if (!memberService.checkMemberOauthInfoExists(requestDto.getEmail())) {
             memberService.socialMemberAdd(requestDto.getEmail(), requestDto.getEncodedEmail());
         }
 
+        successfulResponseDto.setIsSuccessful(true);
+
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_SOCIAL_LOGIN_MESSAGE.getSuccessMessage()
-            ), true
+            ), successfulResponseDto
         ));
 
     }

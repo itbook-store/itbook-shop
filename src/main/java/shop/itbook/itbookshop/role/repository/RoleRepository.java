@@ -7,5 +7,5 @@ import shop.itbook.itbookshop.role.entity.Role;
  * @author 강명관
  * @since 1.0
  */
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Integer>, CustomRoleRepository {
 }

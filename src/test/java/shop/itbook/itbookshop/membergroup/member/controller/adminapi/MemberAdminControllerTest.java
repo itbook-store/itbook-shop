@@ -24,6 +24,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
@@ -61,6 +62,9 @@ class MemberAdminControllerTest {
 
     @MockBean
     MemberStatusRepository memberStatusRepository;
+
+    @MockBean
+    MemberRoleService memberRoleService;
 
     Membership membership;
     MemberStatus normalMemberStatus;
