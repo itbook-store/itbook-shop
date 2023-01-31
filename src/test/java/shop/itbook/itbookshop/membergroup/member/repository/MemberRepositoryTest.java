@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
@@ -102,8 +104,11 @@ class MemberRepositoryTest {
     @DisplayName("모든 멤버 리스트 찾기")
     void findAllBy() {
 
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberList(pageRequest);
+
         //when
-        List<MemberExceptPwdResponseDto> memberList = memberRepository.findMemberList();
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
 
         //then
         assertThat(memberList.size()).isNotIn(0);

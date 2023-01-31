@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -48,9 +50,25 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberList() {
+    public Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable) {
 
-        return memberRepository.findMemberList();
+        return memberRepository.findMemberList(pageable);
+
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable) {
+        return memberRepository.findNormalMemberList(pageable);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable) {
+        return memberRepository.findBlockMemberList(pageable);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable) {
+        return memberRepository.findWithdrawMemberList(pageable);
     }
 
     /**

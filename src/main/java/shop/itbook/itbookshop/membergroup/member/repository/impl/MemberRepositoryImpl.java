@@ -3,10 +3,14 @@ package shop.itbook.itbookshop.membergroup.member.repository.impl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
@@ -97,8 +101,31 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberList() {
-        return jpaQueryFactory.select(
+    public Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable) {
+
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
+                    qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
+                    qmember.memberCreatedAt))
+            .from(qmember)
+            .join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus);
+
+        List<MemberExceptPwdResponseDto> memberList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable) {
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
@@ -108,7 +135,61 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .fetch();
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq("정상회원"));
+
+        List<MemberExceptPwdResponseDto> memberList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable) {
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
+                    qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
+                    qmember.memberCreatedAt))
+            .from(qmember)
+            .join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq("차단회원"));
+
+        List<MemberExceptPwdResponseDto> memberList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable) {
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
+                    qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
+                    qmember.memberCreatedAt))
+            .from(qmember)
+            .join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"));
+
+        List<MemberExceptPwdResponseDto> memberList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override

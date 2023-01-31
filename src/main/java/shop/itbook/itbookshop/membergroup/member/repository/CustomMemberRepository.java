@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.membergroup.member.repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
@@ -56,7 +58,13 @@ public interface CustomMemberRepository {
      * @return 회원 리스트를 받아옵니다.
      * @author 노수연
      */
-    List<MemberExceptPwdResponseDto> findMemberList();
+    Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable);
 
     boolean existsByEmailAndIsSocial(String email);
 

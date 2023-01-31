@@ -16,6 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -87,10 +90,15 @@ class MemberAdminServiceImplTest {
                 LocalDateTime.of(2000, 1, 1, 0, 0, 0),
                 "010-1000-0000", "user2@test.com", LocalDateTime.now());
 
-        given(memberRepository.findMemberList()).willReturn(List.of(member1, member2));
+        given(memberRepository.findMemberList(any())).willReturn(
+            new PageImpl<>(List.of(member1, member2)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<MemberExceptPwdResponseDto> page = memberAdminService.findMemberList(pageRequest);
 
         // when
-        List<MemberExceptPwdResponseDto> memberList = memberAdminService.findMemberList();
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
 
         // then
         assertThat(memberList.get(0).getMemberNo()).isEqualTo(1L);

@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
@@ -30,7 +32,13 @@ public interface MemberAdminService {
      * @return MemberResponseDto 리스트를 반환합니다.
      * @author 노수연
      */
-    List<MemberExceptPwdResponseDto> findMemberList();
+    Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable);
 
     /**
      * 관리자는 특정 멤버의 상태를 '차단회원'과 '정상회원'으로 변경할 수 있습니다.
