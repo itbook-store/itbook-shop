@@ -10,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 public enum RoleEnum {
-    ADMIN("관리자"), MANAGER("직원"), USER("회원"), AUTHOR("작가"), GUEST("비회원");
+    ADMIN("ADMIN"), MANAGER("직원"), USER("USER"), AUTHOR("작가"), GUEST("비회원");
 
     private String roleName;
 

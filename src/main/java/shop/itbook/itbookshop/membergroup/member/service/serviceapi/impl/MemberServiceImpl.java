@@ -89,7 +89,7 @@ public class MemberServiceImpl implements MemberService {
 
         Long memberNo = memberRepository.save(member).getMemberNo();
 
-        Role role = roleService.findRole("회원");
+        Role role = roleService.findRole("USER");
         log.info("role = {}", role);
 
         memberRoleService.addMemberRole(member, role);

@@ -17,7 +17,6 @@ import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundExcepti
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
-import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
 /**
  * rest controller 에서 예외발생시 종합적인 처리를 해주기 위한 클래스입니다.
@@ -42,7 +41,7 @@ public class RestControllerAdvisor {
         MethodArgumentNotValidException.class, MemberNotFoundException.class,
         MembershipNotFoundException.class,
         InvalidAuthRequestException.class,
-        AlreadyAddedCategoryNameException.class
+        AlreadyAddedCategoryNameException.class,
         RoleNotFoundException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(

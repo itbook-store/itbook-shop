@@ -37,6 +37,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatushistory.repository.MemberStatusHistoryRepository;
+import shop.itbook.itbookshop.role.service.RoleService;
 
 /**
  * @author 노수연
@@ -69,6 +70,9 @@ class MemberServiceImplTest {
 
     @MockBean
     MemberStatusHistoryRepository memberStatusHistoryRepository;
+
+    @MockBean
+    RoleService roleService;
 
     MemberResponseDto member1;
 
