@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -58,15 +57,24 @@ public interface MemberAdminService {
      * @return 검색어가 포함된 멤버 아이디들의 데이터를 리스트로 반환합니다.
      * @author 노수연
      */
-    List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId);
+    Page<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId,
+                                                              String memberStatusName,
+                                                              Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname);
+    Page<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname,
+                                                              String memberStatusName,
+                                                              Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListByName(String name);
+    Page<MemberExceptPwdResponseDto> findMemberListByName(String name, String memberStatusName,
+                                                          Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber);
+    Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
+                                                                 String memberStatusName,
+                                                                 Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
+    Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
+                                                                String memberStatusName,
+                                                                Pageable pageable);
 
     MemberExceptPwdBlockResponseDto findBlockMember(String memberId);
 

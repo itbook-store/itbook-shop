@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.membergroup.member.repository;
 
-import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -90,15 +89,25 @@ public interface CustomMemberRepository {
      * @return 검색된 단어가 포함된 멤버 아이디가 있는 데이터 리스트들을 반환합니다.
      * @author 노수연
      */
-    List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId);
+    Page<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId,
+                                                              String memberStatusName,
+                                                              Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname);
+    Page<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname,
+                                                              String memberStatusName,
+                                                              Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListByName(String name);
+    Page<MemberExceptPwdResponseDto> findMemberListByName(String name,
+                                                          String memberStatusName,
+                                                          Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber);
+    Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
+                                                                 String memberStatusName,
+                                                                 Pageable pageable);
 
-    List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord);
+    Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
+                                                                String memberStatusName,
+                                                                Pageable pageable);
 
     MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId);
 

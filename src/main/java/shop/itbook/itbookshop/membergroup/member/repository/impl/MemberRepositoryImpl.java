@@ -236,8 +236,10 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId) {
-        return jpaQueryFactory.select(
+    public Page<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId,
+                                                                     String memberStatusName,
+                                                                     Pageable pageable) {
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId, qmembership.membershipGrade,
                     qmemberStatus.memberStatusEnum.stringValue(),
@@ -245,13 +247,21 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.email,
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberId.contains(memberId)).fetch();
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
+                .and(qmember.memberId.contains(memberId)));
+
+        List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname) {
+    public Page<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname,
+                                                                     String memberStatusName,
+                                                                     Pageable pageable) {
 
-        return jpaQueryFactory.select(
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId, qmembership.membershipGrade,
                     qmemberStatus.memberStatusEnum.stringValue(),
@@ -259,13 +269,21 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.email,
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.nickname.contains(nickname)).fetch();
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
+                .and(qmember.nickname.contains(nickname)));
+
+        List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByName(String name) {
+    public Page<MemberExceptPwdResponseDto> findMemberListByName(String name,
+                                                                 String memberStatusName,
+                                                                 Pageable pageable) {
 
-        return jpaQueryFactory.select(
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId, qmembership.membershipGrade,
                     qmemberStatus.memberStatusEnum.stringValue(),
@@ -273,12 +291,20 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.email,
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.name.contains(name)).fetch();
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
+                .and(qmember.name.contains(name)));
+
+        List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber) {
-        return jpaQueryFactory.select(
+    public Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
+                                                                        String memberStatusName,
+                                                                        Pageable pageable) {
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId, qmembership.membershipGrade,
                     qmemberStatus.memberStatusEnum.stringValue(),
@@ -286,12 +312,21 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.email,
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.phoneNumber.contains(phoneNumber)).fetch();
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
+                .and(qmember.phoneNumber.contains(phoneNumber)));
+
+        List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord) {
-        return jpaQueryFactory.select(
+    public Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
+                                                                       String memberStatusName,
+                                                                       Pageable pageable) {
+
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
                     qmember.memberId, qmembership.membershipGrade,
                     qmemberStatus.memberStatusEnum.stringValue(),
@@ -299,9 +334,15 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.email,
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberId.contains(searchWord).or(qmember.nickname.contains(searchWord))
-                .or(qmember.name.contains(searchWord)).or(qmember.phoneNumber.contains(searchWord)))
-            .fetch();
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
+                .and(qmember.memberId.contains(searchWord).or(qmember.nickname.contains(searchWord))
+                    .or(qmember.name.contains(searchWord))
+                    .or(qmember.phoneNumber.contains(searchWord))));
+
+        List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
