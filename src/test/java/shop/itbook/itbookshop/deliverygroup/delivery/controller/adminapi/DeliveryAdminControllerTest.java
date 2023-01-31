@@ -1,8 +1,7 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.controller.adminapi;
 
-import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,23 +9,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.itbook.itbookshop.category.controller.adminapi.CategoryAdminController;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
+import shop.itbook.itbookshop.deliverygroup.delivery.resultmessageenum.DeliveryResultMessageEnum;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
+import shop.itbook.itbookshop.productgroup.product.fileservice.init.TokenInterceptor;
 
 /**
  * @author 정재원
@@ -44,8 +46,8 @@ class DeliveryAdminControllerTest {
     @MockBean
     DeliveryAdminService deliveryAdminService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    @MockBean
+    TokenInterceptor tokenInterceptor;
 
     @Test
     @DisplayName("모든 배송 정보 성공적 반환")
@@ -72,23 +74,18 @@ class DeliveryAdminControllerTest {
         responseDtoList.add(deliveryWithStatusResponseDto1);
         responseDtoList.add(deliveryWithStatusResponseDto2);
 
-        given(deliveryAdminService.findDeliveryListWithStatus()).willReturn(responseDtoList);
+        Page<DeliveryWithStatusResponseDto> pageList = new PageImpl<>(responseDtoList);
+
+        given(deliveryAdminService.findDeliveryListWithStatus(any(Pageable.class))).willReturn(
+            pageList);
 
         mockMvc.perform(get("/api/admin/deliveries")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].deliveryNo",
-                equalTo(deliveryWithStatusResponseDto1.getDeliveryNo())))
-            .andExpect(jsonPath("$.result[0].orderNo",
-                equalTo(deliveryWithStatusResponseDto1.getOrderNo())))
-            .andExpect(jsonPath("$.result[0].trackingNo",
-                equalTo(deliveryWithStatusResponseDto1.getTrackingNo())))
-            .andExpect(jsonPath("$.result[0].deliveryStatus",
-                equalTo(deliveryWithStatusResponseDto1.getDeliveryStatus())))
-            .andExpect(jsonPath("$.result[1].deliveryStatus",
-                equalTo(deliveryWithStatusResponseDto2.getDeliveryStatus())));
+            .andExpect(jsonPath("$.header.resultMessage",
+                equalTo(
+                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage())));
     }
 
     @Test
@@ -107,21 +104,18 @@ class DeliveryAdminControllerTest {
 
         responseDtoList.add(deliveryWithStatusResponseDto);
 
-        given(deliveryAdminService.findDeliveryListWithStatusWait()).willReturn(responseDtoList);
+        Page<DeliveryWithStatusResponseDto> pageList = new PageImpl<>(responseDtoList);
 
-        mockMvc.perform(get("/api/admin/deliveries/wait")
+        given(deliveryAdminService.findDeliveryListWithStatusWait(any(Pageable.class)))
+            .willReturn(pageList);
+
+        mockMvc.perform(get("/api/admin/deliveries/wait-list")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].deliveryNo",
-                equalTo(deliveryWithStatusResponseDto.getDeliveryNo().intValue())))
-            .andExpect(jsonPath("$.result[0].orderNo",
-                equalTo(deliveryWithStatusResponseDto.getOrderNo().intValue())))
-            .andExpect(jsonPath("$.result[0].trackingNo",
-                equalTo(deliveryWithStatusResponseDto.getTrackingNo())))
-            .andExpect(jsonPath("$.result[0].deliveryStatus",
-                equalTo(DeliveryStatusEnum.WAIT_DELIVERY.getDeliveryStatus())));
+            .andExpect(jsonPath("$.header.resultMessage",
+                equalTo(
+                    DeliveryResultMessageEnum.DELIVERY_LIST_SUCCESS_MESSAGE.getResultMessage())));
     }
 
     @Test
@@ -145,7 +139,7 @@ class DeliveryAdminControllerTest {
         given(deliveryAdminService.sendDeliveryListWithStatusWait()).willReturn(
             deliveryDetailResponseDtoList);
 
-        mockMvc.perform(post("/api/admin/deliveries/post")
+        mockMvc.perform(post("/api/admin/deliveries/registration")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated())

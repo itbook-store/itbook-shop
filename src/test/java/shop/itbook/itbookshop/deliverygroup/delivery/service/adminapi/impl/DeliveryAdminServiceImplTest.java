@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
@@ -11,9 +10,14 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,6 +26,8 @@ import shop.itbook.itbookshop.deliverygroup.delivery.adaptor.DeliveryAdaptor;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
+import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
+import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.dummy.DeliveryStatusDummy;
@@ -49,6 +55,8 @@ class DeliveryAdminServiceImplTest {
     DeliveryStatusRepository deliveryStatusRepository;
     @MockBean
     DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
+    @MockBean
+    ServerConfig serverConfig;
 
     @Test
     @DisplayName("서버에 배송 정보 리스트를 보내고 등록 성공")
@@ -74,16 +82,23 @@ class DeliveryAdminServiceImplTest {
             .trackingNo(testTrackingNo)
             .build();
 
+        List<Delivery> deliveryList = new ArrayList<>();
+        deliveryList.add(DeliveryDummy.getDelivery());
+
+        given(deliveryRepository.findDeliveryEntityListWithStatusWait()).willReturn(deliveryList);
+
         List<DeliveryDetailResponseDto> deliveryDetailResponseDtoList =
             new ArrayList<>();
 
         deliveryDetailResponseDtoList.add(deliveryResponseDto);
 
-        given(deliveryAdaptor.postDeliveryList(anyString(), any(HttpEntity.class))).willReturn(
+        given(deliveryAdaptor.postDeliveryList(any(), any(HttpEntity.class))).willReturn(
             deliveryDetailResponseDtoList);
         given((deliveryStatusRepository.findByDeliveryStatusEnum(
             any(DeliveryStatusEnum.class)))).willReturn(
             Optional.of(DeliveryStatusDummy.getDummyWait()));
+
+        given(serverConfig.getDeliveryUrl()).willReturn("url");
 
         List<DeliveryDetailResponseDto> responseDtoList =
             deliveryService.sendDeliveryListWithStatusWait();
@@ -107,11 +122,14 @@ class DeliveryAdminServiceImplTest {
         List<DeliveryWithStatusResponseDto> deliveryWithStatusResponseDtoList = new ArrayList<>();
         deliveryWithStatusResponseDtoList.add(deliveryWithStatusResponseDto);
 
-        given(deliveryRepository.findDeliveryListWithStatusWait()).willReturn(
-            deliveryWithStatusResponseDtoList);
+        Page<DeliveryWithStatusResponseDto> responseDtoPage =
+            new PageImpl<>(deliveryWithStatusResponseDtoList);
+
+        given(deliveryRepository.findDeliveryListWithStatusWait(any())).willReturn(
+            responseDtoPage);
 
         assertThat(
-            deliveryService.findDeliveryListWithStatusWait().get(0).getDeliveryStatus()).isEqualTo(
-            "배송 대기");
+            deliveryService.findDeliveryListWithStatusWait(any(Pageable.class))
+                .getContent()).isEqualTo(deliveryWithStatusResponseDtoList);
     }
 }

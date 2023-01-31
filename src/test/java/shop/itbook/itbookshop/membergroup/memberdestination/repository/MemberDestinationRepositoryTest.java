@@ -64,7 +64,7 @@ class MemberDestinationRepositoryTest {
     @DisplayName("멤버 번호로 해당 멤버의 배송지 정보를 가져오기 성공")
     void findMemberDestinationByMember_MemberNoSuccessTest() {
 
-        Member member = MemberDummy.getMember();
+        Member member = MemberDummy.getMember1();
         Membership membership = membershipRepository.getReferenceById(1);
         memberRepository.save(member);
 

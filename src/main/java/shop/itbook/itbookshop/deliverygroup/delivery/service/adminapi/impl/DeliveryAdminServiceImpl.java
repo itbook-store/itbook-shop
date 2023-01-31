@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
@@ -46,7 +45,6 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final DeliveryAdaptor<DeliveryDetailResponseDto> deliveryAdaptor;
     private final ServerConfig serverConfig;
-    private static final StringBuilder stringBuilder = new StringBuilder();
 
     /**
      * {@inheritDoc}
@@ -70,6 +68,8 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     @Override
     @Transactional
     public List<DeliveryDetailResponseDto> sendDeliveryListWithStatusWait() {
+
+        StringBuilder stringBuilder = new StringBuilder();
 
         List<Delivery> deliveryList = deliveryRepository.findDeliveryEntityListWithStatusWait();
 

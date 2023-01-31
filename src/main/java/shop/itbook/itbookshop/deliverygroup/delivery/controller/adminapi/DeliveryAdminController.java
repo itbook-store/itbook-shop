@@ -59,7 +59,7 @@ public class DeliveryAdminController {
      *
      * @return 상태가 배송대기인 배송 정보 리스트
      */
-    @GetMapping("/wait")
+    @GetMapping("/wait-list")
     public ResponseEntity<CommonResponseBody<PageResponse<DeliveryWithStatusResponseDto>>> getDeliveryListWithStatusWait(
         @PageableDefault Pageable pageable) {
 
@@ -83,7 +83,7 @@ public class DeliveryAdminController {
      *
      * @return 배송 등록 성공한 배송 정보들의 리스트
      */
-    @PostMapping("/post")
+    @PostMapping("/registration")
     public ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> addDeliveryListWithStatusWait() {
 
         CommonResponseBody<List<DeliveryDetailResponseDto>> commonResponseBody =
