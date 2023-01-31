@@ -156,7 +156,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByMemberIdAndIsSocial(email);
     }
 
-    @Transactional
     @Override
     @Transactional
     public Long socialMemberAdd(String email, String encodedEmail) {
