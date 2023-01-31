@@ -2,6 +2,9 @@ package shop.itbook.itbookshop.productgroup.product.controller.serviceapi;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +15,7 @@ import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCategoryResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
@@ -38,15 +42,16 @@ public class ProductServiceController {
      * @author 이하늬
      */
     @GetMapping()
-    public ResponseEntity<CommonResponseBody<List<ProductDetailsResponseDto>>> productList(
-        @RequestParam Boolean isFiltered) {
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
+        @PageableDefault Pageable pageable) {
 
-        List<ProductDetailsResponseDto> productList = productService.findProductList(isFiltered);
+        Page<ProductDetailsResponseDto> productList = productService.findProductListAdmin(pageable);
 
-        CommonResponseBody<List<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.GET_SUCCESS.getMessage()), productList);
+                    ProductResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse(productList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

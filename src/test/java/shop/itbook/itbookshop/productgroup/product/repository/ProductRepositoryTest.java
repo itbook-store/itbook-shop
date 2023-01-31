@@ -76,7 +76,9 @@ class ProductRepositoryTest {
     @DisplayName("모든 상품 리스트 조회 성공 테스트")
     void Find_ProductList() {
 
-        List<ProductDetailsResponseDto> productList = productRepository.findProductList();
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        Page<ProductDetailsResponseDto> productList =
+            productRepository.findProductListUser(pageable);
         Assertions.assertThat(productList).isNotEmpty();
 //        ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
 //

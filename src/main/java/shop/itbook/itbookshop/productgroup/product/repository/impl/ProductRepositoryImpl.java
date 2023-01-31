@@ -30,7 +30,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable) {
+    public Page<ProductDetailsResponseDto> findProductListAdmin(Pageable pageable) {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
@@ -44,6 +44,34 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListUser(Pageable pageable) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qBook)
+                .rightJoin(qBook.product, qProduct)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                .where(qProduct.isExposed.eq(true));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())

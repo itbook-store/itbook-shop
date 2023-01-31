@@ -1,5 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.fileservice.init;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.Objects;
 import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * 어플리케이션 구동 시 동작시킬 토큰매니저 클래스입니다.
+ * 애플리케이션 구동 시 동작시킬 토큰매니저 클래스입니다.
  * 오브젝트 스토리지 인증 토큰 발급을 요청하여 받아옵니다.
  *
  * @author 이하늬 * @since 1.0
@@ -39,7 +42,7 @@ public class TokenManager implements InitializingBean {
      * @return 발급 받은 오브젝트 스토리지 토큰을 반환합니다.
      * @author 이하늬
      */
-    public ItBookObjectStorageToken.Token requestToken() {
+    public Token requestToken() {
         String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
         String password = "itbook2023";
         String username = "109622@naver.com";
@@ -59,18 +62,30 @@ public class TokenManager implements InitializingBean {
             = restTemplate.exchange(AUTH_URL, HttpMethod.POST, httpEntity,
             ItBookObjectStorageToken.class);
 
-        ItBookObjectStorageToken.Token itBookObjectStorageToken =
+        Token itBookObjectStorageToken =
             response.getBody().getAccess().getToken();
 
         if (Objects.isNull(itBookObjectStorageToken)) {
             throw new InvalidTokenException();
         }
 
-        redisTemplate.opsForHash()
-            .put(TOKEN_NAME, "tokenId", itBookObjectStorageToken.getId());
-        redisTemplate.opsForHash()
-            .put(TOKEN_NAME, "tokenExpires",
-                itBookObjectStorageToken.getExpires());
+//        redisTemplate.opsForHash()
+//            .put(TOKEN_NAME, "tokenId", itBookObjectStorageToken.getId());
+//        redisTemplate.opsForHash()
+//            .put(TOKEN_NAME, "tokenExpires",
+//                itBookObjectStorageToken.getExpires());
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            redisTemplate.opsForHash()
+                .put(TOKEN_NAME, "token",
+                    mapper.registerModule(new JavaTimeModule())
+                        .writeValueAsString(itBookObjectStorageToken));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
 
         return itBookObjectStorageToken;
     }

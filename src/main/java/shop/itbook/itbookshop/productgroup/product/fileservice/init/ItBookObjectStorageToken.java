@@ -1,5 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.fileservice.init;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -9,18 +12,9 @@ import lombok.Data;
  * @since 1.0
  */
 @Data
-public class ItBookObjectStorageToken {
+public class ItBookObjectStorageToken implements Serializable {
     private Access access;
 
-    @Data
-    static class Access {
-        private Token token;
-    }
-
-    @Data
-    public static class Token {
-        private String id;
-        private String expires;
-    }
-
 }
+
+
