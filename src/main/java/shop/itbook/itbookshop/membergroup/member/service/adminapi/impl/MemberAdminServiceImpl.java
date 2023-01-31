@@ -80,8 +80,6 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      */
     @Override
     public List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId) {
-        System.out.println(
-            ">>" + memberRepository.findMemberListByMemberId(memberId).size());
         return memberRepository.findMemberListByMemberId(memberId);
     }
 

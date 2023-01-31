@@ -44,6 +44,12 @@ public class MemberRole {
     @JoinColumn(name = "role_no", nullable = false)
     private Role role;
 
+    public MemberRole(Member member, Role role) {
+        this.member = member;
+        this.role = role;
+        this.setPk(new MemberRole.Pk(member.getMemberNo(), role.getRoleNo()));
+    }
+
     /**
      * The type Pk. 회원 권한테이블의 복합키를 주키로 하기위한 클래스입니다.
      *
