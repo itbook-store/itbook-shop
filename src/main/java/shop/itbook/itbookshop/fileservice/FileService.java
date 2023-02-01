@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.fileservice.init.Token;
 import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.fileservice.init.TokenManager;
 
 
 /**
@@ -28,7 +29,7 @@ public class FileService {
     @Value("${object.storage.container-name}")
     private String containerName;
 
-    private final TokenInterceptor tokenInterceptor;
+    private final TokenManager tokenManager;
 
     /**
      * 파일 업로드 기능을 담당하는 메서드입니다.
@@ -40,7 +41,7 @@ public class FileService {
      */
     public String uploadFile(MultipartFile multipartFile,
                              String folderPath) {
-        Token token = tokenInterceptor.getToken();
+        Token token = tokenManager.getToken();
 
         String tokenId = token.getId();
 
