@@ -61,7 +61,7 @@ public class SearchProductTransfer {
             .fixedPrice(searchProduct.getFixedPrice())
             .increasePointPercent(searchProduct.getIncreasePointPercent())
             .discountPercent(searchProduct.getDiscountPercent())
-            .selledPrice((long) (searchProduct.getFixedPrice() * ((100 - searchProduct.getDiscountPercent()) * 0.01)))
+//            .selledPrice((long) (searchProduct.getFixedPrice() * ((100 - searchProduct.getDiscountPercent()) * 0.01)))
             .build();
     }
 }

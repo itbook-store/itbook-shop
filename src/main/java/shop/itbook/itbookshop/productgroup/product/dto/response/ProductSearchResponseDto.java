@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.productgroup.product.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 상품 검색 결과값을 반환하는 DTO 입니다.
@@ -11,7 +12,7 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
-@AllArgsConstructor
+@Setter
 @Builder
 public class ProductSearchResponseDto {
 
@@ -27,5 +28,5 @@ public class ProductSearchResponseDto {
     private Integer increasePointPercent;
     private Double discountPercent;
     private Long rawPrice;
-    private Long selledPrice;
+//    private Long selledPrice;
 }
