@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.coupongroup.coupon.controller.adminapi;
 
 import java.util.List;
+import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
@@ -29,6 +32,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 public class CouponAdminController {
 
     private final CouponService couponService;
+    private final CategoryCouponService categoryCouponService;
 
     /**
      * 쿠폰 탬플릿을 발급하는 메소드입니다.
@@ -43,6 +47,11 @@ public class CouponAdminController {
         CouponNoResponseDto couponNoResponseDto =
             new CouponNoResponseDto(couponService.addCoupon(couponRequestDto));
 
+        if (!Objects.isNull(couponRequestDto.getCategoryNo())) {
+            categoryCouponService.addCategoryCoupon(
+                new CategoryCouponRequestDto(couponNoResponseDto.getCouponNo(),
+                    couponRequestDto.getCategoryNo()));
+        }
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
@@ -57,7 +66,7 @@ public class CouponAdminController {
      * @return 쿠폰 정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> categoryList() {
+    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> couponList() {
 
         CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(

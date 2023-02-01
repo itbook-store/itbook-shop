@@ -11,4 +11,5 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCo
  */
 @NoRepositoryBean
 public interface CustomCategoryCouponRepository {
+    Page<CategoryCouponListDto> findCategoryCouponList(Pageable pageable);
 }

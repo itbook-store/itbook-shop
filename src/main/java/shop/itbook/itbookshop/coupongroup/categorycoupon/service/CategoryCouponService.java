@@ -15,4 +15,5 @@ public interface CategoryCouponService {
 
     void deleteCategoryCoupon(Long couponNo);
 
+    Page<CategoryCouponListDto> findCategoryCouponList(Pageable pageable);
 }

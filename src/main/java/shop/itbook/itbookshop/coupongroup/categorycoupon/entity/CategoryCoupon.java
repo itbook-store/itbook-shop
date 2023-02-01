@@ -40,4 +40,10 @@ public class CategoryCoupon {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_no", nullable = false)
     private Category category;
+
+
+    public CategoryCoupon(Long couponNo, Category category) {
+        this.couponNo = couponNo;
+        this.category = category;
+    }
 }
