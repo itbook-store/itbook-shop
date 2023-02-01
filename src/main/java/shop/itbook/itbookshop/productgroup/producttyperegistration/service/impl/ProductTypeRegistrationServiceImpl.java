@@ -1,15 +1,16 @@
-package shop.itbook.itbookshop.productgroup.producttyperegistration.service.adminapi.impl;
+package shop.itbook.itbookshop.productgroup.producttyperegistration.service.impl;
 
-import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.exception.ProductTypeRegistrationNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.repository.ProductTypeRegistrationRepository;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.service.adminapi.ProductTypeRegistrationAdminService;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
  * ProductTypeAdminService 인터페이스를 구현한 상품유형 Service 클래스입니다.
@@ -20,8 +21,8 @@ import shop.itbook.itbookshop.productgroup.producttyperegistration.service.admin
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ProductTypeRegistrationAdminServiceImpl implements
-    ProductTypeRegistrationAdminService {
+public class ProductTypeRegistrationServiceImpl implements
+    ProductTypeRegistrationService {
 
     private final ProductTypeRegistrationRepository productTypeRegistrationRepository;
 
@@ -29,10 +30,11 @@ public class ProductTypeRegistrationAdminServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<FindProductTypeResponseDto> findProductTypeNameList(Long productNo) {
-        List<FindProductTypeResponseDto> productTypeListWithProductNo =
-            productTypeRegistrationRepository.findProductTypeListWithProductNo(productNo);
-        
+    public Page<FindProductTypeResponseDto> findProductTypeNameList(Pageable pageable,
+                                                                    Long productNo) {
+        Page<FindProductTypeResponseDto> productTypeListWithProductNo =
+            productTypeRegistrationRepository.findProductTypeListWithProductNo(pageable, productNo);
+
         if (Objects.isNull(productTypeListWithProductNo)) {
             throw new ProductTypeRegistrationNotFoundException();
         }
@@ -44,9 +46,12 @@ public class ProductTypeRegistrationAdminServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public List<FindProductResponseDto> findProductList(Integer productTypeNo) {
-        List<FindProductResponseDto> productListWithProductTypeNo =
-            productTypeRegistrationRepository.findProductListWithProductTypeNo(productTypeNo);
+    public Page<FindProductResponseDto> findProductList(Pageable pageable, Integer productTypeNo,
+                                                        Boolean isExposed) {
+        Page<FindProductResponseDto> productListWithProductTypeNo =
+            productTypeRegistrationRepository.findProductListWithProductTypeNo(pageable,
+                productTypeNo,
+                isExposed);
 
         if (Objects.isNull(productListWithProductTypeNo)) {
             throw new ProductTypeRegistrationNotFoundException();

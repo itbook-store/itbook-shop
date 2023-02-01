@@ -102,4 +102,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(product.fetchOne());
     }
+
+    
 }
