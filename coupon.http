@@ -1,0 +1,16 @@
+GET /api/coupon/category-coupon
+Host: localhost:8082
+Content-Type: application/json
+
+
+###
+
+POST /api/admin/coupon/category-coupon/add
+Host: localhost:8082
+Content-Type: application/json
+
+{
+  "couponNo" : 57,
+  "categoryNo" : 7
+}
+

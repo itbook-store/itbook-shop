@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCo
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CustomCategoryCouponRepository;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 
 /**
@@ -26,5 +27,32 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
         super(CategoryCoupon.class);
     }
 
+    @Override
+    public Page<CategoryCouponListDto> findCategoryCouponList(Pageable pageable) {
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCoupon qCoupon = QCoupon.coupon;
+        QCategory qCategory = QCategory.category;
+
+        JPQLQuery<CategoryCoupon> jpqlQuery = from(qCategoryCoupon);
+
+        JPQLQuery<CategoryCouponListDto> jpqlQuery1 = from(qCategoryCoupon)
+            .select(Projections.fields(CategoryCouponListDto.class,
+                Projections.fields(CouponListResponseDto.class, qCoupon.couponNo,
+                    qCoupon.amount, qCoupon.point, qCoupon.percent,
+                    qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt).as("coupon"),
+                Projections.fields(CategoryListResponseDto.class, qCategory.categoryNo,
+                    qCategory.parentCategory.categoryNo.as("parentCategoryNo"), qCategory.categoryName,
+                    qCategory.isHidden, qCategory.level, qCategory.sequence).as("category")))
+            .innerJoin(qCategoryCoupon.coupon, qCoupon)
+            .innerJoin(qCategoryCoupon.category, qCategory)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize());
+
+        List<CategoryCouponListDto> categoryCouponList = jpqlQuery1
+            .fetch();
+
+        return PageableExecutionUtils.getPage(categoryCouponList, pageable, jpqlQuery::fetchCount);
+
+    }
 
 }
