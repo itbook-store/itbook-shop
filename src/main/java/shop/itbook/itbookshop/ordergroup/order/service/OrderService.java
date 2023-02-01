@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.adminapi;
+package shop.itbook.itbookshop.ordergroup.order.service;
 
 /**
  * 주문 관련 비즈니스 로직을 담당합니다.
@@ -6,5 +6,5 @@ package shop.itbook.itbookshop.ordergroup.order.service.adminapi;
  * @author 정재원
  * @since 1.0
  */
-public interface OrderAdminService {
+public interface OrderService {
 }

@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
@@ -41,6 +42,9 @@ class CouponAdminControllerTest {
     @MockBean
     CouponService couponService;
 
+    @MockBean
+    CategoryCouponService categoryCouponService;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -48,6 +52,7 @@ class CouponAdminControllerTest {
     void coupon_add_success_test() throws Exception {
         //given
         CouponRequestDto couponRequestDto = new CouponRequestDto();
+        ReflectionTestUtils.setField(couponRequestDto, "couponType", "테스트쿠폰");
         ReflectionTestUtils.setField(couponRequestDto, "name", "쿠폰이름");
         ReflectionTestUtils.setField(couponRequestDto, "amount", 1000L);
         ReflectionTestUtils.setField(couponRequestDto, "percent", 0);

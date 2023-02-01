@@ -6,16 +6,20 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+import shop.itbook.itbookshop.config.ServerConfig;
 import shop.itbook.itbookshop.deliverygroup.delivery.adaptor.DeliveryAdaptor;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
+import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
 import shop.itbook.itbookshop.deliverygroup.delivery.transfer.DeliveryTransfer;
@@ -40,26 +44,22 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     private final DeliveryStatusRepository deliveryStatusRepository;
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final DeliveryAdaptor<DeliveryDetailResponseDto> deliveryAdaptor;
-    @Value("${itbook-server-url.delivery-url}")
-    private String deliveryUrl;
-    @Value("${itbook-server-url.delivery-post-path}")
-    private String deliveryPostPath;
-    private static final StringBuilder stringBuilder = new StringBuilder();
+    private final ServerConfig serverConfig;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<DeliveryWithStatusResponseDto> findDeliveryListWithStatus() {
-        return deliveryRepository.findDeliveryListWithStatus();
+    public Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatus(Pageable pageable) {
+        return deliveryRepository.findDeliveryListWithStatus(pageable);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait() {
-        return deliveryRepository.findDeliveryListWithStatusWait();
+    public Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait(Pageable pageable) {
+        return deliveryRepository.findDeliveryListWithStatusWait(pageable);
     }
 
     /**
@@ -69,7 +69,13 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     @Transactional
     public List<DeliveryDetailResponseDto> sendDeliveryListWithStatusWait() {
 
+        StringBuilder stringBuilder = new StringBuilder();
+
         List<Delivery> deliveryList = deliveryRepository.findDeliveryEntityListWithStatusWait();
+
+        if (deliveryList.isEmpty()) {
+            throw new DeliveryNoWaitStatusException();
+        }
 
         HttpEntity<List<DeliveryServerRequestDto>> http =
             new HttpEntity<>(
@@ -77,14 +83,14 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
                     .map(DeliveryTransfer::entityToServerRequestDto).collect(
                         Collectors.toList()));
 
-        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder
-            .fromUriString(stringBuilder.append(deliveryUrl).append(deliveryPostPath).toString())
-            .encode();
-
-        stringBuilder.setLength(0);
+        UriComponents uriComponents = UriComponentsBuilder
+            .fromUriString(serverConfig.getDeliveryUrl())
+            .path(serverConfig.getDeliveryPostPath())
+            .encode()
+            .build();
 
         List<DeliveryDetailResponseDto> result =
-            deliveryAdaptor.postDeliveryList(uriComponentsBuilder.toUriString(), http);
+            deliveryAdaptor.postDeliveryList(uriComponents.toUri(), http);
 
         Queue<DeliveryDetailResponseDto> deliveryDetailResponseDtoQueue =
             new LinkedList<>(result);
@@ -95,7 +101,8 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
 
         deliveryList.forEach(delivery -> {
 
-            delivery.setTrackingNo(deliveryDetailResponseDtoQueue.peek().getTrackingNo());
+            delivery.setTrackingNo(
+                Objects.requireNonNull(deliveryDetailResponseDtoQueue.peek()).getTrackingNo());
 
             DeliveryStatusHistory deliveryStatusHistory = DeliveryStatusHistory.builder()
                 .delivery(delivery)
