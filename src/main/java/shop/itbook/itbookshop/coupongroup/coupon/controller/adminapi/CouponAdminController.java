@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -66,13 +68,13 @@ public class CouponAdminController {
      * @return 쿠폰 정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> couponList() {
+    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponList(Pageable pageable) {
 
-        CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
+        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                couponService.findByCouponList());
+                couponService.findByCouponList(pageable));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

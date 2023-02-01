@@ -9,13 +9,10 @@ import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
-import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 
 /**
  * @author 송다혜
@@ -48,7 +45,7 @@ public class CategoryCouponServiceImpl implements CategoryCouponService {
     }
 
     @Override
-    public Page<CategoryCouponListDto> findCategoryCouponList(Pageable pageable) {
+    public Page<CouponListResponseDto> findCategoryCouponList(Pageable pageable) {
 
         return categoryCouponRepository.findCategoryCouponList(pageable);
     }
