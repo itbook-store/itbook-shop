@@ -23,7 +23,6 @@ import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 @WebMvcTest(CategoryAdminController.class)
 class CategoryRestControllerAdvisorTest {
@@ -34,8 +33,6 @@ class CategoryRestControllerAdvisorTest {
     @MockBean
     CategoryService categoryService;
 
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @Autowired
     MockMvc mvc;

@@ -27,7 +27,6 @@ import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithSt
 import shop.itbook.itbookshop.deliverygroup.delivery.resultmessageenum.DeliveryResultMessageEnum;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.adminapi.DeliveryAdminService;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
  * @author 정재원
@@ -44,9 +43,6 @@ class DeliveryAdminControllerTest {
 
     @MockBean
     DeliveryAdminService deliveryAdminService;
-
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @Test
     @DisplayName("모든 배송 정보 성공적 반환")

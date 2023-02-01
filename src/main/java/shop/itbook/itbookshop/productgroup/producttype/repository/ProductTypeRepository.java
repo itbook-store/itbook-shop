@@ -10,5 +10,4 @@ import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
  * @since 1.0
  */
 public interface ProductTypeRepository extends JpaRepository<ProductType, Integer> {
-
 }
