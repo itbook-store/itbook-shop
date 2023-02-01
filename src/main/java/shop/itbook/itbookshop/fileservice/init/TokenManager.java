@@ -1,11 +1,15 @@
 package shop.itbook.itbookshop.fileservice.init;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 import java.util.Objects;
 import lombok.Data;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -30,10 +34,20 @@ public class TokenManager implements InitializingBean {
     private final RestTemplate restTemplate = new RestTemplate();
     private final RedisTemplate<String, String> redisTemplate;
     public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
+    @Value("${object.storage.tenant-id}")
+    private String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
+    @Value("${object-storage.password}")
+    private String password = "itbook2023";
+    @Value("${object-storage.username}")
+    private String username = "109622@naver.com";
 
     @Override
     public void afterPropertiesSet() {
-        requestToken();
+        try {
+            getToken();
+        } catch (InvalidTokenException e) {
+            requestToken();
+        }
     }
 
     /**
@@ -43,9 +57,6 @@ public class TokenManager implements InitializingBean {
      * @author 이하늬
      */
     public Token requestToken() {
-        String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
-        String password = "itbook2023";
-        String username = "109622@naver.com";
 
         TokenRequestDto tokenRequest = new TokenRequestDto();
         tokenRequest.getAuth().setTenantId(tenantId);
@@ -65,7 +76,8 @@ public class TokenManager implements InitializingBean {
         Token itBookObjectStorageToken = response.getBody().getAccess().getToken();
 
         if (Objects.isNull(itBookObjectStorageToken)) {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException(
+                TokenFailureMessage.FAILURE_INVALID_MESSAGE.getMessage());
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -76,11 +88,35 @@ public class TokenManager implements InitializingBean {
                     mapper.registerModule(new JavaTimeModule())
                         .writeValueAsString(itBookObjectStorageToken));
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new InvalidTokenException(
+                TokenFailureMessage.FAILURE_REQUEST_MESSAGE.getMessage());
         }
 
 
         return itBookObjectStorageToken;
+    }
+
+
+    /**
+     * 레디스에서 토큰을 가져오는 메서드입니다.
+     *
+     * @return 레디스에서 얻은 값을 반환합니다.
+     * @author 이하늬
+     */
+    public Token getToken() {
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+        try {
+            return mapper.readValue((String) redisTemplate.opsForHash()
+                .get(TokenManager.TOKEN_NAME, "token"), Token.class);
+        } catch (IOException e) {
+            throw new InvalidTokenException(
+                TokenFailureMessage.FAILURE_INVALID_MESSAGE.getMessage());
+
+        }
     }
 
 

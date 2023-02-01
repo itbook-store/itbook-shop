@@ -52,7 +52,7 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName))
-                .where(qCategory.categoryNo.eq(categoryNo));
+                .where(qCategory.categoryNo.eq(categoryNo).and(qProduct.isExposed.eq(true)));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
