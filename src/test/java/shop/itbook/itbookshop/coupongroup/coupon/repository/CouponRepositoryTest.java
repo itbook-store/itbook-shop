@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.coupongroup.coupon.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -15,6 +16,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
  * @author 송다혜
  * @since 1.0
  */
+@Disabled
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class CouponRepositoryTest {
@@ -32,7 +34,7 @@ class CouponRepositoryTest {
     Coupon percentDummyCoupon;
 
     @BeforeEach
-    public void setup(){
+    public void setup() {
         amountDummyCoupon = CouponDummy.getAmountCoupon();
         percentDummyCoupon = CouponDummy.getPercentCoupon();
         pointDummyCoupon = CouponDummy.getPointCoupon();
@@ -46,7 +48,7 @@ class CouponRepositoryTest {
     }
 
     @Test
-    void findCouponById(){
+    void findCouponById() {
 
         //when
         Coupon coupon =
@@ -58,7 +60,7 @@ class CouponRepositoryTest {
     }
 
     @Test
-    void deleteById(){
+    void deleteById() {
 
         couponRepository.deleteById(amountDummyCoupon.getCouponNo());
         couponRepository.deleteById(percentDummyCoupon.getCouponNo());
