@@ -32,11 +32,6 @@ public class MembershipTransfer {
             .build();
     }
 
-    /*public static Membership ResponseDtoToEntity(MembershipResponseDto membershipResponseDto) {
-        return new Membership().builder()
-            .membershipGrade().build();
-    }*/
-
     /**
      * 멤버십 엔티티를 dto로 변경하는 메서드입니다.
      *

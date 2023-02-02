@@ -60,9 +60,11 @@ public class MembershipHistory {
      * @author 강명관
      */
     @Builder
-    public MembershipHistory(Member member, Membership membership, Long monthlyUsageAmount) {
+    public MembershipHistory(Member member, Membership membership, Long monthlyUsageAmount,
+                             LocalDateTime membershipHistoryCreatedAt) {
         this.member = member;
         this.membership = membership;
         this.monthlyUsageAmount = monthlyUsageAmount;
+        this.membershipHistoryCreatedAt = membershipHistoryCreatedAt;
     }
 }

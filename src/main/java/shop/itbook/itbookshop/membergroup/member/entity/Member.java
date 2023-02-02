@@ -50,13 +50,13 @@ public class Member {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "member_id", nullable = false, unique = true)
     private String memberId;
 
-    @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "is_man", nullable = false)
@@ -65,16 +65,16 @@ public class Member {
     @Column(name = "birth", nullable = false)
     private LocalDateTime birth;
 
-    @Column(name = "password", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "member_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "member_created_at", nullable = false)
     private LocalDateTime memberCreatedAt;
 
     @Column(name = "is_social")
