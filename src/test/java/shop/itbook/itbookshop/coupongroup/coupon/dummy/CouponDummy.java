@@ -19,7 +19,8 @@ public class CouponDummy {
             .couponCreatedAt(LocalDateTime.now())
             .couponExpiredAt(LocalDateTime.of(2023,01,31,0,0))
             .code(UUID.randomUUID().toString())
-            .isReserved(false)
+            .isDuplicateUse(false)
+            .totalQuantity(1)
             .build();
     }
 
@@ -33,7 +34,8 @@ public class CouponDummy {
             .couponCreatedAt(LocalDateTime.now())
             .couponExpiredAt(LocalDateTime.of(2023,01,31,0,0))
             .code(UUID.randomUUID().toString())
-            .isReserved(false)
+            .isDuplicateUse(false)
+            .totalQuantity(1)
             .build();
     }
 
@@ -48,7 +50,8 @@ public class CouponDummy {
             .couponCreatedAt(LocalDateTime.now())
             .couponExpiredAt(LocalDateTime.of(2023,01,31,0,0))
             .code(UUID.randomUUID().toString())
-            .isReserved(false)
+            .isDuplicateUse(false)
+
             .build();
     }
 }

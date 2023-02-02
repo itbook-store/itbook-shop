@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.coupongroup.usagestatus.cunverter.UsageStatusEnumConverter;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
-import shop.itbook.itbookshop.productgroup.producttype.converter.impl.ProductTypeEnumConverter;
 
 /**
  * 쿠폰 적용 범위 에 대한 엔터티 입니다.
@@ -35,7 +35,7 @@ public class UsageStatus {
     @Column(name = "usage_status_no", nullable = false)
     private Integer usageStatusNo;
 
-    @Convert(converter = ProductTypeEnumConverter.class)
+    @Convert(converter = UsageStatusEnumConverter.class)
     @Enumerated(EnumType.STRING)
     @Column(name = "usage_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private UsageStatusEnum usageStatusEnum;

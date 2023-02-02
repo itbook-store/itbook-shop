@@ -59,9 +59,9 @@ public class CouponRequestDto {
     @Length(min = 1, max = 255, message = "쿠폰의 코드 길이는 255자를 넘을 수 없습니다.")
     private String code;
 
-    @NotNull(message = "예약 쿠폰여부는 공백 일 수 없습니다.")
-    private boolean isReserved;
+    @NotNull(message = "중복 쿠폰여부는 공백 일 수 없습니다.")
+    private boolean isDuplicateUse;
 
     @Positive(message = "쿠폰 발급수량이 음수 일 수는 없습니다.")
-    private Long quantity;
+    private Integer totalQuantity;
 }

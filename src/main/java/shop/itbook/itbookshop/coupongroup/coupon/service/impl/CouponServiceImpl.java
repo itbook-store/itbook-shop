@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundExcepti
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
+import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
  * 쿠폰의
@@ -26,6 +27,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
+    private final CouponTypeService couponTypeService;
 
     @Override
     @Transactional
@@ -33,7 +35,7 @@ public class CouponServiceImpl implements CouponService {
 
         Coupon coupon = CouponTransfer.dtoToEntity(couponRequestDto);
         coupon.setCode(UUID.randomUUID().toString());
-
+        coupon.setCouponType(couponTypeService.findCouponType(couponRequestDto.getCouponType()));
         return couponRepository.save(coupon).getCouponNo();
     }
 
