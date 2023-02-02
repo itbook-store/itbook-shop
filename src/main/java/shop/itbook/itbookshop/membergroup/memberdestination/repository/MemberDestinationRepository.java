@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.memberdestination.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
 
@@ -11,5 +12,6 @@ import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestina
  * @since 1.0
  */
 public interface MemberDestinationRepository
-    extends JpaRepository<MemberDestination, Long>, CustomMemberDestinationRepository {
+    extends JpaRepository<MemberDestination, Long> {
+    Optional<MemberDestination> findById(Long recipientDestinationNo);
 }

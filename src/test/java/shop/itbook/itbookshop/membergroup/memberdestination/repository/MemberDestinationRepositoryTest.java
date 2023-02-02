@@ -13,14 +13,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
-import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.dummy.MemberDestinationDummy;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
-import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
-import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
-import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 
 /**
@@ -42,41 +38,20 @@ class MemberDestinationRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
 
-    MemberDestination memberDestination;
-
     @BeforeEach
     void setUp() {
-
-//        Member member = MemberDummy.getMember();
-//        member.setMembership(MembershipDummy.getMembership());
-//        member.setMemberStatus(MemberStatusDummy.getMemberStatus());
-
-//        membershipRepository.save(MembershipDummy.getMembership());
-//        memberRepository.save(member);
-
-        memberDestination = MemberDestinationDummy.getMemberDestination();
-//        memberDestination.setMember(member);
-
+        memberRepository.save(MemberDummy.getMember1());
     }
 
-    @Disabled
     @Test
     @DisplayName("멤버 번호로 해당 멤버의 배송지 정보를 가져오기 성공")
     void findMemberDestinationByMember_MemberNoSuccessTest() {
+        MemberDestination memberDestination = MemberDestinationDummy.getMemberDestination();
 
-        Member member = MemberDummy.getMember1();
-        Membership membership = membershipRepository.getReferenceById(1);
-        memberRepository.save(member);
+        MemberDestination savedMemberDestination =
+            memberDestinationRepository.save(MemberDestinationDummy.getMemberDestination());
 
-        testEntityManager.flush();
-        testEntityManager.clear();
-
-        memberDestination.setMember(member);
-        memberDestinationRepository.save(memberDestination);
-
-        assertThat(memberDestinationRepository.findMemberDestinationResponseDtoByMemberNo(
-                member.getMemberNo()).get(1)
-            .getDetailAddress()).isEqualTo(
-            memberDestination.getRecipientAddressDetails());
+        assertThat(savedMemberDestination.getRecipientDestinationNo()).isEqualTo(
+            memberDestination.getRecipientDestinationNo());
     }
 }

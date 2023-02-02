@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.transfer;
 
-import java.util.List;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.request.DeliveryServerRequestDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
@@ -44,7 +43,7 @@ public class DeliveryTransfer {
             .orderNo(delivery.getOrder().getOrderNo())
             .receiverName(delivery.getOrder().getMemberDestination().getRecipientName())
             .receiverAddress(
-                delivery.getOrder().getMemberDestination().getDeliveryDestination().getAddress())
+                delivery.getOrder().getMemberDestination().getRoadNameAddress())
             .receiverDetailAddress(
                 delivery.getOrder().getMemberDestination().getRecipientAddressDetails())
             .receiverPhoneNumber(
@@ -63,7 +62,7 @@ public class DeliveryTransfer {
         return DeliveryServerRequestDto.builder()
             .orderNo(order.getOrderNo())
             .receiverName(order.getMemberDestination().getRecipientName())
-            .receiverAddress(order.getMemberDestination().getDeliveryDestination().getAddress())
+            .receiverAddress(order.getMemberDestination().getRoadNameAddress())
             .receiverDetailAddress(order.getMemberDestination().getRecipientAddressDetails())
             .receiverPhoneNumber(order.getMemberDestination().getRecipientPhoneNumber())
             .build();

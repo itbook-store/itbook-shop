@@ -65,16 +65,16 @@ public class Member {
     @Column(name = "birth", nullable = false)
     private LocalDateTime birth;
 
-    @Column(name = "password", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "member_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "member_created_at", nullable = false)
     private LocalDateTime memberCreatedAt;
 
     @Column(name = "is_social")
