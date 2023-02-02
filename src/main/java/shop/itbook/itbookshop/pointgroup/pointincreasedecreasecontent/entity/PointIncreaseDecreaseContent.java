@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.increase.increasepointplace.entity;
+package shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.pointgroup.increase.increasepointplace.increasepointplaceenum.IncreasePointPlaceEnum;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
  * 포인트 적립처 상태를 저장하기 위한 테이블과 매핑되는 엔티티클래스입니다.
@@ -25,16 +25,19 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointplace.increasepoi
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "increase_point_place")
-public class IncreasePointPlace {
+@Table(name = "point_increase_decrease_content")
+public class PointIncreaseDecreaseContent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "increase_point_place_no")
-    private Integer pointIncreasePlaceNo;
+    @Column(name = "point_increase_decrease_content_no")
+    private Integer pointIncreaseDecreaseContentNo;
 
-    @Column(name = "increase_point_place_name", columnDefinition = "varchar(255)",
+    @Column(name = "content", columnDefinition = "varchar(255)",
         nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private IncreasePointPlaceEnum increasePointPlaceEnum;
+    private PointIncreaseDecreaseContentEnum contentEnum;
+
+    @Column(name = "is_decrease")
+    private Boolean isDecrease;
 }
