@@ -22,7 +22,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  * @since 1.0
  */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductRepositoryTest {
 
     @Autowired
@@ -32,7 +32,6 @@ class ProductRepositoryTest {
     TestEntityManager entityManager;
 
     Product dummyProductSuccess;
-//    static final Integer DATA_SIZE = 7;
 
     @BeforeEach
     void setUp() {
@@ -80,12 +79,12 @@ class ProductRepositoryTest {
         Page<ProductDetailsResponseDto> productList =
             productRepository.findProductListUser(pageable);
         Assertions.assertThat(productList).isNotEmpty();
-//        ProductDetailsResponseDto productDetailsResponseDtoActual = productList.get(DATA_SIZE);
-//
-//        Assertions.assertThat(productList).hasSize(DATA_SIZE + 1);
-//        Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
-//            .isEqualTo(dummyProductSuccess.getProductNo());
-//        Assertions.assertThat(productDetailsResponseDtoActual.getIsExposed())
-//            .isEqualTo(dummyProductSuccess.getIsExposed());
+        ProductDetailsResponseDto productDetailsResponseDtoActual = productList.getContent().get(0);
+
+        Assertions.assertThat(productList).hasSize(1);
+        Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
+            .isEqualTo(dummyProductSuccess.getProductNo());
+        Assertions.assertThat(productDetailsResponseDtoActual.getIsExposed())
+            .isEqualTo(dummyProductSuccess.getIsExposed());
     }
 }

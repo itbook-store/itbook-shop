@@ -59,21 +59,30 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
      * {@inheritDoc}
      */
     @Override
-    public Page<FindProductResponseDto> findProductListWithProductTypeNo(Pageable pageable,
-                                                                         Integer productTypeNo,
-                                                                         Boolean isExposed) {
+    public Page<ProductDetailsResponseDto> findProductListWithProductTypeNo(Pageable pageable,
+                                                                            Integer productTypeNo,
+                                                                            Boolean isExposed) {
         QProductTypeRegistration qProductTypeRegistration =
             QProductTypeRegistration.productTypeRegistration;
         QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
 
-        JPQLQuery<FindProductResponseDto> productListQuery =
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
             from(qProductTypeRegistration)
                 .innerJoin(qProductTypeRegistration.product, qProduct)
-                .select(Projections.constructor(FindProductResponseDto.class, qProduct))
+                .innerJoin(qProduct, qBook.product)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
                 .where(qProductTypeRegistration.productType.productTypeNo.eq(productTypeNo)
                     .and(qProduct.isExposed).eq(isExposed));
 
-        List<FindProductResponseDto> productList =
+        List<ProductDetailsResponseDto> productList =
             productListQuery.offset(pageable.getOffset())
                 .limit(pageable.getPageSize()).fetch();
 
@@ -85,13 +94,13 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findNewProductListUser(Pageable pageable) {
+    public Page<ProductDetailsResponseDto> findNewBookListUser(Pageable pageable) {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
             from(qBook)
-                .rightJoin(qBook.product, qProduct)
+                .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
@@ -99,7 +108,35 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName))
-                .where(qProduct.isExposed.eq(true))
+                .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)))
+                .where(qProduct.isExposed.eq(true));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qBook).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findNewBookListAdmin(Pageable pageable) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qBook)
+                .innerJoin(qBook.product, qProduct)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
                 .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)));
 
         List<ProductDetailsResponseDto> productList = productListQuery
@@ -107,6 +144,63 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
             .limit(pageable.getPageSize()).fetch();
 
         return PageableExecutionUtils.getPage(productList, pageable,
-            () -> from(qProduct).fetchCount());
+            () -> from(qBook).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findDiscountBookListUser(Pageable pageable) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qBook)
+                .innerJoin(qBook.product, qProduct)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                .where(qProduct.discountPercent.ne(0.0))
+                .where(qProduct.isExposed.eq(true));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qBook).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findDiscountBookListAdmin(Pageable pageable) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qBook)
+                .innerJoin(qBook.product, qProduct)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                .where(qProduct.discountPercent.ne(0.0));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qBook).fetchCount());
     }
 }

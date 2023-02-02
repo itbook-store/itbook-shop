@@ -38,19 +38,19 @@ public class Product {
     @Column(name = "product_no", nullable = false)
     private Long productNo;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "simple_description", nullable = false)
     private String simpleDescription;
 
-    @Column(name = "details_description", columnDefinition = "text")
+    @Column(name = "details_description")
     private String detailsDescription;
 
-    @Column(name = "stock", nullable = false, columnDefinition = "integer default 0")
+    @Column(name = "stock", nullable = false)
     private Integer stock;
 
-    @Column(name = "product_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "product_created_at", nullable = false)
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_exposed", nullable = false)
@@ -59,10 +59,10 @@ public class Product {
     @Column(name = "is_force_sold_out", nullable = false)
     private Boolean isForceSoldOut;
 
-    @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
+    @Column(name = "thumbnail_url", nullable = false)
     private String thumbnailUrl;
 
-    @Column(name = "daily_hits", nullable = false, columnDefinition = "bigint default 0")
+    @Column(name = "daily_hits", nullable = false)
     private Long dailyHits;
 
     @Column(name = "fixed_price", nullable = false)
@@ -72,7 +72,7 @@ public class Product {
         columnDefinition = "integer default 0")
     private Integer increasePointPercent;
 
-    @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
+    @Column(name = "discount_percent", nullable = false)
     private Double discountPercent;
 
     @Column(name = "raw_price", nullable = false)
@@ -132,6 +132,7 @@ public class Product {
         this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
         this.isPointApplying = isPointApplying;
         this.isSubscription = isSubscription;
+        this.dailyHits = 0L;
     }
 
 }

@@ -38,4 +38,5 @@ public interface ProductRepositoryCustom {
      * @author 이하늬
      */
     Optional<ProductDetailsResponseDto> findProductDetails(Long productNo);
+    
 }

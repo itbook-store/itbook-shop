@@ -41,6 +41,8 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
+import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
  * @author 이하늬
@@ -58,6 +60,12 @@ class ProductServiceTest {
 
     @MockBean
     CategoryService mockCategoryService;
+
+    @MockBean
+    ProductTypeService mockProductTypeService;
+
+    @MockBean
+    ProductTypeRegistrationService mockProductTypeRegistrationService;
 
     @MockBean
     ProductCategoryService mockProductCategoryService;
