@@ -1,5 +1,11 @@
-package shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.coupon.entity;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.review;
 
+/**
+ * @author 최겸준
+ * @since 1.0
+ */
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -12,31 +18,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.entity.IncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
+import shop.itbook.itbookshop.productgroup.review.entity.Review;
 
-/**
- * 쿠폰 적립에 대한 정보를 저장하는 테이블과 매핑되는 엔티티 클래스입니다.
- *
- * @author 최겸준
- * @since 1.0
- */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "coupon_increase_point_history")
-public class CouponIncreasePointHistory {
+@Table(name = "review_increase_point_history")
+public class ReviewIncreasePointHistory {
 
     @Id
     private Long pointHistoryNo;
 
     @MapsId("pointHistoryNo")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "point_history_no", nullable = false)
-    private IncreasePointHistory increasePointHistory;
+    private PointHistory pointHistory;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "coupon_no", nullable = false, unique = true)
-    private Coupon coupon;
+    @JoinColumn(name = "order_product_no", nullable = false)
+    private Review review;
 }

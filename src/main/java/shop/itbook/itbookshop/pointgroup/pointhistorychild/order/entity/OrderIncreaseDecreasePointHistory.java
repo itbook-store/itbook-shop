@@ -1,5 +1,6 @@
-package shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.ordercancel.entity;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.order.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -12,10 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.entity.IncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 
 /**
- * 주문취소로 인한 포인트 적립내역을 관리하는 테이블과 매핑되는 엔티티 클래스입니다.
+ * 주문으로 인해 포인트 적립이 된 정보를 저장하는 테이블과 매핑하는 엔티티 클래스입니다.
  *
  * @author 최겸준
  * @since 1.0
@@ -25,16 +26,16 @@ import shop.itbook.itbookshop.pointgroup.increase.increasepointhistory.entity.In
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "order_cancel_increase_point_history")
-public class OrderCancelIncreasePointHistory {
+@Table(name = "order_increase_decrease_point_history")
+public class OrderIncreaseDecreasePointHistory {
 
     @Id
     private Long pointHistoryNo;
 
     @MapsId("pointHistoryNo")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "point_history_no", nullable = false)
-    private IncreasePointHistory increasePointHistory;
+    private PointHistory pointHistory;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no", nullable = false, unique = true)
