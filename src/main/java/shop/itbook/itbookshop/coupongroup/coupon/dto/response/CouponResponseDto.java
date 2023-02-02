@@ -29,7 +29,7 @@ public class CouponResponseDto {
     private LocalDateTime couponModifiedAt;
     private String image;
     private String code;
-    private boolean isDuplicateUse;
+    private Boolean isDuplicateUse;
     private Integer totalQuantity;
     private Integer issuedQuantity;
     private CouponTypeEnum couponTypeEnum;

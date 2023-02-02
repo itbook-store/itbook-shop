@@ -62,6 +62,6 @@ public class CouponRequestDto {
     @NotNull(message = "중복 쿠폰여부는 공백 일 수 없습니다.")
     private boolean isDuplicateUse;
 
-    @Positive(message = "쿠폰 발급수량이 음수 일 수는 없습니다.")
+    @PositiveOrZero(message = "쿠폰 발급수량이 음수 일 수는 없습니다.")
     private Integer totalQuantity;
 }
