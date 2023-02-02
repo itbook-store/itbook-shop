@@ -17,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -27,8 +28,8 @@ import org.springframework.web.client.RestTemplate;
  * @since 1.0
  */
 @Data
-@Component
-public class TokenManager implements InitializingBean {
+@Service
+public class TokenService {
     private final String AUTH_URL =
         "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
     private final RestTemplate restTemplate = new RestTemplate();
@@ -40,15 +41,6 @@ public class TokenManager implements InitializingBean {
     private String password = "itbook2023";
     @Value("${object-storage.username}")
     private String username = "109622@naver.com";
-
-    @Override
-    public void afterPropertiesSet() {
-        try {
-            getToken();
-        } catch (InvalidTokenException e) {
-            requestToken();
-        }
-    }
 
     /**
      * rest template으로 토큰 발급 요청을 하여 발급 받은 토큰의 id, 만료 시간을 레디스에 저장합니다.
@@ -80,44 +72,7 @@ public class TokenManager implements InitializingBean {
                 TokenFailureMessage.FAILURE_INVALID_MESSAGE.getMessage());
         }
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            redisTemplate.opsForHash()
-                .put(TOKEN_NAME, "token",
-                    mapper.registerModule(new JavaTimeModule())
-                        .writeValueAsString(itBookObjectStorageToken));
-        } catch (JsonProcessingException e) {
-            throw new InvalidTokenException(
-                TokenFailureMessage.FAILURE_REQUEST_MESSAGE.getMessage());
-        }
-
-
         return itBookObjectStorageToken;
     }
-
-
-    /**
-     * 레디스에서 토큰을 가져오는 메서드입니다.
-     *
-     * @return 레디스에서 얻은 값을 반환합니다.
-     * @author 이하늬
-     */
-    public Token getToken() {
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-        try {
-            return mapper.readValue((String) redisTemplate.opsForHash()
-                .get(TokenManager.TOKEN_NAME, "token"), Token.class);
-        } catch (IOException e) {
-            throw new InvalidTokenException(
-                TokenFailureMessage.FAILURE_INVALID_MESSAGE.getMessage());
-
-        }
-    }
-
 
 }

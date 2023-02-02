@@ -35,12 +35,9 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 @WebMvcTest(MemberAdminController.class)
 class MemberAdminControllerTest {
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @Autowired
     MockMvc mvc;

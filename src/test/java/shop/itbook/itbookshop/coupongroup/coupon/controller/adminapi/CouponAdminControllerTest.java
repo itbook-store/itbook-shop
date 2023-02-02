@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
  * @author 송다혜
@@ -35,9 +34,6 @@ class CouponAdminControllerTest {
 
     @Autowired
     CouponAdminController couponAdminController;
-
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @MockBean
     CouponService couponService;

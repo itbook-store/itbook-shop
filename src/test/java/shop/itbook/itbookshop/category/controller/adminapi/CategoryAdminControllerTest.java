@@ -30,7 +30,6 @@ import shop.itbook.itbookshop.category.dto.request.CategoryRequestDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.service.CategoryService;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
  * @author 최겸준
@@ -41,9 +40,6 @@ class CategoryAdminControllerTest {
 
     @Autowired
     MockMvc mvc;
-
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @Autowired
     CategoryAdminController categoryAdminController;
