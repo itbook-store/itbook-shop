@@ -21,6 +21,9 @@ public class ProductDummy {
             .discountPercent(10.0)
             .rawPrice(12000L)
             .productCreatedAt(LocalDateTime.now())
+            .isPointApplyingBasedSellingPrice(false)
+            .isPointApplying(true)
+            .isSubscription(false)
             .build();
     }
 
@@ -38,6 +41,9 @@ public class ProductDummy {
             .discountPercent(10.0)
             .rawPrice(12000L)
             .productCreatedAt(LocalDateTime.now())
+            .isPointApplyingBasedSellingPrice(false)
+            .isPointApplying(true)
+            .isSubscription(false)
             .build();
     }
 
