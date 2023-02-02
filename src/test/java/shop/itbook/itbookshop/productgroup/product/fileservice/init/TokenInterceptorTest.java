@@ -26,8 +26,6 @@ public class TokenInterceptorTest {
 
     @TestConfiguration
     static class TestConfig {
-        @MockBean
-        RedisTemplate<String, String> redisTemplate;
         @Autowired
         TokenManager tokenManager;
 
@@ -38,7 +36,7 @@ public class TokenInterceptorTest {
                 public void addInterceptors(@NonNull InterceptorRegistry registry) {
                     String apiEndpointPattern = "/**";
 
-                    registry.addInterceptor(new TokenInterceptor(tokenManager, redisTemplate))
+                    registry.addInterceptor(new TokenInterceptor(tokenManager))
                         .addPathPatterns(apiEndpointPattern)
                         .order(0);
                 }

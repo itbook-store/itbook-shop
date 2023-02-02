@@ -17,7 +17,6 @@ import shop.itbook.itbookshop.fileservice.init.TokenManager;
 @RequiredArgsConstructor
 public class WebMvcConfig {
 
-    private final RedisTemplate<String, String> redisTemplate;
     private final TokenManager tokenManager;
 
     @Bean
@@ -25,7 +24,7 @@ public class WebMvcConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addInterceptors(InterceptorRegistry registry) {
-                registry.addInterceptor(new TokenInterceptor(tokenManager, redisTemplate))
+                registry.addInterceptor(new TokenInterceptor(tokenManager))
                     .addPathPatterns("/**");
             }
         };

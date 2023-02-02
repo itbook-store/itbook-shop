@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.fileservice.init;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -24,7 +25,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class TokenInterceptor implements HandlerInterceptor {
 
     private final TokenManager tokenManager;
-    private final RedisTemplate<String, String> redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -49,31 +49,11 @@ public class TokenInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        LocalDateTime tokenExpiresTime = getToken().getExpires();
+        LocalDateTime tokenExpiresTime = tokenManager.getToken().getExpires();
 
         LocalDateTime fiveMinutesLater = LocalDateTime.now().plusMinutes(5);
 
         return tokenExpiresTime.isAfter(fiveMinutesLater);
-    }
-
-    /**
-     * 레디스에서 토큰을 가져오는 메서드입니다.
-     *
-     * @return 레디스에서 얻은 값을 반환합니다.
-     * @author 이하늬
-     */
-    public Token getToken() {
-
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        try {
-            return mapper.readValue((String) redisTemplate.opsForHash()
-                .get(TokenManager.TOKEN_NAME, "token"), Token.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -84,7 +64,7 @@ public class TokenInterceptor implements HandlerInterceptor {
      * @author 이하늬
      */
     public boolean isTokenExist() {
-        String tokenId = getToken().getId();
+        String tokenId = tokenManager.getToken().getId();
         if (Objects.isNull(tokenId)) {
             return false;
         }

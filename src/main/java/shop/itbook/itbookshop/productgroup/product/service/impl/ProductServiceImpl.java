@@ -198,7 +198,6 @@ public class ProductServiceImpl implements ProductService {
     private Product updateProduct(ProductBookRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
-//        product.setDailyHits(0L);
         product.setName(requestDto.getProductName());
         product.setSimpleDescription(requestDto.getSimpleDescription());
         product.setDetailsDescription(requestDto.getDetailsDescription());

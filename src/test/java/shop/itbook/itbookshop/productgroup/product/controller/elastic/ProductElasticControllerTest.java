@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.product.controller.elastic;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,11 +16,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
 /**
@@ -37,6 +43,8 @@ class ProductElasticControllerTest {
 
     @MockBean
     private ProductSearchService productSearchService;
+    @MockBean
+    private ProductService productService;
     private ProductSearchResponseDto responseDto;
 
 
@@ -52,39 +60,42 @@ class ProductElasticControllerTest {
     @DisplayName("Get 메서드 성공 테스트")
     void productSearchNameTest_success() throws Exception {
 
-        given(productSearchService.searchProductByTitle(anyString())).willReturn(List.of(
-            responseDto, responseDto));
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(responseDto, responseDto), pageRequest, 10);
+
+        given(productSearchService.searchProductByTitle(any(), anyString()))
+            .willReturn(page);
 
         mockMvc.perform(get("/api/products/search?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result.[0].productNo", equalTo(256)))
-            .andExpect(jsonPath("$.result.[0].name", equalTo(responseDto.getName())))
-            .andExpect(jsonPath("$.result.[0].simpleDescription",
+            .andExpect(jsonPath("$.result.content[0].productNo", equalTo(256)))
+            .andExpect(jsonPath("$.result.content[0].name", equalTo(responseDto.getName())))
+            .andExpect(jsonPath("$.result.content[0].simpleDescription",
                 equalTo(responseDto.getSimpleDescription())))
-            .andExpect(jsonPath("$.result.[0].detailsDescription",
+            .andExpect(jsonPath("$.result.content[0].detailsDescription",
                 equalTo(responseDto.getDetailsDescription())))
-            .andExpect(jsonPath("$.result.[0].stock", equalTo(responseDto.getStock())))
+            .andExpect(jsonPath("$.result.content[0].stock", equalTo(responseDto.getStock())))
             .andExpect(
-                jsonPath("$.result.[0].thumbnailUrl", equalTo(responseDto.getThumbnailUrl())))
-            .andExpect(jsonPath("$.result.[0].fixedPrice",
+                jsonPath("$.result.content[0].thumbnailUrl", equalTo(responseDto.getThumbnailUrl())))
+            .andExpect(jsonPath("$.result.content[0].fixedPrice",
                 equalTo(responseDto.getFixedPrice().intValue())))
-            .andExpect(jsonPath("$.result.[0].increasePointPercent",
+            .andExpect(jsonPath("$.result.content[0].increasePointPercent",
                 equalTo(responseDto.getIncreasePointPercent())))
             .andExpect(
-                jsonPath("$.result.[0].discountPercent", equalTo(responseDto.getDiscountPercent())))
+                jsonPath("$.result.content[0].discountPercent", equalTo(responseDto.getDiscountPercent())))
             .andExpect(
-                jsonPath("$.result.[0].rawPrice", equalTo(responseDto.getRawPrice().intValue())))
-            .andExpect(jsonPath("$.result.[0].deleted", equalTo(responseDto.isDeleted())));
+                jsonPath("$.result.content[0].rawPrice", equalTo(responseDto.getRawPrice().intValue())))
+            .andExpect(jsonPath("$.result.content[0].deleted", equalTo(responseDto.isDeleted())));
 
     }
 
     @Test
     @DisplayName("Get 메서드 실패 테스트")
     void productSearchNameTest_fail() throws Exception {
-        given(productSearchService.searchProductByTitle(anyString())).willThrow(
+        given(productSearchService.searchProductByTitle(any(),anyString())).willThrow(
             new SearchProductNotFoundException());
         mockMvc.perform(get("/api/products/search?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)
