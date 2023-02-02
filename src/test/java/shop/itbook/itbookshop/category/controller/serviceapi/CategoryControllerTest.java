@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.service.CategoryService;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
  * @author 최겸준
@@ -29,9 +28,6 @@ import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 @WebMvcTest(controllers = CategoryController.class)
 class CategoryControllerTest {
-
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @Autowired
     MockMvc mvc;

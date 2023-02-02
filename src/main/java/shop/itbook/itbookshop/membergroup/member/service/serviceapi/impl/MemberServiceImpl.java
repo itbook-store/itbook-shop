@@ -184,7 +184,14 @@ public class MemberServiceImpl implements MemberService {
                 .password(encodedEmail).phoneNumber(email).email(email)
                 .memberCreatedAt(LocalDateTime.now()).isSocial(true).build();
 
-        return memberRepository.save(member).getMemberNo();
+        Long memberId = memberRepository.save(member).getMemberNo();
+
+        Role role = roleService.findRole("USER");
+        log.info("role = {}", role);
+
+        memberRoleService.addMemberRole(member, role);
+
+        return memberId;
     }
 
     /**

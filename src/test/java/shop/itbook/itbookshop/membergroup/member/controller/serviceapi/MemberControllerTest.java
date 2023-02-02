@@ -26,7 +26,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanRespo
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 
 /**
  * @author 노수연
@@ -43,9 +42,6 @@ class MemberControllerTest {
 
     @MockBean
     MemberRepository memberRepository;
-
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @Autowired
     ObjectMapper objectMapper;

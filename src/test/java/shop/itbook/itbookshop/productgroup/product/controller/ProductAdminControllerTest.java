@@ -30,7 +30,6 @@ import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAd
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
 import shop.itbook.itbookshop.fileservice.FileService;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
@@ -46,9 +45,6 @@ class ProductAdminControllerTest {
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
-
-    @MockBean
-    TokenInterceptor tokenInterceptor;
 
     @MockBean
     ProductService mockProductService;

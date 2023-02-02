@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import lombok.Data;
 import lombok.NonNull;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -64,11 +66,9 @@ public class ObjectService {
                                final InputStream inputStream) {
         String url = this.getUrl(containerName, folderPath, objectName);
 
-        final RequestCallback requestCallback = new RequestCallback() {
-            public void doWithRequest(final ClientHttpRequest request) throws IOException {
-                request.getHeaders().add("X-Auth-Token", tokenId);
-                IOUtils.copy(inputStream, request.getBody());
-            }
+        final RequestCallback requestCallback = request -> {
+            request.getHeaders().add("X-Auth-Token", tokenId);
+            IOUtils.copy(inputStream, request.getBody());
         };
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
@@ -83,5 +83,20 @@ public class ObjectService {
 
         return url;
     }
+
+//    public byte[] downloadObject(String url) {
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("X-Auth-Token", tokenId);
+//        headers.setAccept(List.of(MediaType.APPLICATION_OCTET_STREAM));
+//
+//        HttpEntity<String> requestHttpEntity = new HttpEntity<>(null, headers);
+//
+//        byte[] response
+//            = this.restTemplate.exchange(url, HttpMethod.GET, requestHttpEntity, byte[].class)
+//            .getBody();
+//
+//        return response;
+//    }
 
 }

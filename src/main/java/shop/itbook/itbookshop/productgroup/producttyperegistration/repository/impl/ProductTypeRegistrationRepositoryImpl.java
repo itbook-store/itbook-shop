@@ -3,7 +3,12 @@ package shop.itbook.itbookshop.productgroup.producttyperegistration.repository.i
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.producttype.entity.QProductType;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
@@ -22,32 +27,48 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
     }
 
     @Override
-    public List<FindProductTypeResponseDto> findProductTypeListWithProductNo(Long productNo) {
+    public Page<FindProductTypeResponseDto> findProductTypeListWithProductNo(Pageable pageable,
+                                                                             Long productNo) {
 
-        QProductTypeRegistration productTypeRegistration =
+        QProductTypeRegistration qProductTypeRegistration =
             QProductTypeRegistration.productTypeRegistration;
-        QProductType productType = QProductType.productType;
+        QProductType qProductType = QProductType.productType;
 
-        JPQLQuery<FindProductTypeResponseDto> productTypeList =
-            from(productTypeRegistration)
-                .innerJoin(productTypeRegistration.productType, productType)
+        JPQLQuery<FindProductTypeResponseDto> productTypeListQuery =
+            from(qProductTypeRegistration)
+                .innerJoin(qProductTypeRegistration.productType, qProductType)
                 .select(Projections.constructor(FindProductTypeResponseDto.class,
-                    productTypeRegistration.productType.productTypeEnum))
-                .where(productTypeRegistration.product.productNo.eq(productNo));
+                    qProductTypeRegistration.productType.productTypeEnum))
+                .where(qProductTypeRegistration.product.productNo.eq(productNo));
 
-        return productTypeList.fetch();
+        List<FindProductTypeResponseDto> productTypeList = productTypeListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productTypeList, pageable,
+            () -> from(qProductType).fetchCount());
     }
 
     @Override
-    public List<FindProductResponseDto> findProductListWithProductTypeNo(Integer productTypeNo) {
-        QProductTypeRegistration productTypeRegistration =
+    public Page<FindProductResponseDto> findProductListWithProductTypeNo(Pageable pageable,
+                                                                         Integer productTypeNo,
+                                                                         Boolean isExposed) {
+        QProductTypeRegistration qProductTypeRegistration =
             QProductTypeRegistration.productTypeRegistration;
+        QProduct qProduct = QProduct.product;
 
-        JPQLQuery<FindProductResponseDto> productList = from(productTypeRegistration)
-            .select(Projections.constructor(FindProductResponseDto.class,
-                productTypeRegistration.product))
-            .where(productTypeRegistration.productType.productTypeNo.eq(productTypeNo));
+        JPQLQuery<FindProductResponseDto> productListQuery =
+            from(qProductTypeRegistration)
+                .innerJoin(qProductTypeRegistration.product, qProduct)
+                .select(Projections.constructor(FindProductResponseDto.class, qProduct))
+                .where(qProductTypeRegistration.productType.productTypeNo.eq(productTypeNo)
+                    .and(qProduct.isExposed).eq(isExposed));
 
-        return productList.fetch();
+        List<FindProductResponseDto> productList =
+            productListQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
     }
 }
