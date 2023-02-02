@@ -2,11 +2,13 @@ package shop.itbook.itbookshop.productgroup.producttyperegistration.repository.i
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.producttype.entity.QProductType;
@@ -25,6 +27,10 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
     public ProductTypeRegistrationRepositoryImpl() {
         super(ProductTypeRegistration.class);
     }
+
+    /**
+     * {@inheritDoc}
+     */
 
     @Override
     public Page<FindProductTypeResponseDto> findProductTypeListWithProductNo(Pageable pageable,
@@ -49,6 +55,9 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
             () -> from(qProductType).fetchCount());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<FindProductResponseDto> findProductListWithProductTypeNo(Pageable pageable,
                                                                          Integer productTypeNo,
@@ -67,6 +76,35 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
         List<FindProductResponseDto> productList =
             productListQuery.offset(pageable.getOffset())
                 .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findNewProductListUser(Pageable pageable) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qBook)
+                .rightJoin(qBook.product, qProduct)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                .where(qProduct.isExposed.eq(true))
+                .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
 
         return PageableExecutionUtils.getPage(productList, pageable,
             () -> from(qProduct).fetchCount());
