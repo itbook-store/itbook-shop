@@ -54,7 +54,7 @@ public class Product {
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_exposed", nullable = false)
-    private Boolean isExposed;
+    private Boolean isSelled;
 
     @Column(name = "is_force_sold_out", nullable = false)
     private Boolean isForceSoldOut;
@@ -101,7 +101,7 @@ public class Product {
      * @param detailsDescription   상품 상세 설명입니다.
      * @param stock                상품 재고입니다.
      * @param productCreatedAt     상품 등록 일자입니다.
-     * @param isExposed            상품 판매 여부입니다.
+     * @param isSelled             상품 판매 여부입니다.
      * @param isForceSoldOut       상품 삭제 여부입니다.
      * @param thumbnailUrl         상품 썸네일 url입니다.
      * @param fixedPrice           상품 정가입니다.
@@ -113,7 +113,7 @@ public class Product {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   LocalDateTime productCreatedAt, Boolean isExposed, Boolean isForceSoldOut,
+                   LocalDateTime productCreatedAt, Boolean isSelled, Boolean isForceSoldOut,
                    String thumbnailUrl, Long fixedPrice, Integer increasePointPercent,
                    Double discountPercent, Long rawPrice, Boolean isPointApplyingBasedSellingPrice,
                    Boolean isPointApplying, Boolean isSubscription) {
@@ -122,7 +122,7 @@ public class Product {
         this.detailsDescription = detailsDescription;
         this.stock = stock;
         this.productCreatedAt = productCreatedAt;
-        this.isExposed = isExposed;
+        this.isSelled = isSelled;
         this.isForceSoldOut = isForceSoldOut;
         this.thumbnailUrl = thumbnailUrl;
         this.fixedPrice = fixedPrice;

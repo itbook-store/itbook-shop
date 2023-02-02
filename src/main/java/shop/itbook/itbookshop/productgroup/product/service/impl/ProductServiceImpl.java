@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.service.impl;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -21,11 +23,8 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
-import shop.itbook.itbookshop.productgroup.producttype.repository.ProductTypeRepository;
 import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
 import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.ProductTypeRegistration;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
@@ -143,6 +142,33 @@ public class ProductServiceImpl implements ProductService {
         return productList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListByProductNoList(Pageable pageable,
+                                                                          List<Long> productNoList) {
+
+        List<Long> productNoListRemovedNull = productNoList.stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+
+        Page<ProductDetailsResponseDto> productListByProductNoList =
+            productRepository.findProductListByProductNoList(pageable, productNoListRemovedNull);
+        setFieldsForList(productListByProductNoList);
+
+        return productListByProductNoList;
+    }
+
+    /**
+     * TODO 배치 공부 후 수정 예정
+     *
+     * @param pageable      the pageable
+     * @param productTypeNo
+     * @param isAdmin
+     * @return
+     */
+
     @Override
     public Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
                                                                           Integer productTypeNo,
@@ -167,29 +193,6 @@ public class ProductServiceImpl implements ProductService {
         return productList;
     }
 
-    private void setFieldsForList(Page<ProductDetailsResponseDto> productList) {
-        for (ProductDetailsResponseDto product : productList) {
-            setExtraFields(product);
-        }
-    }
-
-    public static void setExtraFields(ProductDetailsResponseDto product) {
-        setSelledPrice(product);
-        setThumbnailsName(product);
-    }
-
-
-    private static void setSelledPrice(ProductDetailsResponseDto product) {
-        product.setSelledPrice(
-            (long) (product.getFixedPrice() * ((100 - product.getDiscountPercent()) * 0.01)));
-    }
-
-    private static void setThumbnailsName(ProductDetailsResponseDto product) {
-        String fileThumbnailsUrl = product.getFileThumbnailsUrl();
-        product.setThumbnailsName(
-            fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -200,22 +203,6 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(ProductNotFoundException::new);
         setExtraFields(product);
         return product;
-    }
-
-    private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
-        return ProductRequestDto.builder()
-            .productName(requestDto.getProductName())
-            .simpleDescription(requestDto.getSimpleDescription())
-            .detailsDescription(requestDto.getDetailsDescription())
-            .stock(requestDto.getStock())
-            .isExposed(requestDto.getIsExposed())
-            .isForceSoldOut(requestDto.getIsForceSoldOut())
-            .fixedPrice(requestDto.getFixedPrice())
-            .increasePointPercent(requestDto.getIncreasePointPercent())
-            .discountPercent(requestDto.getDiscountPercent())
-            .rawPrice(requestDto.getRawPrice())
-            .fileThumbnailsUrl(requestDto.getFileThumbnailsUrl())
-            .build();
     }
 
     /**
@@ -232,7 +219,7 @@ public class ProductServiceImpl implements ProductService {
         product.setSimpleDescription(requestDto.getSimpleDescription());
         product.setDetailsDescription(requestDto.getDetailsDescription());
         product.setStock(requestDto.getStock());
-        product.setIsExposed(requestDto.getIsExposed());
+        product.setIsSelled(requestDto.getIsSelled());
         product.setIsForceSoldOut(requestDto.getIsForceSoldOut());
         product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         product.setFixedPrice(requestDto.getFixedPrice());
@@ -243,4 +230,33 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
+    private void setFieldsForList(Page<ProductDetailsResponseDto> productList) {
+        for (ProductDetailsResponseDto product : productList) {
+            setExtraFields(product);
+        }
+    }
+
+    public static void setExtraFields(ProductDetailsResponseDto product) {
+        product.setSelledPrice(
+            (long) (product.getFixedPrice() * ((100 - product.getDiscountPercent()) * 0.01)));
+        String fileThumbnailsUrl = product.getFileThumbnailsUrl();
+        product.setThumbnailsName(
+            fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
+    }
+
+    private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
+        return ProductRequestDto.builder()
+            .productName(requestDto.getProductName())
+            .simpleDescription(requestDto.getSimpleDescription())
+            .detailsDescription(requestDto.getDetailsDescription())
+            .stock(requestDto.getStock())
+            .isSelled(requestDto.getIsSelled())
+            .isForceSoldOut(requestDto.getIsForceSoldOut())
+            .fixedPrice(requestDto.getFixedPrice())
+            .increasePointPercent(requestDto.getIncreasePointPercent())
+            .discountPercent(requestDto.getDiscountPercent())
+            .rawPrice(requestDto.getRawPrice())
+            .fileThumbnailsUrl(requestDto.getFileThumbnailsUrl())
+            .build();
+    }
 }

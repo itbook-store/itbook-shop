@@ -55,7 +55,7 @@ class ProductSearchServiceImplTest {
     void setUp() {
         product = Product.builder().name("test 테스트북")
             .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
-            .detailsDescription("상세 설명").stock(1).isExposed(true).isForceSoldOut(false)
+            .detailsDescription("상세 설명").stock(1).isSelled(true).isForceSoldOut(false)
             .thumbnailUrl("testUrl").fixedPrice(20000L)
             .increasePointPercent(1).discountPercent(10.0).rawPrice(12000L)
             .productCreatedAt(LocalDateTime.now()).build();

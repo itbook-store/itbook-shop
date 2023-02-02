@@ -27,7 +27,7 @@ public class BookDetailsResponseDto {
 
     private String detailsDescription;
 
-    private Boolean isExposed;
+    private Boolean isSelled;
 
     private Boolean isForceSoldOut;
 
@@ -64,7 +64,7 @@ public class BookDetailsResponseDto {
     String thumbnailsName;
 
     public BookDetailsResponseDto(Long productNo, String productName, String simpleDescription,
-                                  String detailsDescription, Boolean isExposed,
+                                  String detailsDescription, Boolean isSelled,
                                   Boolean isForceSoldOut,
                                   Integer stock, Integer increasePointPercent, Long rawPrice,
                                   Long fixedPrice, Double discountPercent,
@@ -76,7 +76,7 @@ public class BookDetailsResponseDto {
         this.productName = productName;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
-        this.isExposed = isExposed;
+        this.isSelled = isSelled;
         this.isForceSoldOut = isForceSoldOut;
         this.stock = stock;
         this.increasePointPercent = increasePointPercent;

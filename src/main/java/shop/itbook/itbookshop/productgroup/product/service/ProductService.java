@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,10 +68,23 @@ public interface ProductService {
      *
      * @param pageable the pageable
      * @param isAdmin  관리자 여부 입니다.
-     * @return 찾은 상품 entity를 반환합니다.
+     * @return 찾은 상품 상세정보를 담은 리스트를 반환합니다.
      * @author 이하늬
      */
     Page<ProductDetailsResponseDto> findProductList(Pageable pageable, boolean isAdmin);
+
+    /**
+     * 장바구니에 상품을 담기 위해 상품 번호 리스트에 해당하는 상품 조회를 담당하는 메서드입니다.
+     * 판매여부가 true인 상품만 장바구니에 담기가 가능합니다.
+     * 파라미터로 1,2,,4와 같은 값이 들어왔을 때 null을 제거해주는 로직을 추가했습니다.
+     *
+     * @param pageable      the pageable
+     * @param productNoList 조회할 상품 번호 리스트 입니다.
+     * @return 찾은 상품의 상세정보를 담은 리스트를 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductDetailsResponseDto> findProductListByProductNoList(Pageable pageable,
+                                                                   List<Long> productNoList);
 
     /**
      * 상품유형별로 상품 조회를 담당하는 메서드입니다.

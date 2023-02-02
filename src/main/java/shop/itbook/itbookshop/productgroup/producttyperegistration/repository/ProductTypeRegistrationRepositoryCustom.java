@@ -31,13 +31,15 @@ public interface ProductTypeRegistrationRepositoryCustom {
      *
      * @param pageable      페이지네이션을 위한 pageable입니다.
      * @param productTypeNo the product type no
-     * @param isExposed     the is exposed
      * @return the page
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findProductListWithProductTypeNo(Pageable pageable,
-                                                                     Integer productTypeNo,
-                                                                     Boolean isExposed);
+
+    Page<ProductDetailsResponseDto> findProductListUserWithProductTypeNo(Pageable pageable,
+                                                                         Integer productTypeNo);
+
+    Page<ProductDetailsResponseDto> findProductListAdminWithProductTypeNo(Pageable pageable,
+                                                                          Integer productTypeNo);
 
     /**
      * 신간 도서를 조회하여 반환합니다.

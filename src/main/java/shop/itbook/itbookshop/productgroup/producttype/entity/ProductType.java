@@ -33,6 +33,6 @@ public class ProductType {
     private Integer productTypeNo;
 
     @Convert(converter = ProductTypeEnumConverter.class)
-    @Column(name = "product_type_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "product_type_name", nullable = false, unique = true)
     private ProductTypeEnum productTypeEnum;
 }
