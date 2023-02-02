@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.product.dto.response;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,6 +57,12 @@ public class ProductDetailsResponseDto {
     private String publisherName;
 
     private String authorName;
+
+    private Boolean isPointApplyingBasedSellingPrice;
+
+    private Boolean isPointApplying;
+
+    private Boolean isSubscription;
 
     @Setter
     private Long selledPrice;

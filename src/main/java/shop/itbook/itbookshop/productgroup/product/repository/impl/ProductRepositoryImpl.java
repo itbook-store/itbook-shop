@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.productgroup.product.repository.impl;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -102,5 +103,4 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(product.fetchOne());
     }
-
 }

@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
@@ -192,6 +194,22 @@ public class MemberServiceImpl implements MemberService {
         memberRoleService.addMemberRole(member, role);
 
         return memberId;
+    }
+
+    @Override
+    @Transactional
+    public Long modifySocialMember(MemberSocialRequestDto requestDto) {
+        Member member = memberRepository.findByMemberIdReceiveMember(requestDto.getMemberId())
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.setNickname(requestDto.getNickname());
+        member.setName(requestDto.getName());
+        member.setPhoneNumber(requestDto.getPhoneNumber());
+        member.setIsMan(requestDto.getIsMan());
+        member.setBirth(LocalDate.parse(requestDto.getBirth(),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay());
+        
+        return member.getMemberNo();
     }
 
     /**
