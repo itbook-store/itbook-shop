@@ -22,7 +22,7 @@ public class ProductSearchResponseDto {
     private String simpleDescription;
     private String detailsDescription;
     private Integer stock;
-    private boolean isSelled;
+    private boolean isForceSoldOut;
     private boolean isDeleted;
     private String thumbnailUrl;
     private Long fixedPrice;

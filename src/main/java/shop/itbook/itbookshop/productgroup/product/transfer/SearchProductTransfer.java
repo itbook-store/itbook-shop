@@ -33,7 +33,7 @@ public class SearchProductTransfer {
             .simpleDescription(product.getSimpleDescription())
             .increasePointPercent(product.getIncreasePointPercent())
             .isDeleted(product.getIsForceSoldOut())
-            .isSelled(product.getIsExposed())
+            .isForceSoldOut(product.getIsExposed())
             .name(product.getName())
             .rawPrice(product.getRawPrice())
             .stock(product.getStock())
@@ -55,13 +55,14 @@ public class SearchProductTransfer {
             .detailsDescription(searchProduct.getDetailsDescription())
             .rawPrice(searchProduct.getRawPrice())
             .stock(searchProduct.getStock())
-            .isSelled(searchProduct.getIsSelled())
+            .isForceSoldOut(searchProduct.getIsForceSoldOut())
             .thumbnailUrl(searchProduct.getThumbnailUrl())
             .isDeleted(searchProduct.getIsDeleted())
             .fixedPrice(searchProduct.getFixedPrice())
             .increasePointPercent(searchProduct.getIncreasePointPercent())
             .discountPercent(searchProduct.getDiscountPercent())
-//            .selledPrice((long) (searchProduct.getFixedPrice() * ((100 - searchProduct.getDiscountPercent()) * 0.01)))
+            .selledPrice((long) (searchProduct.getFixedPrice() *
+                ((100 - searchProduct.getDiscountPercent()) * 0.01)))
             .build();
     }
 }
