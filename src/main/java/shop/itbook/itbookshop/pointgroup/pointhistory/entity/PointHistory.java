@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.common.pointhistory.entity;
+package shop.itbook.itbookshop.pointgroup.pointhistory.entity;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 
 /**
  * 포인트 내역 테이블과 매핑되는 entity 클래스입니다.
@@ -40,6 +41,13 @@ public class PointHistory {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "point_increase_decrease_content_no", nullable = false)
+    private PointIncreaseDecreaseContent pointIncreaseDecreaseContent;
+
+    @Column(name = "increase_decrease_point", nullable = false)
+    private Integer increaseDecreasePoint;
+
     @Column(name = "remained_point", nullable = false)
     private Integer remainedPoint;
 
@@ -54,9 +62,12 @@ public class PointHistory {
      * @param historyCreatedAt 포인트 내역이 생성된 일자를 의미합니다.
      */
     @Builder
-    public PointHistory(Member member, Integer remainedPoint, LocalDateTime historyCreatedAt) {
+    public PointHistory(Member member, PointIncreaseDecreaseContent pointIncreaseDecreaseContent,
+                        Integer increaseDecreasePoint, Integer remainedPoint) {
         this.member = member;
+        this.pointIncreaseDecreaseContent = pointIncreaseDecreaseContent;
+        this.increaseDecreasePoint = increaseDecreasePoint;
         this.remainedPoint = remainedPoint;
-        this.historyCreatedAt = historyCreatedAt;
+        this.historyCreatedAt = LocalDateTime.now();
     }
 }
