@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.product.controller.elastic;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -23,7 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
-import shop.itbook.itbookshop.fileservice.init.TokenInterceptor;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
@@ -90,7 +90,7 @@ class ProductElasticControllerTest {
     @Test
     @DisplayName("Get 메서드 실패 테스트")
     void productSearchNameTest_fail() throws Exception {
-        given(productSearchService.searchProductByTitle(anyString())).willThrow(
+        given(productSearchService.searchProductByTitle(any(), anyString())).willThrow(
             new SearchProductNotFoundException());
         mockMvc.perform(get("/api/products/search?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)

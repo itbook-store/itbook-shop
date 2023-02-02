@@ -58,7 +58,7 @@ class ProductSearchRepositoryTest {
 
     @Test
     void productSearchTest() {
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+        Pageable pageable = PageRequest.of(0, 10);
         List<SearchProduct> searchProducts = productSearchRepository.findByName(pageable,"테스트").getContent();
         assertThat(searchProducts).hasSize(1);
     }
