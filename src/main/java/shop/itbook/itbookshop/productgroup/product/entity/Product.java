@@ -22,8 +22,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategor
 /**
  * 상품에 대한 엔티티 입니다.
  *
- * @author 노수연
- * @author 이하늬
+ * @author 노수연 * @since 1.0
  * @since 1.0
  */
 @Getter
@@ -54,10 +53,10 @@ public class Product {
     @Column(name = "product_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime productCreatedAt;
 
-    @Column(name = "is_selled", nullable = false)
+    @Column(name = "is_exposed", nullable = false)
     private Boolean isExposed;
 
-    @Column(name = "is_deleted", nullable = false)
+    @Column(name = "is_force_sold_out", nullable = false)
     private Boolean isForceSoldOut;
 
     @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
@@ -85,6 +84,15 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private List<ProductCategory> productCategoryList;
 
+    @Column(name = "is_point_applying_based_selling_price")
+    private Boolean isPointApplyingBasedSellingPrice;
+
+    @Column(name = "is_point_applying", nullable = false)
+    private Boolean isPointApplying;
+
+    @Column(name = "is_subscription", nullable = false)
+    private Boolean isSubscription;
+
     /**
      * 빌더 패턴을 적용한 생성자입니다.
      *
@@ -106,8 +114,9 @@ public class Product {
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
                    LocalDateTime productCreatedAt, Boolean isExposed, Boolean isForceSoldOut,
-                   String thumbnailUrl, Long fixedPrice,
-                   Integer increasePointPercent, Double discountPercent, Long rawPrice) {
+                   String thumbnailUrl, Long fixedPrice, Integer increasePointPercent,
+                   Double discountPercent, Long rawPrice, Boolean isPointApplyingBasedSellingPrice,
+                   Boolean isPointApplying, Boolean isSubscription) {
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
@@ -120,6 +129,9 @@ public class Product {
         this.increasePointPercent = increasePointPercent;
         this.discountPercent = discountPercent;
         this.rawPrice = rawPrice;
+        this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
+        this.isPointApplying = isPointApplying;
+        this.isSubscription = isSubscription;
     }
 
 }
