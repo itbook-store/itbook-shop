@@ -53,6 +53,7 @@ public class CouponIssue {
     @Column(name = "coupon_issue_created_at", nullable = false, columnDefinition = "default now()")
     private LocalDateTime couponIssueCreatedAt;
 
+    @Setter
     @Column(name = "coupon_usage_created_at")
     private LocalDateTime couponUsageCreatedAt;
 
@@ -69,5 +70,6 @@ public class CouponIssue {
         this.member = member;
         this.coupon = coupon;
         this.usageStatus = usageStatus;
+        this.couponIssueCreatedAt = LocalDateTime.now();
     }
 }
