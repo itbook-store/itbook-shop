@@ -20,6 +20,13 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
+import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
+import shop.itbook.itbookshop.productgroup.producttype.repository.ProductTypeRepository;
+import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
+import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.ProductTypeRegistration;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
  * ProductService 인터페이스를 구현한 상품 Service 클래스입니다.
@@ -35,6 +42,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final FileService fileService;
     private final BookService bookService;
+    private final ProductTypeService productTypeService;
+    private final ProductTypeRegistrationService productTypeRegistrationService;
     private final ProductCategoryService productCategoryService;
     @Value("${object.storage.folder-path.thumbnail}")
     private String folderPathThumbnail;
@@ -120,26 +129,48 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductListAdmin(Pageable pageable) {
-        Page<ProductDetailsResponseDto> productListAdmin =
-            productRepository.findProductListAdmin(pageable);
-        for (ProductDetailsResponseDto product : productListAdmin) {
-            setExtraFields(product);
+    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, boolean isAdmin) {
+
+        Page<ProductDetailsResponseDto> productList;
+
+        if (isAdmin) {
+            productList = productRepository.findProductListAdmin(pageable);
+        } else {
+            productList = productRepository.findProductListUser(pageable);
         }
-        return productListAdmin;
+
+        setFieldsForList(productList);
+        return productList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Page<ProductDetailsResponseDto> findProductListUser(Pageable pageable) {
-        Page<ProductDetailsResponseDto> productListUser =
-            productRepository.findProductListUser(pageable);
-        for (ProductDetailsResponseDto product : productListUser) {
+    public Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
+                                                                          Integer productTypeNo,
+                                                                          boolean isAdmin) {
+        Page<ProductDetailsResponseDto> productList;
+        ProductType productType = productTypeService.findProductType(productTypeNo);
+
+        if (productType.getProductTypeEnum().equals(ProductTypeEnum.NEW_ISSUE)) {
+            productList =
+                productTypeRegistrationService.findNewBookList(pageable, isAdmin);
+            setFieldsForList(productList);
+        } else if (productType.getProductTypeEnum().equals(ProductTypeEnum.DISCOUNT)) {
+            productList =
+                productTypeRegistrationService.findDiscountBookList(pageable, isAdmin);
+            setFieldsForList(productList);
+        } else {
+            productList =
+                productTypeRegistrationService.findProductList(pageable, productTypeNo, isAdmin);
+            setFieldsForList(productList);
+        }
+
+        return productList;
+    }
+
+    private void setFieldsForList(Page<ProductDetailsResponseDto> productList) {
+        for (ProductDetailsResponseDto product : productList) {
             setExtraFields(product);
         }
-        return productListUser;
     }
 
     public static void setExtraFields(ProductDetailsResponseDto product) {
@@ -167,8 +198,7 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailsResponseDto product =
             productRepository.findProductDetails(productNo)
                 .orElseThrow(ProductNotFoundException::new);
-        setSelledPrice(product);
-        setThumbnailsName(product);
+        setExtraFields(product);
         return product;
     }
 
@@ -212,4 +242,5 @@ public class ProductServiceImpl implements ProductService {
 
         return product;
     }
+
 }
