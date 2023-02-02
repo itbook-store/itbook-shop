@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.member.service.serviceapi;
 
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
@@ -56,6 +57,8 @@ public interface MemberService {
     Boolean checkMemberOauthInfoExists(String email);
 
     Long socialMemberAdd(String email, String encodedEmail);
+
+    Long modifySocialMember(MemberSocialRequestDto requestDto);
 
     /**
      * 인증에 대한 회원 정보를 반환받는 메서드 입니다.

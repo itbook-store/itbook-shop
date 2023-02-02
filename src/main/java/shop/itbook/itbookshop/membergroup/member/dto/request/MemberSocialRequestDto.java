@@ -1,11 +1,11 @@
 package shop.itbook.itbookshop.membergroup.member.dto.request;
 
-import java.time.LocalDateTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 /**
@@ -14,7 +14,12 @@ import org.hibernate.validator.constraints.Length;
  */
 @Getter
 @Setter
+@ToString
 public class MemberSocialRequestDto {
+
+    @Length(min = 2, max = 15, message = "아이디는 최소 2자부터 시작하며 최대 15자까지 작성해야합니다.")
+    @NotBlank(message = "아이디는 null값 및 공백을 허용하지 않습니다.")
+    private String memberId;
 
     @Length(min = 2, max = 20, message = "닉네임은 최소 2자, 최대 20자까지 허용합니다.")
     @NotBlank(message = "닉네임은 null값 및 공백을 허용하지 않습니다.")
@@ -24,8 +29,11 @@ public class MemberSocialRequestDto {
     @NotBlank(message = "이름은 null값 및 공백을 허용하지 않습니다.")
     private String name;
 
+    @NotNull(message = "성별은 null값을 허용하지 않습니다.")
+    private Boolean isMan;
+
     @NotNull(message = "생일은 null값을 허용하지 않습니다.")
-    private LocalDateTime birth;
+    private String birth;
 
     @NotBlank(message = "핸드폰 번호는 null값 및 공백을 허용하지 않습니다.")
     private String phoneNumber;
