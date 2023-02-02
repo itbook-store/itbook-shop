@@ -19,6 +19,7 @@ public class UsageStatusServiceImpl implements UsageStatusService {
 
     private final UsageStatusRepository usageStatusRepository;
 
+    @Override
     public UsageStatus findUsageStatus(String usageStatus) {
         return usageStatusRepository.findByUsageStatusName(usageStatus).orElseThrow(
             UsageStatusNotFoundException::new);

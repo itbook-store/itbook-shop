@@ -70,20 +70,20 @@ class ProductElasticControllerTest {
             .andExpect(jsonPath("$.result.content[0].name", equalTo(responseDto.getName())))
             .andExpect(jsonPath("$.result.content[0].simpleDescription",
                 equalTo(responseDto.getSimpleDescription())))
-            .andExpect(jsonPath("$.result.[0].detailsDescription",
+            .andExpect(jsonPath("$.result.content[0].detailsDescription",
                 equalTo(responseDto.getDetailsDescription())))
-            .andExpect(jsonPath("$.result.[0].stock", equalTo(responseDto.getStock())))
+            .andExpect(jsonPath("$.result.content[0].stock", equalTo(responseDto.getStock())))
             .andExpect(
-                jsonPath("$.result.[0].thumbnailUrl", equalTo(responseDto.getThumbnailUrl())))
-            .andExpect(jsonPath("$.result.[0].fixedPrice",
+                jsonPath("$.result.content[0].thumbnailUrl", equalTo(responseDto.getThumbnailUrl())))
+            .andExpect(jsonPath("$.result.content[0].fixedPrice",
                 equalTo(responseDto.getFixedPrice().intValue())))
-            .andExpect(jsonPath("$.result.[0].increasePointPercent",
+            .andExpect(jsonPath("$.result.content[0].increasePointPercent",
                 equalTo(responseDto.getIncreasePointPercent())))
             .andExpect(
-                jsonPath("$.result.[0].discountPercent", equalTo(responseDto.getDiscountPercent())))
+                jsonPath("$.result.content[0].discountPercent", equalTo(responseDto.getDiscountPercent())))
             .andExpect(
-                jsonPath("$.result.[0].rawPrice", equalTo(responseDto.getRawPrice().intValue())))
-            .andExpect(jsonPath("$.result.[0].deleted", equalTo(responseDto.isDeleted())));
+                jsonPath("$.result.content[0].rawPrice", equalTo(responseDto.getRawPrice().intValue())))
+            .andExpect(jsonPath("$.result.content[0].deleted", equalTo(responseDto.isDeleted())));
 
     }
 
