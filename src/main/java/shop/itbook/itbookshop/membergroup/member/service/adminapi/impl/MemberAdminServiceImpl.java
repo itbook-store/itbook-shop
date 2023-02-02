@@ -1,9 +1,10 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -48,9 +49,25 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberList() {
+    public Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable) {
 
-        return memberRepository.findMemberList();
+        return memberRepository.findMemberList(pageable);
+
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable) {
+        return memberRepository.findNormalMemberList(pageable);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable) {
+        return memberRepository.findBlockMemberList(pageable);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable) {
+        return memberRepository.findWithdrawMemberList(pageable);
     }
 
     /**
@@ -81,33 +98,44 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      * {@inheritDoc}
      */
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId) {
+    public Page<MemberExceptPwdResponseDto> findMemberListByMemberId(String memberId,
+                                                                     String memberStatusName,
+                                                                     Pageable pageable) {
 
-        return memberRepository.findMemberListByMemberId(memberId);
+        return memberRepository.findMemberListByMemberId(memberId, memberStatusName, pageable);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname) {
+    public Page<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname,
+                                                                     String memberStatusName,
+                                                                     Pageable pageable) {
 
-        return memberRepository.findMemberListByNickname(nickname);
+        return memberRepository.findMemberListByNickname(nickname, memberStatusName, pageable);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByName(String name) {
+    public Page<MemberExceptPwdResponseDto> findMemberListByName(String name,
+                                                                 String memberStatusName,
+                                                                 Pageable pageable) {
 
-        return memberRepository.findMemberListByName(name);
+        return memberRepository.findMemberListByName(name, memberStatusName, pageable);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber) {
+    public Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
+                                                                        String memberStatusName,
+                                                                        Pageable pageable) {
 
-        return memberRepository.findMemberListByPhoneNumber(phoneNumber);
+        return memberRepository.findMemberListByPhoneNumber(phoneNumber, memberStatusName,
+            pageable);
     }
 
     @Override
-    public List<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord) {
+    public Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
+                                                                       String memberStatusName,
+                                                                       Pageable pageable) {
 
-        return memberRepository.findMemberListBySearchWord(searchWord);
+        return memberRepository.findMemberListBySearchWord(searchWord, memberStatusName, pageable);
     }
 
     @Override
