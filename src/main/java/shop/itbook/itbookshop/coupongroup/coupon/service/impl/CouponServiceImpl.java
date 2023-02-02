@@ -1,8 +1,9 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service.impl;
 
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
@@ -13,6 +14,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundExcepti
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
+import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
  * 쿠폰의
@@ -25,6 +27,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
 public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
+    private final CouponTypeService couponTypeService;
 
     @Override
     @Transactional
@@ -32,7 +35,7 @@ public class CouponServiceImpl implements CouponService {
 
         Coupon coupon = CouponTransfer.dtoToEntity(couponRequestDto);
         coupon.setCode(UUID.randomUUID().toString());
-
+        coupon.setCouponType(couponTypeService.findCouponType(couponRequestDto.getCouponType()));
         return couponRepository.save(coupon).getCouponNo();
     }
 
@@ -51,7 +54,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponListResponseDto> findByCouponList() {
-        return couponRepository.findCouponList();
+    public Page<CouponListResponseDto> findByCouponList(Pageable pageable) {
+        return couponRepository.findCouponList(pageable);
     }
 }

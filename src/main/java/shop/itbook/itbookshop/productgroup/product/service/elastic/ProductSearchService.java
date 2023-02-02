@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.service.elastic;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
@@ -40,5 +42,5 @@ public interface ProductSearchService {
      * @param name 검색할 정보를 받습니다.
      * @return 검색된 내용을 반환합니다.
      */
-    List<ProductSearchResponseDto> searchProductByTitle(String name);
+    Page<ProductSearchResponseDto> searchProductByTitle(Pageable pageable, String name);
 }

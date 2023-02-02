@@ -25,6 +25,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
+import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
  * @author 송다혜
@@ -39,6 +40,10 @@ class CouponServiceImplTest {
 
     @MockBean
     CouponRepository couponRepository;
+
+    @MockBean
+    CouponTypeService couponTypeService;
+
 
     Coupon percentDummyCoupon;
 
