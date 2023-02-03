@@ -48,7 +48,7 @@ public class MembershipHistory {
     @Column(name = "monthly_usage_amount", nullable = false)
     private Long monthlyUsageAmount;
 
-    @Column(name = "membership_history_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "membership_history_created_at", nullable = false)
     private LocalDateTime membershipHistoryCreatedAt;
 
     /**
