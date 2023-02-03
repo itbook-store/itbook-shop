@@ -93,6 +93,9 @@ public class Product {
     @Column(name = "is_subscription", nullable = false)
     private Boolean isSubscription;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
     /**
      * 빌더 패턴을 적용한 생성자입니다.
      *
@@ -121,7 +124,6 @@ public class Product {
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
-        this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
         this.isForceSoldOut = isForceSoldOut;
         this.thumbnailUrl = thumbnailUrl;
@@ -132,7 +134,9 @@ public class Product {
         this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
         this.isPointApplying = isPointApplying;
         this.isSubscription = isSubscription;
+        this.productCreatedAt = productCreatedAt;
         this.dailyHits = 0L;
+        this.isDeleted = false;
     }
 
 }
