@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncre
  * @author 최겸준
  * @since 1.0
  */
-public interface GiftIncreaseDecreasePointHistoryRepository extends JpaRepository<GiftIncreaseDecreasePointHistory, Long> {
+public interface GiftIncreaseDecreasePointHistoryRepository
+    extends JpaRepository<GiftIncreaseDecreasePointHistory, Long> {
 
 }

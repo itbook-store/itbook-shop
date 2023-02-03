@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum;
 
 import lombok.Getter;
+import lombok.Setter;
+import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
 
 /**
  * 상태정보를 조회하거나 사용할때 타입안정성을 유지하기 위한 enum 클래스입니다.
@@ -25,5 +27,19 @@ public enum PointIncreaseDecreaseContentEnum {
 
     PointIncreaseDecreaseContentEnum(String statusName) {
         this.statusName = statusName;
+    }
+
+    public static PointIncreaseDecreaseContentEnum stringToEnum(String dbValue) {
+
+        PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum = null;
+
+        for (PointIncreaseDecreaseContentEnum value : PointIncreaseDecreaseContentEnum.values()) {
+            if (value.getStatusName().equals(dbValue)) {
+                pointIncreaseDecreaseContentEnum = value;
+                break;
+            }
+        }
+
+        return pointIncreaseDecreaseContentEnum;
     }
 }

@@ -46,13 +46,13 @@ public class PointHistory {
     private PointIncreaseDecreaseContent pointIncreaseDecreaseContent;
 
     @Column(name = "increase_decrease_point", nullable = false)
-    private Integer increaseDecreasePoint;
+    private Long increaseDecreasePoint;
 
     @Column(name = "remained_point", nullable = false)
-    private Integer remainedPoint;
+    private Long remainedPoint;
 
-    @Column(name = "history_created_at", nullable = false, columnDefinition = "default now()")
-    private LocalDateTime historyCreatedAt;
+    @Column(name = "history_created_at", nullable = false)
+    private LocalDateTime historyCreatedAt = LocalDateTime.now();
 
     /**
      * entity 객체를 생성하기 위한 Builder 전용 생성자입니다.
@@ -63,11 +63,10 @@ public class PointHistory {
      */
     @Builder
     public PointHistory(Member member, PointIncreaseDecreaseContent pointIncreaseDecreaseContent,
-                        Integer increaseDecreasePoint, Integer remainedPoint) {
+                        Long increaseDecreasePoint, Long remainedPoint) {
         this.member = member;
         this.pointIncreaseDecreaseContent = pointIncreaseDecreaseContent;
         this.increaseDecreasePoint = increaseDecreasePoint;
         this.remainedPoint = remainedPoint;
-        this.historyCreatedAt = LocalDateTime.now();
     }
 }

@@ -9,6 +9,6 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.Poi
  * @since 1.0
  */
 public interface PointIncreaseDecreaseContentRepository
-    extends JpaRepository<PointIncreaseDecreaseContent, Long> {
+    extends JpaRepository<PointIncreaseDecreaseContent, Integer> {
 
 }
