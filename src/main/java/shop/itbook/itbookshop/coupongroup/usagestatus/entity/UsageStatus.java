@@ -36,7 +36,6 @@ public class UsageStatus {
     private Integer usageStatusNo;
 
     @Convert(converter = UsageStatusEnumConverter.class)
-    @Enumerated(EnumType.STRING)
     @Column(name = "usage_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private UsageStatusEnum usageStatusEnum;
 }

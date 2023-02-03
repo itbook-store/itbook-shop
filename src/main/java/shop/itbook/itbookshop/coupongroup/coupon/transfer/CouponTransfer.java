@@ -56,8 +56,8 @@ public class CouponTransfer {
             .code(coupon.getCode())
             .isDuplicateUse(coupon.getIsDuplicateUse())
             .totalQuantity(coupon.getTotalQuantity())
-            .issuedQuantity(coupon.getIssuedQuantity())
             .couponTypeEnum(coupon.getCouponType().getCouponTypeEnum())
+            .issuedQuantity(coupon.getIssuedQuantity())
             .build();
     }
 }
