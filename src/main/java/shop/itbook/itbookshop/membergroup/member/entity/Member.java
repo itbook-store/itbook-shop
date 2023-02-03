@@ -74,7 +74,7 @@ public class Member {
     @Column(name = "email", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private String email;
 
-    @Column(name = "member_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "member_created_at", nullable = false)
     private LocalDateTime memberCreatedAt;
 
     @Column(name = "is_social")

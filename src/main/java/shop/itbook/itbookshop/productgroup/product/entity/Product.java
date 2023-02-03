@@ -50,7 +50,7 @@ public class Product {
     @Column(name = "stock", nullable = false, columnDefinition = "integer default 0")
     private Integer stock;
 
-    @Column(name = "product_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "product_created_at", nullable = false)
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_exposed", nullable = false)
@@ -132,6 +132,7 @@ public class Product {
         this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
         this.isPointApplying = isPointApplying;
         this.isSubscription = isSubscription;
+        this.dailyHits = 0L;
     }
 
 }
