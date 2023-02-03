@@ -43,7 +43,7 @@ public class ChattingRoom {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "chatting_room_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "chatting_room_created_at", nullable = false)
     private LocalDateTime chattingRoomCreatedAt;
 
     /**

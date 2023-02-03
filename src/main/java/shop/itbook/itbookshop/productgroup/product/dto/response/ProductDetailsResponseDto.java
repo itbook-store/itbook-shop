@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.dto.response;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +27,7 @@ public class ProductDetailsResponseDto {
 
     private String detailsDescription;
 
-    private Boolean isExposed;
+    private Boolean isSelled;
 
     private Boolean isForceSoldOut;
 
@@ -73,19 +72,20 @@ public class ProductDetailsResponseDto {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public ProductDetailsResponseDto(Long productNo, String productName, String simpleDescription,
-                                     String detailsDescription, Boolean isExposed,
+                                     String detailsDescription, Boolean isSelled,
                                      Boolean isForceSoldOut,
                                      Integer stock, Integer increasePointPercent, Long rawPrice,
                                      Long fixedPrice, Double discountPercent,
                                      String fileThumbnailsUrl,
                                      String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
                                      Boolean isEbook, String fileEbookUrl, String publisherName,
-                                     String authorName) {
+                                     String authorName, Boolean isPointApplyingBasedSellingPrice,
+                                     Boolean isPointApplying, Boolean isSubscription) {
         this.productNo = productNo;
         this.productName = productName;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
-        this.isExposed = isExposed;
+        this.isSelled = isSelled;
         this.isForceSoldOut = isForceSoldOut;
         this.stock = stock;
         this.increasePointPercent = increasePointPercent;
@@ -100,5 +100,8 @@ public class ProductDetailsResponseDto {
         this.fileEbookUrl = fileEbookUrl;
         this.publisherName = publisherName;
         this.authorName = authorName;
+        this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
+        this.isPointApplying = isPointApplying;
+        this.isSubscription = isSubscription;
     }
 }

@@ -34,7 +34,7 @@ public class ProductRequestDto {
     private String detailsDescription;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    private Boolean isExposed;
+    private Boolean isSelled;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     private Boolean isForceSoldOut;
