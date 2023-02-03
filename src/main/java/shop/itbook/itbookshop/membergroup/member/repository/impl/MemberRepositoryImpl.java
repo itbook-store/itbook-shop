@@ -75,7 +75,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
-                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt
+                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial
                 )).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus).where(qmember.memberId.eq(memberId))
             .fetchOne());

@@ -26,5 +26,6 @@ public class MemberResponseDto {
     private String phoneNumber;
     private String email;
     private LocalDateTime memberCreatedAt;
+    private Boolean isSocial;
 
 }
