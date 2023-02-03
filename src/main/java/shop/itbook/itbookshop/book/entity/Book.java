@@ -36,7 +36,7 @@ public class Book {
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "isbn", nullable = false, columnDefinition = "varchar(30)", unique = true)
+    @Column(name = "isbn", nullable = false, unique = true)
     private String isbn;
 
     @Column(name = "page_count", nullable = false)
@@ -51,10 +51,10 @@ public class Book {
     @Column(name = "ebook_url", columnDefinition = "text")
     private String ebookUrl;
 
-    @Column(name = "publisher_name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "publisher_name", nullable = false)
     private String publisherName;
 
-    @Column(name = "author_name", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "author_name", nullable = false)
     private String authorName;
 
     /**

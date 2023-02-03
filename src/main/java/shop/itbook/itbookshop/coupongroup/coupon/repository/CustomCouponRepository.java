@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.coupongroup.coupon.repository;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 
@@ -18,5 +20,5 @@ public interface CustomCouponRepository {
      *
      * @return 쿠폰목록입니다.
      */
-    List<CouponListResponseDto> findCouponList();
+    Page<CouponListResponseDto> findCouponList(Pageable pageable);
 }

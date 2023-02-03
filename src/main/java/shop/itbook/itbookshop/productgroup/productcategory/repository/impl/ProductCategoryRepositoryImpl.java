@@ -47,12 +47,14 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                 .leftJoin(qProduct.book, qBook)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
-                .where(qCategory.categoryNo.eq(categoryNo).and(qProduct.isExposed.eq(true)));
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
+                .where(qCategory.categoryNo.eq(categoryNo).and(qProduct.isSelled.eq(true)));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())

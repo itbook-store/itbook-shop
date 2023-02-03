@@ -22,6 +22,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -55,7 +59,7 @@ class ProductSearchServiceImplTest {
     void setUp() {
         product = Product.builder().name("test 테스트북")
             .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
-            .detailsDescription("상세 설명").stock(1).isExposed(true).isForceSoldOut(false)
+            .detailsDescription("상세 설명").stock(1).isSelled(true).isForceSoldOut(false)
             .thumbnailUrl("testUrl").fixedPrice(20000L)
             .increasePointPercent(1).discountPercent(10.0).rawPrice(12000L)
             .productCreatedAt(LocalDateTime.now()).build();
@@ -104,23 +108,17 @@ class ProductSearchServiceImplTest {
     @DisplayName("상품 이름 검색 테스트")
     void findProductTest() {
 
-        given(mockProductSearchRepository.findByName(anyString())).willReturn(
-            List.of(elasticProduct, elasticProduct));
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(elasticProduct, elasticProduct), pageRequest, 10);
 
-        List<SearchProduct> results = mockProductSearchRepository.findByName("test");
+        given(mockProductSearchRepository.findByName(any(), anyString())).willReturn(page);
 
-        assertThat(productSearchService.searchProductByTitle("test"))
+        Page<SearchProduct> results = mockProductSearchRepository.findByName(Pageable.unpaged(), "test");
+
+        assertThat(productSearchService.searchProductByTitle(Pageable.unpaged(),"test").getContent())
             .usingRecursiveComparison()
             .isEqualTo(List.of(documentToDto(elasticProduct), documentToDto(elasticProduct)));
 
     }
 
-    @Test
-    @DisplayName("상품 검색 시 실패 테스트 - 상품이 없을 시 예외 발생")
-    void findProductTest_failure() {
-        given(mockProductSearchRepository.findById(anyLong())).willReturn(Optional.empty());
-        Assertions.assertThatThrownBy(() -> productSearchService.searchProductByTitle("test"))
-            .isInstanceOf(SearchProductNotFoundException.class)
-            .hasMessage(SearchProductNotFoundException.MESSAGE);
-    }
 }

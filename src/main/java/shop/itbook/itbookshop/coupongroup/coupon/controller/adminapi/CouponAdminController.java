@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,8 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponse
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 
 /**
  * 관리자의 쿠폰 서비스 컨트롤러 클레스입니다.
@@ -33,7 +37,7 @@ public class CouponAdminController {
 
     private final CouponService couponService;
     private final CategoryCouponService categoryCouponService;
-
+    private final CouponIssueService couponIssueService;
     /**
      * 쿠폰 탬플릿을 발급하는 메소드입니다.
      *
@@ -66,13 +70,13 @@ public class CouponAdminController {
      * @return 쿠폰 정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> couponList() {
+    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponList(Pageable pageable) {
 
-        CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
+        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                couponService.findByCouponList());
+                couponService.findByCouponList(pageable));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

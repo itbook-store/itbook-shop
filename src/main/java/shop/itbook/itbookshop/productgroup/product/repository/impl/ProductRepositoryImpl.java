@@ -39,11 +39,13 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .rightJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName));
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -66,12 +68,14 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .rightJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
-                .where(qProduct.isExposed.eq(true));
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
+                .where(qProduct.isSelled.eq(Boolean.TRUE));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -94,13 +98,48 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .rightJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(product.fetchOne());
     }
 
+    //product no List 로 프로덕트 리스트 가져오기
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListByProductNoList(Pageable pageable,
+                                                                          List<Long> productNoList) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qBook)
+                .rightJoin(qBook.product, qProduct)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
+                .where(
+                    qProduct.isSelled.eq(Boolean.TRUE).and(qProduct.productNo.in(productNoList)));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
 }

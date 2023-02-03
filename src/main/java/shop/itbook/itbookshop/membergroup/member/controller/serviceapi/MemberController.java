@@ -16,6 +16,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberOauthLoginRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
@@ -130,6 +131,22 @@ public class MemberController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @PutMapping("/sign-up/social")
+    public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> OauthRegister(
+        @RequestBody MemberSocialRequestDto memberSocialRequestDto) {
+
+        MemberNoResponseDto memberNoResponseDto =
+            new MemberNoResponseDto(memberService.modifySocialMember(memberSocialRequestDto));
+
+        CommonResponseBody<MemberNoResponseDto> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+            memberNoResponseDto
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
     @PostMapping("/oauth/login/find")

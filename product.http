@@ -23,3 +23,10 @@ Content-Type: application/json
 GET http://localhost:8082/api/products/search?name=오해&size=10
 Content-Type: application/json
 
+###
+POST http://localhost:8082/api/products/search/3486
+Content-Type: application/json
+
+###
+DELETE http://localhost:8082/api/products/search/3486
+Content-Type: application/json

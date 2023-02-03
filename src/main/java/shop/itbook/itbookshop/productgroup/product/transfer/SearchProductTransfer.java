@@ -33,7 +33,7 @@ public class SearchProductTransfer {
             .simpleDescription(product.getSimpleDescription())
             .increasePointPercent(product.getIncreasePointPercent())
             .isDeleted(product.getIsForceSoldOut())
-            .isForceSoldOut(product.getIsExposed())
+            .isForceSoldOut(product.getIsSelled())
             .name(product.getName())
             .rawPrice(product.getRawPrice())
             .stock(product.getStock())

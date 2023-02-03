@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
@@ -56,7 +58,8 @@ class ProductSearchRepositoryTest {
 
     @Test
     void productSearchTest() {
-        List<SearchProduct> searchProducts = productSearchRepository.findByName("테스트");
+        Pageable pageable = PageRequest.of(0, 10);
+        List<SearchProduct> searchProducts = productSearchRepository.findByName(pageable,"테스트").getContent();
         assertThat(searchProducts).hasSize(1);
     }
 

@@ -38,31 +38,31 @@ public class Product {
     @Column(name = "product_no", nullable = false)
     private Long productNo;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "simple_description", nullable = false)
     private String simpleDescription;
 
-    @Column(name = "details_description", columnDefinition = "text")
+    @Column(name = "details_description")
     private String detailsDescription;
 
-    @Column(name = "stock", nullable = false, columnDefinition = "integer default 0")
+    @Column(name = "stock", nullable = false)
     private Integer stock;
 
-    @Column(name = "product_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "product_created_at", nullable = false)
     private LocalDateTime productCreatedAt;
 
     @Column(name = "is_exposed", nullable = false)
-    private Boolean isExposed;
+    private Boolean isSelled;
 
     @Column(name = "is_force_sold_out", nullable = false)
     private Boolean isForceSoldOut;
 
-    @Column(name = "thumbnail_url", nullable = false, columnDefinition = "text")
+    @Column(name = "thumbnail_url", nullable = false)
     private String thumbnailUrl;
 
-    @Column(name = "daily_hits", nullable = false, columnDefinition = "bigint default 0")
+    @Column(name = "daily_hits", nullable = false)
     private Long dailyHits;
 
     @Column(name = "fixed_price", nullable = false)
@@ -72,7 +72,7 @@ public class Product {
         columnDefinition = "integer default 0")
     private Integer increasePointPercent;
 
-    @Column(name = "discount_percent", nullable = false, columnDefinition = "integer default 0")
+    @Column(name = "discount_percent", nullable = false)
     private Double discountPercent;
 
     @Column(name = "raw_price", nullable = false)
@@ -93,6 +93,9 @@ public class Product {
     @Column(name = "is_subscription", nullable = false)
     private Boolean isSubscription;
 
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
+
     /**
      * 빌더 패턴을 적용한 생성자입니다.
      *
@@ -101,7 +104,7 @@ public class Product {
      * @param detailsDescription   상품 상세 설명입니다.
      * @param stock                상품 재고입니다.
      * @param productCreatedAt     상품 등록 일자입니다.
-     * @param isExposed            상품 판매 여부입니다.
+     * @param isSelled             상품 판매 여부입니다.
      * @param isForceSoldOut       상품 삭제 여부입니다.
      * @param thumbnailUrl         상품 썸네일 url입니다.
      * @param fixedPrice           상품 정가입니다.
@@ -113,7 +116,7 @@ public class Product {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
-                   LocalDateTime productCreatedAt, Boolean isExposed, Boolean isForceSoldOut,
+                   LocalDateTime productCreatedAt, Boolean isSelled, Boolean isForceSoldOut,
                    String thumbnailUrl, Long fixedPrice, Integer increasePointPercent,
                    Double discountPercent, Long rawPrice, Boolean isPointApplyingBasedSellingPrice,
                    Boolean isPointApplying, Boolean isSubscription) {
@@ -121,8 +124,7 @@ public class Product {
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
-        this.productCreatedAt = productCreatedAt;
-        this.isExposed = isExposed;
+        this.isSelled = isSelled;
         this.isForceSoldOut = isForceSoldOut;
         this.thumbnailUrl = thumbnailUrl;
         this.fixedPrice = fixedPrice;
@@ -132,6 +134,9 @@ public class Product {
         this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
         this.isPointApplying = isPointApplying;
         this.isSubscription = isSubscription;
+        this.productCreatedAt = productCreatedAt;
+        this.dailyHits = 0L;
+        this.isDeleted = false;
     }
 
 }
