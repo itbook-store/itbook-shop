@@ -49,7 +49,7 @@ public class CartRepositoryImpl extends QuerydslRepositorySupport implements
                 qProduct.name,
                 qProduct.simpleDescription,
                 qProduct.detailsDescription,
-                qProduct.isExposed,
+                qProduct.isSelled,
                 qProduct.isForceSoldOut,
                 qProduct.stock,
                 qProduct.increasePointPercent,
@@ -63,8 +63,12 @@ public class CartRepositoryImpl extends QuerydslRepositorySupport implements
                 qBook.isEbook,
                 qBook.ebookUrl,
                 qBook.publisherName,
-                qBook.authorName))
-            .where(qMember.memberNo.eq(memberNo))
+                qBook.authorName,
+                qProduct.isPointApplyingBasedSellingPrice,
+                qProduct.isPointApplying,
+                qProduct.isSubscription)
+            )
+            .where(qMember.memberNo.eq(memberNo).and(qProduct.isSelled.eq(Boolean.TRUE)))
             .fetch();
     }
 

@@ -25,7 +25,6 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * @since 1.0
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "cart")

@@ -40,14 +40,14 @@ public class CartServiceImpl implements CartService {
     @Override
     public boolean registerCart(CartRequestDto cartRequestDto) {
 
-        boolean checkExist = cartRepository.existsById(
+        boolean checkExistProduct = cartRepository.existsById(
             new Cart.Pk(
                 cartRequestDto.getMemberNo(),
                 cartRequestDto.getProductNo()
             )
         );
 
-        if (checkExist) {
+        if (checkExistProduct) {
             return false;
         }
 
