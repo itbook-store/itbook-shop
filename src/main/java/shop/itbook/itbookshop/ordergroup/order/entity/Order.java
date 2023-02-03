@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.order.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,14 +11,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
  * 주문에 관한 엔티티입니다.
@@ -53,6 +59,7 @@ public class Order {
 
     @Column(name = "selected_delivery_date", nullable = false, columnDefinition = "default now()")
     private LocalDateTime countSpecifiedDeliveryDate;
+
 
     /**
      * 주문 엔티티의 생성자입니다.

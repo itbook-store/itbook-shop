@@ -11,7 +11,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
-import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.QOrderSubscription;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
@@ -238,7 +237,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
             from(qOrder)
-                .innerJoin(qOrder, qOrderProduct.order)
+                .innerJoin(qOrder.orderProduct, qOrderProduct)
                 .innerJoin(qOrderProduct.product, qProduct)
                 .on(qProduct.productNo.eq(recentlyPurchaseProductNo))
                 .innerJoin(qProduct.book, qBook)
@@ -268,9 +267,9 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                                                                QOrderProduct qOrderProduct,
                                                                QOrder qOrder) {
         return from(qOrder)
-            .innerJoin(qOrder, qOrderProduct.order)
+            .innerJoin(qOrder.orderProduct, qOrderProduct)
             .innerJoin(qOrderProduct.product, qProduct)
-            .innerJoin(qProduct, qBook.product)
+            .innerJoin(qProduct.book, qBook)
             .select(Projections.constructor(ProductDetailsResponseDto.class,
                 qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                 qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,

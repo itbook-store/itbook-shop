@@ -11,7 +11,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
-import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.QOrderSubscription;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.producttype.entity.QProductType;
@@ -133,5 +132,5 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                 qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted))
             .where(qProductTypeRegistration.productType.productTypeNo.eq(productTypeNo));
     }
-    
+
 }
