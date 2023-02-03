@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.product.controller.serviceapi;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +47,8 @@ public class ProductServiceController {
     public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
         @PageableDefault Pageable pageable) {
 
-        Page<ProductDetailsResponseDto> productList = productService.findProductListUser(pageable);
+        Page<ProductDetailsResponseDto> productList =
+            productService.findProductList(pageable, false);
 
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
@@ -80,6 +84,30 @@ public class ProductServiceController {
     }
 
     /**
+     * 상품유형별로 상품 조회를 요청하는 메서드입니다.
+     * 쿼리스트링으로 상품유형 번호가 파라미터로 들어올 시, 해당 상품유형 번호의 상품들을 조회합니다.
+     *
+     * @param productTypeNo 조회할 상품유형 번호입니다.
+     * @return 상품유형 번호에 해당하는 상품 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping(params = "productTypeNo")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByProductTypeNo(
+        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo) {
+
+        Page<ProductDetailsResponseDto> productList =
+            productService.findProductListByProductTypeNo(pageable, productTypeNo, false);
+
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(productList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
      * 상품별로 카테고리 조회를 요청하는 메서드입니다.
      * 쿼리스트링으로 상품 번호가 파라미터로 들어올 시, 해당 상품의 카테고리들을 조회합니다.
      *
@@ -99,6 +127,29 @@ public class ProductServiceController {
                 new CommonResponseBody.CommonHeader(
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
                 new PageResponse<>(categoryList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 상품 번호 리스트로 상품 상세정보 리스트 조회를 요청하는 메서드입니다.
+     *
+     * @param productNoList 조회할 상품 번호 리스트입니다.
+     * @return 상품 번호에 해당하는 상품의 카테고리 리스트를 response dto에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping("/{productNoList}")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
+        @PageableDefault Pageable pageable, @PathVariable List<Long> productNoList) {
+
+        Page<ProductDetailsResponseDto> productList =
+            productService.findProductListByProductNoList(pageable, productNoList);
+
+        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(productList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

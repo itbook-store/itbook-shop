@@ -12,6 +12,8 @@ import static org.mockito.Mockito.mock;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,6 +35,7 @@ import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
@@ -41,6 +44,8 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
+import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
  * @author 이하늬
@@ -58,6 +63,12 @@ class ProductServiceTest {
 
     @MockBean
     CategoryService mockCategoryService;
+
+    @MockBean
+    ProductTypeService mockProductTypeService;
+
+    @MockBean
+    ProductTypeRegistrationService mockProductTypeRegistrationService;
 
     @MockBean
     ProductCategoryService mockProductCategoryService;
@@ -157,6 +168,13 @@ class ProductServiceTest {
         Assertions.assertThat(actualProduct).isPresent();
         Assertions.assertThat(actualProduct.get().getProductNo())
             .isEqualTo(product.getProductNo());
+    }
+
+    @Test
+    @DisplayName("상품 번호 리스트로 상품 상세정보 리스트 조회 테스트")
+    void findProductListByProductNoTest_success() {
+        PageRequest pageRequest = PageRequest.of(0, Integer.MAX_VALUE);
+        List<ProductDetailsResponseDto> detailsList = new ArrayList<>();
     }
 
 }

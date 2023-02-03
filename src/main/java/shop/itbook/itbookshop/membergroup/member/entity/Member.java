@@ -10,7 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +42,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
  */
 @Getter
 @Setter
-@ToString
+//@ToString
 @DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,7 +51,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_no")
     private Long memberNo;
 
@@ -50,13 +63,13 @@ public class Member {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "member_id", nullable = false)
     private String memberId;
 
-    @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "is_man", nullable = false)
@@ -65,13 +78,13 @@ public class Member {
     @Column(name = "birth", nullable = false)
     private LocalDateTime birth;
 
-    @Column(name = "password", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone_number", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "member_created_at", nullable = false)

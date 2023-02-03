@@ -23,7 +23,6 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
  * @since 1.0
  */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookRepositoryTest {
 
     @Autowired

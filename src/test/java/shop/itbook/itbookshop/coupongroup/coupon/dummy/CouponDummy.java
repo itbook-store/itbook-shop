@@ -3,6 +3,8 @@ package shop.itbook.itbookshop.coupongroup.coupon.dummy;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
+import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
 
 /**
  * @author 송다혜
@@ -19,7 +21,8 @@ public class CouponDummy {
             .couponCreatedAt(LocalDateTime.now())
             .couponExpiredAt(LocalDateTime.of(2023,01,31,0,0))
             .code(UUID.randomUUID().toString())
-            .isReserved(false)
+            .isDuplicateUse(false)
+            .totalQuantity(1)
             .build();
     }
 
@@ -33,7 +36,8 @@ public class CouponDummy {
             .couponCreatedAt(LocalDateTime.now())
             .couponExpiredAt(LocalDateTime.of(2023,01,31,0,0))
             .code(UUID.randomUUID().toString())
-            .isReserved(false)
+            .isDuplicateUse(false)
+            .totalQuantity(1)
             .build();
     }
 
@@ -48,7 +52,8 @@ public class CouponDummy {
             .couponCreatedAt(LocalDateTime.now())
             .couponExpiredAt(LocalDateTime.of(2023,01,31,0,0))
             .code(UUID.randomUUID().toString())
-            .isReserved(false)
+            .isDuplicateUse(false)
+            .totalQuantity(0)
             .build();
     }
 }

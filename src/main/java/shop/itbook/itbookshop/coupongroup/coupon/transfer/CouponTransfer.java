@@ -5,6 +5,7 @@ import java.util.Objects;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 
 /**
  * @author 송다혜
@@ -35,7 +36,8 @@ public class CouponTransfer {
             .couponModifiedAt(modifiedAt)
             .image(dto.getImage())
             .code(dto.getCode())
-            .isReserved(dto.isReserved())
+            .isDuplicateUse(dto.isDuplicateUse())
+            .totalQuantity(dto.getTotalQuantity())
             .build();
     }
 
@@ -52,7 +54,10 @@ public class CouponTransfer {
             .couponModifiedAt(coupon.getCouponModifiedAt())
             .image(coupon.getImage())
             .code(coupon.getCode())
-            .isReserved(coupon.getIsReserved())
+            .isDuplicateUse(coupon.getIsDuplicateUse())
+            .totalQuantity(coupon.getTotalQuantity())
+            .couponTypeEnum(coupon.getCouponType().getCouponTypeEnum())
+            .issuedQuantity(coupon.getIssuedQuantity())
             .build();
     }
 }
