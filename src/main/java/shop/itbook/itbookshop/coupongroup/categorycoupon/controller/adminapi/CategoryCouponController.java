@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.coupongroup.categorycoupon.controller.adminapi;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
@@ -35,14 +33,13 @@ public class CategoryCouponController {
     private final CategoryCouponService categoryCouponService;
 
     @GetMapping
-    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> findCategoryCouponList(
+    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> findCategoryCouponList(
         @PageableDefault Pageable pageable) {
 
-        List<CouponListResponseDto> couponList =
-            categoryCouponService.findCategoryCouponList(pageable).getContent()
-                .stream().map(CategoryCouponListDto::getCoupon).collect(Collectors.toList());
+        Page<CouponListResponseDto> couponList =
+            categoryCouponService.findCategoryCouponList(pageable);
 
-        CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
+        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),

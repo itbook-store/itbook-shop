@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
@@ -17,5 +18,5 @@ public interface CouponService {
 
     CouponResponseDto findByCouponResponseDto(String code);
 
-    List<CouponListResponseDto> findByCouponList();
+    Page<CouponListResponseDto> findByCouponList(Pageable pageable);
 }
