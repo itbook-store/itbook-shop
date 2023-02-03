@@ -45,10 +45,10 @@ public class ChattingHistory {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "content", nullable = false, columnDefinition = "text")
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "chatting_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "chatting_created_at", nullable = false)
     private LocalDateTime chattingCreatedAt;
 
     /**

@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
 
         if (isFiltered) {
             return bookList.stream()
-                .filter(product -> product.getIsExposed() == Boolean.TRUE)
+                .filter(product -> product.getIsSelled() == Boolean.TRUE)
                 .collect(Collectors.toList());
         }
 

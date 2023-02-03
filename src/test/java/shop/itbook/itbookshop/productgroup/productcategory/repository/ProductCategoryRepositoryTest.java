@@ -28,7 +28,6 @@ import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategor
  */
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductCategoryRepositoryTest {
 
     @Autowired
