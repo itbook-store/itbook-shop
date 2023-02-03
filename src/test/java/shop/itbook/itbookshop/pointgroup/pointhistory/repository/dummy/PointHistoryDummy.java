@@ -12,8 +12,8 @@ public class PointHistoryDummy {
         PointHistory pointHistory =
             new PointHistory();
 
-        pointHistory.setIncreaseDecreasePoint(1000);
-        pointHistory.setRemainedPoint(5000);
+        pointHistory.setIncreaseDecreasePoint(1000L);
+        pointHistory.setRemainedPoint(5000L);
 
         return pointHistory;
     }
