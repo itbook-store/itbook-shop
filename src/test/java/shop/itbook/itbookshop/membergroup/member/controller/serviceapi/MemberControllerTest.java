@@ -49,8 +49,8 @@ class MemberControllerTest {
     @Test
     void memberAdd() throws Exception {
         MemberRequestDto memberRequestDto = new MemberRequestDto();
-        ReflectionTestUtils.setField(memberRequestDto, "membershipNo", 1);
-        ReflectionTestUtils.setField(memberRequestDto, "memberStatusNo", 1);
+        ReflectionTestUtils.setField(memberRequestDto, "membershipName", "일반");
+        ReflectionTestUtils.setField(memberRequestDto, "memberStatusName", "정상회원");
         ReflectionTestUtils.setField(memberRequestDto, "memberId", "user1000");
         ReflectionTestUtils.setField(memberRequestDto, "nickname", "감자");
         ReflectionTestUtils.setField(memberRequestDto, "name", "신짱구");
