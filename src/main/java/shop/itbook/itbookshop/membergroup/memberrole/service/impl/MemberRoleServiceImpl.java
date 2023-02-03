@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleAllResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.entity.MemberRole;
 import shop.itbook.itbookshop.membergroup.memberrole.repository.MemberRoleRepository;
@@ -33,11 +34,25 @@ public class MemberRoleServiceImpl implements MemberRoleService {
     }
 
     @Override
+    public List<MemberRoleAllResponseDto> findMemberRoleAllInfoWithMemberNo(Long memberNo) {
+        return memberRoleRepository.findMemberRoleAllInfoWithMemberNo(memberNo);
+    }
+
+    @Override
     @Transactional
     public void addMemberRole(Member member, Role role) {
+        log.info("member={}", member);
+        log.info("role={}", role);
         MemberRole memberRole = new MemberRole(member, role);
+
         log.info("memberRole = {}", memberRole);
 
         memberRoleRepository.save(memberRole);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMemberRole(Long memberNo, Integer roleNo) {
+        memberRoleRepository.deleteById(new MemberRole.Pk(memberNo, roleNo));
     }
 }

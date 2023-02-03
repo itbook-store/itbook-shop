@@ -1,7 +1,18 @@
-package shop.itbook.itbookshop.role.dto;/**
- * 
- * 
+package shop.itbook.itbookshop.role.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+/**
  * @author 노수연
  * @since 1.0
- */public class RoleResponseDto {
+ */
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+public class RoleResponseDto {
+
+    private Integer roleNo;
+    private String roleName;
 }
