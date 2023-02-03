@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
@@ -20,7 +21,7 @@ public interface ProductTypeService {
      * @return 모든 상품유형을 리스트로 반환합니다.
      * @author 이하늬
      */
-    List<ProductType> findProductTypeList();
+    Page<ProductTypeResponseDto> findProductTypeList(Pageable pageable);
 
     /**
      * 상품 번호로 상품 유형을 조회하는 기능을 담당합니다.
@@ -43,4 +44,6 @@ public interface ProductTypeService {
 
     Page<ProductDetailsResponseDto> findRecommendationBookList(Pageable pageable,
                                                                boolean isAdmin);
+
+    Page<ProductDetailsResponseDto> findRecentlySeenProductList(Pageable pageable);
 }

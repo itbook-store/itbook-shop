@@ -14,12 +14,10 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.QOrderSubscription;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
+import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttype.entity.QProductType;
 import shop.itbook.itbookshop.productgroup.producttype.repository.ProductTypeRepositoryCustom;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.ProductTypeRegistration;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.QProductTypeRegistration;
 
 /**
  * @author 이하늬
@@ -29,6 +27,28 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
     implements ProductTypeRepositoryCustom {
     public ProductTypeRepositoryImpl() {
         super(ProductTypeRegistration.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductTypeResponseDto> findProductTypeList(Pageable pageable) {
+        QProductType qProductType = QProductType.productType;
+
+        JPQLQuery<ProductTypeResponseDto> productTypeListQuery =
+            from(qProductType)
+                .select(Projections.constructor(ProductTypeResponseDto.class,
+                    qProductType.productTypeNo,
+                    qProductType.productTypeEnum.stringValue()
+                ));
+
+        List<ProductTypeResponseDto> productTypeList = productTypeListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productTypeList, pageable,
+            () -> from(qProductType).fetchCount());
     }
 
     /**
@@ -119,11 +139,10 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
-        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
         QOrder qOrder = QOrder.order;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
-            getBestSeller(qProduct, qBook, qOrderProduct, qOrderSubscription, qOrder)
+            getBestSeller(qProduct, qBook, qOrderProduct, qOrder)
                 .where(qProduct.isSelled.eq(true))
                 .where(qProduct.isDeleted.eq(Boolean.FALSE));
 
@@ -144,11 +163,10 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
-        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
         QOrder qOrder = QOrder.order;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
-            getBestSeller(qProduct, qBook, qOrderProduct, qOrderSubscription, qOrder);
+            getBestSeller(qProduct, qBook, qOrderProduct, qOrder);
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -211,14 +229,19 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findRecommendationBookListAdmin(Pageable pageable) {
+    public Page<ProductDetailsResponseDto> findRecommendationBookListAdmin(
+        Long recentlyPurchaseProductNo, Pageable pageable) {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
-
+        QOrder qOrder = QOrder.order;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
-            from(qBook)
-                .innerJoin(qBook.product, qProduct)
+            from(qOrder)
+                .innerJoin(qOrder, qOrderProduct.order)
+                .innerJoin(qOrderProduct.product, qProduct)
+                .on(qProduct.productNo.eq(recentlyPurchaseProductNo))
+                .innerJoin(qProduct.book, qBook)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
@@ -227,7 +250,9 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted));
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
+                .where(qProduct.productNo.ne(recentlyPurchaseProductNo));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -241,14 +266,11 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
 
     private JPQLQuery<ProductDetailsResponseDto> getBestSeller(QProduct qProduct, QBook qBook,
                                                                QOrderProduct qOrderProduct,
-                                                               QOrderSubscription qOrderSubscription,
                                                                QOrder qOrder) {
-        return from(qBook)
-            .innerJoin(qBook.product, qProduct)
+        return from(qOrder)
+            .innerJoin(qOrder, qOrderProduct.order)
             .innerJoin(qOrderProduct.product, qProduct)
-            .innerJoin(qOrderSubscription.product, qProduct)
-            .innerJoin(qOrder)
-            .on(qOrder.eq(qOrderProduct.order).and(qOrder.eq(qOrderSubscription.order)))
+            .innerJoin(qProduct, qBook.product)
             .select(Projections.constructor(ProductDetailsResponseDto.class,
                 qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                 qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
@@ -257,9 +279,13 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                 qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                 qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                 qProduct.isPointApplyingBasedSellingPrice,
-                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted))
+                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                qProduct.dailyHits))
             .where(qOrder.orderCreatedAt.between(LocalDateTime.now().minusDays(31),
-                LocalDateTime.now().minusDays(1)));
+                LocalDateTime.now().minusDays(1)))
+            .orderBy(qProduct.count().sum().desc())
+            .groupBy(qProduct.productNo);
+
     }
 
     private JPQLQuery<ProductDetailsResponseDto> getDiscount(QProduct qProduct, QBook qBook) {
@@ -273,8 +299,10 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                 qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                 qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                 qProduct.isPointApplyingBasedSellingPrice,
-                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted))
-            .where(qProduct.discountPercent.ne(0.0));
+                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                qProduct.dailyHits))
+            .where(qProduct.discountPercent.ne(0.0))
+            .orderBy(qProduct.discountPercent.desc());
     }
 
     private JPQLQuery<ProductDetailsResponseDto> getNewIssue(QProduct qProduct, QBook qBook) {
@@ -288,8 +316,10 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                 qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                 qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                 qProduct.isPointApplyingBasedSellingPrice,
-                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted))
-            .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)));
+                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                qProduct.dailyHits))
+            .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)))
+            .orderBy(qBook.bookCreatedAt.desc());
     }
 
     private JPQLQuery<ProductDetailsResponseDto> getPopularity(QProduct qProduct, QBook qBook) {
@@ -303,8 +333,8 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                 qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                 qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                 qProduct.isPointApplyingBasedSellingPrice,
-                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted))
-            .orderBy(qProduct.dailyHits.desc())
-            .limit(10);
+                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                qProduct.dailyHits))
+            .orderBy(qProduct.dailyHits.desc());
     }
 }

@@ -195,6 +195,14 @@ public class ProductServiceImpl implements ProductService {
                 productList = productTypeService.findPopularityBookList(pageable, isAdmin);
                 break;
 
+            case RECOMMENDATION:
+                productList = productTypeService.findRecommendationBookList(pageable, isAdmin);
+                break;
+
+            case RECENTLY_SEEN_PRODUCT:
+                productList = productTypeService.findRecentlySeenProductList(pageable);
+                break;
+
             default:
                 productList =
                     productTypeRegistrationService.findProductList(pageable, productTypeNo,

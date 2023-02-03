@@ -24,6 +24,8 @@ import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCate
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
+import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
+import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
 
 /**
  * @author 이하늬
@@ -35,6 +37,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCatego
 public class ProductServiceController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
+    private final ProductTypeService productTypeService;
 
 
     /**
@@ -150,6 +153,28 @@ public class ProductServiceController {
                 new CommonResponseBody.CommonHeader(
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
                 new PageResponse<>(productList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 모든 상품유형 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 상품 유형 리스트를 response dto에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping("/product-types")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductTypeResponseDto>>> productTypeList(
+        @PageableDefault Pageable pageable) {
+
+        Page<ProductTypeResponseDto> productTypeList =
+            productTypeService.findProductTypeList(pageable);
+
+        CommonResponseBody<PageResponse<ProductTypeResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse(productTypeList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

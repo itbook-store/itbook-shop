@@ -63,6 +63,7 @@ public class ProductDetailsResponseDto {
 
     private Boolean isSubscription;
     private Boolean isDeleted;
+    private Long dailyHits;
 
     @Setter
     private Long selledPrice;
@@ -82,7 +83,7 @@ public class ProductDetailsResponseDto {
                                      Boolean isEbook, String fileEbookUrl, String publisherName,
                                      String authorName, Boolean isPointApplyingBasedSellingPrice,
                                      Boolean isPointApplying, Boolean isSubscription,
-                                     Boolean isDeleted
+                                     Boolean isDeleted, Long dailyHits
     ) {
         this.productNo = productNo;
         this.productName = productName;
@@ -107,5 +108,6 @@ public class ProductDetailsResponseDto {
         this.isPointApplying = isPointApplying;
         this.isSubscription = isSubscription;
         this.isDeleted = isDeleted;
+        this.dailyHits = dailyHits;
     }
 }

@@ -45,7 +45,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription));
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -74,7 +75,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
                 .where(qProduct.isSelled.eq(Boolean.TRUE))
                 .where(qProduct.isDeleted.eq(Boolean.FALSE));
 
@@ -105,7 +107,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(product.fetchOne());
     }
@@ -132,7 +135,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
                 .where(qProduct.isSelled.eq(Boolean.TRUE))
                 .where(qProduct.isDeleted.eq(Boolean.FALSE))
                 .where(qProduct.productNo.in(productNoList));

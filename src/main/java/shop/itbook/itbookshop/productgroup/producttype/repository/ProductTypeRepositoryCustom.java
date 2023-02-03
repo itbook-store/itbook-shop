@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 
@@ -13,6 +14,14 @@ import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.
 @NoRepositoryBean
 public interface ProductTypeRepositoryCustom {
 
+    /**
+     * 모든 상품유형의 번호와 이름을 반환합니다.
+     *
+     * @param pageable 페이지네이션을 위한 pageable입니다.
+     * @return 상품 유형 리스트입니다.
+     * @author 이하늬
+     */
+    Page<ProductTypeResponseDto> findProductTypeList(Pageable pageable);
 
     /**
      * 발간일 기준으로 신간 도서를 조회하여 반환합니다.
@@ -113,7 +122,7 @@ public interface ProductTypeRepositoryCustom {
      * @return 추천 도서 리스트입니다.
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findRecommendationBookListAdmin(Pageable pageable);
 
-
+    Page<ProductDetailsResponseDto> findRecommendationBookListAdmin(
+        Long recentlyPurchaseProductNo, Pageable pageable);
 }
