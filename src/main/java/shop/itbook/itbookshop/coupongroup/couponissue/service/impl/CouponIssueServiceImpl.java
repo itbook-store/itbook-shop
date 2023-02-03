@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.coupongroup.couponissue.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
@@ -24,6 +25,7 @@ import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class CouponIssueServiceImpl implements CouponIssueService {
 
     private final CouponIssueRepository couponIssueRepository;
@@ -53,23 +55,23 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     }
 
     @Override
+    @Transactional
     public Integer addCouponIssueByWelcomeCoupon(Member member) {
 
         List<Coupon> welcomeCouponList = couponRepository.findByAvailableWelcomeCoupon();
 
         UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
 
-        List<CouponIssue> couponIssueList = null;
-        for (Coupon coupon:welcomeCouponList) {
+        for (Coupon coupon : welcomeCouponList) {
 
             CouponIssue couponIssue = CouponIssue.builder()
                 .coupon(coupon)
                 .member(member)
                 .usageStatus(usageStatus)
+                .couponExpiredAt(coupon.getCouponExpiredAt())
                 .build();
-
-            couponIssueList.add(couponIssue);
+            Long no = couponIssueRepository.save(couponIssue).getCouponIssueNo();
         }
-        return couponIssueRepository.saveAll(couponIssueList).size();
+        return 1;
     }
 }
