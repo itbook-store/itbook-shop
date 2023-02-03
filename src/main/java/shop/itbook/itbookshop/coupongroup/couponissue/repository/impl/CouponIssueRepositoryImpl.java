@@ -13,4 +13,6 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
     public CouponIssueRepositoryImpl() {
         super(CouponIssue.class);
     }
+
+
 }
