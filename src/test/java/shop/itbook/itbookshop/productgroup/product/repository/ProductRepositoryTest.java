@@ -86,7 +86,7 @@ class ProductRepositoryTest {
         Assertions.assertThat(productList).isNotEmpty();
         ProductDetailsResponseDto productDetailsResponseDtoActual = productList.getContent().get(0);
 
-        Assertions.assertThat(productList).hasSize(1);
+        Assertions.assertThat(productList).hasSize(2);
         Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
             .isEqualTo(dummyProductSuccess1.getProductNo());
         Assertions.assertThat(productDetailsResponseDtoActual.getIsSelled())
@@ -105,7 +105,7 @@ class ProductRepositoryTest {
             productRepository.findProductListByProductNoList(pageable, productNoList);
         Assertions.assertThat(productList).isNotEmpty();
         Assertions.assertThat(productList).hasSize(2);
-        
+
         ProductDetailsResponseDto productDetailsResponseDtoActual = productList.getContent().get(0);
         Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
             .isEqualTo(dummyProductSuccess1.getProductNo());
