@@ -75,7 +75,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
                     qProduct.isPointApplying, qProduct.isSubscription))
-                .where(qProduct.isSelled.eq(Boolean.TRUE));
+                .where(qProduct.isSelled.eq(Boolean.TRUE))
+                .where(qProduct.isDeleted.eq(Boolean.FALSE));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -132,8 +133,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
                     qProduct.isPointApplying, qProduct.isSubscription))
-                .where(
-                    qProduct.isSelled.eq(Boolean.TRUE).and(qProduct.productNo.in(productNoList)));
+                .where(qProduct.isSelled.eq(Boolean.TRUE))
+                .where(qProduct.isDeleted.eq(Boolean.FALSE))
+                .where(qProduct.productNo.in(productNoList));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())

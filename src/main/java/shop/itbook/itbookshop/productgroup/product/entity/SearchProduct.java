@@ -48,11 +48,11 @@ public class SearchProduct {
     @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime productCreatedAt;
 
-    @Column
-    private Boolean isForceSoldOut;
 
     @Column
     private Boolean isDeleted;
+    @Column
+    private Boolean isForceSoldOut;
 
     @Column
     private String thumbnailUrl;
