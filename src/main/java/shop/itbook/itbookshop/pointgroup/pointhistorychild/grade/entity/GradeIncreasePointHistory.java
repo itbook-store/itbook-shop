@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistorychild.grade;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.entity;
 
 /**
  * @author 최겸준
@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 

@@ -1,0 +1,9 @@
+GET http://localhost:8082/api/admin/point-histories?page=0&size=2
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/admin/point-histories/my-point/2534?page=1&size=2
+Accept: application/json
+Content-Type: application/json
