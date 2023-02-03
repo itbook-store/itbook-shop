@@ -49,7 +49,7 @@ public class Order {
     private LocalDateTime orderCreatedAt;
 
     @Column(name = "is_subscribed", nullable = false)
-    private boolean isSubscribed;
+    private Boolean isSubscribed;
 
     @Column(name = "selected_delivery_date", nullable = false, columnDefinition = "default now()")
     private LocalDateTime countSpecifiedDeliveryDate;
