@@ -1,14 +1,16 @@
-package shop.itbook.itbookshop.membergroup.membership.service.adminapi.impl;
+package shop.itbook.itbookshop.membergroup.membership.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipModifyRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
-import shop.itbook.itbookshop.membergroup.membership.service.adminapi.MembershipAdminService;
+import shop.itbook.itbookshop.membergroup.membership.service.MembershipService;
 import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
 
 /**
@@ -21,7 +23,7 @@ import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MembershipAdminServiceImpl implements MembershipAdminService {
+public class MembershipServiceImpl implements MembershipService {
 
     private final MembershipRepository membershipRepository;
 
@@ -72,5 +74,16 @@ public class MembershipAdminServiceImpl implements MembershipAdminService {
     public Membership findMembership(Integer membershipNo) {
         return membershipRepository.findById(membershipNo)
             .orElseThrow(MembershipNotFoundException::new);
+    }
+
+    @Override
+    public Membership findMembershipByMembershipGrade(String membershipGrade) {
+        return membershipRepository.findByMembershipGrade(membershipGrade)
+            .orElseThrow(MembershipNotFoundException::new);
+    }
+
+    @Override
+    public List<MembershipResponseDto> findMembershipList() {
+        return membershipRepository.findAllBy();
     }
 }

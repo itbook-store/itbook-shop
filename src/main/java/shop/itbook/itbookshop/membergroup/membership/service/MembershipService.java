@@ -1,7 +1,9 @@
-package shop.itbook.itbookshop.membergroup.membership.service.adminapi;
+package shop.itbook.itbookshop.membergroup.membership.service;
 
+import java.util.List;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipModifyRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 
 /**
@@ -11,7 +13,7 @@ import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
  * @author 노수연
  * @since 1.0
  */
-public interface MembershipAdminService {
+public interface MembershipService {
 
     /**
      * 회원등급을 추가하는 메서드 입니다.
@@ -42,4 +44,9 @@ public interface MembershipAdminService {
                           MembershipModifyRequestDto membershipModifyRequestDto);
 
     Membership findMembership(Integer membershipNo);
+
+    Membership findMembershipByMembershipGrade(String membershipGrade);
+
+    List<MembershipResponseDto> findMembershipList();
+
 }

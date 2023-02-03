@@ -30,7 +30,8 @@ import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
-import shop.itbook.itbookshop.membergroup.membership.service.adminapi.MembershipAdminService;
+import shop.itbook.itbookshop.membergroup.membership.service.MembershipService;
+import shop.itbook.itbookshop.membergroup.membershiphistory.repository.MembershipHistoryRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatusResponseDto;
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
@@ -54,7 +55,7 @@ class MemberServiceImplTest {
     MemberStatusAdminService memberStatusAdminService;
 
     @MockBean
-    MembershipAdminService membershipAdminService;
+    MembershipService membershipService;
 
     @MockBean
     MemberRoleService memberRoleService;
@@ -70,6 +71,9 @@ class MemberServiceImplTest {
 
     @MockBean
     MemberStatusHistoryRepository memberStatusHistoryRepository;
+
+    @MockBean
+    MembershipHistoryRepository membershipHistoryRepository;
 
     @MockBean
     RoleService roleService;
@@ -99,8 +103,8 @@ class MemberServiceImplTest {
         memberStatusRepository.save(normalMemberStatus);
 
         memberRequestDto = new MemberRequestDto();
-        ReflectionTestUtils.setField(memberRequestDto, "membershipNo", 1);
-        ReflectionTestUtils.setField(memberRequestDto, "memberStatusNo", 1);
+        ReflectionTestUtils.setField(memberRequestDto, "membershipName", "일반");
+        ReflectionTestUtils.setField(memberRequestDto, "memberStatusName", "정상회원");
         ReflectionTestUtils.setField(memberRequestDto, "memberId", "user1000");
         ReflectionTestUtils.setField(memberRequestDto, "nickname", "감자");
         ReflectionTestUtils.setField(memberRequestDto, "name", "신짱구");
@@ -113,7 +117,7 @@ class MemberServiceImplTest {
 
         memberStatusDto =
             MemberStatusResponseDto.builder().memberStatusName("정상회원").memberStatusNo(1).build();
-        given(memberStatusAdminService.findMemberStatusWithMemberStatusNo(1)).willReturn(
+        given(memberStatusAdminService.findMemberStatus("정상회원")).willReturn(
             memberStatusDto);
     }
 
