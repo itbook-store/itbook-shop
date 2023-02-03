@@ -7,5 +7,6 @@ import shop.itbook.itbookshop.membergroup.membershiphistory.entity.MembershipHis
  * @author 노수연
  * @since 1.0
  */
-public interface MembershipHistoryRepository extends JpaRepository<MembershipHistory, Long> {
+public interface MembershipHistoryRepository
+    extends JpaRepository<MembershipHistory, Long>, CustomMembershipHistoryRepository {
 }

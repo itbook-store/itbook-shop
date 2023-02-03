@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.membership.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipModifyRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipNoResponseDto;
@@ -109,9 +109,21 @@ public class MembershipController {
 
         CommonResponseBody<MembershipResponseDto> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
-                MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
+                MembershipResultMessageEnum.MEMBERSHIP_FIND_SUCCESS.getMessage()),
                 MembershipTransfer.entityToDto(
                     membershipService.findMembershipByMembershipGrade(membershipName)));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping()
+    public ResponseEntity<CommonResponseBody<List<MembershipResponseDto>>> membershipList() {
+
+        CommonResponseBody<List<MembershipResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MembershipResultMessageEnum.MEMBERSHIP_LIST_SUCCESS.getMessage()),
+                membershipService.findMembershipList());
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

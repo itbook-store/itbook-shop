@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.membergroup.membership.service;
 
+import java.util.List;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipModifyRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 
 /**
@@ -44,4 +46,6 @@ public interface MembershipService {
     Membership findMembership(Integer membershipNo);
 
     Membership findMembershipByMembershipGrade(String membershipGrade);
+
+    List<MembershipResponseDto> findMembershipList();
 }
