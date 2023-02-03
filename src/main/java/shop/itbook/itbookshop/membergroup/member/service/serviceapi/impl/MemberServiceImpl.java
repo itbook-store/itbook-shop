@@ -202,6 +202,12 @@ public class MemberServiceImpl implements MemberService {
 
         Long memberId = memberRepository.save(member).getMemberNo();
 
+        MembershipHistory membershipHistory =
+            MembershipHistory.builder().membership(membership).member(member).monthlyUsageAmount(0L)
+                .membershipHistoryCreatedAt(LocalDateTime.now()).build();
+
+        membershipHistoryRepository.save(membershipHistory);
+
         Role role = roleService.findRole("USER");
         log.info("role = {}", role);
 

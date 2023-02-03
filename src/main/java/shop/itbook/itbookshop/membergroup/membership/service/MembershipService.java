@@ -48,4 +48,5 @@ public interface MembershipService {
     Membership findMembershipByMembershipGrade(String membershipGrade);
 
     List<MembershipResponseDto> findMembershipList();
+
 }
