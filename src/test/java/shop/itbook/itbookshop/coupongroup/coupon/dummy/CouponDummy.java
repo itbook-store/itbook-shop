@@ -23,7 +23,6 @@ public class CouponDummy {
             .code(UUID.randomUUID().toString())
             .isDuplicateUse(false)
             .totalQuantity(1)
-            .couponType(new CouponType(0, CouponTypeEnum.NORMAL_COUPON))
             .build();
     }
 
@@ -39,7 +38,6 @@ public class CouponDummy {
             .code(UUID.randomUUID().toString())
             .isDuplicateUse(false)
             .totalQuantity(1)
-            .couponType(new CouponType(0, CouponTypeEnum.NORMAL_COUPON))
             .build();
     }
 
@@ -56,7 +54,6 @@ public class CouponDummy {
             .code(UUID.randomUUID().toString())
             .isDuplicateUse(false)
             .totalQuantity(0)
-            .couponType(new CouponType(0, CouponTypeEnum.NORMAL_COUPON))
             .build();
     }
 }

@@ -23,6 +23,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultM
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 
 /**
  * 관리자의 쿠폰 서비스 컨트롤러 클레스입니다.
@@ -56,6 +57,11 @@ public class CouponAdminController {
                 new CategoryCouponRequestDto(couponNoResponseDto.getCouponNo(),
                     couponRequestDto.getCategoryNo()));
         }
+        if (couponRequestDto.getCouponType().equals(CouponTypeEnum.NORMAL_COUPON.getCouponType())) {
+            couponIssueService.addCouponIssueByNormalCoupon(couponRequestDto.getUserId(),
+                couponNoResponseDto.getCouponNo());
+        }
+
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
                 CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
