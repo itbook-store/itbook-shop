@@ -55,8 +55,8 @@ public class ProductTypeRegistrationServiceImpl implements
     public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, Integer productTypeNo,
                                                            boolean isAdmin) {
         Page<ProductDetailsResponseDto> productListWithProductTypeNo =
-            productTypeRegistrationRepository.findProductListWithProductTypeNo(pageable,
-                productTypeNo, isAdmin);
+            productTypeRegistrationRepository.findProductListAdminWithProductTypeNo(pageable,
+                productTypeNo);
 
         if (Objects.isNull(productListWithProductTypeNo)) {
             throw new ProductTypeRegistrationNotFoundException();

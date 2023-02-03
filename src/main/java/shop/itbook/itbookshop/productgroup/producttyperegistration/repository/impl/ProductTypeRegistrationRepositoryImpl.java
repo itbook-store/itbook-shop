@@ -12,7 +12,6 @@ import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.producttype.entity.QProductType;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.ProductTypeRegistration;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.QProductTypeRegistration;
@@ -59,28 +58,68 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductListWithProductTypeNo(Pageable pageable,
-                                                                            Integer productTypeNo,
-                                                                            Boolean isExposed) {
+    public Page<ProductDetailsResponseDto> findProductListUserWithProductTypeNo(Pageable pageable,
+                                                                                Integer productTypeNo) {
         QProductTypeRegistration qProductTypeRegistration =
             QProductTypeRegistration.productTypeRegistration;
+        QProductType qProductType = QProductType.productType;
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
             from(qProductTypeRegistration)
+                .innerJoin(qProductTypeRegistration.productType, qProductType)
                 .innerJoin(qProductTypeRegistration.product, qProduct)
-                .innerJoin(qProduct, qBook.product)
+                .innerJoin(qProduct.book, qBook)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
                 .where(qProductTypeRegistration.productType.productTypeNo.eq(productTypeNo)
-                    .and(qProduct.isExposed).eq(isExposed));
+                    .and(qProduct.isSelled).eq(true));
+
+        List<ProductDetailsResponseDto> productList =
+            productListQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListAdminWithProductTypeNo(Pageable pageable,
+                                                                                 Integer productTypeNo) {
+        QProductTypeRegistration qProductTypeRegistration =
+            QProductTypeRegistration.productTypeRegistration;
+        QProductType qProductType = QProductType.productType;
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            from(qProductTypeRegistration)
+                .innerJoin(qProductTypeRegistration.productType, qProductType)
+                .innerJoin(qProductTypeRegistration.product, qProduct)
+                .innerJoin(qProduct.book, qBook)
+                .select(Projections.constructor(ProductDetailsResponseDto.class,
+                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
+                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
+                .where(qProductTypeRegistration.productType.productTypeNo.eq(productTypeNo));
 
         List<ProductDetailsResponseDto> productList =
             productListQuery.offset(pageable.getOffset())
@@ -103,13 +142,15 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                 .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
                 .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)))
-                .where(qProduct.isExposed.eq(true));
+                .where(qProduct.isSelled.eq(true));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -132,11 +173,13 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                 .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
                 .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)));
 
         List<ProductDetailsResponseDto> productList = productListQuery
@@ -160,13 +203,15 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                 .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
                 .where(qProduct.discountPercent.ne(0.0))
-                .where(qProduct.isExposed.eq(true));
+                .where(qProduct.isSelled.eq(true));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -189,11 +234,13 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                 .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(ProductDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName))
+                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice,
+                    qProduct.isPointApplying, qProduct.isSubscription))
                 .where(qProduct.discountPercent.ne(0.0));
 
         List<ProductDetailsResponseDto> productList = productListQuery
