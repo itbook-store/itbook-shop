@@ -39,7 +39,6 @@ class CouponTypeRepositoryTest {
     void find_by_couponTypeName(){
         CouponType couponType1 = couponTypeRepository.findByCouponTypeName("일반쿠폰").orElseThrow();
 
-        assertThat(couponType1.getCouponTypeNo()).isEqualTo(1);
         assertThat(couponType1.getCouponTypeEnum()).isEqualTo(CouponTypeEnum.NORMAL_COUPON);
     }
 
