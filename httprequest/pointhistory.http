@@ -1,9 +1,50 @@
-GET http://localhost:8082/api/admin/point-histories?page=0&size=2
+GET http://localhost:8082/api/admin/point-histories?page=0&size=100
 Accept: application/json
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8082/api/admin/point-histories/my-point/2534?page=1&size=2
+GET http://localhost:8082/api/admin/point-histories?page=0&size=2&content=쿠폰
 Accept: application/json
 Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/admin/point-histories?page=0&size=2&content=리뷰
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/admin/point-histories?page=0&size=4&content=주문
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/point-histories/my-point/2534?page=0&size=100
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/point-histories/my-point/2534?page=0&size=4&content=리뷰
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/point-histories/my-point/2534?page=0&size=4&content=쿠폰
+Accept: application/json
+Content-Type: application/json
+
+###
+
+GET http://localhost:8082/api/point-histories/my-point/2534?page=0&size=4&content=주문
+Accept: application/json
+Content-Type: application/json
+
+
+
+
+
