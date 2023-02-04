@@ -35,7 +35,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(BookDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,
@@ -56,7 +56,7 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .innerJoin(qBook.product, qProduct)
                 .select(Projections.constructor(BookDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isExposed, qProduct.isForceSoldOut,
+                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,

@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.memberrole.repository;
 
 import java.util.List;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleAllResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
 
 /**
@@ -15,4 +16,6 @@ import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResp
 public interface CustomMemberRoleRepository {
 
     List<MemberRoleResponseDto> findMemberRoleWithMemberNo(Long memberNo);
+
+    List<MemberRoleAllResponseDto> findMemberRoleAllInfoWithMemberNo(Long memberNo);
 }

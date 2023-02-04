@@ -48,7 +48,7 @@ public class MembershipHistory {
     @Column(name = "monthly_usage_amount", nullable = false)
     private Long monthlyUsageAmount;
 
-    @Column(name = "membership_history_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "membership_history_created_at", nullable = false)
     private LocalDateTime membershipHistoryCreatedAt;
 
     /**
@@ -60,9 +60,11 @@ public class MembershipHistory {
      * @author 강명관
      */
     @Builder
-    public MembershipHistory(Member member, Membership membership, Long monthlyUsageAmount) {
+    public MembershipHistory(Member member, Membership membership, Long monthlyUsageAmount,
+                             LocalDateTime membershipHistoryCreatedAt) {
         this.member = member;
         this.membership = membership;
         this.monthlyUsageAmount = monthlyUsageAmount;
+        this.membershipHistoryCreatedAt = membershipHistoryCreatedAt;
     }
 }

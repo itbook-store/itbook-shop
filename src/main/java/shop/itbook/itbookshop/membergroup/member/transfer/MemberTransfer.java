@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.transfer;
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
@@ -33,6 +34,17 @@ public class MemberTransfer {
             .email(
                 memberRequestDto.getEmail()).memberCreatedAt(LocalDateTime.now())
             .isSocial(memberRequestDto.getIsSocial())
+            .build();
+    }
+
+    public static Member dtoToEntityByResponseDto(MemberResponseDto memberResponseDto) {
+        return Member.builder().memberId(memberResponseDto.getMemberId()).nickname(
+                memberResponseDto.getNickname()).name(memberResponseDto.getName())
+            .isMan(memberResponseDto.getIsMan()).birth(memberResponseDto.getBirth()).password(
+                memberResponseDto.getPassword()).phoneNumber(memberResponseDto.getPhoneNumber())
+            .email(
+                memberResponseDto.getEmail()).memberCreatedAt(LocalDateTime.now())
+            .isSocial(memberResponseDto.getIsSocial())
             .build();
     }
 

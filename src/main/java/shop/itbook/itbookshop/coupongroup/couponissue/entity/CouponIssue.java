@@ -50,24 +50,31 @@ public class CouponIssue {
     @JoinColumn(name = "usage_status_no", nullable = false)
     private UsageStatus usageStatus;
 
-    @Column(name = "coupon_issue_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "coupon_issue_created_at", nullable = false)
     private LocalDateTime couponIssueCreatedAt;
 
+    @Setter
     @Column(name = "coupon_usage_created_at")
     private LocalDateTime couponUsageCreatedAt;
+
+    @Column(name = "coupon_expired_at", nullable = false)
+    private LocalDateTime couponExpiredAt;
 
     /**
      * 쿠폰 발급 테이블의 생성자 입니다.
      *
-     * @param member      the member
-     * @param coupon      the coupon
-     * @param usageStatus the usage status
+     * @param member          the member
+     * @param coupon          the coupon
+     * @param usageStatus     the usage status
+     * @param couponExpiredAt the coupon expired at
      * @author 송다혜
      */
     @Builder
-    public CouponIssue(Member member, Coupon coupon, UsageStatus usageStatus) {
+    public CouponIssue(Member member, Coupon coupon, UsageStatus usageStatus, LocalDateTime couponExpiredAt) {
         this.member = member;
         this.coupon = coupon;
         this.usageStatus = usageStatus;
+        this.couponIssueCreatedAt = LocalDateTime.now();
+        this.couponExpiredAt = couponExpiredAt;
     }
 }

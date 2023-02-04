@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 
 /**
  * 쿠폰의 정보를 저장하는 response dto 객체 입니다.
@@ -28,5 +29,8 @@ public class CouponResponseDto {
     private LocalDateTime couponModifiedAt;
     private String image;
     private String code;
-    private boolean isReserved;
+    private Boolean isDuplicateUse;
+    private Integer totalQuantity;
+    private Integer issuedQuantity;
+    private CouponTypeEnum couponTypeEnum;
 }

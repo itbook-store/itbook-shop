@@ -25,6 +25,9 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
+import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
+import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
  * @author 송다혜
@@ -40,13 +43,17 @@ class CouponServiceImplTest {
     @MockBean
     CouponRepository couponRepository;
 
+    @MockBean
+    CouponTypeService couponTypeService;
+
+
     Coupon percentDummyCoupon;
 
     CouponRequestDto couponRequestDto;
     @BeforeEach
     public void setup(){
         percentDummyCoupon = CouponDummy.getPercentCoupon();
-
+        percentDummyCoupon.setCouponType(new CouponType(0, CouponTypeEnum.NORMAL_COUPON));
         couponRequestDto = new CouponRequestDto();
         ReflectionTestUtils.setField(couponRequestDto, "name", "쿠폰이름");
 
@@ -82,6 +89,8 @@ class CouponServiceImplTest {
     void findByCouponResponseDto() {
         //given
         ReflectionTestUtils.setField(couponRequestDto, "code", percentDummyCoupon.getCode());
+        ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt", LocalDateTime.now().toString());
+        ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt", LocalDateTime.now().toString());
 
         given(couponRepository.findCouponByCode(anyString()))
             .willReturn(Optional.of(percentDummyCoupon));

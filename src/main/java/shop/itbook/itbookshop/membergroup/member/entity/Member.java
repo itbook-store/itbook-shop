@@ -50,13 +50,13 @@ public class Member {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "member_id", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "member_id", nullable = false)
     private String memberId;
 
-    @Column(name = "nickname", nullable = false, columnDefinition = "varchar(20)", unique = true)
+    @Column(name = "nickname", nullable = false)
     private String nickname;
 
-    @Column(name = "name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "is_man", nullable = false)
@@ -68,10 +68,10 @@ public class Member {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "phone_number", nullable = false, unique = true)
+    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "member_created_at", nullable = false)

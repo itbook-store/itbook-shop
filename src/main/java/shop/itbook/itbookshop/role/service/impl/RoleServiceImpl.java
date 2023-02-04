@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.role.entity.Role;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 import shop.itbook.itbookshop.role.repository.RoleRepository;
 import shop.itbook.itbookshop.role.service.RoleService;
+import shop.itbook.itbookshop.role.transfer.RoleTransfer;
 
 /**
  * @author 노수연
@@ -23,6 +24,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findRole(String roleName) {
-        return roleRepository.findByRoleName(roleName).orElseThrow(RoleNotFoundException::new);
+        return RoleTransfer.dtoToEntity(
+            roleRepository.findByRoleName(roleName).orElseThrow(RoleNotFoundException::new));
     }
 }
