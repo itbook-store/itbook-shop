@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
@@ -75,7 +74,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
-                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt
+                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial
                 )).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus).where(qmember.memberId.eq(memberId))
             .fetchOne());
@@ -135,6 +134,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
+            .orderBy(qmember.memberNo.desc())
             .where(qmemberStatus.memberStatusEnum.stringValue().eq("정상회원"));
 
         List<MemberExceptPwdResponseDto> memberList =
@@ -158,6 +158,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
+            .orderBy(qmember.memberNo.desc())
             .where(qmemberStatus.memberStatusEnum.stringValue().eq("차단회원"));
 
         List<MemberExceptPwdResponseDto> memberList =
@@ -181,6 +182,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
+            .orderBy(qmember.memberNo.desc())
             .where(qmemberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"));
 
         List<MemberExceptPwdResponseDto> memberList =
@@ -373,27 +375,24 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }
 
     @Override
-    public MemberCountResponseDto MemberCountBy() {
+    public Long memberCountBy() {
         return jpaQueryFactory.select(
-            Projections.constructor(MemberCountResponseDto.class, qmember.count())
-        ).from(qmember).fetchFirst();
+            qmember.count()).from(qmember).fetchFirst();
     }
 
     @Override
-    public MemberCountResponseDto blockMemberCountBy() {
-        return jpaQueryFactory.select(
-                Projections.constructor(MemberCountResponseDto.class, qmember.count())
-            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("차단회원"))
+    public Long memberCountByStatusName(String statusName) {
+        return jpaQueryFactory.select(qmember.count()).from(qmember)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq(statusName))
             .fetchOne();
     }
 
     @Override
-    public MemberCountResponseDto withdrawMemberCountBy() {
-        return jpaQueryFactory.select(
-                Projections.constructor(MemberCountResponseDto.class, qmember.count())
-            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"))
+    public Long memberCountByMembershipGrade(String membershipGrade) {
+        return jpaQueryFactory.select(qmember.count()).from(qmember)
+            .join(qmember.membership, qmembership)
+            .where(qmembership.membershipGrade.eq(membershipGrade))
             .fetchOne();
     }
 }

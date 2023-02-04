@@ -2,7 +2,7 @@ package shop.itbook.itbookshop.role.repository;
 
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.role.entity.Role;
+import shop.itbook.itbookshop.role.dto.RoleResponseDto;
 
 /**
  * @author 노수연
@@ -11,5 +11,5 @@ import shop.itbook.itbookshop.role.entity.Role;
 @NoRepositoryBean
 public interface CustomRoleRepository {
 
-    Optional<Role> findByRoleName(String roleName);
+    Optional<RoleResponseDto> findByRoleName(String roleName);
 }

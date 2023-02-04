@@ -64,24 +64,4 @@ public class ProductTypeRegistrationServiceImpl implements
 
         return productListWithProductTypeNo;
     }
-
-    @Override
-    public Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable,
-                                                           boolean isAdmin) {
-        if (isAdmin) {
-            return productTypeRegistrationRepository.findNewBookListAdmin(pageable);
-        } else {
-            return productTypeRegistrationRepository.findNewBookListUser(pageable);
-        }
-    }
-
-    @Override
-    public Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable,
-                                                                boolean isAdmin) {
-        if (isAdmin) {
-            return productTypeRegistrationRepository.findDiscountBookListAdmin(pageable);
-        } else {
-            return productTypeRegistrationRepository.findDiscountBookListUser(pageable);
-        }
-    }
 }

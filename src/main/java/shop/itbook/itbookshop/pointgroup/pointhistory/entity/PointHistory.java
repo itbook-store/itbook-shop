@@ -54,6 +54,9 @@ public class PointHistory {
     @Column(name = "history_created_at", nullable = false)
     private LocalDateTime historyCreatedAt = LocalDateTime.now();
 
+    @Column(name = "is_decrease")
+    private Boolean isDecrease;
+
     /**
      * entity 객체를 생성하기 위한 Builder 전용 생성자입니다.
      *
@@ -63,10 +66,11 @@ public class PointHistory {
      */
     @Builder
     public PointHistory(Member member, PointIncreaseDecreaseContent pointIncreaseDecreaseContent,
-                        Long increaseDecreasePoint, Long remainedPoint) {
+                        Long increaseDecreasePoint, Long remainedPoint, Boolean isDecrease) {
         this.member = member;
         this.pointIncreaseDecreaseContent = pointIncreaseDecreaseContent;
         this.increaseDecreasePoint = increaseDecreasePoint;
         this.remainedPoint = remainedPoint;
+        this.isDecrease = isDecrease;
     }
 }

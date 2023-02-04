@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.itbook.itbookshop.auth.dto.AuthorizationHeaderDto;
+import shop.itbook.itbookshop.auth.receiver.AuthHeaderReceiver;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
@@ -24,6 +26,8 @@ import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCate
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
+import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
+import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
 
 /**
  * @author 이하늬
@@ -35,6 +39,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCatego
 public class ProductServiceController {
     private final ProductService productService;
     private final ProductCategoryService productCategoryService;
+    private final ProductTypeService productTypeService;
 
 
     /**
@@ -93,12 +98,21 @@ public class ProductServiceController {
      */
     @GetMapping(params = "productTypeNo")
     public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByProductTypeNo(
-        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo) {
+        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo, @RequestParam(required = false) Long memberNo) {
+
+//        Page<ProductDetailsResponseDto> productList;
+//        if(!Objects.isNull(memberNo)) {
+//            productList =
+//                productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
+//        } else {
+//            productList =
+//                productService.findProductListByProductTypeNo(pageable, productTypeNo, null);
+//        }
 
         Page<ProductDetailsResponseDto> productList =
-            productService.findProductListByProductTypeNo(pageable, productTypeNo, false);
+                            productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
 
-        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+            CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
@@ -150,6 +164,28 @@ public class ProductServiceController {
                 new CommonResponseBody.CommonHeader(
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
                 new PageResponse<>(productList));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 모든 상품유형 조회를 요청하는 메서드입니다.
+     *
+     * @return 조회한 상품 유형 리스트를 response dto에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping("/product-types")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductTypeResponseDto>>> productTypeList(
+        @PageableDefault Pageable pageable) {
+
+        Page<ProductTypeResponseDto> productTypeList =
+            productTypeService.findProductTypeList(pageable);
+
+        CommonResponseBody<PageResponse<ProductTypeResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse(productTypeList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

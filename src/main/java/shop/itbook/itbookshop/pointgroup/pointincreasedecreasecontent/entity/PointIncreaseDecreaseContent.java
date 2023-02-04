@@ -40,12 +40,7 @@ public class PointIncreaseDecreaseContent {
         nullable = false, unique = true)
     private PointIncreaseDecreaseContentEnum contentEnum;
 
-    @Column(name = "is_decrease")
-    private Boolean isDecrease;
-
-    public PointIncreaseDecreaseContent(PointIncreaseDecreaseContentEnum contentEnum,
-                                        Boolean isDecrease) {
+    public PointIncreaseDecreaseContent(PointIncreaseDecreaseContentEnum contentEnum) {
         this.contentEnum = contentEnum;
-        this.isDecrease = isDecrease;
     }
 }

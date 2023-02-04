@@ -20,7 +20,6 @@ public class DeliveryStatusHistoryDummy {
             .deliveryStatus(DeliveryStatusDummy.getDummyWait())
             .build();
 
-        testHistory.setDeliveryStatusHistoryNo(11L);
         testHistory.setDeliveryStatusCreatedAt(LocalDateTime.now());
 
         return testHistory;
