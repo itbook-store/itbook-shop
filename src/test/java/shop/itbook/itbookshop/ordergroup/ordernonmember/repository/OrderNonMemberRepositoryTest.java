@@ -47,8 +47,6 @@ class OrderNonMemberRepositoryTest {
 
         OrderNonMember orderNonMember = OrderNonMemberDummy.createOrderNonMember(order);
 
-        System.out.println(orderNonMember);
-
         OrderNonMember savedOrderNonMember = orderNonMemberRepository.save(orderNonMember);
 
         assertThat(savedOrderNonMember.getOrder().getOrderNo()).isEqualTo(
@@ -57,14 +55,13 @@ class OrderNonMemberRepositoryTest {
 
     @Test
     @DisplayName("주문 번호로 조회 성공")
-    @Disabled
     void findByOrder_OrderNo() {
         OrderNonMember orderNonMember = OrderNonMemberDummy.createOrderNonMember(order);
 
         orderNonMemberRepository.save(orderNonMember);
 
         OrderNonMember savedOrderNonMember =
-            orderNonMemberRepository.findByOrder_OrderNo(order.getOrderNo()).orElseThrow();
+            orderNonMemberRepository.findById(order.getOrderNo()).orElseThrow();
 
         assertThat(savedOrderNonMember.getOrder().getOrderNo()).isEqualTo(
             orderNonMember.getOrder().getOrderNo());

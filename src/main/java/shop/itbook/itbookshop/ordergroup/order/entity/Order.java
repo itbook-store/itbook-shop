@@ -23,10 +23,9 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
  * @since 1.0
  */
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Setter
 @Table(name = "order_paper")
+@NoArgsConstructor
 @Entity
 public class Order {
 
@@ -44,10 +43,13 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProducts;
 
-
-    public Order(Long orderNo, LocalDateTime orderCreatedAt, LocalDateTime selectedDeliveryDate) {
-        this.orderNo = orderNo;
+    /**
+     * 주문 엔티티의 생성자입니다.
+     *
+     * @author 정재원
+     */
+    public Order(LocalDateTime orderCreatedAt, LocalDateTime selectedDeliveryDate) {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
-    }
+
 }

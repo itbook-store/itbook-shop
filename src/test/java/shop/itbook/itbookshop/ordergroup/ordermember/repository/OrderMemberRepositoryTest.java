@@ -89,9 +89,10 @@ class OrderMemberRepositoryTest {
 
     @Test
     @DisplayName("회원의 주문정보 테이블에 save 성공")
-    @Disabled
     void saveSuccessTest() {
         OrderMember orderMember = OrderMemberDummy.createOrderMember(order, memberDestination);
+        orderMember.setOrder(order);
+        orderMember.setOrderNo(order.getOrderNo());
 
         OrderMember savedOrderMember = orderMemberRepository.save(orderMember);
 
@@ -101,14 +102,13 @@ class OrderMemberRepositoryTest {
 
     @Test
     @DisplayName("주문 번호로 조회 성공")
-    @Disabled
     void findByOrder_OrderNo() {
         OrderMember orderMember = OrderMemberDummy.createOrderMember(order, memberDestination);
 
         orderMemberRepository.save(orderMember);
 
         OrderMember savedOrderMember =
-            orderMemberRepository.findByOrder_OrderNo(order.getOrderNo()).orElseThrow();
+            orderMemberRepository.findById(order.getOrderNo()).orElseThrow();
 
         assertThat(savedOrderMember.getOrder().getOrderNo()).isEqualTo(
             orderMember.getOrder().getOrderNo());
