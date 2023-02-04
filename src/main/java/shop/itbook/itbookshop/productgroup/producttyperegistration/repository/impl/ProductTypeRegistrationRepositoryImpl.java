@@ -194,11 +194,10 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
-        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
         QOrder qOrder = QOrder.order;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
-            getBestSeller(qProduct, qBook, qOrderProduct, qOrderSubscription, qOrder)
+            getBestSeller(qProduct, qBook, qOrderProduct, qOrder)
                 .where(qProduct.isSelled.eq(true));
 
         List<ProductDetailsResponseDto> productList = productListQuery
@@ -218,11 +217,10 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
-        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
         QOrder qOrder = QOrder.order;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
-            getBestSeller(qProduct, qBook, qOrderProduct, qOrderSubscription, qOrder);
+            getBestSeller(qProduct, qBook, qOrderProduct, qOrder);
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -257,14 +255,12 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
 
     private JPQLQuery<ProductDetailsResponseDto> getBestSeller(QProduct qProduct, QBook qBook,
                                                                QOrderProduct qOrderProduct,
-                                                               QOrderSubscription qOrderSubscription,
                                                                QOrder qOrder) {
         return from(qBook)
             .innerJoin(qBook.product, qProduct)
             .innerJoin(qOrderProduct.product, qProduct)
-            .innerJoin(qOrderSubscription.product, qProduct)
             .innerJoin(qOrder)
-            .on(qOrder.eq(qOrderProduct.order).and(qOrder.eq(qOrderSubscription.order)))
+            .on(qOrder.eq(qOrderProduct.order))
             .select(Projections.constructor(ProductDetailsResponseDto.class,
                 qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                 qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,

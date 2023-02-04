@@ -61,7 +61,7 @@ class OrderNonMemberRepositoryTest {
         orderNonMemberRepository.save(orderNonMember);
 
         OrderNonMember savedOrderNonMember =
-            orderNonMemberRepository.findByOrder_OrderNo(order.getOrderNo()).orElseThrow();
+            orderNonMemberRepository.findById(order.getOrderNo()).orElseThrow();
 
         assertThat(savedOrderNonMember.getOrder().getOrderNo()).isEqualTo(
             orderNonMember.getOrder().getOrderNo());

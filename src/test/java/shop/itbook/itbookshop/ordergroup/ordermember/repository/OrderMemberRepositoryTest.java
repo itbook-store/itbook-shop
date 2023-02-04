@@ -108,7 +108,7 @@ class OrderMemberRepositoryTest {
         orderMemberRepository.save(orderMember);
 
         OrderMember savedOrderMember =
-            orderMemberRepository.findByOrder_OrderNo(order.getOrderNo()).orElseThrow();
+            orderMemberRepository.findById(order.getOrderNo()).orElseThrow();
 
         assertThat(savedOrderMember.getOrder().getOrderNo()).isEqualTo(
             orderMember.getOrder().getOrderNo());
