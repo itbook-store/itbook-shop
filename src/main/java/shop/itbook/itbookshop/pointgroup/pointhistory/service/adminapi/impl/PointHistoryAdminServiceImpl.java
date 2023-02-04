@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistory.service.impl;
+package shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi.PointHistoryAdminService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -15,7 +15,7 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 @Service
 @RequiredArgsConstructor
-public class PointHistoryServiceImpl implements PointHistoryService {
+public class PointHistoryAdminServiceImpl implements PointHistoryAdminService {
 
     private final PointHistoryRepository pointHistoryRepository;
 
@@ -28,13 +28,6 @@ public class PointHistoryServiceImpl implements PointHistoryService {
     }
 
     @Override
-    public Page<PointHistoryListDto> findMyPointHistoryList(Long memberNo, Pageable pageable,
-                                                            PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
-        return pointHistoryRepository.findMyPointHistoryListDto(memberNo, pageable,
-            pointIncreaseDecreaseContentEnum);
-    }
-
-    @Override
     public Page<PointHistoryListDto> findPointHistoryListBySearch(Pageable pageable,
                                                                   PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
                                                                   String searchWord) {
@@ -42,11 +35,4 @@ public class PointHistoryServiceImpl implements PointHistoryService {
             pointIncreaseDecreaseContentEnum, searchWord);
     }
 
-//    @Override
-//    public Page<PointHistoryListDto> findCouponPointHistoryList(Pageable pageable,
-//                                                                PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
-//        return pointHistoryRepository.findPointHistoryListDtoThroughPointIncreaseDecreaseContent(
-//            pageable,
-//            pointIncreaseDecreaseContentEnum);
-//    }
 }

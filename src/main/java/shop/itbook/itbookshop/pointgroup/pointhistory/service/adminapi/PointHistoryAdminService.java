@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistory.service;
+package shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,13 +9,10 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  * @author 최겸준
  * @since 1.0
  */
-public interface PointHistoryService {
+public interface PointHistoryAdminService {
 
     Page<PointHistoryListDto> findPointHistoryList(Pageable pageable,
                                                    PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
-
-    Page<PointHistoryListDto> findMyPointHistoryList(Long memberNo, Pageable pageable,
-                                                     PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
 
     Page<PointHistoryListDto> findPointHistoryListBySearch(Pageable pageable,
                                                            PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,

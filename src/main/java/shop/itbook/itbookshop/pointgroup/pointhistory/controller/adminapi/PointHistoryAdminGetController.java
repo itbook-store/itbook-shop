@@ -1,9 +1,6 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.controller.adminapi;
 
-import javax.persistence.Convert;
-import javax.persistence.Converter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,8 +14,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
-import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.converter.PointIncreaseDecreaseContentEnumConverter;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi.impl.PointHistoryAdminServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -30,7 +26,7 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
 @RequiredArgsConstructor
 public class PointHistoryAdminGetController {
 
-    private final PointHistoryServiceImpl pointHistoryServiceImpl;
+    private final PointHistoryAdminServiceImpl pointHistoryAdminServiceImpl;
 
     @GetMapping("/{pointHistoryNo}")
     public void pointHistoryDetails(@PathVariable Long pointHistoryNo) {
@@ -43,7 +39,7 @@ public class PointHistoryAdminGetController {
         @RequestParam(required = false) String content) {
 
         Page<PointHistoryListDto> pointHistoryList =
-            pointHistoryServiceImpl.findPointHistoryList(pageable,
+            pointHistoryAdminServiceImpl.findPointHistoryList(pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content));
 
         return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(
@@ -57,7 +53,7 @@ public class PointHistoryAdminGetController {
         @RequestParam(required = false) String content, @RequestParam String searchWord) {
 
         Page<PointHistoryListDto> pointHistoryList =
-            pointHistoryServiceImpl.findPointHistoryListBySearch(pageable,
+            pointHistoryAdminServiceImpl.findPointHistoryListBySearch(pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content), searchWord);
 
         return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(
