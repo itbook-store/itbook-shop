@@ -30,7 +30,7 @@ class PointIncreaseDecreaseContentRepositoryTest {
     void before() {
         PointIncreaseDecreaseContent pointIncreaseDecreaseContent =
             new PointIncreaseDecreaseContent(
-                PointIncreaseDecreaseContentEnum.ORDER_CANCEL_INCREASE, false);
+                PointIncreaseDecreaseContentEnum.ORDER);
 
         giftPointIncreaseDecreaseContent =
             pointIncreaseDecreaseContentRepository.save(pointIncreaseDecreaseContent);
@@ -45,7 +45,7 @@ class PointIncreaseDecreaseContentRepositoryTest {
     void save() {
         PointIncreaseDecreaseContent pointIncreaseDecreaseContent =
             new PointIncreaseDecreaseContent(
-                PointIncreaseDecreaseContentEnum.GIFT_INCREASE, false);
+                PointIncreaseDecreaseContentEnum.GIFT);
 
         pointIncreaseDecreaseContentRepository.save(pointIncreaseDecreaseContent);
         entityManager.flush();
@@ -57,9 +57,6 @@ class PointIncreaseDecreaseContentRepositoryTest {
 
         assertThat(pointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo())
             .isEqualTo(actualContent.getPointIncreaseDecreaseContentNo());
-
-        assertThat(pointIncreaseDecreaseContent.getIsDecrease())
-            .isEqualTo(actualContent.getIsDecrease());
 
         assertThat(pointIncreaseDecreaseContent.getContentEnum().getStatusName())
             .isEqualTo(actualContent.getContentEnum().getStatusName());
@@ -75,9 +72,6 @@ class PointIncreaseDecreaseContentRepositoryTest {
 
         assertThat(giftPointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo())
             .isEqualTo(actualContent.getPointIncreaseDecreaseContentNo());
-
-        assertThat(giftPointIncreaseDecreaseContent.getIsDecrease())
-            .isEqualTo(actualContent.getIsDecrease());
 
         assertThat(giftPointIncreaseDecreaseContent.getContentEnum().getStatusName())
             .isEqualTo(actualContent.getContentEnum().getStatusName());
