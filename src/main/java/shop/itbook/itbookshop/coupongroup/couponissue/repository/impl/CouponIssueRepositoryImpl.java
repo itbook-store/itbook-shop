@@ -47,8 +47,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
-                qCouponType.couponTypeEnum,
-                qUsageStatus.usageStatusEnum,
+                qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
+                qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
                 qCouponIssue.couponIssueCreatedAt,
                 qCouponIssue.couponExpiredAt,
                 qCouponIssue.couponUsageCreatedAt))

@@ -21,8 +21,8 @@ public class UserCouponIssueListResponseDto {
     private Long amount;
     private Integer percent;
     private Long point;
-    private String couponType;
-    private String usageStatus;
+    private String couponTypeName;
+    private String usageStatusName;
     private LocalDateTime couponIssueCreatedAt;
     private LocalDateTime couponExpiredAt;
     private LocalDateTime couponUsageCreatedAt;
