@@ -13,13 +13,11 @@ public class PointIncreaseDecreaseContentDummy {
 
     public static PointIncreaseDecreaseContent getOrderIncreasePointIncreaseDecreaseContent() {
 
-        return new PointIncreaseDecreaseContent(PointIncreaseDecreaseContentEnum.ORDER_INCREASE,
-            false);
+        return new PointIncreaseDecreaseContent(PointIncreaseDecreaseContentEnum.ORDER);
     }
 
     public static PointIncreaseDecreaseContent getOrderDecreasePointIncreaseDecreaseContent() {
 
-        return new PointIncreaseDecreaseContent(PointIncreaseDecreaseContentEnum.ORDER_DECREASE,
-            true);
+        return new PointIncreaseDecreaseContent(PointIncreaseDecreaseContentEnum.ORDER);
     }
 }

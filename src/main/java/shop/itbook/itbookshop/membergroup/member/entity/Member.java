@@ -51,7 +51,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 public class Member {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_no")
     private Long memberNo;
 
