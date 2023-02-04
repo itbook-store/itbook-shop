@@ -52,4 +52,5 @@ public class Order {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
 
+    }
 }

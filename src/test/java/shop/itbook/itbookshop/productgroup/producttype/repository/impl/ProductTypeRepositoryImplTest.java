@@ -86,14 +86,14 @@ class ProductTypeRepositoryImplTest {
 
         // 32일 전에 주문한 책이(product1) 가장 많이 주문되었지만 베스트셀러에는 포함이 되지 않옴 (현재-1일~현재-31일 책만 통계내기 때문)
 
-        Order order = new Order(null, LocalDateTime.now().minusDays(32), LocalDateTime.now());
+        Order order = new Order(LocalDateTime.now().minusDays(32), LocalDateTime.now());
         orderRepository.save(order);
 
         OrderProduct orderProduct1 = new OrderProduct(order, product1, 10, false);
         orderProductRepository.save(orderProduct1);
 
 
-        Order order2 = new Order(null, LocalDateTime.now().minusDays(13), LocalDateTime.now());
+        Order order2 = new Order(LocalDateTime.now().minusDays(13), LocalDateTime.now());
         orderRepository.save(order2);
         OrderProduct orderProduct2 = new OrderProduct(order2, product2, 5, false);
         orderProductRepository.save(orderProduct2);
