@@ -41,11 +41,7 @@ public class MemberRoleServiceImpl implements MemberRoleService {
     @Override
     @Transactional
     public void addMemberRole(Member member, Role role) {
-        log.info("member={}", member);
-        log.info("role={}", role);
         MemberRole memberRole = new MemberRole(member, role);
-
-        log.info("memberRole = {}", memberRole);
 
         memberRoleRepository.save(memberRole);
     }
