@@ -69,7 +69,10 @@ public class CartRepositoryImpl extends QuerydslRepositorySupport implements
                         qBook.authorName,
                         qProduct.isPointApplyingBasedSellingPrice,
                         qProduct.isPointApplying,
-                        qProduct.isSubscription)
+                        qProduct.isSubscription,
+                        qProduct.isDeleted,
+                        qProduct.dailyHits
+                    )
                 )
             )
             .where(qMember.memberNo.eq(memberNo).and(qProduct.isSelled.eq(Boolean.TRUE)))
