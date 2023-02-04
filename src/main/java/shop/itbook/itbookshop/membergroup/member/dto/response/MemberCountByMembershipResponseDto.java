@@ -13,11 +13,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberCountResponseDto {
+public class MemberCountByMembershipResponseDto {
 
-    Long memberCount;
-
-    Long blockMemberCount;
-
-    Long withdrawMemberCount;
+    private Long commonCnt;
+    private Long whiteCnt;
+    private Long silverCnt;
+    private Long goldCnt;
+    private Long platinumCnt;
 }
