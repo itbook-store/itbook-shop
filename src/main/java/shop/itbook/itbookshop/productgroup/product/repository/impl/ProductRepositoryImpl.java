@@ -45,7 +45,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription));
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -74,8 +75,10 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
-                .where(qProduct.isSelled.eq(Boolean.TRUE));
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
+                .where(qProduct.isSelled.eq(Boolean.TRUE))
+                .where(qProduct.isDeleted.eq(Boolean.FALSE));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -104,7 +107,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(product.fetchOne());
     }
@@ -119,19 +123,9 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         QBook qBook = QBook.book;
 
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
-            from(qBook)
-                .rightJoin(qBook.product, qProduct)
-                .select(Projections.constructor(ProductDetailsResponseDto.class,
-                    qProduct.productNo, qProduct.name, qProduct.simpleDescription,
-                    qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
-                    qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
-                    qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
-                    qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
-                    qBook.ebookUrl, qBook.publisherName, qBook.authorName,
-                    qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
-                .where(
-                    qProduct.isSelled.eq(Boolean.TRUE).and(qProduct.productNo.in(productNoList)));
+            getProductListByProductNoList(productNoList, qProduct, qBook)
+                .where(qProduct.isSelled.eq(Boolean.TRUE))
+                .where(qProduct.isDeleted.eq(Boolean.FALSE));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -139,5 +133,23 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
 
         return PageableExecutionUtils.getPage(productList, pageable,
             () -> from(qProduct).fetchCount());
+    }
+
+    private JPQLQuery<ProductDetailsResponseDto> getProductListByProductNoList(
+        List<Long> productNoList,
+        QProduct qProduct, QBook qBook) {
+        return from(qBook)
+            .rightJoin(qBook.product, qProduct)
+            .select(Projections.constructor(ProductDetailsResponseDto.class,
+                qProduct.productNo, qProduct.name, qProduct.simpleDescription,
+                qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
+                qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
+                qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
+                qBook.ebookUrl, qBook.publisherName, qBook.authorName,
+                qProduct.isPointApplyingBasedSellingPrice,
+                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                qProduct.dailyHits))
+            .where(qProduct.productNo.in(productNoList));
     }
 }

@@ -1,6 +1,9 @@
 package shop.itbook.itbookshop.productgroup.producttype.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 
 /**
@@ -9,5 +12,6 @@ import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
  * @author 이하늬
  * @since 1.0
  */
-public interface ProductTypeRepository extends JpaRepository<ProductType, Integer> {
+public interface ProductTypeRepository
+    extends JpaRepository<ProductType, Integer>, ProductTypeRepositoryCustom {
 }

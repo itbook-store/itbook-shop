@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -22,7 +23,6 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
-import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
 import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
@@ -42,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
     private final FileService fileService;
     private final BookService bookService;
     private final ProductTypeService productTypeService;
+    private final MemberRoleService memberRoleService;
     private final ProductTypeRegistrationService productTypeRegistrationService;
     private final ProductCategoryService productCategoryService;
     @Value("${object.storage.folder-path.thumbnail}")
@@ -138,7 +139,7 @@ public class ProductServiceImpl implements ProductService {
             productList = productRepository.findProductListUser(pageable);
         }
 
-        setExtraFieldsForList(productList);
+        setFieldsForList(productList);
         return productList;
     }
 
@@ -155,47 +156,71 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductDetailsResponseDto> productListByProductNoList =
             productRepository.findProductListByProductNoList(pageable, productNoListRemovedNull);
-        setExtraFieldsForList(productListByProductNoList);
+        setFieldsForList(productListByProductNoList);
 
         return productListByProductNoList;
     }
 
     /**
-     * TODO 배치 공부 후 수정 예정
+     * 상품 유형 번호로 상품을 조회하는 메서드입니다.
      *
      * @param pageable      the pageable
-     * @param productTypeNo
-     * @param isAdmin
+     * @param productTypeNo 조회할 상품 유형 번호입니다.
+     * @param memberNo      현재 로그인한 회원 정보입니다.
      * @return
      */
 
     @Override
     public Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
                                                                           Integer productTypeNo,
-                                                                          boolean isAdmin) {
+                                                                          Long memberNo) {
         Page<ProductDetailsResponseDto> productList;
         ProductTypeEnum productTypeEnum =
             productTypeService.findProductType(productTypeNo).getProductTypeEnum();
 
+        boolean isAdmin;
+
+        if (!Objects.isNull(memberNo)) {
+            isAdmin = memberRoleService.findMemberRoleWithMemberNo(memberNo).contains("ADMIN");
+        } else {
+            isAdmin = false;
+        }
+
+
         switch (productTypeEnum) {
-            case NEW_ISSUE:
+            case DISCOUNT:
                 productList =
-                    productTypeRegistrationService.findNewBookList(pageable, isAdmin);
+                    productTypeService.findDiscountBookList(pageable, isAdmin);
                 break;
 
-                case
-        }
+            case NEW_ISSUE:
+                productList = productTypeService.findNewBookList(pageable, isAdmin);
+                break;
 
-        if (productType.getProductTypeEnum().equals(ProductTypeEnum.NEW_ISSUE)) {
+            case BESTSELLER:
+                productList = productTypeService.findBestSellerBookList(pageable, isAdmin);
+                break;
 
-        } else if (productType.getProductTypeEnum().equals(ProductTypeEnum.DISCOUNT)) {
-            productList =
-                productTypeRegistrationService.findDiscountBookList(pageable, isAdmin);
-        } else {
-            productList =
-                productTypeRegistrationService.findProductList(pageable, productTypeNo, isAdmin);
+            case POPULARITY:
+                productList = productTypeService.findPopularityBookList(pageable, isAdmin);
+                break;
+
+            case RECOMMENDATION:
+                List<Long> productNoList =
+                    productTypeService.findRecommendationBookList(pageable, memberNo, isAdmin);
+                productList = this.findProductListByProductNoList(pageable, productNoList);
+                break;
+
+            case RECENTLY_SEEN_PRODUCT:
+                productList = productTypeService.findRecentlySeenProductList(pageable);
+                break;
+
+            default:
+                productList =
+                    productTypeRegistrationService.findProductList(pageable, productTypeNo,
+                        isAdmin);
+                break;
         }
-        setExtraFieldsForList(productList);
 
         return productList;
     }
@@ -208,7 +233,7 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailsResponseDto product =
             productRepository.findProductDetails(productNo)
                 .orElseThrow(ProductNotFoundException::new);
-        setExtraFieldsForOne(product);
+        setExtraFields(product);
         return product;
     }
 
@@ -237,13 +262,13 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    public static void setExtraFieldsForList(Page<ProductDetailsResponseDto> productList) {
+    private void setFieldsForList(Page<ProductDetailsResponseDto> productList) {
         for (ProductDetailsResponseDto product : productList) {
-            setExtraFieldsForOne(product);
+            setExtraFields(product);
         }
     }
 
-    public static void setExtraFieldsForOne(ProductDetailsResponseDto product) {
+    public static void setExtraFields(ProductDetailsResponseDto product) {
         product.setSelledPrice(
             (long) (product.getFixedPrice() * ((100 - product.getDiscountPercent()) * 0.01)));
         String fileThumbnailsUrl = product.getFileThumbnailsUrl();

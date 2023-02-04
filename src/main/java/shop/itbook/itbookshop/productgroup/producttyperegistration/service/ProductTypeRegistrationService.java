@@ -34,8 +34,5 @@ public interface ProductTypeRegistrationService {
      */
     Page<ProductDetailsResponseDto> findProductList(Pageable pageable, Integer productTypeNo,
                                                     boolean isAdmin);
-
-    Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable, boolean isAdmin);
-
-    Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable, boolean isAdmin);
+    
 }
