@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import shop.itbook.itbookshop.auth.dto.AuthorizationHeaderDto;
+import shop.itbook.itbookshop.auth.receiver.AuthHeaderReceiver;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
@@ -96,12 +98,21 @@ public class ProductServiceController {
      */
     @GetMapping(params = "productTypeNo")
     public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByProductTypeNo(
-        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo) {
+        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo, @RequestParam(required = false) Long memberNo) {
+
+//        Page<ProductDetailsResponseDto> productList;
+//        if(!Objects.isNull(memberNo)) {
+//            productList =
+//                productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
+//        } else {
+//            productList =
+//                productService.findProductListByProductTypeNo(pageable, productTypeNo, null);
+//        }
 
         Page<ProductDetailsResponseDto> productList =
-            productService.findProductListByProductTypeNo(pageable, productTypeNo, false);
+                            productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
 
-        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+            CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),

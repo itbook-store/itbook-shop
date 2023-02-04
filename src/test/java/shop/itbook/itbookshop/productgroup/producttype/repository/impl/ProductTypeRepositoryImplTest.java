@@ -54,8 +54,6 @@ class ProductTypeRepositoryImplTest {
     OrderProductRepository orderProductRepository;
 
     Pageable pageable;
-    @Autowired
-    private MemberDestinationRepository memberDestinationRepository;
 
     @BeforeEach
     void setUp() {

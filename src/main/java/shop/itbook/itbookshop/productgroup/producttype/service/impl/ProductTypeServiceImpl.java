@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.producttype.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +24,6 @@ import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeServic
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProductTypeServiceImpl implements ProductTypeService {
-
     private final ProductTypeRepository productTypeRepository;
 
     /**
@@ -43,6 +43,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
             .orElseThrow(ProductTypeNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable,
                                                            boolean isAdmin) {
@@ -53,6 +56,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable,
                                                                 boolean isAdmin) {
@@ -63,6 +69,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable,
                                                                   boolean isAdmin) {
@@ -73,6 +82,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable,
                                                                   boolean isAdmin) {
@@ -83,22 +95,46 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Page<ProductDetailsResponseDto> findRecommendationBookList(Pageable pageable,
-                                                                      boolean isAdmin) {
-        // TODO
+    public List<Long> findRecommendationBookList(Pageable pageable,
+                                                 Long memberNo,
+                                                 boolean isAdmin) {
+        Long basedProductNo;
+
+        if(Optional.ofNullable(memberNo).isEmpty()) {
+            basedProductNo = productTypeRepository.findBestSellingBook();
+            return
+                productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
+        }
+
+        // 1순위 : 최근 구매한 상품 기준으로 함께구매한 상품 추천
+        basedProductNo =
+            productTypeRepository.findRecentlyPurchaseProduct(memberNo);
+
+        // 2순위 : 최근 본 상품 기준으로 함께구매한 상품 추천
+        if (Optional.ofNullable(basedProductNo).isEmpty()) {
+            basedProductNo = productTypeRepository.findRecentlyViewedProduct(memberNo);
+        }
+
+        // 3순위: 가장 많이 팔린 서적 기준으로 함께구매한 상품 추천
+        if (Optional.ofNullable(basedProductNo).isEmpty()) {
+            basedProductNo = productTypeRepository.findBestSellingBook();
+        }
+
+        return
+            productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
 
 //        if (isAdmin) {
-//
-//            return productTypeRepository.findRecommendationBookListAdmin(productNo, pageable);
+//            return productService.findProductListByProductNoList(pageable, productNoList);
 //        } else {
-//            return productTypeRepository.findRecommendationBookListUser(productNo, pageable);
+//            return productService.findProductListByProductNoList(pageable, productNoList);
 //        }
-//    }
-        return null;
     }
 
-    
+
     // TODO 수연님 여기서 최근 본 상품 개발하시면 됩니당
     @Override
     public Page<ProductDetailsResponseDto> findRecentlySeenProductList(Pageable pageable) {

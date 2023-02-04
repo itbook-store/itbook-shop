@@ -42,8 +42,7 @@ public interface ProductTypeService {
     Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable,
                                                            boolean isAdmin);
 
-    Page<ProductDetailsResponseDto> findRecommendationBookList(Pageable pageable,
-                                                               boolean isAdmin);
+    List<Long> findRecommendationBookList(Pageable pageable, Long memberNo, boolean isAdmin);
 
     Page<ProductDetailsResponseDto> findRecentlySeenProductList(Pageable pageable);
 }
