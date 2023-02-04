@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
+import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
+import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
@@ -25,14 +28,20 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     private final CouponIssueRepository couponIssueRepository;
     private final UsageStatusService usageStatusService;
     private final MemberRepository memberRepository;
+    private final CouponRepository couponRepository;
 
     @Override
-    public Long addCouponIssueByNormalCoupon(String memberId, Coupon coupon) {
+    @Transactional
+    public Long addCouponIssueByNormalCoupon(String memberId, Long couponNo) {
 
         Member member = memberRepository.findByMemberIdReceiveMember(memberId)
             .orElseThrow(MemberNotFoundException::new);
 
+        Coupon coupon = couponRepository.findById(couponNo)
+            .orElseThrow(CouponNotFoundException::new);
+
         UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
+
         CouponIssue couponIssue = CouponIssue.builder()
             .member(member)
             .coupon(coupon)

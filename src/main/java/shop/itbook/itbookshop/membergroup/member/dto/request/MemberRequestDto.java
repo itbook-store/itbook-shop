@@ -20,10 +20,10 @@ import org.hibernate.validator.constraints.Length;
 public class MemberRequestDto {
 
     @NotNull(message = "멤버쉽 번호는 null값을 허용하지 않습니다.")
-    private Integer membershipNo;
+    private String membershipName;
 
     @NotNull(message = "멤버 상태 번호는 null값을 허용하지 않습니다.")
-    private Integer memberStatusNo;
+    private String memberStatusName;
 
     @NotBlank(message = "아이디는 null값 및 공백을 허용하지 않습니다.")
     @Length(min = 2, max = 15, message = "아이디는 최소 2자부터 시작하며 최대 15자까지 작성해야합니다.")

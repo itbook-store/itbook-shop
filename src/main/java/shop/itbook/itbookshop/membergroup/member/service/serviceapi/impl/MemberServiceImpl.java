@@ -27,7 +27,9 @@ import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
-import shop.itbook.itbookshop.membergroup.membership.service.adminapi.MembershipAdminService;
+import shop.itbook.itbookshop.membergroup.membership.service.MembershipService;
+import shop.itbook.itbookshop.membergroup.membershiphistory.entity.MembershipHistory;
+import shop.itbook.itbookshop.membergroup.membershiphistory.repository.MembershipHistoryRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
@@ -53,9 +55,11 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberStatusHistoryRepository memberStatusHistoryRepository;
 
+    private final MembershipHistoryRepository membershipHistoryRepository;
+
     private final MemberStatusAdminService memberStatusAdminService;
 
-    private final MembershipAdminService membershipAdminService;
+    private final MembershipService membershipService;
 
     private final MemberRoleService memberRoleService;
 
@@ -80,19 +84,25 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = MemberTransfer.dtoToEntity(requestDto);
 
-        Membership membership = membershipAdminService.findMembership(requestDto.getMembershipNo());
+        Membership membership =
+            membershipService.findMembershipByMembershipGrade(requestDto.getMembershipName());
 
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
-            memberStatusAdminService.findMemberStatusWithMemberStatusNo(
-                requestDto.getMemberStatusNo()));
+            memberStatusAdminService.findMemberStatus(
+                requestDto.getMemberStatusName()));
 
         member.setMembership(membership);
         member.setMemberStatus(memberStatus);
 
         Long memberNo = memberRepository.save(member).getMemberNo();
 
+        MembershipHistory membershipHistory =
+            MembershipHistory.builder().membership(membership).member(member).monthlyUsageAmount(0L)
+                .membershipHistoryCreatedAt(LocalDateTime.now()).build();
+
+        membershipHistoryRepository.save(membershipHistory);
+
         Role role = roleService.findRole("USER");
-        log.info("role = {}", role);
 
         memberRoleService.addMemberRole(member, role);
 
@@ -147,6 +157,10 @@ public class MemberServiceImpl implements MemberService {
         member.setEmail(replace);
         member.setMemberCreatedAt(LocalDateTime.of(1900, 1, 1, 0, 0, 0));
 
+        if (member.getIsSocial()) {
+            member.setMemberId(replace);
+        }
+
         MemberStatusHistory memberStatusHistory =
             MemberStatusHistory.builder().member(member).memberStatus(memberStatus)
                 .statusChangedReason(requestDto.getStatusChangedReason())
@@ -173,12 +187,10 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long socialMemberAdd(String email, String encodedEmail) {
 
-        // TODO Membership 서비스에서 멤버십 받아오기
-        Membership membership = membershipAdminService.findMembership(428);
+        Membership membership = membershipService.findMembershipByMembershipGrade("일반");
 
-        // TODO MemberStatus 서비스에서 멤버상태 받아오기
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
-            memberStatusAdminService.findMemberStatusWithMemberStatusNo(392));
+            memberStatusAdminService.findMemberStatus("정상회원"));
 
         Member member =
             Member.builder().membership(membership).memberStatus(memberStatus).memberId(email)
@@ -188,8 +200,13 @@ public class MemberServiceImpl implements MemberService {
 
         Long memberId = memberRepository.save(member).getMemberNo();
 
+        MembershipHistory membershipHistory =
+            MembershipHistory.builder().membership(membership).member(member).monthlyUsageAmount(0L)
+                .membershipHistoryCreatedAt(LocalDateTime.now()).build();
+
+        membershipHistoryRepository.save(membershipHistory);
+
         Role role = roleService.findRole("USER");
-        log.info("role = {}", role);
 
         memberRoleService.addMemberRole(member, role);
 
@@ -208,7 +225,7 @@ public class MemberServiceImpl implements MemberService {
         member.setIsMan(requestDto.getIsMan());
         member.setBirth(LocalDate.parse(requestDto.getBirth(),
             DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay());
-        
+
         return member.getMemberNo();
     }
 

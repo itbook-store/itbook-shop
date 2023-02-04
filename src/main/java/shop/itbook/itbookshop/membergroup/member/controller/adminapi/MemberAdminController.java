@@ -41,7 +41,7 @@ public class MemberAdminController {
      * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.
      *
      * @param memberId 멤버 아이디로 멤버를 조회합니다.
-     * @return memberResponseDto를 ResponseEntity에 담아 반환합니다.
+     * @return MemberExceptPwdResponseDto를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
     @GetMapping("/{memberId}")

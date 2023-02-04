@@ -50,7 +50,7 @@ public class CouponIssue {
     @JoinColumn(name = "usage_status_no", nullable = false)
     private UsageStatus usageStatus;
 
-    @Column(name = "coupon_issue_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "coupon_issue_created_at", nullable = false)
     private LocalDateTime couponIssueCreatedAt;
 
     @Setter

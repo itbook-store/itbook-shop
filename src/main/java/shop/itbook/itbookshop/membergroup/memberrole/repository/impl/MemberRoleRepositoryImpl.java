@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.memberrole.repository.impl;
 import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleAllResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.entity.MemberRole;
 import shop.itbook.itbookshop.membergroup.memberrole.entity.QMemberRole;
@@ -36,6 +37,23 @@ public class MemberRoleRepositoryImpl extends QuerydslRepositorySupport
                 )
             )
             .where(qMemberRole.pk.memberNo.eq(memberNo))
+            .fetch();
+    }
+
+    @Override
+    public List<MemberRoleAllResponseDto> findMemberRoleAllInfoWithMemberNo(Long memberNo) {
+        QMemberRole qMemberRole = QMemberRole.memberRole;
+        QRole qRole = QRole.role;
+
+        return from(qMemberRole)
+            .leftJoin(qMemberRole.role, qRole)
+            .select(
+                Projections.constructor(
+                    MemberRoleAllResponseDto.class,
+                    qRole.roleNo,
+                    qRole.roleType.stringValue()
+                )
+            ).where(qMemberRole.pk.memberNo.eq(memberNo))
             .fetch();
     }
 }

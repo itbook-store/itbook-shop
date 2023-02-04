@@ -1,10 +1,12 @@
-package shop.itbook.itbookshop.membergroup.membership.controller.adminapi;
+package shop.itbook.itbookshop.membergroup.membership.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,8 +17,10 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipModifyRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.request.MembershipRequestDto;
 import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipNoResponseDto;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.resultmessageenum.MembershipResultMessageEnum;
-import shop.itbook.itbookshop.membergroup.membership.service.adminapi.MembershipAdminService;
+import shop.itbook.itbookshop.membergroup.membership.service.MembershipService;
+import shop.itbook.itbookshop.membergroup.membership.transfer.MembershipTransfer;
 
 /**
  * 회원 등급에 대한 관리자 api 컨트롤러 입니다.
@@ -27,9 +31,9 @@ import shop.itbook.itbookshop.membergroup.membership.service.adminapi.Membership
 @RestController
 @RequestMapping("/api/admin/membership")
 @RequiredArgsConstructor
-public class MembershipAdminController {
+public class MembershipController {
 
-    private final MembershipAdminService membershipAdminService;
+    private final MembershipService membershipService;
 
     /**
      * 관리자가 회원 등급을 등록하기 위한 REST Controller 입니다.
@@ -44,7 +48,7 @@ public class MembershipAdminController {
 
 
         MembershipNoResponseDto membershipNoResponseDto =
-            new MembershipNoResponseDto(membershipAdminService.addMembership(membershipRequestDto));
+            new MembershipNoResponseDto(membershipService.addMembership(membershipRequestDto));
 
         CommonResponseBody<MembershipNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -66,7 +70,7 @@ public class MembershipAdminController {
     public ResponseEntity<CommonResponseBody<Void>> membershipRemove(
         @PathVariable(value = "membershipNo") Integer memberNo) {
 
-        membershipAdminService.removeMembership(memberNo);
+        membershipService.removeMembership(memberNo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(
             new CommonResponseBody<>(
@@ -90,7 +94,7 @@ public class MembershipAdminController {
         @RequestBody @Valid MembershipModifyRequestDto membershipModifyRequestDto
     ) {
 
-        membershipAdminService.modifyMembership(membershipNo, membershipModifyRequestDto);
+        membershipService.modifyMembership(membershipNo, membershipModifyRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(
             new CommonResponseBody<>(
@@ -99,5 +103,29 @@ public class MembershipAdminController {
                 null));
     }
 
+    @GetMapping("/{membershipName}")
+    public ResponseEntity<CommonResponseBody<MembershipResponseDto>> membershipDetails(
+        @PathVariable("membershipName") String membershipName) {
+
+        CommonResponseBody<MembershipResponseDto> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                MembershipResultMessageEnum.MEMBERSHIP_FIND_SUCCESS.getMessage()),
+                MembershipTransfer.entityToDto(
+                    membershipService.findMembershipByMembershipGrade(membershipName)));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping()
+    public ResponseEntity<CommonResponseBody<List<MembershipResponseDto>>> membershipList() {
+
+        CommonResponseBody<List<MembershipResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MembershipResultMessageEnum.MEMBERSHIP_LIST_SUCCESS.getMessage()),
+                membershipService.findMembershipList());
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
 
 }
