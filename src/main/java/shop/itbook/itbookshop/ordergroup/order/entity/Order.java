@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,8 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
  * @since 1.0
  */
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Table(name = "order_paper")
 @Entity
@@ -38,15 +41,13 @@ public class Order {
     @Column(name = "selected_delivery_date", nullable = false)
     private LocalDateTime selectedDeliveryDate;
 
-    @OneToMany
-    @JoinColumn(name = "order_no")
+    @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProducts;
 
-    /**
-     * 주문 엔티티의 생성자입니다.
-     *
-     * @author 노수연
-     */
-    public Order() {
+
+    public Order(Long orderNo, LocalDateTime orderCreatedAt, LocalDateTime selectedDeliveryDate) {
+        this.orderNo = orderNo;
+        this.orderCreatedAt = orderCreatedAt;
+        this.selectedDeliveryDate = selectedDeliveryDate;
     }
 }

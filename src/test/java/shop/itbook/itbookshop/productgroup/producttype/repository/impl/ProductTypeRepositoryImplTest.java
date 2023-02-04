@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,7 @@ import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.book.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
-import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
-import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
-import shop.itbook.itbookshop.membergroup.memberdestination.dummy.MemberDestinationDummy;
-import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
 import shop.itbook.itbookshop.membergroup.memberdestination.repository.MemberDestinationRepository;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
@@ -45,7 +40,8 @@ class ProductTypeRepositoryImplTest {
     ProductRepository productRepository;
     @Autowired
     ProductTypeRepository productTypeRepository;
-    Product product;
+    Product product1;
+    Product product2;
     @Autowired
     TestEntityManager entityManager;
     @Autowired
@@ -66,50 +62,59 @@ class ProductTypeRepositoryImplTest {
 
         pageable = PageRequest.of(0, Integer.MAX_VALUE);
 
-        product = ProductDummy.getProductSuccess();
-        productRepository.save(product);
+        product1 = ProductDummy.getProductSuccess();
+        productRepository.save(product1);
 
-        Book book = BookDummy.getBookSuccess();
-        book.setProductNo(product.getProductNo());
-        bookRepository.save(book);
+        Book book1 = BookDummy.getBookSuccess();
+        book1.setProductNo(product1.getProductNo());
+        bookRepository.save(book1);
+
+        product2 = ProductDummy.getProductSuccess();
+        productRepository.save(product2);
+
+        Book book2 = BookDummy.getBookSuccess();
+        book2.setProductNo(product2.getProductNo());
+        book2.setIsbn("book2Isbn");
+        bookRepository.save(book2);
 
         entityManager.flush();
         entityManager.clear();
     }
 
 
-    // TODO 주문 DB 변경되면 할 것
-    @Disabled
     @Test
     @DisplayName("베스트셀러 조회 성공")
     void find_BestSeller_Test() {
 
-        Member member = MemberDummy.getMember1();
-        memberRepository.save(member);
+        // 32일 전에 주문한 책이(product1) 가장 많이 주문되었지만 베스트셀러에는 포함이 되지 않옴 (현재-1일~현재-31일 책만 통계내기 때문)
 
-        MemberDestination memberDestination = MemberDestinationDummy.getMemberDestination();
-        memberDestinationRepository.save(memberDestination);
-
-        Order order = new Order(member, memberDestination, false);
+        Order order = new Order(null, LocalDateTime.now().minusDays(32), LocalDateTime.now());
         orderRepository.save(order);
 
-        OrderProduct orderProduct = new OrderProduct(order, product, 1, false);
-        orderProductRepository.save(orderProduct);
+        OrderProduct orderProduct1 = new OrderProduct(order, product1, 10, false);
+        orderProductRepository.save(orderProduct1);
 
-        Product new_product = ProductDummy.getProductSuccess();
-        productRepository.save(new_product);
 
+        Order order2 = new Order(null, LocalDateTime.now().minusDays(13), LocalDateTime.now());
+        orderRepository.save(order2);
+        OrderProduct orderProduct2 = new OrderProduct(order2, product2, 5, false);
+        orderProductRepository.save(orderProduct2);
+
+        Product product3 = ProductDummy.getProductSuccess();
+        productRepository.save(product3);
         Book new_book = BookDummy.getBookSuccess();
-        new_book.setProductNo(new_product.getProductNo());
-        new_book.setBookCreatedAt(LocalDateTime.now().minusDays(10));
+        new_book.setIsbn("12312");
+        new_book.setProductNo(product3.getProductNo());
         bookRepository.save(new_book);
 
-        List<ProductDetailsResponseDto> discountBookList =
+        OrderProduct orderProduct3 = new OrderProduct(order2, product3, 7, false);
+        orderProductRepository.save(orderProduct3);
+
+        List<ProductDetailsResponseDto> bestSellerList =
             productTypeRepository.findBestSellerBookListAdmin(pageable).getContent();
 
-        Assertions.assertThat(discountBookList).isNotEmpty().hasSize(1);
-        Assertions.assertThat(discountBookList.get(0).getBookCreatedAt())
-            .isBetween(LocalDateTime.now().minusDays(7), LocalDateTime.now());
+        Assertions.assertThat(bestSellerList).isNotEmpty().hasSize(2);
+        Assertions.assertThat(bestSellerList.get(0).getProductNo()).isEqualTo(product3.getProductNo());
     }
 
     @Test
@@ -128,7 +133,7 @@ class ProductTypeRepositoryImplTest {
         List<ProductDetailsResponseDto> discountBookList =
             productTypeRepository.findNewBookListAdmin(pageable).getContent();
 
-        Assertions.assertThat(discountBookList).isNotEmpty().hasSize(1);
+        Assertions.assertThat(discountBookList).isNotEmpty().hasSize(2);
         Assertions.assertThat(discountBookList.get(0).getBookCreatedAt())
             .isBetween(LocalDateTime.now().minusDays(7), LocalDateTime.now());
 
@@ -142,10 +147,10 @@ class ProductTypeRepositoryImplTest {
         no_discount_product.setDiscountPercent(0.0);
         productRepository.save(no_discount_product);
 
-        Book book2 = BookDummy.getBookSuccess();
-        book2.setProductNo(no_discount_product.getProductNo());
-        book2.setIsbn("book2Isbn");
-        bookRepository.save(book2);
+        Book book_no_discount = BookDummy.getBookSuccess();
+        book_no_discount.setProductNo(no_discount_product.getProductNo());
+        book_no_discount.setIsbn("Isbn");
+        bookRepository.save(book_no_discount);
 
         Product sale_product = ProductDummy.getProductSuccess();
         sale_product.setDiscountPercent(30.0);
@@ -159,7 +164,7 @@ class ProductTypeRepositoryImplTest {
         List<ProductDetailsResponseDto> discountBookList =
             productTypeRepository.findDiscountBookListAdmin(pageable).getContent();
 
-        Assertions.assertThat(discountBookList).isNotEmpty().hasSize(2);
+        Assertions.assertThat(discountBookList).isNotEmpty().hasSize(3);
         Assertions.assertThat(discountBookList.get(0).getDiscountPercent())
             .isEqualTo(sale_product.getDiscountPercent());
     }
@@ -183,7 +188,7 @@ class ProductTypeRepositoryImplTest {
         List<ProductDetailsResponseDto> popularityList =
             productTypeRepository.findPopularityBookListAdmin(pageable).getContent();
 
-        Assertions.assertThat(popularityList).isNotEmpty().hasSize(13);
+        Assertions.assertThat(popularityList).isNotEmpty().hasSize(14);
         Assertions.assertThat(popularityList.get(0).getDailyHits())
             .isEqualTo(11L);
     }
