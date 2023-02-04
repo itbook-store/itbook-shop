@@ -3,7 +3,7 @@ package shop.itbook.itbookshop.cart.service;
 import java.util.List;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 
 /**
  * 장바구니 서비스 인터스페이스 입니다.
@@ -29,7 +29,7 @@ public interface CartService {
      * @return 상품 상세 정보 리스트
      * @author 강명관
      */
-    List<ProductDetailsResponseDto> getProductList(Long memberNo);
+    List<CartProductDetailsResponseDto> getProductList(Long memberNo);
 
     /**
      * 회원번호와, 상품번호를 통해 장바구니의 특정 상품을 삭제하는 메서드 입니다.

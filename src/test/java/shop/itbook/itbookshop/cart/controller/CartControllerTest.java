@@ -25,6 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 import shop.itbook.itbookshop.cart.service.CartService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
@@ -98,7 +99,11 @@ class CartControllerTest {
         ProductDetailsResponseDto product1 = ProductDummy.getProductDetailsResponseDto();
         ProductDetailsResponseDto product2 = ProductDummy.getProductDetailsResponseDto();
 
-        List<ProductDetailsResponseDto> productList = List.of(product1, product2);
+        CartProductDetailsResponseDto cart1 = new CartProductDetailsResponseDto(1, product1);
+        CartProductDetailsResponseDto cart2 = new CartProductDetailsResponseDto(1, product2);
+
+
+        List<CartProductDetailsResponseDto> productList = List.of(cart1, cart2);
 
         given(cartService.getProductList(any(Long.class))).willReturn(productList);
 
@@ -109,29 +114,43 @@ class CartControllerTest {
         mockMvc.perform(get("/api/cart/{memberNo}", memberNo))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.result[0].productName", equalTo("객체지향의 사실과 오해")))
-            .andExpect(jsonPath("$.result[0].simpleDescription",
+            .andExpect(jsonPath("$.result[0].productCount", equalTo(1)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.productName",
+                equalTo("객체지향의 사실과 오해")))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.simpleDescription",
                 equalTo("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")))
-            .andExpect(jsonPath("$.result[0].detailsDescription", equalTo("상세 설명")))
-            .andExpect(jsonPath("$.result[0].isSelled", equalTo(true)))
-            .andExpect(jsonPath("$.result[0].isForceSoldOut", equalTo(false)))
-            .andExpect(jsonPath("$.result[0].stock", equalTo(1)))
-            .andExpect(jsonPath("$.result[0].increasePointPercent", equalTo(1)))
-            .andExpect(jsonPath("$.result[0].rawPrice", equalTo(12000)))
-            .andExpect(jsonPath("$.result[0].fixedPrice", equalTo(20000)))
-            .andExpect(jsonPath("$.result[0].discountPercent", equalTo(10.0)))
-            .andExpect(jsonPath("$.result[0].fileThumbnailsUrl", equalTo("testUrl")))
-            .andExpect(jsonPath("$.result[0].isbn", equalTo("isbn")))
-            .andExpect(jsonPath("$.result[0].pageCount", equalTo(10)))
-            .andExpect(jsonPath("$.result[0].isEbook", equalTo(false)))
-            .andExpect(jsonPath("$.result[0].fileEbookUrl", equalTo(null)))
-            .andExpect(jsonPath("$.result[0].publisherName", equalTo("출판사")))
-            .andExpect(jsonPath("$.result[0].authorName", equalTo("작가")))
-            .andExpect(jsonPath("$.result[0].isPointApplyingBasedSellingPrice", equalTo(false)))
-            .andExpect(jsonPath("$.result[0].isPointApplying", equalTo(true)))
-            .andExpect(jsonPath("$.result[0].isSubscription", equalTo(false)))
-            .andExpect(jsonPath("$.result[0].selledPrice", equalTo(null)))
-            .andExpect(jsonPath("$.result[0].thumbnailsName", equalTo(null)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.detailsDescription",
+                equalTo("상세 설명")))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.isSelled", equalTo(true)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.isForceSoldOut", equalTo(false)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.stock", equalTo(1)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.increasePointPercent", equalTo(1)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.rawPrice", equalTo(12000)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.fixedPrice", equalTo(20000)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.discountPercent", equalTo(10.0)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.fileThumbnailsUrl",
+                equalTo("testUrl")))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.isbn", equalTo("isbn")))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.pageCount", equalTo(10)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.isEbook", equalTo(false)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.fileEbookUrl", equalTo(null)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.publisherName", equalTo("출판사")))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.authorName", equalTo("작가")))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.isPointApplyingBasedSellingPrice",
+                    equalTo(false)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.isPointApplying", equalTo(true)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.isSubscription", equalTo(false)))
+            .andExpect(jsonPath("$.result[0].productDetailsResponseDto.selledPrice", equalTo(null)))
+            .andExpect(
+                jsonPath("$.result[0].productDetailsResponseDto.thumbnailsName", equalTo(null)))
             .andExpect(jsonPath("$.result", hasSize(2)));
     }
 

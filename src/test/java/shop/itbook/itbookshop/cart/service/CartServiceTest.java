@@ -21,6 +21,7 @@ import shop.itbook.itbookshop.book.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 import shop.itbook.itbookshop.cart.dummy.CartDummy;
 import shop.itbook.itbookshop.cart.entity.Cart;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
@@ -66,7 +67,9 @@ class CartServiceTest {
 
     ProductDetailsResponseDto productDetailsResponseDto;
 
-    List<ProductDetailsResponseDto> productDetailsResponseDtoList;
+    CartProductDetailsResponseDto cartProductDetailsResponseDto;
+
+    List<CartProductDetailsResponseDto> cartProductDetailsResponseDtoList;
 
     @BeforeEach
     void setUp() {
@@ -82,7 +85,11 @@ class CartServiceTest {
         cart = CartDummy.getCart(member, product);
 
         productDetailsResponseDto = ProductDummy.getProductDetailsResponseDto();
-        productDetailsResponseDtoList = List.of(productDetailsResponseDto);
+
+        cartProductDetailsResponseDto =
+            new CartProductDetailsResponseDto(1, productDetailsResponseDto);
+
+        cartProductDetailsResponseDtoList = List.of(cartProductDetailsResponseDto);
 
         cartService = new CartServiceImpl(cartRepository, memberRepository, productRepository);
 
@@ -152,16 +159,16 @@ class CartServiceTest {
     void getProductList() {
         // given
         given(cartRepository.findProductCartListByMemberNo(member.getMemberNo()))
-            .willReturn(productDetailsResponseDtoList);
+            .willReturn(cartProductDetailsResponseDtoList);
 
         // when
-        List<ProductDetailsResponseDto> productList =
+        List<CartProductDetailsResponseDto> productList =
             cartService.getProductList(member.getMemberNo());
 
         // then
 
         assertThat(productList).hasSize(1);
-        assertThat(productList.get(0)).isEqualTo(productDetailsResponseDto);
+        assertThat(productList.get(0)).isEqualTo(cartProductDetailsResponseDto);
     }
 
     @DisplayName("장바구니 해당 상품 삭제 테스트")

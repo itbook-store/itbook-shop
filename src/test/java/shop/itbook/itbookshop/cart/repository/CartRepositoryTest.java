@@ -15,6 +15,7 @@ import shop.itbook.itbookshop.book.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 import shop.itbook.itbookshop.cart.entity.Cart;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
@@ -157,15 +158,15 @@ class CartRepositoryTest {
 
         // when
 
-        List<ProductDetailsResponseDto> productCartListByMemberNo =
+        List<CartProductDetailsResponseDto> productCartListByMemberNo =
             cartRepository.findProductCartListByMemberNo(memberDummy.getMemberNo());
 
         // then
 
         assertThat(productCartListByMemberNo).hasSize(1);
 
-        assertThat(productCartListByMemberNo.get(0).getProductNo()).isEqualTo(
-            productDummy.getProductNo());
+        assertThat(productCartListByMemberNo.get(0).getProductDetailsResponseDto().getProductNo())
+            .isEqualTo(productDummy.getProductNo());
     }
 
     @DisplayName("회원번호와 상품번호를 통해 장바구니 상품 삭제 테스트")
@@ -189,7 +190,7 @@ class CartRepositoryTest {
         );
 
         // then
-        List<ProductDetailsResponseDto> productCartListByMemberNo =
+        List<CartProductDetailsResponseDto> productCartListByMemberNo =
             cartRepository.findProductCartListByMemberNo(cartRequestDto.getMemberNo());
 
         assertThat(productCartListByMemberNo).isEmpty();
@@ -207,7 +208,7 @@ class CartRepositoryTest {
         cartRepository.deleteAllByMemberNo(memberDummy.getMemberNo());
 
         // then
-        List<ProductDetailsResponseDto> productCartListByMemberNo =
+        List<CartProductDetailsResponseDto> productCartListByMemberNo =
             cartRepository.findProductCartListByMemberNo(memberDummy.getMemberNo());
 
         assertThat(productCartListByMemberNo).isEmpty();

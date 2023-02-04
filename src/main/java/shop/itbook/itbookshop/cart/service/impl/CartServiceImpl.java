@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 import shop.itbook.itbookshop.cart.entity.Cart;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.cart.repository.CartRepository;
@@ -13,7 +14,6 @@ import shop.itbook.itbookshop.cart.service.CartService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
@@ -68,7 +68,7 @@ public class CartServiceImpl implements CartService {
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> getProductList(Long memberNo) {
+    public List<CartProductDetailsResponseDto> getProductList(Long memberNo) {
         return cartRepository.findProductCartListByMemberNo(memberNo);
     }
 
@@ -110,7 +110,7 @@ public class CartServiceImpl implements CartService {
             )
         ).orElseThrow(CartNotFountException::new);
 
-        cartProduct.changeProductCount(cartProduct.getProductCount());
+        cartProduct.changeProductCount(cartModifyRequestDto.getProductCount());
 
     }
 }

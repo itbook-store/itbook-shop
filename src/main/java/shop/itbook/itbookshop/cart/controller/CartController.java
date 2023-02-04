@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.cart.controller;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 import shop.itbook.itbookshop.cart.resultmessage.CartResultMessageEnum;
 import shop.itbook.itbookshop.cart.service.CartService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
@@ -27,6 +29,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsRe
  * @author 강명관
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
@@ -69,13 +72,13 @@ public class CartController {
      * @author 강명과
      */
     @GetMapping("/{memberNo}")
-    public ResponseEntity<CommonResponseBody<List<ProductDetailsResponseDto>>> cartGetProductList(
+    public ResponseEntity<CommonResponseBody<List<CartProductDetailsResponseDto>>> cartGetProductList(
         @PathVariable(value = "memberNo") Long memberNo
     ) {
 
-        List<ProductDetailsResponseDto> productList = cartService.getProductList(memberNo);
+        List<CartProductDetailsResponseDto> productList = cartService.getProductList(memberNo);
 
-        CommonResponseBody<List<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<List<CartProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CartResultMessageEnum.CART_LIST_SUCCESS_MESSAGE.getSuccessMessage()
@@ -147,6 +150,8 @@ public class CartController {
     public ResponseEntity<CommonResponseBody<Void>> cartModifyProductCount(
         @Valid @RequestBody CartModifyRequestDto cartModifyRequestDto
     ) {
+
+        log.info("cartModifyRequestDto {}", cartModifyRequestDto);
 
         cartService.modifyProductCount(cartModifyRequestDto);
 

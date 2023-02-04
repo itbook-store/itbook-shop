@@ -15,6 +15,8 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -43,6 +45,7 @@ public class Cart {
     @JoinColumn(name = "product_no")
     private Product product;
 
+    @Setter
     @Column(name = "product_count", columnDefinition = "integer default 1")
     private Integer productCount;
 

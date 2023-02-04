@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import java.util.List;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import shop.itbook.itbookshop.book.entity.QBook;
+import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;
 import shop.itbook.itbookshop.cart.entity.Cart;
 import shop.itbook.itbookshop.cart.entity.QCart;
 import shop.itbook.itbookshop.cart.repository.CustomCartRepository;
@@ -33,7 +34,7 @@ public class CartRepositoryImpl extends QuerydslRepositorySupport implements
      * {@inheritDoc}
      */
     @Override
-    public List<ProductDetailsResponseDto> findProductCartListByMemberNo(Long memberNo) {
+    public List<CartProductDetailsResponseDto> findProductCartListByMemberNo(Long memberNo) {
 
         QCart qCart = QCart.cart;
         QMember qMember = QMember.member;
@@ -44,29 +45,32 @@ public class CartRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qCart.member, qMember)
             .innerJoin(qCart.product, qProduct)
             .innerJoin(qProduct.book, qBook)
-            .select(Projections.constructor(ProductDetailsResponseDto.class,
-                qProduct.productNo,
-                qProduct.name,
-                qProduct.simpleDescription,
-                qProduct.detailsDescription,
-                qProduct.isSelled,
-                qProduct.isForceSoldOut,
-                qProduct.stock,
-                qProduct.increasePointPercent,
-                qProduct.rawPrice,
-                qProduct.fixedPrice,
-                qProduct.discountPercent,
-                qProduct.thumbnailUrl,
-                qBook.isbn,
-                qBook.pageCount,
-                qBook.bookCreatedAt,
-                qBook.isEbook,
-                qBook.ebookUrl,
-                qBook.publisherName,
-                qBook.authorName,
-                qProduct.isPointApplyingBasedSellingPrice,
-                qProduct.isPointApplying,
-                qProduct.isSubscription)
+            .select(Projections.constructor(CartProductDetailsResponseDto.class,
+                    qCart.productCount,
+                    Projections.constructor(ProductDetailsResponseDto.class,
+                        qProduct.productNo,
+                        qProduct.name,
+                        qProduct.simpleDescription,
+                        qProduct.detailsDescription,
+                        qProduct.isSelled,
+                        qProduct.isForceSoldOut,
+                        qProduct.stock,
+                        qProduct.increasePointPercent,
+                        qProduct.rawPrice,
+                        qProduct.fixedPrice,
+                        qProduct.discountPercent,
+                        qProduct.thumbnailUrl,
+                        qBook.isbn,
+                        qBook.pageCount,
+                        qBook.bookCreatedAt,
+                        qBook.isEbook,
+                        qBook.ebookUrl,
+                        qBook.publisherName,
+                        qBook.authorName,
+                        qProduct.isPointApplyingBasedSellingPrice,
+                        qProduct.isPointApplying,
+                        qProduct.isSubscription)
+                )
             )
             .where(qMember.memberNo.eq(memberNo).and(qProduct.isSelled.eq(Boolean.TRUE)))
             .fetch();
