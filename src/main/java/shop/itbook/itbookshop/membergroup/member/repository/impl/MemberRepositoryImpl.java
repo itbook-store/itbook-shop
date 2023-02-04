@@ -135,6 +135,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
+            .orderBy(qmember.memberNo.desc())
             .where(qmemberStatus.memberStatusEnum.stringValue().eq("정상회원"));
 
         List<MemberExceptPwdResponseDto> memberList =
@@ -158,6 +159,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
+            .orderBy(qmember.memberNo.desc())
             .where(qmemberStatus.memberStatusEnum.stringValue().eq("차단회원"));
 
         List<MemberExceptPwdResponseDto> memberList =
@@ -181,6 +183,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
+            .orderBy(qmember.memberNo.desc())
             .where(qmemberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"));
 
         List<MemberExceptPwdResponseDto> memberList =
