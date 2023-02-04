@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.memberrole.service;
 
 import java.util.List;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleAllResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
 import shop.itbook.itbookshop.role.entity.Role;
 
@@ -15,5 +16,9 @@ public interface MemberRoleService {
 
     List<MemberRoleResponseDto> findMemberRoleWithMemberNo(Long memberNo);
 
+    List<MemberRoleAllResponseDto> findMemberRoleAllInfoWithMemberNo(Long memberNo);
+
     void addMemberRole(Member member, Role role);
+
+    void deleteMemberRole(Long memberNo, Integer roleNo);
 }
