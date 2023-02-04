@@ -7,7 +7,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -53,22 +52,58 @@ public interface CustomMemberRepository {
     /**
      * 모든 회원 리스트를 가져오는 메서드입니다.
      *
+     * @param pageable 페이징된 데이터를 받습니다.
      * @return 회원 리스트를 받아옵니다.
      * @author 노수연
      */
     Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable);
 
+
+    /**
+     * 모든 정상회원 리스트를 가져오는 메서드입니다.
+     *
+     * @param pageable 페이징된 데이터를 받습니다.
+     * @return 정상 회원 리스트를 받아옵니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable);
 
+
+    /**
+     * 모든 차단회원 리스트를 가져오는 메서드입니다.
+     *
+     * @param pageable 페이징된 데이터를 받습니다.
+     * @return 차단 회원 리스트를 받아옵니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable);
 
+    /**
+     * 탈퇴 회원 리스트를 받아옵니다.
+     *
+     * @param pageable 페이징된 데이터를 받습니다.
+     * @return 탈퇴 회원 리스트를 받아옵니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable);
 
+    /**
+     * 넘어온 이메일 값이 이메일 필드에 존재하고 소셜회원인지의 여부를 판단합니다
+     *
+     * @param email Oauth 로그인 시 넘어오는 이메일 값입니다.
+     * @return 이메일 필드에 존재하고 소셜회원이면 true를 반환합니다.
+     * @author 노수연
+     */
     boolean existsByEmailAndIsSocial(String email);
 
+    /**
+     * 넘어온 이메일 값이 아이디 필드에 존재하고 소셜회원인지의 여부를 판단합니다.
+     *
+     * @param email Oauth 로그인 시 넘어오는 이메일 값입니다.
+     * @return 아이디 필드에 존재하고 소셜회원이면 true를 반환합니다.
+     * @author 노수연
+     */
     boolean existsByMemberIdAndIsSocial(String email);
-
-    Optional<MemberOauthLoginResponseDto> findOauthInfoByMemberId(String memberId);
 
     /**
      * 회원 아이디로 로그인에 필요한 정보를 가져오는 메서드 입니다.
@@ -84,7 +119,9 @@ public interface CustomMemberRepository {
      * 프론트 관리자 페이지에서 멤버 아이디로 검색하였을 때
      * 테이블에서 입력된 검색어 기준으로 데이터들을 가져옵니다.
      *
-     * @param memberId 검색한 단어가 포함되는 멤버 아이디를 찾습니다.
+     * @param memberId         검색한 단어가 포함되는 멤버 아이디를 찾습니다.
+     * @param memberStatusName 멤버 상태별 데이터를 가져오기 위한 파라미터 입니다.
+     * @param pageable         검색된 멤버 리스트는 페이징 처리합니다.
      * @return 검색된 단어가 포함된 멤버 아이디가 있는 데이터 리스트들을 반환합니다.
      * @author 노수연
      */
@@ -92,28 +129,93 @@ public interface CustomMemberRepository {
                                                               String memberStatusName,
                                                               Pageable pageable);
 
+    /**
+     * 프론트 관리자 페이지에서 닉네임으로 검색하였을 때
+     * 테이블에서 입력된 검색어 기준으로 데이터들을 가져옵니다.
+     *
+     * @param nickname         검색한 단어가 포함되는 닉네임을 찾습니다.
+     * @param memberStatusName 멤버 상태별 데이터를 가져오기 위한 파라미터 입니다.
+     * @param pageable         검색된 멤버 리스트는 페이징 처리합니다.
+     * @return 검색된 단어가 포함된 닉네임이 있는 데이터 리스트들을 반환합니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname,
                                                               String memberStatusName,
                                                               Pageable pageable);
 
+    /**
+     * 프론트 관리자 페이지에서 이름으로 검색하였을 때
+     * 테이블에서 입력된 검색어 기준으로 데이터들을 가져옵니다.
+     *
+     * @param name             검색한 단어가 포함되는 이름을 찾습니다.
+     * @param memberStatusName 멤버 상태별 데이터를 가져오기 위한 파라미터 입니다.
+     * @param pageable         검색된 멤버 리스트는 페이징 처리합니다.
+     * @return 검색된 단어가 포함된 이름이 있는 데이터 리스트들을 반환합니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findMemberListByName(String name,
                                                           String memberStatusName,
                                                           Pageable pageable);
 
+    /**
+     * 프론트 관리자 페이지에서 핸드폰번호로 검색하였을 때
+     * 테이블에서 입력된 검색어 기준으로 데이터들을 가져옵니다.
+     *
+     * @param phoneNumber      검색한 단어가 포함되는 핸드폰번호를 찾습니다.
+     * @param memberStatusName 멤버 상태별 데이터를 가져오기 위한 파라미터 입니다.
+     * @param pageable         검색된 멤버 리스트는 페이징 처리합니다.
+     * @return 검색된 단어가 포함된 핸드폰 번호가 있는 데이터 리스트들을 반환합니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
                                                                  String memberStatusName,
                                                                  Pageable pageable);
 
+    /**
+     * 프론트 관리자 페이지에서 특정 검색어로 검색하였을 때
+     * 테이블에서 입력된 검색어 기준으로 데이터들을 가져옵니다.
+     *
+     * @param searchWord       검색한 단어가 포함되는 특정 검색어를 찾습니다.
+     * @param memberStatusName 멤버 상태별 데이터를 가져오기 위한 파라미터 입니다.
+     * @param pageable         검색된 멤버 리스트는 페이징 처리합니다.
+     * @return 검색된 단어가 포함된 특정 검색어가 있는 데이터 리스트들을 반환합니다.
+     * @author 노수연
+     */
     Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
                                                                 String memberStatusName,
                                                                 Pageable pageable);
 
+    /**
+     * 멤버 아이디로 차단된 회원 정보를 찾기 위한 query dsl 입니다.
+     *
+     * @param memberId 검색할 멤버 아이디입니다.
+     * @return 검색된 멤버 정보를 담을 dto 입니다.
+     * @author 노수연
+     */
     MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId);
 
+    /**
+     * 전체 멤버 수를 카운트하기 위한 query dsl 입니다.
+     *
+     * @return 멤버 수를 반환합니다.
+     * @author 노수연
+     */
     Long memberCountBy();
 
+    /**
+     * 멤버상태별 전체 멤버 수를 카운트하기 위한 query dsl 입니다.
+     *
+     * @return 멤버 수를 반환합니다.
+     * @author 노수연
+     */
     Long memberCountByStatusName(String statusName);
 
+    /**
+     * 멤버등급별 전체 멤버 수를 카운트하기 위한 query dsl 입니다.
+     *
+     * @return 멤버 수를 반환합니다.
+     * @author 노수연
+     */
     Long memberCountByMembershipGrade(String membershipGrade);
 
 }

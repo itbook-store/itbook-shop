@@ -133,6 +133,15 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+
+    /**
+     * 유저가 소셜 회원가입할 때 유저의 정보를 등록하는 메서드를 실행하는 API 입니다.
+     * 소셜 회원가입 폼에서 받아온 데이터를 테이블에 저장합니다.
+     *
+     * @param memberSocialRequestDto 소셜 회원가입 폼에서 입력한 유저 데이터가 들어있는 DTO 입니다.
+     * @return 회원 번호를 반환합니다.
+     * @author 노수연
+     */
     @PutMapping("/sign-up/social")
     public ResponseEntity<CommonResponseBody<MemberNoResponseDto>> OauthRegister(
         @RequestBody MemberSocialRequestDto memberSocialRequestDto) {
@@ -149,6 +158,17 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
+
+    /**
+     * 소셜 로그인시 실행되는 API 입니다.
+     * Oauth 로그인 시 받아오는 이메일로 정보 입력이 필요한 테이블의 모든 필드에 저장시키고 인코딩된 이메일로는 비밀번호에 저장시킵니다.
+     * 그런다음 홈으로 돌아간 유저는 메인페이지 대신 소셜 회원가입 폼 페이지를 볼 수 있는데 여기에 유저의 개인 정보를 입력하면
+     * OauthRegister API를 통해 자신의 개인정보를 DB에 저장시킬 수 있습니다.
+     *
+     * @param requestDto Oauth 로그인 시 받아오는 이메일로 정보 입력이 필요한 테이블의 모든 필드에 저장시키고 인코딩된 이메일로는 비밀번호에 저장시킵니다.
+     * @return 성공 여부 Boolean 값을 반환합니다.
+     * @author 노수연
+     */
     @PostMapping("/oauth/login/find")
     public ResponseEntity<CommonResponseBody<SuccessfulResponseDto>> OauthLogin(
         @RequestBody MemberOauthLoginRequestDto requestDto) {
