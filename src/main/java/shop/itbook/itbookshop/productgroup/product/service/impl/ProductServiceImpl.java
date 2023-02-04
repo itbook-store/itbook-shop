@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
             productList = productRepository.findProductListUser(pageable);
         }
 
-        setFieldsForList(productList);
+        setExtraFieldsForList(productList);
         return productList;
     }
 
@@ -155,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductDetailsResponseDto> productListByProductNoList =
             productRepository.findProductListByProductNoList(pageable, productNoListRemovedNull);
-        setFieldsForList(productListByProductNoList);
+        setExtraFieldsForList(productListByProductNoList);
 
         return productListByProductNoList;
     }
@@ -174,21 +174,28 @@ public class ProductServiceImpl implements ProductService {
                                                                           Integer productTypeNo,
                                                                           boolean isAdmin) {
         Page<ProductDetailsResponseDto> productList;
-        ProductType productType = productTypeService.findProductType(productTypeNo);
+        ProductTypeEnum productTypeEnum =
+            productTypeService.findProductType(productTypeNo).getProductTypeEnum();
+
+        switch (productTypeEnum) {
+            case NEW_ISSUE:
+                productList =
+                    productTypeRegistrationService.findNewBookList(pageable, isAdmin);
+                break;
+
+                case
+        }
 
         if (productType.getProductTypeEnum().equals(ProductTypeEnum.NEW_ISSUE)) {
-            productList =
-                productTypeRegistrationService.findNewBookList(pageable, isAdmin);
-            setFieldsForList(productList);
+
         } else if (productType.getProductTypeEnum().equals(ProductTypeEnum.DISCOUNT)) {
             productList =
                 productTypeRegistrationService.findDiscountBookList(pageable, isAdmin);
-            setFieldsForList(productList);
         } else {
             productList =
                 productTypeRegistrationService.findProductList(pageable, productTypeNo, isAdmin);
-            setFieldsForList(productList);
         }
+        setExtraFieldsForList(productList);
 
         return productList;
     }
@@ -201,7 +208,7 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailsResponseDto product =
             productRepository.findProductDetails(productNo)
                 .orElseThrow(ProductNotFoundException::new);
-        setExtraFields(product);
+        setExtraFieldsForOne(product);
         return product;
     }
 
@@ -230,13 +237,13 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    private void setFieldsForList(Page<ProductDetailsResponseDto> productList) {
+    public static void setExtraFieldsForList(Page<ProductDetailsResponseDto> productList) {
         for (ProductDetailsResponseDto product : productList) {
-            setExtraFields(product);
+            setExtraFieldsForOne(product);
         }
     }
 
-    public static void setExtraFields(ProductDetailsResponseDto product) {
+    public static void setExtraFieldsForOne(ProductDetailsResponseDto product) {
         product.setSelledPrice(
             (long) (product.getFixedPrice() * ((100 - product.getDiscountPercent()) * 0.01)));
         String fileThumbnailsUrl = product.getFileThumbnailsUrl();

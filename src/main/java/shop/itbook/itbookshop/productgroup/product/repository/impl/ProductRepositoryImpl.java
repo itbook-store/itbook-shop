@@ -109,8 +109,6 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
         return Optional.ofNullable(product.fetchOne());
     }
 
-    //product no List 로 프로덕트 리스트 가져오기
-
     /**
      * {@inheritDoc}
      */
