@@ -33,11 +33,11 @@ public class TokenService {
     private final RedisTemplate<String, String> redisTemplate;
     public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
     @Value("${object.storage.tenant-id}")
-    private String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
+    private String tenantId;
     @Value("${object-storage.password}")
-    private String password = "itbook2023";
+    private String password;
     @Value("${object-storage.username}")
-    private String username = "109622@naver.com";
+    private String username;
 
     /**
      * rest template으로 토큰 발급 요청을 하여 발급 받은 토큰의 id, 만료 시간을 레디스에 저장합니다.

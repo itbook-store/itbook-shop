@@ -220,6 +220,9 @@ public class ProductServiceImpl implements ProductService {
             .discountPercent(requestDto.getDiscountPercent())
             .rawPrice(requestDto.getRawPrice())
             .fileThumbnailsUrl(requestDto.getFileThumbnailsUrl())
+            .isSubscription(requestDto.getIsSubscription())
+            .isPointApplying(requestDto.getIsPointApplying())
+            .isPointApplyingBasedSellingPrice(requestDto.getIsPointApplyingBasedSellingPrice())
             .build();
     }
 }

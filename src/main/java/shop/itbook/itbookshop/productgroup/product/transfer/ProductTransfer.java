@@ -36,6 +36,9 @@ public class ProductTransfer {
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent())
             .rawPrice(requestDto.getRawPrice())
+            .isSubscription(requestDto.getIsSubscription())
+            .isPointApplying(requestDto.getIsPointApplying())
+            .isPointApplyingBasedSellingPrice(requestDto.getIsPointApplyingBasedSellingPrice())
             .build();
     }
 

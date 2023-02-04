@@ -83,6 +83,15 @@ public class ProductBookRequestDto {
     @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")
     private String authorName;
 
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isPointApplying;
+
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isPointApplyingBasedSellingPrice;
+
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isSubscription;
+
     @Setter
     private String fileThumbnailsUrl;
     @Setter
