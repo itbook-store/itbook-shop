@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.orderproduct.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,7 +41,7 @@ public class OrderProduct {
     @Column(name = "order_product_no")
     private Long orderProductNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "order_no", nullable = false)
     private Order order;
 

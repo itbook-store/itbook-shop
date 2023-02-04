@@ -1,15 +1,19 @@
 package shop.itbook.itbookshop.ordergroup.order.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
  * 주문에 관한 엔티티입니다.
@@ -33,6 +37,10 @@ public class Order {
 
     @Column(name = "selected_delivery_date", nullable = false)
     private LocalDateTime selectedDeliveryDate;
+
+    @OneToMany
+    @JoinColumn(name = "order_no")
+    private List<OrderProduct> orderProducts;
 
     /**
      * 주문 엔티티의 생성자입니다.
