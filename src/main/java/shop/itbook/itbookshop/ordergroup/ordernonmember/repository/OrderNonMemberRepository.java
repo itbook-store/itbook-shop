@@ -10,7 +10,7 @@ import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
  * @author 정재원
  * @since 1.0
  */
-public interface OrderNonMemberRepository extends JpaRepository<OrderNonMember, OrderNonMember.Pk> {
+public interface OrderNonMemberRepository extends JpaRepository<OrderNonMember, Long> {
 
     /**
      * 주문 번호로 비회원 주문 엔티티를 찾습니다.

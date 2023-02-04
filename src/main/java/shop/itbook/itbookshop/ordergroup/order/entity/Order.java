@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -37,8 +36,10 @@ public class Order {
     /**
      * 주문 엔티티의 생성자입니다.
      *
-     * @author 노수연
+     * @author 정재원
      */
     public Order() {
+        this.orderCreatedAt = LocalDateTime.now();
+        this.selectedDeliveryDate = LocalDateTime.now();
     }
 }

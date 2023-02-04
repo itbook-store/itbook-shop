@@ -4,12 +4,13 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,12 +32,12 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 @Table(name = "order_paper_non_member")
 @Entity
 public class OrderNonMember {
-    @EmbeddedId
-    private Pk pk;
+    @Id
+    @Column(name = "order_no")
+    private Long orderNo;
 
-    @MapsId("orderNo")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "order_no", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn(name = "order_no")
     private Order order;
 
     @Column(name = "recipient_name", columnDefinition = "varchar(20)", nullable = false)
@@ -58,21 +59,7 @@ public class OrderNonMember {
     private Long nonMemberOrderCode;
 
     /**
-     * Order paper Pk 인 주문 번호를 식별키로 사용합니다.
-     *
-     * @author 정재원
-     */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    public static class Pk implements Serializable {
-        private Long orderNo;
-    }
-
-    /**
-     * 주문 번호로 PK 를 설정하는 생성자입니다.
+     * 주문 번호를 식별자키로 설정하는 생성자입니다.
      *
      * @param order                   주문 엔티티
      * @param recipientName           수령인 이름
@@ -86,7 +73,7 @@ public class OrderNonMember {
     public OrderNonMember(Order order, String recipientName, String recipientPhoneNumber,
                           Integer postcode, String roadNameAddress, String recipientAddressDetails,
                           Long nonMemberOrderCode) {
-        this.pk = new Pk(order.getOrderNo());
+        this.orderNo = order.getOrderNo();
         this.order = order;
         this.recipientName = recipientName;
         this.recipientPhoneNumber = recipientPhoneNumber;
