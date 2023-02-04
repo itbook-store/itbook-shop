@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.fileservice.init;
+package shop.itbook.itbookshop.fileservice.dto;
 
 import lombok.Data;
 
