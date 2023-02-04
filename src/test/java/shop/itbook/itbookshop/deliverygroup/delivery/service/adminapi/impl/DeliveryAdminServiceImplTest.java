@@ -10,9 +10,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -34,6 +32,7 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatus.dummy.DeliveryStatusD
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.repository.DeliveryStatusRepository;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
+import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 
 /**
  * The type Delivery admin service impl test.
@@ -83,7 +82,7 @@ class DeliveryAdminServiceImplTest {
             .build();
 
         List<Delivery> deliveryList = new ArrayList<>();
-        deliveryList.add(DeliveryDummy.getDelivery());
+        deliveryList.add(DeliveryDummy.createDelivery(OrderDummy.getOrder()));
 
         given(deliveryRepository.findDeliveryEntityListWithStatusWait()).willReturn(deliveryList);
 

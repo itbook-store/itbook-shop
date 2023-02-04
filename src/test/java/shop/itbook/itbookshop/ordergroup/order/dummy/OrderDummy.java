@@ -13,8 +13,7 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * @since 1.0
  */
 public class OrderDummy {
-
     public static Order getOrder() {
-        return new Order();
+        return new Order(LocalDateTime.now(), LocalDateTime.now());
     }
 }

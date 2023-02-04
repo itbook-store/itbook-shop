@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "order_paper")
+@NoArgsConstructor
 @Entity
 public class Order {
 
@@ -38,8 +40,8 @@ public class Order {
      *
      * @author 정재원
      */
-    public Order() {
-        this.orderCreatedAt = LocalDateTime.now();
-        this.selectedDeliveryDate = LocalDateTime.now();
+    public Order(LocalDateTime orderCreatedAt, LocalDateTime selectedDeliveryDate) {
+        this.orderCreatedAt = orderCreatedAt;
+        this.selectedDeliveryDate = selectedDeliveryDate;
     }
 }
