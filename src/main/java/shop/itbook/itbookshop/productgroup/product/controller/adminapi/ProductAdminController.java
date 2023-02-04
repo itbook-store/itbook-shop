@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.itbook.itbookshop.auth.dto.AuthorizationHeaderDto;
+import shop.itbook.itbookshop.auth.receiver.AuthHeaderReceiver;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
@@ -97,12 +99,12 @@ public class ProductAdminController {
      * @return 상품유형 번호에 해당하는 상품 리스트를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
-    @GetMapping(params = "productTypeNo")
+    @GetMapping(params = "productTypeNo, memberNo")
     public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByProductTypeNo(
-        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo) {
+        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo, @RequestParam Long memberNo) {
 
         Page<ProductDetailsResponseDto> productList =
-            productService.findProductListByProductTypeNo(pageable, productTypeNo, true);
+            productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
 
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(

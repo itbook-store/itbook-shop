@@ -91,12 +91,13 @@ public interface ProductService {
      * 관리자는 모든 상품을 조회 가능하지만, 사용자는 노출여부가 false인 상품을 조회 가능합니다.
      *
      * @param pageable the pageable
+     * @param memberNo
      * @return 노출여부가 false인 리스트를 반환합니다.
      * @author 이하늬
      */
     Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
                                                                    Integer productTypeNo,
-                                                                   boolean isAdmin);
+                                                                   Long memberNo);
 
     /**
      * 상품 조회를 담당하는 메서드입니다.

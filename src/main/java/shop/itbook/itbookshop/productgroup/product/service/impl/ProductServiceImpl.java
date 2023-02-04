@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -22,7 +23,6 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
-import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
 import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
@@ -42,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
     private final FileService fileService;
     private final BookService bookService;
     private final ProductTypeService productTypeService;
+    private final MemberRoleService memberRoleService;
     private final ProductTypeRegistrationService productTypeRegistrationService;
     private final ProductCategoryService productCategoryService;
     @Value("${object.storage.folder-path.thumbnail}")
@@ -161,33 +162,64 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * TODO 배치 공부 후 수정 예정
+     * 상품 유형 번호로 상품을 조회하는 메서드입니다.
      *
      * @param pageable      the pageable
-     * @param productTypeNo
-     * @param isAdmin
+     * @param productTypeNo 조회할 상품 유형 번호입니다.
+     * @param memberNo      현재 로그인한 회원 정보입니다.
      * @return
      */
 
     @Override
     public Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
                                                                           Integer productTypeNo,
-                                                                          boolean isAdmin) {
+                                                                          Long memberNo) {
         Page<ProductDetailsResponseDto> productList;
-        ProductType productType = productTypeService.findProductType(productTypeNo);
+        ProductTypeEnum productTypeEnum =
+            productTypeService.findProductType(productTypeNo).getProductTypeEnum();
 
-        if (productType.getProductTypeEnum().equals(ProductTypeEnum.NEW_ISSUE)) {
-            productList =
-                productTypeRegistrationService.findNewBookList(pageable, isAdmin);
-            setFieldsForList(productList);
-        } else if (productType.getProductTypeEnum().equals(ProductTypeEnum.DISCOUNT)) {
-            productList =
-                productTypeRegistrationService.findDiscountBookList(pageable, isAdmin);
-            setFieldsForList(productList);
+        boolean isAdmin;
+
+        if (!Objects.isNull(memberNo)) {
+            isAdmin = memberRoleService.findMemberRoleWithMemberNo(memberNo).contains("ADMIN");
         } else {
-            productList =
-                productTypeRegistrationService.findProductList(pageable, productTypeNo, isAdmin);
-            setFieldsForList(productList);
+            isAdmin = false;
+        }
+
+
+        switch (productTypeEnum) {
+            case DISCOUNT:
+                productList =
+                    productTypeService.findDiscountBookList(pageable, isAdmin);
+                break;
+
+            case NEW_ISSUE:
+                productList = productTypeService.findNewBookList(pageable, isAdmin);
+                break;
+
+            case BESTSELLER:
+                productList = productTypeService.findBestSellerBookList(pageable, isAdmin);
+                break;
+
+            case POPULARITY:
+                productList = productTypeService.findPopularityBookList(pageable, isAdmin);
+                break;
+
+            case RECOMMENDATION:
+                List<Long> productNoList =
+                    productTypeService.findRecommendationBookList(pageable, memberNo, isAdmin);
+                productList = this.findProductListByProductNoList(pageable, productNoList);
+                break;
+
+            case RECENTLY_SEEN_PRODUCT:
+                productList = productTypeService.findRecentlySeenProductList(pageable);
+                break;
+
+            default:
+                productList =
+                    productTypeRegistrationService.findProductList(pageable, productTypeNo,
+                        isAdmin);
+                break;
         }
 
         return productList;

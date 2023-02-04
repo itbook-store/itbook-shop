@@ -48,11 +48,11 @@ public class SearchProduct {
     @Field(type = FieldType.Date, format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime productCreatedAt;
 
-    @Column
-    private Boolean isSelled;
 
     @Column
     private Boolean isDeleted;
+    @Column
+    private Boolean isForceSoldOut;
 
     @Column
     private String thumbnailUrl;
@@ -80,7 +80,7 @@ public class SearchProduct {
      * @param detailsDescription   상품 상세 설명입니다.
      * @param stock                상품 재고입니다.
      * @param productCreatedAt     상품 등록 일자입니다.
-     * @param isSelled       상품 판매 여부입니다.
+     * @param isForceSoldOut       상품 판매 여부입니다.
      * @param isDeleted            상품 삭제 여부입니다.
      * @param thumbnailUrl         상품 썸네일 url 입니다.
      * @param dailyHits            상품 조회수입니다.
@@ -94,7 +94,7 @@ public class SearchProduct {
     @Builder
     public SearchProduct(Long productNo, String name, String simpleDescription,
                          String detailsDescription, Integer stock,
-                         LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
+                         LocalDateTime productCreatedAt, Boolean isForceSoldOut, Boolean isDeleted,
                          String thumbnailUrl, Long dailyHits, Long fixedPrice,
                          Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.productNo = productNo;
@@ -103,7 +103,7 @@ public class SearchProduct {
         this.detailsDescription = detailsDescription;
         this.stock = stock;
         this.productCreatedAt = productCreatedAt;
-        this.isSelled = isSelled;
+        this.isForceSoldOut = isForceSoldOut;
         this.isDeleted = isDeleted;
         this.thumbnailUrl = thumbnailUrl;
         this.dailyHits = dailyHits;
