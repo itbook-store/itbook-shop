@@ -161,11 +161,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * TODO 배치 공부 후 수정 예정
+     * 상품 유형 번호로 상품을 조회하는 메서드입니다.
      *
      * @param pageable      the pageable
-     * @param productTypeNo
-     * @param isAdmin
+     * @param productTypeNo 조회할 상품 유형 번호입니다.
+     * @param isAdmin       관리자 여부입니다.
      * @return
      */
 
@@ -174,22 +174,42 @@ public class ProductServiceImpl implements ProductService {
                                                                           Integer productTypeNo,
                                                                           boolean isAdmin) {
         Page<ProductDetailsResponseDto> productList;
-        ProductType productType = productTypeService.findProductType(productTypeNo);
+        ProductTypeEnum productTypeEnum =
+            productTypeService.findProductType(productTypeNo).getProductTypeEnum();
 
-        if (productType.getProductTypeEnum().equals(ProductTypeEnum.NEW_ISSUE)) {
-            productList =
-                productTypeRegistrationService.findNewBookList(pageable, isAdmin);
-            setFieldsForList(productList);
-        } else if (productType.getProductTypeEnum().equals(ProductTypeEnum.DISCOUNT)) {
-            productList =
-                productTypeRegistrationService.findDiscountBookList(pageable, isAdmin);
-            setFieldsForList(productList);
-        } else {
-            productList =
-                productTypeRegistrationService.findProductList(pageable, productTypeNo, isAdmin);
-            setFieldsForList(productList);
+        switch (productTypeEnum) {
+            case DISCOUNT:
+                productList =
+                    productTypeService.findDiscountBookList(pageable, isAdmin);
+                break;
+
+            case NEW_ISSUE:
+                productList = productTypeService.findNewBookList(pageable, isAdmin);
+                break;
+
+            case BESTSELLER:
+                productList = productTypeService.findBestSellerBookList(pageable, isAdmin);
+                break;
+
+            case POPULARITY:
+                productList = productTypeService.findPopularityBookList(pageable, isAdmin);
+                break;
+
+            case RECOMMENDATION:
+                productList = productTypeService.findRecommendationBookList(pageable, isAdmin);
+                break;
+
+            case RECENTLY_SEEN_PRODUCT:
+                productList = productTypeService.findRecentlySeenProductList(pageable);
+                break;
+
+            default:
+                productList =
+                    productTypeRegistrationService.findProductList(pageable, productTypeNo,
+                        isAdmin);
         }
 
+        setFieldsForList(productList);
         return productList;
     }
 
