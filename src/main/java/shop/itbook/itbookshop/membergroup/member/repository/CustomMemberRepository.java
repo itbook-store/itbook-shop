@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
@@ -111,9 +110,8 @@ public interface CustomMemberRepository {
 
     MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId);
 
-    MemberCountResponseDto MemberCountBy();
+    Long memberCountBy();
 
-    MemberCountResponseDto blockMemberCountBy();
+    Long memberCountByStatusName(String statusName);
 
-    MemberCountResponseDto withdrawMemberCountBy();
 }

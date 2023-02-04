@@ -146,19 +146,14 @@ public class MemberAdminServiceImpl implements MemberAdminService {
 
     @Override
     public MemberCountResponseDto memberCount() {
+        MemberCountResponseDto memberCountResponseDto = new MemberCountResponseDto();
+        memberCountResponseDto.setMemberCount(memberRepository.memberCountBy());
+        memberCountResponseDto.setBlockMemberCount(
+            memberRepository.memberCountByStatusName("차단회원"));
+        memberCountResponseDto.setWithdrawMemberCount(
+            memberRepository.memberCountByStatusName("탈퇴회원"));
 
-        return memberRepository.MemberCountBy();
+        return memberCountResponseDto;
     }
 
-    @Override
-    public MemberCountResponseDto blockMemberCount() {
-
-        return memberRepository.blockMemberCountBy();
-    }
-
-    @Override
-    public MemberCountResponseDto withdrawMemberCount() {
-
-        return memberRepository.withdrawMemberCountBy();
-    }
 }

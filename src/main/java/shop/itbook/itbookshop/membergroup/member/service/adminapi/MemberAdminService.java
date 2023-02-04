@@ -80,8 +80,5 @@ public interface MemberAdminService {
 
     MemberCountResponseDto memberCount();
 
-    MemberCountResponseDto blockMemberCount();
-
-    MemberCountResponseDto withdrawMemberCount();
 
 }

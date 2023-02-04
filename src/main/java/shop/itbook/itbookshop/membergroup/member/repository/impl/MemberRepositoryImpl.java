@@ -12,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
@@ -376,27 +375,16 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }
 
     @Override
-    public MemberCountResponseDto MemberCountBy() {
+    public Long memberCountBy() {
         return jpaQueryFactory.select(
-            Projections.constructor(MemberCountResponseDto.class, qmember.count())
-        ).from(qmember).fetchFirst();
+            qmember.count()).from(qmember).fetchFirst();
     }
 
     @Override
-    public MemberCountResponseDto blockMemberCountBy() {
-        return jpaQueryFactory.select(
-                Projections.constructor(MemberCountResponseDto.class, qmember.count())
-            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("차단회원"))
-            .fetchOne();
-    }
-
-    @Override
-    public MemberCountResponseDto withdrawMemberCountBy() {
-        return jpaQueryFactory.select(
-                Projections.constructor(MemberCountResponseDto.class, qmember.count())
-            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"))
+    public Long memberCountByStatusName(String statusName) {
+        return jpaQueryFactory.select(qmember.count()).from(qmember)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq(statusName))
             .fetchOne();
     }
 }
