@@ -29,8 +29,6 @@ public class ProductTypeRegistrationServiceImpl implements
     ProductTypeRegistrationService {
 
     private final ProductTypeRegistrationRepository productTypeRegistrationRepository;
-    private final ProductTypeService productTypeService;
-    private final ProductTypeRepository productTypeRepository;
 
     /**
      * {@inheritDoc}

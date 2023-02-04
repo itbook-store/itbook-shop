@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service.impl;
 
 import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
-import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForOne;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

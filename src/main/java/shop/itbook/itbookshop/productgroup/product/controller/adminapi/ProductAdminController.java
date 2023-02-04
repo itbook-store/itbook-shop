@@ -91,29 +91,6 @@ public class ProductAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
-    /**
-     * 상품유형별로 상품 조회를 요청하는 메서드입니다.
-     * 쿼리스트링으로 상품유형 번호가 파라미터로 들어올 시, 해당 상품유형 번호의 상품들을 조회합니다.
-     *
-     * @param productTypeNo 조회할 상품유형 번호입니다.
-     * @return 상품유형 번호에 해당하는 상품 리스트를 response entity에 담아 반환합니다.
-     * @author 이하늬
-     */
-    @GetMapping(params = "productTypeNo, memberNo")
-    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByProductTypeNo(
-        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo, @RequestParam Long memberNo) {
-
-        Page<ProductDetailsResponseDto> productList =
-            productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
-
-        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
-                new PageResponse<>(productList));
-
-        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
-    }
 
     /**
      * 상품별로 카테고리 조회를 요청하는 메서드입니다.
