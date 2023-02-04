@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.memberdestination.repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
 
@@ -13,5 +14,6 @@ import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestina
  */
 public interface MemberDestinationRepository
     extends JpaRepository<MemberDestination, Long> {
-    Optional<MemberDestination> findById(Long recipientDestinationNo);
+
+    List<MemberDestination> findAllByMember_MemberNo(Long memberNo);
 }

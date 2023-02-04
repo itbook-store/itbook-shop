@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.membergroup.memberdestination.dummy;
 
-import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
 
 /**
@@ -8,9 +8,9 @@ import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestina
  * @since 1.0
  */
 public class MemberDestinationDummy {
-    public static MemberDestination getMemberDestination() {
+    public static MemberDestination createMemberDestination(Member member) {
         return MemberDestination.builder()
-            .member(MemberDummy.getMember1())
+            .member(member)
             .recipientName("테스트 수령인")
             .recipientPhoneNumber("010-xxxx-xxxx")
             .postcode(12345)

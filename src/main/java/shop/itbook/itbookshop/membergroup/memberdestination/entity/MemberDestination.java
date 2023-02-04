@@ -48,7 +48,7 @@ public class MemberDestination {
     @Column(name = "postcode", nullable = false)
     private Integer postcode;
 
-    @Column(name = "road_name_address", unique = true, nullable = false)
+    @Column(name = "road_name_address", nullable = false)
     private String roadNameAddress;
 
     @Column(name = "recipient_address_details", nullable = false)
