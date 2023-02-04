@@ -21,6 +21,7 @@ public enum OrderStatusEnum {
     RETURN_COMPLETED("반품완료"),
     REQUEST_REFUND("환불신청중"),
     REFUND_COMPLETED("환불완료"),
+    PURCHASE_COMPLETE("구매확정"),
     CANCELED("취소");
 
     private final String orderStatus;

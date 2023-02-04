@@ -17,30 +17,31 @@ import lombok.Setter;
 public class MemberDestinationResponseDto {
     String recipientName;
 
-    String phoneNumber;
+    String recipientPhoneNumber;
 
     Integer postcode;
 
-    String address;
+    String roadNameAddress;
 
-    String detailAddress;
+    String recipientAddressDetails;
 
     /**
      * 회원 배송지 정보 Dto 의 생성자입니다.
      *
-     * @param recipientName 수령인 이름
-     * @param phoneNumber   핸드폰 번호
-     * @param postcode      우편번호
-     * @param address       도로명 주소
-     * @param detailAddress 상세 주소
+     * @param recipientName           수령인 이름
+     * @param recipientPhoneNumber    핸드폰 번호
+     * @param postcode                우편번호
+     * @param roadNameAddress         도로명 주소
+     * @param recipientAddressDetails 상세 주소
      */
     @Builder
-    public MemberDestinationResponseDto(String recipientName, String phoneNumber, Integer postcode,
-                                        String address, String detailAddress) {
+    public MemberDestinationResponseDto(String recipientName, String recipientPhoneNumber,
+                                        Integer postcode,
+                                        String roadNameAddress, String recipientAddressDetails) {
         this.recipientName = recipientName;
-        this.phoneNumber = phoneNumber;
+        this.recipientPhoneNumber = recipientPhoneNumber;
         this.postcode = postcode;
-        this.address = address;
-        this.detailAddress = detailAddress;
+        this.roadNameAddress = roadNameAddress;
+        this.recipientAddressDetails = recipientAddressDetails;
     }
 }

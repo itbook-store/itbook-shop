@@ -1,15 +1,12 @@
 package shop.itbook.itbookshop.membergroup.memberdestination.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
@@ -21,6 +18,7 @@ import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
+import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 
 /**
@@ -28,7 +26,6 @@ import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRe
  * @since 1.0
  */
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MemberDestinationRepositoryTest {
 
     @Autowired
@@ -42,41 +39,50 @@ class MemberDestinationRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
 
-    MemberDestination memberDestination;
+    Member member;
 
     @BeforeEach
     void setUp() {
 
-//        Member member = MemberDummy.getMember();
-//        member.setMembership(MembershipDummy.getMembership());
-//        member.setMemberStatus(MemberStatusDummy.getMemberStatus());
+        MemberStatus normalMemberStatus = MemberStatusDummy.getNormalMemberStatus();
+        memberStatusRepository.save(normalMemberStatus);
+        Membership memberShip = MembershipDummy.getMembership();
+        membershipRepository.save(memberShip);
 
-//        membershipRepository.save(MembershipDummy.getMembership());
-//        memberRepository.save(member);
-
-        memberDestination = MemberDestinationDummy.getMemberDestination();
-//        memberDestination.setMember(member);
-
-    }
-
-    @Disabled
-    @Test
-    @DisplayName("멤버 번호로 해당 멤버의 배송지 정보를 가져오기 성공")
-    void findMemberDestinationByMember_MemberNoSuccessTest() {
-
-        Member member = MemberDummy.getMember1();
-        Membership membership = membershipRepository.getReferenceById(1);
+        member = MemberDummy.getMember1();
+        member.setMemberStatus(normalMemberStatus);
+        member.setMembership(memberShip);
         memberRepository.save(member);
 
         testEntityManager.flush();
         testEntityManager.clear();
+    }
 
-        memberDestination.setMember(member);
+    @Test
+    @DisplayName("회원 배송지 DB에 엔티티 저장 성공")
+    void saveSuccessTest() {
+        MemberDestination memberDestination =
+            MemberDestinationDummy.createMemberDestination(member);
+
+        MemberDestination savedMemberDestination =
+            memberDestinationRepository.save(memberDestination);
+
+        assertThat(savedMemberDestination.getRecipientDestinationNo()).isEqualTo(
+            memberDestination.getRecipientDestinationNo());
+    }
+
+    @Test
+    @DisplayName("멤버 번호로 해당 멤버의 배송지 정보 리스트를 가져오기 성공")
+    void findMemberDestinationByMember_MemberNoSuccessTest() {
+        MemberDestination memberDestination =
+            MemberDestinationDummy.createMemberDestination(member);
+
         memberDestinationRepository.save(memberDestination);
 
-        assertThat(memberDestinationRepository.findMemberDestinationResponseDtoByMemberNo(
-                member.getMemberNo()).get(1)
-            .getDetailAddress()).isEqualTo(
-            memberDestination.getRecipientAddressDetails());
+        List<MemberDestination> memberDestinationList =
+            memberDestinationRepository.findAllByMember_MemberNo(member.getMemberNo());
+
+        assertThat(memberDestinationList.get(0).getMember().getMemberNo()).isEqualTo(
+            member.getMemberNo());
     }
 }
