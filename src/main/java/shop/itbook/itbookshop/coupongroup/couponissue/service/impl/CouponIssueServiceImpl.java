@@ -1,14 +1,17 @@
 package shop.itbook.itbookshop.coupongroup.couponissue.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
-import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
@@ -56,12 +59,13 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
     @Override
     @Transactional
-    public Integer addCouponIssueByWelcomeCoupon(Member member) {
+    public List<CouponIssue> addCouponIssueByWelcomeCoupon(Member member) {
 
         List<Coupon> welcomeCouponList = couponRepository.findByAvailableWelcomeCoupon();
 
         UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
 
+        List<CouponIssue> couponIssueList = new ArrayList<>();
         for (Coupon coupon : welcomeCouponList) {
 
             CouponIssue couponIssue = CouponIssue.builder()
@@ -70,8 +74,15 @@ public class CouponIssueServiceImpl implements CouponIssueService {
                 .usageStatus(usageStatus)
                 .couponExpiredAt(coupon.getCouponExpiredAt())
                 .build();
-            Long no = couponIssueRepository.save(couponIssue).getCouponIssueNo();
+            couponIssueList.add(couponIssue);
         }
-        return 1;
+
+        return couponIssueRepository.saveAll(couponIssueList);
+    }
+
+    @Override
+    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(
+        Pageable pageable, String memberId) {
+        return couponIssueRepository.findCouponIssueListByMemberId(pageable, memberId);
     }
 }
