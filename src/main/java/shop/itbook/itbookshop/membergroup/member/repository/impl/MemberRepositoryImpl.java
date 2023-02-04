@@ -387,4 +387,12 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .where(qmember.memberStatus.memberStatusEnum.stringValue().eq(statusName))
             .fetchOne();
     }
+
+    @Override
+    public Long memberCountByMembershipGrade(String membershipGrade) {
+        return jpaQueryFactory.select(qmember.count()).from(qmember)
+            .join(qmember.membership, qmembership)
+            .where(qmembership.membershipGrade.eq(membershipGrade))
+            .fetchOne();
+    }
 }

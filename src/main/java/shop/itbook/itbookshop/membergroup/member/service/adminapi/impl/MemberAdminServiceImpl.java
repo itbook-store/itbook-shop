@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountByMembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
@@ -145,7 +146,7 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     }
 
     @Override
-    public MemberCountResponseDto memberCount() {
+    public MemberCountResponseDto memberCountByMemberStatus() {
         MemberCountResponseDto memberCountResponseDto = new MemberCountResponseDto();
         memberCountResponseDto.setMemberCount(memberRepository.memberCountBy());
         memberCountResponseDto.setBlockMemberCount(
@@ -156,4 +157,22 @@ public class MemberAdminServiceImpl implements MemberAdminService {
         return memberCountResponseDto;
     }
 
+    @Override
+    public MemberCountByMembershipResponseDto memberCountByMembership() {
+        MemberCountByMembershipResponseDto memberCountByMembershipResponseDto =
+            new MemberCountByMembershipResponseDto();
+
+        memberCountByMembershipResponseDto.setCommonCnt(
+            memberRepository.memberCountByMembershipGrade("일반"));
+        memberCountByMembershipResponseDto.setWhiteCnt(
+            memberRepository.memberCountByMembershipGrade("화이트"));
+        memberCountByMembershipResponseDto.setSilverCnt(
+            memberRepository.memberCountByMembershipGrade("실버"));
+        memberCountByMembershipResponseDto.setGoldCnt(
+            memberRepository.memberCountByMembershipGrade("골드"));
+        memberCountByMembershipResponseDto.setPlatinumCnt(
+            memberRepository.memberCountByMembershipGrade("플래티넘"));
+
+        return memberCountByMembershipResponseDto;
+    }
 }

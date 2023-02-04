@@ -114,4 +114,6 @@ public interface CustomMemberRepository {
 
     Long memberCountByStatusName(String statusName);
 
+    Long memberCountByMembershipGrade(String membershipGrade);
+
 }
