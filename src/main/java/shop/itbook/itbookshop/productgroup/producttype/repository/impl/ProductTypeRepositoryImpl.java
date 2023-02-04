@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.Produc
 /**
  * The type Product type repository.
  *
- * @author 이하늬 * @since 1.0
+ * @author 이하늬
  * @since 1.0
  */
 public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
@@ -252,7 +252,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
         QOrder qOrder = QOrder.order;
 
-        return from(qOrderProduct)
+        return from(qOrder)
             .innerJoin(qOrder.orderProducts, qOrderProduct)
             .select(qOrderProduct.product.productNo)
             .where(qOrderProduct.order.eq(JPAExpressions.select(qOrderMember.order)
@@ -260,7 +260,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                     .innerJoin(qOrderMember.memberDestination, qMemberDestination)
                     .where(qMemberDestination.member.memberNo.eq(memberNo))))
             .orderBy(qOrder.orderCreatedAt.desc())
-            .fetchOne();
+            .fetchFirst();
     }
 
     /**
@@ -275,7 +275,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             .select(qMemberRecentlyViewedProduct.product.productNo)
             .where(qMemberRecentlyViewedProduct.member.memberNo.eq(memberNo))
             .orderBy(qMemberRecentlyViewedProduct.recentlyViewedCreatedAt.desc())
-            .fetchOne();
+            .fetchFirst();
     }
 
     /**

@@ -45,7 +45,7 @@ public class MemberRecentlyViewedProduct {
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "recently_viewed_created_at")
+    @Column(name = "product_viewed_created_at")
     private LocalDateTime recentlyViewedCreatedAt;
 
 
