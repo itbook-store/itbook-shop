@@ -1,11 +1,11 @@
-GET /api/coupon/category-coupon
+GET /api/coupons/category-coupon
 Host: localhost:8082
 Content-Type: application/json
 
 
 ###
 
-POST /api/admin/coupon/category-coupon/add
+POST /api/admin/coupons/category-coupon/add
 Host: localhost:8082
 Content-Type: application/json
 
@@ -15,11 +15,11 @@ Content-Type: application/json
 }
 
 ###
-GET /api/coupon/coupon-issue/welcomecoupon
+GET /api/coupon/coupon-issues/welcomecoupon
 Host: localhost:8082
 Content-Type: application/json
 
 ###
-POST /api/coupon/coupon-issue/point-coupon/9
+PUT /api/coupon-issues/9/point-coupon-use
 Host: localhost:8082
 Content-Type: application/json

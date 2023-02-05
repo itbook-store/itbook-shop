@@ -27,7 +27,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultM
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/coupon/category-coupon")
+@RequestMapping("/api/admin/category-coupons")
 public class CategoryCouponController {
 
     private final CategoryCouponService categoryCouponService;

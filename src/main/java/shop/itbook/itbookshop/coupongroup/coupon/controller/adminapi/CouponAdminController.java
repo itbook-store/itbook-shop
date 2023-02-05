@@ -33,7 +33,7 @@ import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEn
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/coupon")
+@RequestMapping("/api/admin/coupons")
 public class CouponAdminController {
 
     private final CouponService couponService;
