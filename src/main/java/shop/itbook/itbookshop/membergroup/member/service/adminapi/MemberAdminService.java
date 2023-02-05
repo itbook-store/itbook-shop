@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountByMembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
@@ -78,10 +79,7 @@ public interface MemberAdminService {
 
     MemberExceptPwdBlockResponseDto findBlockMember(String memberId);
 
-    MemberCountResponseDto memberCount();
+    MemberCountResponseDto memberCountByMemberStatus();
 
-    MemberCountResponseDto blockMemberCount();
-
-    MemberCountResponseDto withdrawMemberCount();
-
+    MemberCountByMembershipResponseDto memberCountByMembership();
 }

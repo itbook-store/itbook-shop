@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import shop.itbook.itbookshop.productgroup.producttype.converter.impl.ProductTypeEnumConverter;
 import shop.itbook.itbookshop.role.roleenum.RoleEnum;
 
@@ -23,6 +24,7 @@ import shop.itbook.itbookshop.role.roleenum.RoleEnum;
 
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

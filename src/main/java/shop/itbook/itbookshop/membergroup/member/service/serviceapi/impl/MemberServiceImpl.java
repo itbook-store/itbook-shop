@@ -107,7 +107,6 @@ public class MemberServiceImpl implements MemberService {
         membershipHistoryRepository.save(membershipHistory);
 
         Role role = roleService.findRole("USER");
-        log.info("role = {}", role);
 
         memberRoleService.addMemberRole(member, role);
 
@@ -196,9 +195,8 @@ public class MemberServiceImpl implements MemberService {
 
         Membership membership = membershipService.findMembershipByMembershipGrade("일반");
 
-        // TODO MemberStatus 서비스에서 멤버상태 받아오기
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
-            memberStatusAdminService.findMemberStatusWithMemberStatusNo(392));
+            memberStatusAdminService.findMemberStatus("정상회원"));
 
         Member member =
             Member.builder().membership(membership).memberStatus(memberStatus).memberId(email)
@@ -215,7 +213,6 @@ public class MemberServiceImpl implements MemberService {
         membershipHistoryRepository.save(membershipHistory);
 
         Role role = roleService.findRole("USER");
-        log.info("role = {}", role);
 
         memberRoleService.addMemberRole(member, role);
 

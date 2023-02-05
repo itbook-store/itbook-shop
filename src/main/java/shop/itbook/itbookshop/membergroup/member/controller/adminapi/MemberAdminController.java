@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountByMembershipResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
@@ -41,7 +43,7 @@ public class MemberAdminController {
      * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.
      *
      * @param memberId 멤버 아이디로 멤버를 조회합니다.
-     * @return memberResponseDto를 ResponseEntity에 담아 반환합니다.
+     * @return MemberExceptPwdResponseDto를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
     @GetMapping("/{memberId}")
@@ -214,8 +216,7 @@ public class MemberAdminController {
 
     @GetMapping("/{memberId}/block")
     public ResponseEntity<CommonResponseBody<MemberExceptPwdBlockResponseDto>> blockMemberDetails(
-        @PathVariable("memberId") String memberId
-    ) {
+        @PathVariable("memberId") String memberId) {
 
         CommonResponseBody<MemberExceptPwdBlockResponseDto> commonResponseBody =
             new CommonResponseBody<>(
@@ -227,5 +228,26 @@ public class MemberAdminController {
 
     }
 
+    @GetMapping("/memberStatus/count")
+    public ResponseEntity<CommonResponseBody<MemberCountResponseDto>> memberCountByMemberStatus() {
 
+        CommonResponseBody<MemberCountResponseDto> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_COUNT_SUCCESS_MESSAGE.getSuccessMessage()),
+            memberAdminService.memberCountByMemberStatus());
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @GetMapping("/membership/count")
+    public ResponseEntity<CommonResponseBody<MemberCountByMembershipResponseDto>> memberCountByMembership() {
+
+        CommonResponseBody<MemberCountByMembershipResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_COUNT_SUCCESS_MESSAGE.getSuccessMessage()),
+                memberAdminService.memberCountByMembership());
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
 }
