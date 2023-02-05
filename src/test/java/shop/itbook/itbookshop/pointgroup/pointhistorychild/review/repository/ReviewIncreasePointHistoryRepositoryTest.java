@@ -1,8 +1,9 @@
-package shop.itbook.itbookshop.pointgroup.pointhistorychild.order.repository;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.review.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,11 @@ import shop.itbook.itbookshop.membergroup.membership.repository.MembershipReposi
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
-import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.entity.OrderIncreaseDecreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.ReviewIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.PointIncreaseDecreaseContentRepository;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.dummy.PointIncreaseDecreaseContentDummy;
@@ -33,16 +32,11 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository
  * @since 1.0
  */
 @DataJpaTest
-class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
-
-
-    @Autowired
-    OrderIncreaseDecreasePointHistoryRepository orderIncreaseDecreasePointHistoryRepository;
+@Disabled("리뷰 맡은 분 테스트가 종료되면 리뷰가져와서 null 위치에 넣을 예정")
+class ReviewIncreasePointHistoryRepositoryTest {
 
     @Autowired
-    OrderRepository orderRepository;
-    Order order1;
-    Order order2;
+    ReviewIncreasePointHistoryRepository reviewIncreasePointHistoryRepository;
 
     @Autowired
     TestEntityManager entityManager;
@@ -68,19 +62,18 @@ class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
     PointIncreaseDecreaseContent orderIncreasePointIncreaseDecreaseContent;
     PointHistory dummyPointHistory1;
     PointHistory dummyPointHistory2;
-
-    OrderIncreaseDecreasePointHistory increasePointHistory;
-    OrderIncreaseDecreasePointHistory decreasePointHistory;
+    ReviewIncreasePointHistory reviewIncreasePointHistory1;
+    ReviewIncreasePointHistory reviewIncreasePointHistory2;
 
 
     @BeforeEach
     void setUp() {
-        member1 = MemberDummy.getMember1();
 
         orderIncreasePointIncreaseDecreaseContent =
             PointIncreaseDecreaseContentDummy.getOrderIncreasePointIncreaseDecreaseContent();
 
         pointIncreaseDecreaseContentRepository.save(orderIncreasePointIncreaseDecreaseContent);
+        member1 = MemberDummy.getMember1();
 
         membership1 = MembershipDummy.getMembership();
         membershipRepository.save(membership1);
@@ -91,6 +84,7 @@ class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
         member1.setMemberStatus(normalMemberStatus1);
         member1.setMembership(membership1);
         memberRepository.save(member1);
+
 
         dummyPointHistory1 = PointHistoryDummy.getPointHistory();
         dummyPointHistory1.setMember(member1);
@@ -106,48 +100,43 @@ class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
 
         pointHistoryRepository.save(dummyPointHistory2);
 
-        order1 = OrderDummy.getOrder();
-        orderRepository.save(order1);
 
-        order2 = OrderDummy.getOrder();
-        orderRepository.save(order2);
+        reviewIncreasePointHistory2 = new ReviewIncreasePointHistory(
+            dummyPointHistory2.getPointHistoryNo(), null);
 
-        decreasePointHistory = new OrderIncreaseDecreasePointHistory(
-            dummyPointHistory2.getPointHistoryNo(), order2);
-
-        orderIncreaseDecreasePointHistoryRepository.save(decreasePointHistory);
+        reviewIncreasePointHistoryRepository.save(reviewIncreasePointHistory2);
 
         entityManager.flush();
         entityManager.clear();
     }
 
-    @DisplayName("주문적립 포인트내역이 잘 저장된다.")
+    @DisplayName("리뷰적립 포인트내역이 잘 저장된다.")
     @Test
     void save() {
-        increasePointHistory = new OrderIncreaseDecreasePointHistory(
-            dummyPointHistory1.getPointHistoryNo(), order1);
+        reviewIncreasePointHistory1 = new ReviewIncreasePointHistory(
+            dummyPointHistory1.getPointHistoryNo(), null);
 
-        orderIncreaseDecreasePointHistoryRepository.save(increasePointHistory);
+        reviewIncreasePointHistoryRepository.save(reviewIncreasePointHistory1);
 
         entityManager.flush();
         entityManager.clear();
 
-        OrderIncreaseDecreasePointHistory actual =
-            entityManager.find(OrderIncreaseDecreasePointHistory.class,
-                increasePointHistory.getPointHistoryNo());
+        ReviewIncreasePointHistory actual =
+            entityManager.find(ReviewIncreasePointHistory.class,
+                reviewIncreasePointHistory1.getPointHistoryNo());
 
         assertThat(actual.getPointHistoryNo())
-            .isEqualTo(increasePointHistory.getPointHistoryNo());
+            .isEqualTo(reviewIncreasePointHistory1.getPointHistoryNo());
     }
 
-    @DisplayName("주문적립 포인트내역이 잘 조회된다.")
+    @DisplayName("리뷰적립 포인트내역이 잘 조회된다.")
     @Test
     void find() {
-        OrderIncreaseDecreasePointHistory actual =
-            orderIncreaseDecreasePointHistoryRepository.findById(
-                decreasePointHistory.getPointHistoryNo()).get();
+        ReviewIncreasePointHistory actual =
+            reviewIncreasePointHistoryRepository.findById(
+                reviewIncreasePointHistory2.getPointHistoryNo()).get();
 
         assertThat(actual.getPointHistoryNo())
-            .isEqualTo(decreasePointHistory.getPointHistoryNo());
+            .isEqualTo(reviewIncreasePointHistory2.getPointHistoryNo());
     }
 }

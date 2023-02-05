@@ -40,4 +40,9 @@ public class GradeIncreasePointHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "membership_no", nullable = false)
     private Membership membership;
+
+    public GradeIncreasePointHistory(Long pointHistoryNo, Membership membership) {
+        this.pointHistoryNo = pointHistoryNo;
+        this.membership = membership;
+    }
 }
