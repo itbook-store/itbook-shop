@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi;
+package shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

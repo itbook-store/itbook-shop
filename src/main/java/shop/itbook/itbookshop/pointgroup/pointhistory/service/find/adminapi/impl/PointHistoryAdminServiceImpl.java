@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi.impl;
+package shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi.PointHistoryAdminService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**

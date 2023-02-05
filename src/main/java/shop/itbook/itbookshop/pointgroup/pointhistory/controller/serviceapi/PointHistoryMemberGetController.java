@@ -14,8 +14,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.adminapi.impl.PointHistoryAdminServiceImpl;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.serviceapi.impl.PointHistoryMemberServiceImpl;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.serviceapi.impl.PointHistoryMemberServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**

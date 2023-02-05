@@ -1,8 +1,9 @@
 package shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.entity.OrderCancelIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
  * @author 최겸준
@@ -11,4 +12,6 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.Poi
 public interface PointIncreaseDecreaseContentRepository
     extends JpaRepository<PointIncreaseDecreaseContent, Integer> {
 
+    Optional<PointIncreaseDecreaseContent> findPointIncreaseDecreaseContentByContentEnum(
+        PointIncreaseDecreaseContentEnum content);
 }
