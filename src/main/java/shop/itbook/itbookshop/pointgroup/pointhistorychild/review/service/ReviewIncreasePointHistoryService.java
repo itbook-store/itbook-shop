@@ -1,9 +1,7 @@
 package shop.itbook.itbookshop.pointgroup.pointhistorychild.review.service;
 
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.entity.OrderCancelIncreasePointHistory;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.ReviewIncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.ReviewIncreasePointHistory;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
 
 /**

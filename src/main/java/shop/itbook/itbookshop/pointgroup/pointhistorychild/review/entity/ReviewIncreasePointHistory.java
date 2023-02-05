@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistorychild.review;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity;
 
 /**
  * @author 최겸준
@@ -33,7 +33,7 @@ public class ReviewIncreasePointHistory {
     private Long pointHistoryNo;
 
     @MapsId("pointHistoryNo")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "point_history_no", nullable = false)
     private PointHistory pointHistory;
 
