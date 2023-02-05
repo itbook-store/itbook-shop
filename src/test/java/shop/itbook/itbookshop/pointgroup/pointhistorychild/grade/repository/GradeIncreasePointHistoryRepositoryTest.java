@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistorychild.order.repository;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,13 +17,11 @@ import shop.itbook.itbookshop.membergroup.membership.repository.MembershipReposi
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
-import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.entity.OrderIncreaseDecreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.entity.GradeIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.PointIncreaseDecreaseContentRepository;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.dummy.PointIncreaseDecreaseContentDummy;
@@ -33,16 +31,10 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository
  * @since 1.0
  */
 @DataJpaTest
-class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
-
-
+class GradeIncreasePointHistoryRepositoryTest {
     @Autowired
-    OrderIncreaseDecreasePointHistoryRepository orderIncreaseDecreasePointHistoryRepository;
+    GradeIncreasePointHistoryRepository gradeIncreasePointHistoryRepository;
 
-    @Autowired
-    OrderRepository orderRepository;
-    Order order1;
-    Order order2;
 
     @Autowired
     TestEntityManager entityManager;
@@ -68,19 +60,20 @@ class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
     PointIncreaseDecreaseContent orderIncreasePointIncreaseDecreaseContent;
     PointHistory dummyPointHistory1;
     PointHistory dummyPointHistory2;
+    GradeIncreasePointHistory gradeIncreasePointHistory1;
+    GradeIncreasePointHistory gradeIncreasePointHistory2;
 
-    OrderIncreaseDecreasePointHistory increasePointHistory;
-    OrderIncreaseDecreasePointHistory decreasePointHistory;
 
+    Membership membership;
 
     @BeforeEach
     void setUp() {
-        member1 = MemberDummy.getMember1();
 
         orderIncreasePointIncreaseDecreaseContent =
             PointIncreaseDecreaseContentDummy.getOrderIncreasePointIncreaseDecreaseContent();
 
         pointIncreaseDecreaseContentRepository.save(orderIncreasePointIncreaseDecreaseContent);
+        member1 = MemberDummy.getMember1();
 
         membership1 = MembershipDummy.getMembership();
         membershipRepository.save(membership1);
@@ -106,48 +99,43 @@ class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
 
         pointHistoryRepository.save(dummyPointHistory2);
 
-        order1 = OrderDummy.getOrder();
-        orderRepository.save(order1);
 
-        order2 = OrderDummy.getOrder();
-        orderRepository.save(order2);
+        gradeIncreasePointHistory2 = new GradeIncreasePointHistory(
+            dummyPointHistory2.getPointHistoryNo(), membership1);
 
-        decreasePointHistory = new OrderIncreaseDecreasePointHistory(
-            dummyPointHistory2.getPointHistoryNo(), order2);
-
-        orderIncreaseDecreasePointHistoryRepository.save(decreasePointHistory);
+        gradeIncreasePointHistoryRepository.save(gradeIncreasePointHistory2);
 
         entityManager.flush();
         entityManager.clear();
     }
 
-    @DisplayName("주문적립 포인트내역이 잘 저장된다.")
+    @DisplayName("등급적립 포인트내역이 잘 저장된다.")
     @Test
     void save() {
-        increasePointHistory = new OrderIncreaseDecreasePointHistory(
-            dummyPointHistory1.getPointHistoryNo(), order1);
+        gradeIncreasePointHistory1 = new GradeIncreasePointHistory(
+            dummyPointHistory1.getPointHistoryNo(), membership1);
 
-        orderIncreaseDecreasePointHistoryRepository.save(increasePointHistory);
+        gradeIncreasePointHistoryRepository.save(gradeIncreasePointHistory1);
 
         entityManager.flush();
         entityManager.clear();
 
-        OrderIncreaseDecreasePointHistory actual =
-            entityManager.find(OrderIncreaseDecreasePointHistory.class,
-                increasePointHistory.getPointHistoryNo());
+        GradeIncreasePointHistory actual =
+            entityManager.find(GradeIncreasePointHistory.class,
+                gradeIncreasePointHistory1.getPointHistoryNo());
 
         assertThat(actual.getPointHistoryNo())
-            .isEqualTo(increasePointHistory.getPointHistoryNo());
+            .isEqualTo(gradeIncreasePointHistory1.getPointHistoryNo());
     }
 
-    @DisplayName("주문적립 포인트내역이 잘 조회된다.")
+    @DisplayName("등급적립 포인트내역이 잘 조회된다.")
     @Test
     void find() {
-        OrderIncreaseDecreasePointHistory actual =
-            orderIncreaseDecreasePointHistoryRepository.findById(
-                decreasePointHistory.getPointHistoryNo()).get();
+        GradeIncreasePointHistory actual =
+            gradeIncreasePointHistoryRepository.findById(
+                gradeIncreasePointHistory2.getPointHistoryNo()).get();
 
         assertThat(actual.getPointHistoryNo())
-            .isEqualTo(decreasePointHistory.getPointHistoryNo());
+            .isEqualTo(gradeIncreasePointHistory2.getPointHistoryNo());
     }
 }
