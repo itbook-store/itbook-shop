@@ -130,7 +130,7 @@ class PointHistoryRepositoryTest {
     @Test
     void findFirstByMemberOrderByPointHistoryNoDesc() {
         PointHistory actual = pointHistoryRepository.findFirstByMemberOrderByPointHistoryNoDesc(
-            member1);
+            member1).get();
 
         assertThat(actual.getPointHistoryNo())
             .isEqualTo(dummyPointHistory.getPointHistoryNo());

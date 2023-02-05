@@ -92,6 +92,7 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     }
 
     @Override
+    @Transactional
     public void usePointCouponAndCreatePointHistory(Long couponIssueNo) {
         CouponIssue couponIssue = couponIssueRepository.findByIdFetchJoin(couponIssueNo);
         Coupon coupon = couponIssue.getCoupon();
