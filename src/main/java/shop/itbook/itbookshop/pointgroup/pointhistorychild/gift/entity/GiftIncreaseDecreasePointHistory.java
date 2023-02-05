@@ -41,4 +41,9 @@ public class GiftIncreaseDecreasePointHistory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
+
+    public GiftIncreaseDecreasePointHistory(Long pointHistoryNo, Member member) {
+        this.pointHistoryNo = pointHistoryNo;
+        this.member = member;
+    }
 }
