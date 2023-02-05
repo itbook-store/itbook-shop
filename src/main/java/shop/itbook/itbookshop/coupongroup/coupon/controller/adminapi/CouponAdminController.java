@@ -37,8 +37,7 @@ import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEn
 public class CouponAdminController {
 
     private final CouponService couponService;
-    private final CategoryCouponService categoryCouponService;
-    private final CouponIssueService couponIssueService;
+
     /**
      * 쿠폰 탬플릿을 발급하는 메소드입니다.
      *
@@ -51,16 +50,6 @@ public class CouponAdminController {
 
         CouponNoResponseDto couponNoResponseDto =
             new CouponNoResponseDto(couponService.addCoupon(couponRequestDto));
-
-        if (!Objects.isNull(couponRequestDto.getCategoryNo())) {
-            categoryCouponService.addCategoryCoupon(
-                new CategoryCouponRequestDto(couponNoResponseDto.getCouponNo(),
-                    couponRequestDto.getCategoryNo()));
-        }
-        if (couponRequestDto.getCouponType().equals(CouponTypeEnum.NORMAL_COUPON.getCouponType())) {
-            couponIssueService.addCouponIssueByNormalCoupon(couponRequestDto.getUserId(),
-                couponNoResponseDto.getCouponNo());
-        }
 
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
