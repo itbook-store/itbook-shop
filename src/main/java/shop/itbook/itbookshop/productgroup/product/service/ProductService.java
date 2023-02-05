@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
@@ -23,12 +24,10 @@ public interface ProductService {
      *
      * @param requestDto 도서 정보를 포함한 상품 등록에 필요한 dto 객체입니다.                   도서가 아닐 경우 도서와 관련된 정보는 null 값이 되어 이후 수정할 예정입니다.
      * @param thumbnails 썸네일 사진 파일입니다.
-     * @param ebook      ebook 파일입니다.
      * @return Pk 값인 상품 번호를 반환합니다.
      * @author 이하늬
      */
-    Long addProduct(ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                    MultipartFile ebook);
+    Long addProduct(ProductRequestDto requestDto, MultipartFile thumbnails);
 
 
     /**
@@ -38,11 +37,10 @@ public interface ProductService {
      * @param productNo  the product no
      * @param requestDto 도서 정보를 포함한 상품 수정에 필요한 dto 객체입니다.                   도서가 아닐 경우 도서와 관련된 정보는 null 값이 되어 이후 수정할 예정입니다.
      * @param thumbnails 수정할 썸네일 사진 파일입니다.
-     * @param ebook      수정할 ebook 파일입니다.
      * @author 이하늬
      */
-    void modifyProduct(Long productNo, ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                       MultipartFile ebook);
+    void modifyProduct(Long productNo, ProductRequestDto requestDto,
+                       MultipartFile thumbnails);
 
     /**
      * 상품 삭제를 담당하는 메서드입니다.
@@ -96,4 +94,5 @@ public interface ProductService {
      */
     ProductDetailsResponseDto findProduct(Long productNo);
 
+    ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto);
 }

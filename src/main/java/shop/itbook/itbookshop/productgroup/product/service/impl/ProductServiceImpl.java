@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
@@ -36,7 +35,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final FileService fileService;
-    private final BookService bookService;
     private final ProductCategoryService productCategoryService;
     @Value("${object.storage.folder-path.thumbnail}")
     private String folderPathThumbnail;
@@ -49,22 +47,14 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public Long addProduct(ProductBookRequestDto requestDto,
-                           MultipartFile thumbnails, MultipartFile ebook) {
-        uploadAndSetFile(requestDto, thumbnails, ebook);
+    public Long addProduct(ProductRequestDto requestDto, MultipartFile thumbnails) {
+        uploadAndSetFile(requestDto, thumbnails);
 
-        Product product = ProductTransfer.dtoToEntityAdd(this.toProductRequestDto(requestDto));
-        productRepository.save(product);
+        Product product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
 
-        Category parentCategory =
-            productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
+        productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
 
-        Long productNo = product.getProductNo();
-        if (parentCategory.getCategoryName().contains("도서")) {
-            bookService.addBook(bookService.toBookRequestDto(requestDto), productNo);
-        }
-
-        return productNo;
+        return product.getProductNo();
     }
 
     /**
@@ -72,9 +62,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void modifyProduct(Long productNo, ProductBookRequestDto requestDto,
-                              MultipartFile thumbnails, MultipartFile ebook) {
-        uploadAndSetFile(requestDto, thumbnails, ebook);
+    public void modifyProduct(Long productNo, ProductRequestDto requestDto,
+                              MultipartFile thumbnails) {
+        uploadAndSetFile(requestDto, thumbnails);
 
         Product product = updateProduct(requestDto, productNo);
         productRepository.save(product);
@@ -82,21 +72,11 @@ public class ProductServiceImpl implements ProductService {
         Category parentCategory =
             productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
 
-        if (parentCategory.getCategoryName().contains("도서")) {
-            bookService.modifyBook(bookService.toBookRequestDto(requestDto), productNo);
-        }
-
     }
 
-    private void uploadAndSetFile(ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                                  MultipartFile ebook) {
+    private void uploadAndSetFile(ProductRequestDto requestDto, MultipartFile thumbnails) {
         String thumbnailUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
         requestDto.setFileThumbnailsUrl(thumbnailUrl);
-
-        if (!Objects.isNull(ebook)) {
-            String ebookUrl = fileService.uploadFile(ebook, folderPathEbook);
-            requestDto.setFileEbookUrl(ebookUrl);
-        }
     }
 
 
@@ -155,7 +135,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
-
     /**
      * {@inheritDoc}
      */
@@ -175,7 +154,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productNo  수정해야 할 상품 번호입니다.
      * @return 수정 완료된 상품을 반환합니다.
      */
-    private Product updateProduct(ProductBookRequestDto requestDto, Long productNo) {
+    private Product updateProduct(ProductRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
         product.setName(requestDto.getProductName());
@@ -189,7 +168,9 @@ public class ProductServiceImpl implements ProductService {
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
         product.setDiscountPercent(requestDto.getDiscountPercent());
         product.setRawPrice(requestDto.getRawPrice());
-
+        product.setIsPointApplyingBasedSellingPrice(
+            requestDto.getIsPointApplyingBasedSellingPrice());
+        product.setIsSubscription(requestDto.getIsSubscription());
         return product;
     }
 
@@ -207,9 +188,11 @@ public class ProductServiceImpl implements ProductService {
             fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
     }
 
-    private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
+    @Override
+    public ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
         return ProductRequestDto.builder()
             .productName(requestDto.getProductName())
+            .categoryNoList(requestDto.getCategoryNoList())
             .simpleDescription(requestDto.getSimpleDescription())
             .detailsDescription(requestDto.getDetailsDescription())
             .stock(requestDto.getStock())
@@ -219,7 +202,6 @@ public class ProductServiceImpl implements ProductService {
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent())
             .rawPrice(requestDto.getRawPrice())
-            .fileThumbnailsUrl(requestDto.getFileThumbnailsUrl())
             .isSubscription(requestDto.getIsSubscription())
             .isPointApplying(requestDto.getIsPointApplying())
             .isPointApplyingBasedSellingPrice(requestDto.getIsPointApplyingBasedSellingPrice())

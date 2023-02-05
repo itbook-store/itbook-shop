@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.auth.dto.AuthorizationHeaderDto;
-import shop.itbook.itbookshop.auth.receiver.AuthHeaderReceiver;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCategoryResultMessageEnum;
@@ -127,12 +125,11 @@ public class ProductAdminController {
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> productAdd(
-        @RequestPart ProductBookRequestDto requestDto,
-        @RequestPart MultipartFile thumbnails,
-        @RequestPart(required = false) MultipartFile ebook) {
+        @RequestPart ProductRequestDto requestDto,
+        @RequestPart MultipartFile thumbnails) {
 
         ProductNoResponseDto productPk =
-            new ProductNoResponseDto(productService.addProduct(requestDto, thumbnails, ebook));
+            new ProductNoResponseDto(productService.addProduct(requestDto, thumbnails));
 
         CommonResponseBody<ProductNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -157,11 +154,11 @@ public class ProductAdminController {
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart ProductBookRequestDto requestDto,
+        @RequestPart ProductRequestDto requestDto,
         @RequestPart MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 
-        productService.modifyProduct(productNo, requestDto, thumbnails, ebook);
+        productService.modifyProduct(productNo, requestDto, thumbnails);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
