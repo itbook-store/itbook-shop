@@ -2,8 +2,10 @@ package shop.itbook.itbookshop.coupongroup.coupon.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 import shop.itbook.itbookshop.coupongroup.coupontype.dummy.CouponTypeDummy;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
 import shop.itbook.itbookshop.coupongroup.coupontype.repository.CouponTypeRepository;
@@ -31,11 +34,7 @@ class CouponRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
 
-    Coupon pointDummyCoupon;
-
     Coupon amountDummyCoupon;
-
-    Coupon percentDummyCoupon;
 
     CouponType couponType;
 
@@ -47,23 +46,13 @@ class CouponRepositoryTest {
         amountDummyCoupon = CouponDummy.getAmountCoupon();
         amountDummyCoupon.setCouponType(couponType);
 
-        percentDummyCoupon = CouponDummy.getPercentCoupon();
-        percentDummyCoupon.setCouponType(couponType);
-
-        pointDummyCoupon = CouponDummy.getPointCoupon();
-        pointDummyCoupon.setCouponType(couponType);
-
-
         couponRepository.save(amountDummyCoupon);
-        couponRepository.save(percentDummyCoupon);
-        couponRepository.save(pointDummyCoupon);
 
         testEntityManager.flush();
         testEntityManager.clear();
     }
 
     @Test
-    @Order(1)
     void findCouponById() {
 
         //when
@@ -76,16 +65,12 @@ class CouponRepositoryTest {
     }
 
     @Test
-    @Order(2)
     void deleteById() {
 
         couponRepository.deleteById(amountDummyCoupon.getCouponNo());
-        couponRepository.deleteById(percentDummyCoupon.getCouponNo());
-        couponRepository.deleteById(pointDummyCoupon.getCouponNo());
     }
 
     @Test
-    @Order(3)
     void findCouponByCode() {
 
         //when
@@ -96,14 +81,27 @@ class CouponRepositoryTest {
         assertThat(coupon.getCouponNo()).isEqualTo(amountDummyCoupon.getCouponNo());
     }
 
-//    @AfterEach
-//    void setDown(){
-//        couponRepository.deleteById(amountDummyCoupon.getCouponNo());
-//        couponRepository.deleteById(percentDummyCoupon.getCouponNo());
-//        couponRepository.deleteById(pointDummyCoupon.getCouponNo());
-//
-//        couponTypeRepository.deleteAll();
-//        testEntityManager.flush();
-//        testEntityManager.clear();
-//    }
+    @Test
+    void findByAvailableWelcomeCoupon(){
+        CouponType welcomeCouponType = couponTypeRepository.save(
+            new CouponType(0, CouponTypeEnum.WELCOME_COUPON));
+
+        couponTypeRepository.save(welcomeCouponType);
+
+        Coupon percentDummyCoupon = CouponDummy.getPercentCoupon();
+        percentDummyCoupon.setCouponType(welcomeCouponType);
+
+        Coupon pointDummyCoupon = CouponDummy.getPointCoupon();
+        pointDummyCoupon.setCouponType(welcomeCouponType);
+
+        couponRepository.save(percentDummyCoupon);
+        couponRepository.save(pointDummyCoupon);
+
+        List<Coupon> coupons = couponRepository.findByAvailableWelcomeCoupon();
+
+        assertThat(coupons.size()).isEqualTo(2);
+    }
+
+
+
 }
