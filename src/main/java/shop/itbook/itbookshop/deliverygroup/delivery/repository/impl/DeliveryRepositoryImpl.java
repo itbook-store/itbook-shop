@@ -57,7 +57,8 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
                     qDelivery.deliveryNo,
                     qDelivery.order.orderNo,
                     qDelivery.trackingNo,
-                    qDeliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")));
+                    qDeliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")))
+                .orderBy(qDelivery.deliveryNo.asc());
 
         List<DeliveryWithStatusResponseDto> deliveryWithStatusResponseDtoList =
             jpqlQuery.offset(pageable.getOffset())
@@ -93,7 +94,8 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
                     qDelivery.deliveryNo,
                     qDelivery.order.orderNo,
                     qDelivery.trackingNo,
-                    qDeliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")));
+                    qDeliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")))
+                .orderBy(qDelivery.deliveryNo.asc());
 
         List<DeliveryWithStatusResponseDto> deliveryWithStatusWaitResponseDtoList =
             jpqlQuery.offset(pageable.getOffset())
@@ -133,7 +135,7 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
         QDeliveryStatusHistory qDeliveryStatusHistory1,
         QDeliveryStatusHistory qDeliveryStatusHistory2,
         QDelivery qDelivery, QDeliveryStatus qDeliveryStatus,
-        BooleanExpression deliveryStatusHistoryNo) {
+        BooleanExpression deliveryStatusHistoryNoIsNull) {
         return from(qDeliveryStatusHistory1)
             .leftJoin(qDeliveryStatusHistory2)
             .on(qDeliveryStatusHistory1.delivery.deliveryNo.eq(
@@ -146,6 +148,6 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qDeliveryStatus)
             .on(qDeliveryStatusHistory1.deliveryStatus.eq(qDeliveryStatus))
             .fetchJoin()
-            .where(deliveryStatusHistoryNo);
+            .where(deliveryStatusHistoryNoIsNull);
     }
 }

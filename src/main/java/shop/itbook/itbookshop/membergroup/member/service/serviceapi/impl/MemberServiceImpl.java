@@ -73,6 +73,14 @@ public class MemberServiceImpl implements MemberService {
      * {@inheritDoc}
      */
     @Override
+    public Member findMemberByMemberNo(Long memberNo) {
+        return memberRepository.findById(memberNo).orElseThrow(MemberNotFoundException::new);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public MemberResponseDto findMember(String memberId) {
 
         return memberRepository.findByMemberIdAllInfo(memberId)

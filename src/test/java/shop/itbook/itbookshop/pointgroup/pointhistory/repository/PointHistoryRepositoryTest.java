@@ -126,4 +126,17 @@ class PointHistoryRepositoryTest {
         assertThat(actual.getIncreaseDecreasePoint())
             .isEqualTo(dummyPointHistory.getIncreaseDecreasePoint());
     }
+
+    @Test
+    void findFirstByMemberOrderByPointHistoryNoDesc() {
+        PointHistory actual = pointHistoryRepository.findFirstByMemberOrderByPointHistoryNoDesc(
+            member1);
+
+        assertThat(actual.getPointHistoryNo())
+            .isEqualTo(dummyPointHistory.getPointHistoryNo());
+        assertThat(actual.getHistoryCreatedAt())
+            .isEqualTo(dummyPointHistory.getHistoryCreatedAt());
+        assertThat(actual.getIncreaseDecreasePoint())
+            .isEqualTo(dummyPointHistory.getIncreaseDecreasePoint());
+    }
 }
