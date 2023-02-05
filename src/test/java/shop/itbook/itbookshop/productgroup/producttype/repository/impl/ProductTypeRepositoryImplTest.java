@@ -16,6 +16,7 @@ import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.repository.MemberDestinationRepository;
+import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
@@ -85,15 +86,16 @@ class ProductTypeRepositoryImplTest {
     void find_BestSeller_Test() {
 
         // 32일 전에 주문한 책이(product1) 가장 많이 주문되었지만 베스트셀러에는 포함이 되지 않옴 (현재-1일~현재-31일 책만 통계내기 때문)
-
-        Order order = new Order(LocalDateTime.now().minusDays(32), LocalDateTime.now());
+        Order order = OrderDummy.getOrder();
+        order.setOrderCreatedAt(LocalDateTime.now().minusDays(90));
         orderRepository.save(order);
 
         OrderProduct orderProduct1 = new OrderProduct(order, product1, 10, false);
         orderProductRepository.save(orderProduct1);
 
+        Order order2 = OrderDummy.getOrder();
+        order2.setOrderCreatedAt(LocalDateTime.now().minusDays(13));
 
-        Order order2 = new Order(LocalDateTime.now().minusDays(13), LocalDateTime.now());
         orderRepository.save(order2);
         OrderProduct orderProduct2 = new OrderProduct(order2, product2, 5, false);
         orderProductRepository.save(orderProduct2);
@@ -112,7 +114,8 @@ class ProductTypeRepositoryImplTest {
             productTypeRepository.findBestSellerBookListAdmin(pageable).getContent();
 
         Assertions.assertThat(bestSellerList).isNotEmpty().hasSize(2);
-        Assertions.assertThat(bestSellerList.get(0).getProductNo()).isEqualTo(product3.getProductNo());
+        Assertions.assertThat(bestSellerList.get(0).getProductNo())
+            .isEqualTo(product3.getProductNo());
     }
 
     @Test
