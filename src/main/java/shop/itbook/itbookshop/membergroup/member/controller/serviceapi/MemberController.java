@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.controller.serviceapi;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,9 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDt
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
+import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.MemberDestinationResultMessageEnum;
+import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 
 /**
  * 사용자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -38,6 +42,8 @@ import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberServic
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final MemberDestinationService memberDestinationService;
 
     /**
      * 프론트 서버에서 입력된 정보를 dto로 받아와 서비스 클래스로 넘겨 테이블에 멤버를 추가하고
@@ -280,4 +286,15 @@ public class MemberController {
         ));
     }
 
+    @GetMapping("/{memberNo}/member-destinations")
+    public ResponseEntity<CommonResponseBody<List<MemberDestinationResponseDto>>> memberDestinationDetails(
+        @PathVariable("memberNo") Long memberNo) {
+
+        CommonResponseBody<List<MemberDestinationResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                MemberDestinationResultMessageEnum.MEMBER_DESTINATION_FIND_MESSAGE.getSuccessMessage()),
+                memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
 }

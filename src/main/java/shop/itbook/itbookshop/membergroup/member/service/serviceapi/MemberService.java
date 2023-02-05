@@ -7,6 +7,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
  * 서비스 API 멤버 서비스 인터페이스입니다.
@@ -15,6 +16,16 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
  * @since 1.0
  */
 public interface MemberService {
+
+
+    /**
+     * 멤버 no로 테이블에서 유저를 찾는 메서드입니다.
+     *
+     * @param memberNo pk인 멤버 번호 입니다.
+     * @return 멤버 엔티티를 반환합니다.
+     * @author 노수연
+     */
+    Member findMemberByMemberNo(Long memberNo);
 
     /**
      * 프론트 서버에서 유저가 비밀번호를 포함하여 자신의 모든 개인정보를 조회할 수 있도록 테이블에서 모든 필드들의 값을 가져오는 메서드입니다.
@@ -52,12 +63,33 @@ public interface MemberService {
      */
     void withDrawMember(String memberId, MemberStatusUpdateAdminRequestDto requestDto);
 
+    /**
+     * @param email the email
+     * @return the boolean
+     * @author
+     */
     Boolean checkMemberOauthEmailExists(String email);
 
+    /**
+     * @param email the email
+     * @return the boolean
+     * @author
+     */
     Boolean checkMemberOauthInfoExists(String email);
 
+    /**
+     * @param email        the email
+     * @param encodedEmail the encoded email
+     * @return the long
+     * @author
+     */
     Long socialMemberAdd(String email, String encodedEmail);
 
+    /**
+     * @param requestDto the request dto
+     * @return the long
+     * @author
+     */
     Long modifySocialMember(MemberSocialRequestDto requestDto);
 
     /**

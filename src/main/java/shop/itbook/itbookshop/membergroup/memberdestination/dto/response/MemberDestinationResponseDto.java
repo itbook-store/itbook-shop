@@ -15,6 +15,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MemberDestinationResponseDto {
+
+    Long recipientDestinationNo;
+
     String recipientName;
 
     String recipientPhoneNumber;
@@ -28,6 +31,7 @@ public class MemberDestinationResponseDto {
     /**
      * 회원 배송지 정보 Dto 의 생성자입니다.
      *
+     * @param recipientDestinationNo  회원 배송지 번호
      * @param recipientName           수령인 이름
      * @param recipientPhoneNumber    핸드폰 번호
      * @param postcode                우편번호
@@ -35,9 +39,11 @@ public class MemberDestinationResponseDto {
      * @param recipientAddressDetails 상세 주소
      */
     @Builder
-    public MemberDestinationResponseDto(String recipientName, String recipientPhoneNumber,
+    public MemberDestinationResponseDto(Long recipientDestinationNo, String recipientName,
+                                        String recipientPhoneNumber,
                                         Integer postcode,
                                         String roadNameAddress, String recipientAddressDetails) {
+        this.recipientDestinationNo = recipientDestinationNo;
         this.recipientName = recipientName;
         this.recipientPhoneNumber = recipientPhoneNumber;
         this.postcode = postcode;
