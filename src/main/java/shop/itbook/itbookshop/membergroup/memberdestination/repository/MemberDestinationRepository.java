@@ -12,4 +12,6 @@ import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestina
  */
 public interface MemberDestinationRepository
     extends JpaRepository<MemberDestination, Long>, CustomMemberDestinationRepository {
+
+    List<MemberDestination> findAllByMember_MemberNo(Long memberNo);
 }

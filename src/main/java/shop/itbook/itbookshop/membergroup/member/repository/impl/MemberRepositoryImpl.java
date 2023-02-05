@@ -12,10 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlockResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberOauthLoginResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
@@ -123,6 +121,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findNormalMemberList(Pageable pageable) {
         JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
@@ -147,6 +148,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findBlockMemberList(Pageable pageable) {
         JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
@@ -171,6 +175,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findWithdrawMemberList(Pageable pageable) {
         JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
@@ -195,6 +202,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean existsByEmailAndIsSocial(String email) {
         return jpaQueryFactory.from(qmember)
@@ -202,22 +212,15 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .select(qmember.email).fetchFirst() != null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean existsByMemberIdAndIsSocial(String email) {
         return jpaQueryFactory.from(qmember)
             .where(qmember.memberId.eq(email).and(qmember.isSocial.eq(true)))
             .select(qmember.memberId).fetchFirst() != null;
 
-    }
-
-    @Override
-    public Optional<MemberOauthLoginResponseDto> findOauthInfoByMemberId(String memberId) {
-        return Optional.ofNullable(jpaQueryFactory.select(
-                Projections.constructor(MemberOauthLoginResponseDto.class, qmember.memberId,
-                    qmember.password))
-            .from(qmember)
-            .where(qmember.memberId.eq(memberId)
-                .and(qmember.isSocial.eq(true))).fetchOne());
     }
 
     /**
@@ -259,6 +262,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findMemberListByNickname(String nickname,
                                                                      String memberStatusName,
@@ -281,6 +287,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findMemberListByName(String name,
                                                                  String memberStatusName,
@@ -303,6 +312,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
                                                                         String memberStatusName,
@@ -324,6 +336,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
                                                                        String memberStatusName,
@@ -348,6 +363,9 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
         return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId) {
         return jpaQueryFactory.select(
@@ -375,28 +393,34 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             ).orderBy(qmember.memberNo.desc()).fetchOne();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MemberCountResponseDto MemberCountBy() {
+    public Long memberCountBy() {
         return jpaQueryFactory.select(
-            Projections.constructor(MemberCountResponseDto.class, qmember.count())
-        ).from(qmember).fetchFirst();
+            qmember.count()).from(qmember).fetchFirst();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MemberCountResponseDto blockMemberCountBy() {
-        return jpaQueryFactory.select(
-                Projections.constructor(MemberCountResponseDto.class, qmember.count())
-            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("차단회원"))
+    public Long memberCountByStatusName(String statusName) {
+        return jpaQueryFactory.select(qmember.count()).from(qmember)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq(statusName))
             .fetchOne();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public MemberCountResponseDto withdrawMemberCountBy() {
-        return jpaQueryFactory.select(
-                Projections.constructor(MemberCountResponseDto.class, qmember.count())
-            ).from(qmember).join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberStatus.memberStatusEnum.stringValue().eq("탈퇴회원"))
+    public Long memberCountByMembershipGrade(String membershipGrade) {
+        return jpaQueryFactory.select(qmember.count()).from(qmember)
+            .join(qmember.membership, qmembership)
+            .where(qmembership.membershipGrade.eq(membershipGrade))
             .fetchOne();
     }
 }
