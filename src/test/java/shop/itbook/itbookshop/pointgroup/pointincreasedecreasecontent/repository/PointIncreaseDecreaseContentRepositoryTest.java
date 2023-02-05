@@ -24,16 +24,13 @@ class PointIncreaseDecreaseContentRepositoryTest {
     @Autowired
     PointIncreaseDecreaseContentRepository pointIncreaseDecreaseContentRepository;
 
-    PointIncreaseDecreaseContent giftPointIncreaseDecreaseContent;
+    PointIncreaseDecreaseContent orderPointIncreaseDecreaseContent;
 
     @BeforeEach
     void before() {
-        PointIncreaseDecreaseContent pointIncreaseDecreaseContent =
-            new PointIncreaseDecreaseContent(
-                PointIncreaseDecreaseContentEnum.ORDER);
-
-        giftPointIncreaseDecreaseContent =
-            pointIncreaseDecreaseContentRepository.save(pointIncreaseDecreaseContent);
+        orderPointIncreaseDecreaseContent =
+            pointIncreaseDecreaseContentRepository.save(new PointIncreaseDecreaseContent(
+                PointIncreaseDecreaseContentEnum.ORDER));
 
         entityManager.flush();
         entityManager.clear();
@@ -58,8 +55,8 @@ class PointIncreaseDecreaseContentRepositoryTest {
         assertThat(pointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo())
             .isEqualTo(actualContent.getPointIncreaseDecreaseContentNo());
 
-        assertThat(pointIncreaseDecreaseContent.getContentEnum().getStatusName())
-            .isEqualTo(actualContent.getContentEnum().getStatusName());
+        assertThat(pointIncreaseDecreaseContent.getContentEnum().getContent())
+            .isEqualTo(actualContent.getContentEnum().getContent());
     }
 
     @DisplayName("enum 관계없이 잘 조회하여 필드들을 받아온다.")
@@ -68,13 +65,24 @@ class PointIncreaseDecreaseContentRepositoryTest {
 
         PointIncreaseDecreaseContent actualContent =
             pointIncreaseDecreaseContentRepository.findById(
-                giftPointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo()).get();
+                orderPointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo()).get();
 
-        assertThat(giftPointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo())
+        assertThat(orderPointIncreaseDecreaseContent.getPointIncreaseDecreaseContentNo())
             .isEqualTo(actualContent.getPointIncreaseDecreaseContentNo());
 
-        assertThat(giftPointIncreaseDecreaseContent.getContentEnum().getStatusName())
-            .isEqualTo(actualContent.getContentEnum().getStatusName());
+        assertThat(orderPointIncreaseDecreaseContent.getContentEnum().getContent())
+            .isEqualTo(actualContent.getContentEnum().getContent());
     }
 
+    @DisplayName("포인트 적립 차감에 대한 내용을 잘 불러온다.")
+    @Test
+    void findPointIncreaseDecreaseContentByContent() {
+
+        PointIncreaseDecreaseContent giftContent =
+            pointIncreaseDecreaseContentRepository.findPointIncreaseDecreaseContentByContentEnum(
+                PointIncreaseDecreaseContentEnum.ORDER).get();
+
+        assertThat(giftContent.getContentEnum())
+            .isEqualTo(PointIncreaseDecreaseContentEnum.ORDER);
+    }
 }

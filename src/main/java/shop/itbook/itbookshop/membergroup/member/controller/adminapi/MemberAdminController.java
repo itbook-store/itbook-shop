@@ -22,7 +22,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdBlo
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminService;
-import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 
 /**
  * 관리자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -36,8 +35,6 @@ import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 public class MemberAdminController {
 
     private final MemberAdminService memberAdminService;
-
-    private final MemberRoleService memberRoleService;
 
     /**
      * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.
@@ -63,6 +60,7 @@ public class MemberAdminController {
     /**
      * 모든 멤버들을 조회하는 메서드입니다.
      *
+     * @param pageable the pageable
      * @return MemberExceptPwdResponseDto 리스트를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
@@ -85,6 +83,14 @@ public class MemberAdminController {
 
     }
 
+
+    /**
+     * 어드민 페이지에서 요청하는 정상회원 상태를 가진 회원들의 리스트를 반환합니다.
+     *
+     * @param pageable 멤버 정보 Dto 리스트를 페이징 처리하여 데이터를 보냅니다.
+     * @return 정상 멤버 정보 Dto 리스트를 페이징 처리한 데이터를 반환합니다.
+     * @author 노수연
+     */
     @GetMapping("/normal")
     public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> normalMemberList(
         @PageableDefault Pageable pageable) {
@@ -101,6 +107,14 @@ public class MemberAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+
+    /**
+     * 어드민 페이지에서 요청하는 차단회원 상태를 가진 회원들의 리스트를 반환합니다.
+     *
+     * @param pageable 멤버 정보 Dto 리스트를 페이징 처리하여 데이터를 보냅니다.
+     * @return 차단 멤버 정보 Dto 리스트를 페이징 처리한 데이터를 반환합니다.
+     * @author 노수연
+     */
     @GetMapping("/block")
     public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> blockMemberList(
         @PageableDefault Pageable pageable) {
@@ -117,6 +131,13 @@ public class MemberAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * 어드민 페이지에서 요청하는 탈퇴회원 상태를 가진 회원들의 리스트를 반환합니다.
+     *
+     * @param pageable 멤버 정보 Dto 리스트를 페이징 처리하여 데이터를 보냅니다.
+     * @return 탈퇴 멤버 정보 Dto 리스트를 페이징 처리한 데이터를 반환합니다.
+     * @author 노수연
+     */
     @GetMapping("/withdraw")
     public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> withdrawMemberList(
         @PageableDefault Pageable pageable) {
@@ -164,8 +185,10 @@ public class MemberAdminController {
      * 검색 기준과 검색 단어 별로 회원 테이블에서 데이터들을 리스트로 찾아와
      * ResponseEntity에 담아 반환합니다.
      *
+     * @param memberStatusName  the member status name
      * @param searchRequirement 검색 기준입니다. 아이디, 닉네임, 이름, 전화번호 기준으로 검색할 수 있습니다.
      * @param searchWord        검색 단어입니다.
+     * @param pageable          the pageable
      * @return MemberExceptPwdResponseDto 리스트를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
@@ -214,6 +237,13 @@ public class MemberAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * 차단된 회원의 상세 정보를 반환하는 API 입니다.
+     *
+     * @param memberId url로 넘어온 멤버 아이디로 해당 멤버를 찾습니다.
+     * @return 비밀번호를 제외한 정보가 들어있는 DTO를 반환합니다.
+     * @author 노수연
+     */
     @GetMapping("/{memberId}/block")
     public ResponseEntity<CommonResponseBody<MemberExceptPwdBlockResponseDto>> blockMemberDetails(
         @PathVariable("memberId") String memberId) {
@@ -228,6 +258,12 @@ public class MemberAdminController {
 
     }
 
+    /**
+     * 멤버 상태별 멤버 카운트를 세는 API 입니다.
+     *
+     * @return 모든 멤버 상태별 멤버 카운트 센 데이터를 담은 DTO를 반환합니다.
+     * @author 노수연
+     */
     @GetMapping("/memberStatus/count")
     public ResponseEntity<CommonResponseBody<MemberCountResponseDto>> memberCountByMemberStatus() {
 
@@ -239,6 +275,12 @@ public class MemberAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * 멤버 등급별 멤버 카운트를 세는 API 입니다.
+     *
+     * @return 모든 멤버 등급별 멤버 카운트 센 데이터를 담은 DTO를 반환합니다.
+     * @author 노수연
+     */
     @GetMapping("/membership/count")
     public ResponseEntity<CommonResponseBody<MemberCountByMembershipResponseDto>> memberCountByMembership() {
 

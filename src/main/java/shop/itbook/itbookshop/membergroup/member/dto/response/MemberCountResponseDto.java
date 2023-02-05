@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * 회원 상태별 회원들의 수를 받아오는 DTO 입니다.
+ *
  * @author 노수연
  * @since 1.0
  */

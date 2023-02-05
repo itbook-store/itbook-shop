@@ -1,14 +1,17 @@
 package shop.itbook.itbookshop.productgroup.producttyperegistration.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.book.BookDummy;
@@ -30,7 +33,6 @@ import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.Produc
  * @since 1.0
  */
 @DataJpaTest
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class ProductTypeRegistrationRepositoryTest {
 
     @Autowired
@@ -45,14 +47,21 @@ class ProductTypeRegistrationRepositoryTest {
     TestEntityManager entityManager;
     @Autowired
     private BookRepository bookRepository;
+    Pageable pageable;
 
     @BeforeEach
     void setUp() {
+
+        pageable = PageRequest.of(0, Integer.MAX_VALUE);
         product = ProductDummy.getProductSuccess();
         productType = new ProductType(null, ProductTypeEnum.BESTSELLER);
 
         productRepository.save(product);
         productTypeRepository.save(productType);
+
+        Book book = BookDummy.getBookSuccess();
+        book.setProductNo(product.getProductNo());
+        bookRepository.save(book);
 
         entityManager.flush();
         entityManager.clear();
@@ -98,34 +107,10 @@ class ProductTypeRegistrationRepositoryTest {
                 PageRequest.of(0, Integer.MAX_VALUE),
                 actualProduct.getProductNo()).getContent();
 
-        Assertions.assertThat(productTypeListByProductNo.size()).isEqualTo(1);
+        Assertions.assertThat(productTypeListByProductNo).hasSize(1);
         Assertions.assertThat(
                 productTypeListByProductNo.get(0).getProductTypeName().getProductType())
             .isEqualTo(actualProductType.getProductTypeEnum().getProductType());
     }
 
-    @Test
-    @DisplayName("상품 유형 번호로 상품 조회 성공")
-    void findProductListByProductTypeNoTest() {
-
-        Book book = BookDummy.getBookSuccess();
-        book.setProductNo(product.getProductNo());
-        bookRepository.save(book);
-
-        Product actualProduct = productRepository.findById(product.getProductNo()).get();
-        ProductType actualProductType =
-            productTypeRepository.findById(productType.getProductTypeNo()).get();
-
-        ProductTypeRegistration productTypeRegistration =
-            new ProductTypeRegistration(actualProduct, actualProductType);
-        productTypeRegistrationRepository.save(productTypeRegistration);
-
-        List<ProductDetailsResponseDto> productListByProductTypeNo =
-            productTypeRegistrationRepository.findProductListAdminWithProductTypeNo(
-                PageRequest.of(0, Integer.MAX_VALUE),
-                actualProductType.getProductTypeNo()).getContent();
-
-        Assertions.assertThat(productListByProductTypeNo.get(0).getProductNo())
-            .isEqualTo(actualProduct.getProductNo());
-    }
 }

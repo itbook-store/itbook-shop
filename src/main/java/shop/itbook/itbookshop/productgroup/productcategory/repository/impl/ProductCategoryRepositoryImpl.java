@@ -53,7 +53,8 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
-                    qProduct.isPointApplying, qProduct.isSubscription))
+                    qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                    qProduct.dailyHits))
                 .where(qCategory.categoryNo.eq(categoryNo).and(qProduct.isSelled.eq(true)));
 
         List<ProductDetailsResponseDto> productList = productListQuery

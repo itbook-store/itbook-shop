@@ -119,7 +119,6 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 qMember.memberId,
                 qMember.name.as("memberName"),
                 qPointHistory.pointHistoryNo,
-                qPointHistory.isDecrease,
                 qPointHistory.increaseDecreasePoint,
                 qPointHistory.pointIncreaseDecreaseContent.contentEnum.stringValue().as("content"),
                 qPointHistory.remainedPoint,

@@ -1,16 +1,19 @@
 package shop.itbook.itbookshop.ordergroup.order.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
  * 주문에 관한 엔티티입니다.
@@ -35,6 +38,9 @@ public class Order {
 
     @Column(name = "selected_delivery_date", nullable = false)
     private LocalDateTime selectedDeliveryDate;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderProduct> orderProducts;
 
     @Column(name = "recipient_name", columnDefinition = "varchar(20)", nullable = false)
     private String recipientName;
