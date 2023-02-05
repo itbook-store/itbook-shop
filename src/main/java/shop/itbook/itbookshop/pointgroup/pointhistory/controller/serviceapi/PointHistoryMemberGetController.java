@@ -14,7 +14,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.serviceapi.impl.PointHistoryMemberServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -26,7 +26,7 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
 @RequiredArgsConstructor
 public class PointHistoryMemberGetController {
 
-    private final PointHistoryServiceImpl pointHistoryServiceImpl;
+    private final PointHistoryMemberServiceImpl pointHistoryMemberServiceImpl;
 
     @GetMapping("/{pointHistoryNo}")
     public void pointHistoryDetails(@PathVariable Long pointHistoryNo) {
@@ -38,7 +38,7 @@ public class PointHistoryMemberGetController {
         @PathVariable Long memberNo, @PageableDefault Pageable pageable,
         @RequestParam(required = false) String content) {
         Page<PointHistoryListDto> pointHistoryList =
-            pointHistoryServiceImpl.findMyPointHistoryList(memberNo, pageable,
+            pointHistoryMemberServiceImpl.findMyPointHistoryList(memberNo, pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content));
 
         return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(
