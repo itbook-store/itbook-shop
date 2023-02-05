@@ -20,6 +20,7 @@ public class MemberDestinationTransfer {
      */
     public static MemberDestinationResponseDto entityToDto(MemberDestination memberDestination) {
         return MemberDestinationResponseDto.builder()
+            .recipientDestinationNo(memberDestination.getRecipientDestinationNo())
             .recipientName(memberDestination.getRecipientName())
             .recipientPhoneNumber(memberDestination.getRecipientPhoneNumber())
             .postcode(memberDestination.getPostcode())

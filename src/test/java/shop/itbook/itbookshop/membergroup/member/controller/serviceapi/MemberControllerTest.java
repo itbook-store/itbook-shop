@@ -26,6 +26,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanRespo
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 
 /**
  * @author 노수연
@@ -39,6 +40,9 @@ class MemberControllerTest {
 
     @MockBean
     MemberService memberService;
+
+    @MockBean
+    MemberDestinationService memberDestinationService;
 
     @MockBean
     MemberRepository memberRepository;
