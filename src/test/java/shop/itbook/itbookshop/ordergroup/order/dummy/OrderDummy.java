@@ -14,6 +14,14 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  */
 public class OrderDummy {
     public static Order getOrder() {
-        return new Order(LocalDateTime.now(), LocalDateTime.now());
+        return Order.builder()
+            .orderCreatedAt(LocalDateTime.now())
+            .selectedDeliveryDate(LocalDateTime.now())
+            .recipientName("테스트 수령인 이름")
+            .recipientPhoneNumber("010-test")
+            .postcode(12345)
+            .roadNameAddress("테스트 도로명주소")
+            .recipientAddressDetails("테스트 상세주소")
+            .build();
     }
 }

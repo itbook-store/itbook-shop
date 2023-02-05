@@ -18,6 +18,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
@@ -25,6 +27,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
@@ -41,10 +44,16 @@ class CouponServiceImplTest {
     CouponService couponService;
 
     @MockBean
+    CategoryCouponService categoryCouponService;
+
+    @MockBean
     CouponRepository couponRepository;
 
     @MockBean
     CouponTypeService couponTypeService;
+
+    @MockBean
+    CouponIssueService couponIssueService;
 
 
     Coupon percentDummyCoupon;
@@ -63,6 +72,7 @@ class CouponServiceImplTest {
         //given
         percentDummyCoupon.setCouponNo(1L);
 
+        ReflectionTestUtils.setField(couponRequestDto, "couponType", "일반쿠폰");
         ReflectionTestUtils.setField(couponRequestDto, "couponCreatedAt", LocalDateTime.now().toString());
         ReflectionTestUtils.setField(couponRequestDto, "couponExpiredAt", LocalDateTime.now().toString());
 

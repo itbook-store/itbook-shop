@@ -1,8 +1,8 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
+import java.util.Optional;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -11,13 +11,13 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 public interface PointHistoryService {
 
-    Page<PointHistoryListDto> findPointHistoryList(Pageable pageable,
-                                                   PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
+    Optional<PointHistory> findRecentPointHistory(Member member);
 
-    Page<PointHistoryListDto> findMyPointHistoryList(Long memberNo, Pageable pageable,
-                                                     PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
+    Long findRecentlyPoint(Member member);
 
-    Page<PointHistoryListDto> findPointHistoryListBySearch(Pageable pageable,
-                                                           PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
-                                                           String searchWord);
+    PointHistory getSavedIncreasePointHistory(Member member, Long pointToApply,
+                                              PointIncreaseDecreaseContentEnum contentEnum);
+
+    PointHistory getSavedDecreasePointHistory(Member member, Long pointToApply,
+                                              PointIncreaseDecreaseContentEnum contentEnum);
 }

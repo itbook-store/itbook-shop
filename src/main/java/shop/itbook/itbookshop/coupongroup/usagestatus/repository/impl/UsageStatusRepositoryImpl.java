@@ -22,6 +22,6 @@ public class UsageStatusRepositoryImpl extends QuerydslRepositorySupport
         QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
         return Optional.of(
             from(qUsageStatus).select(qUsageStatus)
-                .where(qUsageStatus.usageStatusEnum.stringValue().eq(statusName)).fetchOne());
+                .where(qUsageStatus.usageStatusName.stringValue().eq(statusName)).fetchOne());
     }
 }
