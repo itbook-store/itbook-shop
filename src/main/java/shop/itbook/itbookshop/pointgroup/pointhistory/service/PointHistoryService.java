@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.service;
 
+import java.util.Optional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
@@ -10,7 +11,9 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 public interface PointHistoryService {
 
-    PointHistory findRecentPointHistory(Member member);
+    Optional<PointHistory> findRecentPointHistory(Member member);
+
+    Long findRecentlyPoint(Member member);
 
     PointHistory getSavedIncreasePointHistory(Member member, Long pointToApply,
                                               PointIncreaseDecreaseContentEnum contentEnum);
