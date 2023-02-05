@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service;
 
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.CouponIncreasePointHistory;
 
 /**
@@ -9,7 +10,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.CouponI
  */
 public interface CouponIncreasePointHistoryService {
 
-
-    CouponIncreasePointHistory addCouponIncreasePointHistory(CouponIssue couponIssue,
-                                                             Long pointToApply);
+    CouponIncreasePointHistory savePointHistoryAboutCouponIncrease(Member member,
+                                                                   CouponIssue couponIssue,
+                                                                   Long pointToApply);
 }

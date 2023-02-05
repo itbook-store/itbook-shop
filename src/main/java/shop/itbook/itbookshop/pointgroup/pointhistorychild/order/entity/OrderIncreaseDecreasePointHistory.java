@@ -40,4 +40,10 @@ public class OrderIncreaseDecreasePointHistory {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no", nullable = false, unique = true)
     private Order order;
+
+    public OrderIncreaseDecreasePointHistory(Long pointHistoryNo, Order order) {
+
+        this.pointHistoryNo = pointHistoryNo;
+        this.order = order;
+    }
 }

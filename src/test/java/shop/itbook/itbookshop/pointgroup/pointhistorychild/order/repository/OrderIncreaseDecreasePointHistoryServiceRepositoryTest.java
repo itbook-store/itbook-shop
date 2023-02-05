@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
  * @author 최겸준
  * @since 1.0
  */
-class OrderIncreaseDecreasePointHistoryRepositoryTest {
+class OrderIncreaseDecreasePointHistoryServiceRepositoryTest {
 
     @BeforeEach
     void setUp() {

@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.service;
 
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
  * @author 최겸준
@@ -11,9 +12,9 @@ public interface PointHistoryService {
 
     PointHistory findRecentPointHistory(Member member);
 
-    PointHistory savePointHistory(PointHistory pointHistoryToSave);
+    PointHistory getSavedIncreasePointHistory(Member member, Long pointToApply,
+                                              PointIncreaseDecreaseContentEnum contentEnum);
 
-    Long getRemainedPointWhenIncrease(Member member, Long pointToApply);
-
-    Long getRemainedPointWhenDecrease(Member member, Long pointToApply);
+    PointHistory getSavedDecreasePointHistory(Member member, Long pointToApply,
+                                              PointIncreaseDecreaseContentEnum contentEnum);
 }

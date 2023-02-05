@@ -40,4 +40,9 @@ public class ReviewIncreasePointHistory {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_product_no", nullable = false)
     private Review review;
+
+    public ReviewIncreasePointHistory(Long pointHistoryNo, Review review) {
+        this.pointHistoryNo = pointHistoryNo;
+        this.review = review;
+    }
 }
