@@ -1,10 +1,12 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
@@ -71,9 +73,17 @@ public class PointHistoryServiceImpl implements PointHistoryService {
                                         Boolean isDecrease) {
 
         Long recentlyRemainedPoint = this.findRecentPointHistory(member).getRemainedPoint();
-        return isDecrease ? recentlyRemainedPoint - pointToApply :
-            recentlyRemainedPoint + pointToApply;
+
+        if (isDecrease) {
+
+            long remainedPointToSave = recentlyRemainedPoint - pointToApply;
+            if (remainedPointToSave < 0) {
+                throw new LackOfPointException();
+            }
+
+            return remainedPointToSave;
+        }
+
+        return recentlyRemainedPoint + pointToApply;
     }
-
-
 }
