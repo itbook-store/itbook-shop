@@ -102,10 +102,6 @@ class CouponRepositoryTest {
         assertThat(coupons.size()).isEqualTo(2);
     }
 
-    @Disabled
-    @Test
-    void testFindCouponByCode() {
-    }
 
 
 }
