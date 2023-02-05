@@ -17,4 +17,6 @@ public interface CouponIssueService {
     List<CouponIssue> addCouponIssueByWelcomeCoupon(Member member);
     Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(Pageable pageable,
                                                                        String memberId);
+
+    void usePointCouponAndCreatePointHistory(Long couponIssueNo);
 }

@@ -28,7 +28,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
 
     @Override
     public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(Pageable pageable,
-                                                                         String memberId) {
+                                                                              String memberId) {
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
         QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
@@ -52,14 +52,36 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCouponIssue.couponIssueCreatedAt,
                 qCouponIssue.couponExpiredAt,
                 qCouponIssue.couponUsageCreatedAt))
-            .join(qCouponIssue.coupon,qCoupon)
-            .join(qCouponIssue.usageStatus,qUsageStatus)
-            .join(qCoupon.couponType,qCouponType)
-            .join(qCouponIssue.member,qMember)
+            .join(qCouponIssue.coupon, qCoupon)
+            .join(qCouponIssue.usageStatus, qUsageStatus)
+            .join(qCoupon.couponType, qCouponType)
+            .join(qCouponIssue.member, qMember)
             .where(qMember.memberId.eq(memberId))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
         return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+    }
+
+    @Override
+    public CouponIssue findByIdFetchJoin(Long couponIssueNo) {
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+
+        return from(qCouponIssue)
+            .select(qCouponIssue)
+            .join(qCouponIssue.coupon, qCoupon)
+            .fetchJoin()
+            .join(qCouponIssue.usageStatus, qUsageStatus)
+            .fetchJoin()
+            .join(qCoupon.couponType, qCouponType)
+            .fetchJoin()
+            .join(qCouponIssue.member, qMember)
+            .fetchJoin()
+            .where(qCouponIssue.couponIssueNo.eq(couponIssueNo))
+            .fetchOne();
     }
 }

@@ -8,7 +8,8 @@ import lombok.Getter;
  */
 @Getter
 public enum CouponIssueResultMessageEnum {
-    COUPON_ISSUE_LIST_SUCCESS_MESSAGE("모든 결과 반환에 성공하였습니다.");
+    COUPON_ISSUE_LIST_SUCCESS_MESSAGE("모든 결과 반환에 성공하였습니다."),
+    POINT_COUPON_USE_SUCCESS_MESSAGE("포인트 쿠폰 사용에 성공하였습니다.");
 
     private String successMessage;
 
