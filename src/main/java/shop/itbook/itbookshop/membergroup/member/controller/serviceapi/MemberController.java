@@ -24,7 +24,9 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberRecentlyPointResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.resultmessageenum.MemberResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.request.MemberDestinationRequestDto;
@@ -33,6 +35,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberD
 import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.MemberDestinationResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.membergroup.memberdestination.transfer.MemberDestinationTransfer;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
 
 /**
  * 사용자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -48,6 +51,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final MemberDestinationService memberDestinationService;
+
+    private final PointHistoryService pointHistoryService;
 
     /**
      * 프론트 서버에서 입력된 정보를 dto로 받아와 서비스 클래스로 넘겨 테이블에 멤버를 추가하고
@@ -358,6 +363,22 @@ public class MemberController {
                     MemberDestinationResultMessageEnum.MEMBER_DESTINATION_FIND_MESSAGE.getSuccessMessage()),
                 MemberDestinationTransfer.entityToDto(
                     memberDestinationService.findByRecipientDestinationNo(recipientDestinationNo))
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping("/{memberNo}/point/find")
+    public ResponseEntity<CommonResponseBody<MemberRecentlyPointResponseDto>> memberRecentlyPointFind(
+        @PathVariable("memberNo") Long memberNo) {
+
+        Member member = memberService.findMemberByMemberNo(memberNo);
+
+        CommonResponseBody<MemberRecentlyPointResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_POINT_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
+                new MemberRecentlyPointResponseDto(pointHistoryService.findRecentlyPoint(member))
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
