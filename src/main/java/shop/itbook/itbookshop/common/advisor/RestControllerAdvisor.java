@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
+import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
@@ -15,6 +16,7 @@ import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
+import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
@@ -41,14 +43,18 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NoParentCategoryException.class,
         SearchProductNotFoundException.class,
-        MethodArgumentNotValidException.class, MemberNotFoundException.class,
+        MethodArgumentNotValidException.class,
+        MemberNotFoundException.class,
         MembershipNotFoundException.class,
         DeliveryNoWaitStatusException.class,
         InvalidAuthRequestException.class,
         AlreadyAddedCategoryNameException.class,
         RoleNotFoundException.class,
+        CartNotFountException.class,
         PointContentNotFoundException.class,
-        LackOfPointException.class
+        LackOfPointException.class,
+        RoleNotFoundException.class,
+        MemberDestinationNotFoundException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
