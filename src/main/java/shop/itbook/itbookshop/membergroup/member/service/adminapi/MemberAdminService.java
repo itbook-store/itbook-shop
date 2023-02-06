@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi;
 
+import java.time.LocalDate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -72,6 +73,10 @@ public interface MemberAdminService {
     Page<MemberExceptPwdResponseDto> findMemberListByPhoneNumber(String phoneNumber,
                                                                  String memberStatusName,
                                                                  Pageable pageable);
+
+    Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDate start, LocalDate end,
+                                                                   String memberStatusName,
+                                                                   Pageable pageable);
 
     Page<MemberExceptPwdResponseDto> findMemberListBySearchWord(String searchWord,
                                                                 String memberStatusName,
