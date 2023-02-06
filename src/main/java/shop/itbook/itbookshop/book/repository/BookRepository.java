@@ -18,4 +18,6 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRepositor
 
     void deleteById(Long productNo);
 
+    boolean existsBookByIsbn(String isbn);
+
 }
