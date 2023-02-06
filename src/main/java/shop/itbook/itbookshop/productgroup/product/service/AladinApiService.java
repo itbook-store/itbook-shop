@@ -41,12 +41,12 @@ public class AladinApiService {
         headers.add("Accept", "application/json");
         headers.add("Content-Length", "5000");
 
-        ResponseEntity<BookResponse> response = restTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(headers),
-            BookResponse.class);
+        ResponseEntity<BookResponse> response = restTemplate.exchange(requestUrl, HttpMethod.GET,
+            new HttpEntity<>(headers), BookResponse.class);
 
         BookResponse bookResponse = response.getBody();
 
-        if(bookResponse.getItem().size()==0) {
+        if (bookResponse.getItem().size() == 0) {
             return null;
         }
 
