@@ -149,7 +149,7 @@ public class MemberServiceImpl implements MemberService {
             memberStatusAdminService.findMemberStatus(requestDto.getMemberStatusName()));
 
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
 
         UUID uuid = UUID.randomUUID();
 

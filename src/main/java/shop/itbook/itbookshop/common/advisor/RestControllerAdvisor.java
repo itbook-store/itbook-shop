@@ -15,6 +15,7 @@ import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
+import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
@@ -39,12 +40,14 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NoParentCategoryException.class,
         SearchProductNotFoundException.class,
-        MethodArgumentNotValidException.class, MemberNotFoundException.class,
+        MethodArgumentNotValidException.class,
+        MemberNotFoundException.class,
         MembershipNotFoundException.class,
         DeliveryNoWaitStatusException.class,
         InvalidAuthRequestException.class,
         AlreadyAddedCategoryNameException.class,
-        RoleNotFoundException.class
+        RoleNotFoundException.class,
+        MemberDestinationNotFoundException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
