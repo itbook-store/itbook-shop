@@ -37,6 +37,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberSt
 import shop.itbook.itbookshop.membergroup.memberstatus.transfer.MemberStatusTransfer;
 import shop.itbook.itbookshop.membergroup.memberstatushistory.entity.MemberStatusHistory;
 import shop.itbook.itbookshop.membergroup.memberstatushistory.repository.MemberStatusHistoryRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.service.GiftIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.role.entity.Role;
 import shop.itbook.itbookshop.role.service.RoleService;
 
@@ -66,6 +67,8 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRoleService memberRoleService;
 
     private final RoleService roleService;
+
+    private final GiftIncreaseDecreasePointHistoryService giftIncreaseDecreasePointHistoryService;
 
     private final ApplicationEventPublisher publisher;
 
@@ -155,7 +158,7 @@ public class MemberServiceImpl implements MemberService {
             memberStatusAdminService.findMemberStatus(requestDto.getMemberStatusName()));
 
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("mmss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMddHHmmss");
 
         UUID uuid = UUID.randomUUID();
 
@@ -299,5 +302,18 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber) {
         return new MemberBooleanResponseDto(memberRepository.existsByPhoneNumber(phoneNumber));
+    }
+
+    @Override
+    @Transactional
+    public Long sendMemberToMemberGiftPoint(Long sendNoMemberNo, Long receiverMemberNo,
+                                            Long point) {
+
+        Member sender = findMemberByMemberNo(sendNoMemberNo);
+
+        Member receiver = findMemberByMemberNo(receiverMemberNo);
+
+        return giftIncreaseDecreasePointHistoryService.savePointHistoryAboutGiftDecreaseAndIncrease(
+            sender, receiver, point).getPointHistoryNo();
     }
 }

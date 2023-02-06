@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.fileservice.init;
+package shop.itbook.itbookshop.fileservice.exception;
 
 /**
  * @author 이하늬
