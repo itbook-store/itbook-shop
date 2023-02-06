@@ -1,14 +1,7 @@
-package shop.itbook.itbookshop.fileservice.init;
+package shop.itbook.itbookshop.fileservice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import java.io.IOException;
 import java.util.Objects;
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
@@ -16,9 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
+import shop.itbook.itbookshop.fileservice.dto.ItBookObjectStorageToken;
+import shop.itbook.itbookshop.fileservice.dto.Token;
+import shop.itbook.itbookshop.fileservice.exception.TokenFailureMessage;
+import shop.itbook.itbookshop.fileservice.dto.TokenRequestDto;
 
 /**
  * 애플리케이션 구동 시 동작시킬 토큰매니저 클래스입니다.
@@ -36,11 +33,11 @@ public class TokenService {
     private final RedisTemplate<String, String> redisTemplate;
     public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
     @Value("${object.storage.tenant-id}")
-    private String tenantId = "fcb81f74e379456b8ca0e091d351a7af";
+    private String tenantId;
     @Value("${object-storage.password}")
-    private String password = "itbook2023";
+    private String password;
     @Value("${object-storage.username}")
-    private String username = "109622@naver.com";
+    private String username;
 
     /**
      * rest template으로 토큰 발급 요청을 하여 발급 받은 토큰의 id, 만료 시간을 레디스에 저장합니다.

@@ -1,11 +1,9 @@
-package shop.itbook.itbookshop.fileservice.init;
+package shop.itbook.itbookshop.fileservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @NoArgsConstructor
 @Getter
