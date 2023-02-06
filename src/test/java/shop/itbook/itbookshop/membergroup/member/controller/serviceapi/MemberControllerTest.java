@@ -46,10 +46,10 @@ class MemberControllerTest {
     MemberDestinationService memberDestinationService;
 
     @MockBean
-    PointHistoryService pointHistoryService;
+    MemberRepository memberRepository;
 
     @MockBean
-    MemberRepository memberRepository;
+    PointHistoryService pointHistoryService;
 
     @Autowired
     ObjectMapper objectMapper;
