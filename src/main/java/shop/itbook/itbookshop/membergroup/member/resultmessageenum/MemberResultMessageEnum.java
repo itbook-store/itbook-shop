@@ -18,7 +18,9 @@ public enum MemberResultMessageEnum {
     MEMBER_EMAIL_EXISTS_TRUE_MESSAGE("이미 존재하는 이메일입니다."),
     MEMBER_SOCIAL_LOGIN_MESSAGE("소셜 로그인이나 소셜 회원가입이 가능합니다."),
     MEMBER_COUNT_SUCCESS_MESSAGE("멤버 총합을 가져오는데 성공하였습니다."),
-    MEMBER_POINT_FIND_SUCCESS_MESSAGE("멤버 포인트를 가져오는데 성공하였습니다.");
+    MEMBER_POINT_FIND_SUCCESS_MESSAGE("멤버 포인트를 가져오는데 성공하였습니다."),
+
+    MEMBER_POINT_GIFT_SUCCESS_MESSAGE("멤버끼리 포인트를 선물하는데 성공하였습니다.");
 
     private String successMessage;
 

@@ -24,6 +24,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberPointSendRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberRecentlyPointResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -36,6 +37,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.Me
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.membergroup.memberdestination.transfer.MemberDestinationTransfer;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.GiftIncreaseDecreasePointHistoryNoResponseDto;
 
 /**
  * 사용자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -379,6 +381,24 @@ public class MemberController {
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_POINT_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
                 new MemberRecentlyPointResponseDto(pointHistoryService.findRecentlyPoint(member))
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @PostMapping("/{senderMemberNo}/point-gift/send")
+    public ResponseEntity<CommonResponseBody<GiftIncreaseDecreasePointHistoryNoResponseDto>> memberGiftPoint(
+        @PathVariable("senderMemberNo") Long senderMemberNo,
+        @RequestBody MemberPointSendRequestDto memberPointSendRequestDto) {
+
+        CommonResponseBody<GiftIncreaseDecreasePointHistoryNoResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_POINT_GIFT_SUCCESS_MESSAGE.getSuccessMessage()),
+                new GiftIncreaseDecreasePointHistoryNoResponseDto(
+                    memberService.sendMemberToMemberGiftPoint(senderMemberNo,
+                        memberPointSendRequestDto.getReceiveMemberNo(),
+                        memberPointSendRequestDto.getGiftPoint()))
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
