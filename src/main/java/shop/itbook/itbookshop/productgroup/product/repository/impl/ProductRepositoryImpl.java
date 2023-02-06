@@ -117,8 +117,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductListByProductNoList(Pageable pageable,
-                                                                          List<Long> productNoList) {
+    public Page<ProductDetailsResponseDto> findProductListByProductNoListForUser(Pageable pageable,
+                                                                                 List<Long> productNoList) {
         QProduct qProduct = QProduct.product;
         QBook qBook = QBook.book;
 
@@ -126,6 +126,23 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             getProductListByProductNoList(productNoList, qProduct, qBook)
                 .where(qProduct.isSelled.eq(Boolean.TRUE))
                 .where(qProduct.isDeleted.eq(Boolean.FALSE));
+
+        List<ProductDetailsResponseDto> productList = productListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
+
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListByProductNoListForAdmin(Pageable pageable,
+                                                                                  List<Long> productNoList) {
+        QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
+
+        JPQLQuery<ProductDetailsResponseDto> productListQuery =
+            getProductListByProductNoList(productNoList, qProduct, qBook);
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())

@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.productcoupon.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -33,11 +34,16 @@ public class ProductCoupon {
     private Long couponNo;
 
     @MapsId("couponNo")//persist merge
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "coupon_no", nullable = false)
     private Coupon coupon;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
+
+    public ProductCoupon(Long couponNo, Product product) {
+        this.couponNo = couponNo;
+        this.product = product;
+    }
 }

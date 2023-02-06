@@ -140,4 +140,6 @@ public interface MemberService {
      * @author 노수연
      */
     MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber);
+
+    Long sendMemberToMemberGiftPoint(Long sendNoMemberNo, Long receiverMemberNo, Long point);
 }

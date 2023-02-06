@@ -81,8 +81,11 @@ public interface ProductService {
      * @return 찾은 상품의 상세정보를 담은 리스트를 반환합니다.
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findProductListByProductNoList(Pageable pageable,
-                                                                   List<Long> productNoList);
+    Page<ProductDetailsResponseDto> findProductListByProductNoListForUser(Pageable pageable,
+                                                                          List<Long> productNoList);
+
+    Page<ProductDetailsResponseDto> findProductListByProductNoListForAdmin(Pageable pageable,
+                                                                           List<Long> productNoList);
 
     /**
      * 상품 조회를 담당하는 메서드입니다.
