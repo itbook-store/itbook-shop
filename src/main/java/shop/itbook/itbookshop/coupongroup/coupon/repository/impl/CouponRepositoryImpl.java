@@ -7,11 +7,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CustomCouponRepository;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
+import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 
 /**
  * customCouponRepository 의 기능을 구현하기 위해 만든 class 입니다.
@@ -45,5 +46,19 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
             .limit(pageable.getPageSize())
             .fetch();
         return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+    }
+
+    @Override
+    public List<Coupon> findByAvailableWelcomeCoupon() {
+
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+
+
+        JPQLQuery<Coupon> jpqlQuery = from(qCoupon)
+            .select(qCoupon)
+            .join(qCoupon.couponType, qCouponType)
+            .where(qCoupon.couponType.couponTypeEnum.eq(CouponTypeEnum.WELCOME_COUPON));
+        return jpqlQuery.fetch();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
+import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
@@ -16,6 +17,8 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
@@ -44,7 +47,10 @@ public class RestControllerAdvisor {
         DeliveryNoWaitStatusException.class,
         InvalidAuthRequestException.class,
         AlreadyAddedCategoryNameException.class,
-        RoleNotFoundException.class
+        RoleNotFoundException.class,
+        CartNotFountException.class,
+        PointContentNotFoundException.class,
+        LackOfPointException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

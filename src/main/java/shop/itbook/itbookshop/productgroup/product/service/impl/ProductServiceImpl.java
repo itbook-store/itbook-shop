@@ -5,14 +5,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.entity.Category;
-import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
+import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -23,9 +23,6 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
-import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
-import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
  * ProductService 인터페이스를 구현한 상품 Service 클래스입니다.
@@ -40,10 +37,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final FileService fileService;
-    private final BookService bookService;
-    private final ProductTypeService productTypeService;
-    private final MemberRoleService memberRoleService;
-    private final ProductTypeRegistrationService productTypeRegistrationService;
     private final ProductCategoryService productCategoryService;
     @Value("${object.storage.folder-path.thumbnail}")
     private String folderPathThumbnail;
@@ -56,22 +49,14 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public Long addProduct(ProductBookRequestDto requestDto,
-                           MultipartFile thumbnails, MultipartFile ebook) {
-        uploadAndSetFile(requestDto, thumbnails, ebook);
+    public Long addProduct(ProductRequestDto requestDto, MultipartFile thumbnails) {
+        uploadAndSetFile(requestDto, thumbnails);
 
-        Product product = ProductTransfer.dtoToEntityAdd(this.toProductRequestDto(requestDto));
-        productRepository.save(product);
+        Product product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
 
-        Category parentCategory =
-            productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
+        productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
 
-        Long productNo = product.getProductNo();
-        if (parentCategory.getCategoryName().contains("도서")) {
-            bookService.addBook(bookService.toBookRequestDto(requestDto), productNo);
-        }
-
-        return productNo;
+        return product.getProductNo();
     }
 
     /**
@@ -79,9 +64,9 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void modifyProduct(Long productNo, ProductBookRequestDto requestDto,
-                              MultipartFile thumbnails, MultipartFile ebook) {
-        uploadAndSetFile(requestDto, thumbnails, ebook);
+    public void modifyProduct(Long productNo, ProductRequestDto requestDto,
+                              MultipartFile thumbnails) {
+        uploadAndSetFile(requestDto, thumbnails);
 
         Product product = updateProduct(requestDto, productNo);
         productRepository.save(product);
@@ -89,21 +74,11 @@ public class ProductServiceImpl implements ProductService {
         Category parentCategory =
             productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
 
-        if (parentCategory.getCategoryName().contains("도서")) {
-            bookService.modifyBook(bookService.toBookRequestDto(requestDto), productNo);
-        }
-
     }
 
-    private void uploadAndSetFile(ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                                  MultipartFile ebook) {
+    private void uploadAndSetFile(ProductRequestDto requestDto, MultipartFile thumbnails) {
         String thumbnailUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
         requestDto.setFileThumbnailsUrl(thumbnailUrl);
-
-        if (!Objects.isNull(ebook)) {
-            String ebookUrl = fileService.uploadFile(ebook, folderPathEbook);
-            requestDto.setFileEbookUrl(ebookUrl);
-        }
     }
 
 
@@ -139,7 +114,7 @@ public class ProductServiceImpl implements ProductService {
             productList = productRepository.findProductListUser(pageable);
         }
 
-        setFieldsForList(productList);
+        setExtraFieldsForList(productList);
         return productList;
     }
 
@@ -156,80 +131,18 @@ public class ProductServiceImpl implements ProductService {
 
         Page<ProductDetailsResponseDto> productListByProductNoList =
             productRepository.findProductListByProductNoList(pageable, productNoListRemovedNull);
-        setFieldsForList(productListByProductNoList);
+        setExtraFieldsForList(productListByProductNoList);
 
         return productListByProductNoList;
     }
 
-    /**
-     * 상품 유형 번호로 상품을 조회하는 메서드입니다.
-     *
-     * @param pageable      the pageable
-     * @param productTypeNo 조회할 상품 유형 번호입니다.
-     * @param memberNo      현재 로그인한 회원 정보입니다.
-     * @return
-     */
-
-    @Override
-    public Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
-                                                                          Integer productTypeNo,
-                                                                          Long memberNo) {
-        Page<ProductDetailsResponseDto> productList;
-        ProductTypeEnum productTypeEnum =
-            productTypeService.findProductType(productTypeNo).getProductTypeEnum();
-
-        boolean isAdmin;
-
-        if (!Objects.isNull(memberNo)) {
-            isAdmin = memberRoleService.findMemberRoleWithMemberNo(memberNo).contains("ADMIN");
-        } else {
-            isAdmin = false;
-        }
-
-
-        switch (productTypeEnum) {
-            case DISCOUNT:
-                productList =
-                    productTypeService.findDiscountBookList(pageable, isAdmin);
-                break;
-
-            case NEW_ISSUE:
-                productList = productTypeService.findNewBookList(pageable, isAdmin);
-                break;
-
-            case BESTSELLER:
-                productList = productTypeService.findBestSellerBookList(pageable, isAdmin);
-                break;
-
-            case POPULARITY:
-                productList = productTypeService.findPopularityBookList(pageable, isAdmin);
-                break;
-
-            case RECOMMENDATION:
-                List<Long> productNoList =
-                    productTypeService.findRecommendationBookList(pageable, memberNo, isAdmin);
-                productList = this.findProductListByProductNoList(pageable, productNoList);
-                break;
-
-            case RECENTLY_SEEN_PRODUCT:
-                productList = productTypeService.findRecentlySeenProductList(pageable);
-                break;
-
-            default:
-                productList =
-                    productTypeRegistrationService.findProductList(pageable, productTypeNo,
-                        isAdmin);
-                break;
-        }
-
-        return productList;
-    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public ProductDetailsResponseDto findProduct(Long productNo) {
+
         ProductDetailsResponseDto product =
             productRepository.findProductDetails(productNo)
                 .orElseThrow(ProductNotFoundException::new);
@@ -244,7 +157,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productNo  수정해야 할 상품 번호입니다.
      * @return 수정 완료된 상품을 반환합니다.
      */
-    private Product updateProduct(ProductBookRequestDto requestDto, Long productNo) {
+    private Product updateProduct(ProductRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
         product.setName(requestDto.getProductName());
@@ -258,11 +171,13 @@ public class ProductServiceImpl implements ProductService {
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
         product.setDiscountPercent(requestDto.getDiscountPercent());
         product.setRawPrice(requestDto.getRawPrice());
-
+        product.setIsPointApplyingBasedSellingPrice(
+            requestDto.getIsPointApplyingBasedSellingPrice());
+        product.setIsSubscription(requestDto.getIsSubscription());
         return product;
     }
 
-    private void setFieldsForList(Page<ProductDetailsResponseDto> productList) {
+    public static void setExtraFieldsForList(Page<ProductDetailsResponseDto> productList) {
         for (ProductDetailsResponseDto product : productList) {
             setExtraFields(product);
         }
@@ -276,9 +191,11 @@ public class ProductServiceImpl implements ProductService {
             fileThumbnailsUrl.substring(fileThumbnailsUrl.lastIndexOf("/") + 1));
     }
 
-    private ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
+    @Override
+    public ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
         return ProductRequestDto.builder()
             .productName(requestDto.getProductName())
+            .categoryNoList(requestDto.getCategoryNoList())
             .simpleDescription(requestDto.getSimpleDescription())
             .detailsDescription(requestDto.getDetailsDescription())
             .stock(requestDto.getStock())
@@ -288,7 +205,9 @@ public class ProductServiceImpl implements ProductService {
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent())
             .rawPrice(requestDto.getRawPrice())
-            .fileThumbnailsUrl(requestDto.getFileThumbnailsUrl())
+            .isSubscription(requestDto.getIsSubscription())
+            .isPointApplying(requestDto.getIsPointApplying())
+            .isPointApplyingBasedSellingPrice(requestDto.getIsPointApplyingBasedSellingPrice())
             .build();
     }
 }

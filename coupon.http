@@ -14,3 +14,12 @@ Content-Type: application/json
   "categoryNo" : 7
 }
 
+###
+GET /api/coupon/coupon-issue/welcomecoupon
+Host: localhost:8082
+Content-Type: application/json
+
+###
+POST /api/coupon/coupon-issue/point-coupon/9
+Host: localhost:8082
+Content-Type: application/json
