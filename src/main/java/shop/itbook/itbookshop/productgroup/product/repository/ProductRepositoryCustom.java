@@ -41,12 +41,24 @@ public interface ProductRepositoryCustom {
     Optional<ProductDetailsResponseDto> findProductDetails(Long productNo);
 
     /**
-     * 상품 번호 리스트로 상품을 조회해 상품들의 상세정보를 담아 반환하는 기능을 담당합니다.
+     * <사용자> 상품 번호 리스트로 상품을 조회해 상품들의 상세정보를 담아 반환하는 기능을 담당합니다.
+     * 삭제 여부가 false인 상품과 판매 여부가 true인 상품만 담습니다.
      *
      * @param productNoList 조회할 상품 번호 리스트입니다..
      * @return 조회한 상품의 상세정보를 반환합니다.
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findProductListByProductNoList(
+    Page<ProductDetailsResponseDto> findProductListByProductNoListForUser(
         Pageable pageable, List<Long> productNoList);
+
+    /**
+     * <관리자> 상품 번호 리스트로 상품을 조회해 상품들의 상세정보를 담아 반환하는 기능을 담당합니다.
+     * 모든 상품을 담습니다.
+     *
+     * @param productNoList 조회할 상품 번호 리스트입니다..
+     * @return 조회한 상품의 상세정보를 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductDetailsResponseDto> findProductListByProductNoListForAdmin(Pageable pageable,
+                                                                           List<Long> productNoList);
 }
