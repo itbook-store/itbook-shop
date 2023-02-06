@@ -55,7 +55,7 @@ public class CouponIssueServiceController {
 
     @PostMapping("/{couponNo}/{memberNo}/add")
     public ResponseEntity<CommonResponseBody<CouponIssueNoRequest>> addCouponIssue(
-        @PageableDefault Pageable pageable, @PathVariable("memberNo") Long memberNo,
+        @PathVariable("memberNo") Long memberNo,
         @PathVariable("couponNo") Long couponNo) {
 
         CouponIssueNoRequest couponIssueNoRequest =
