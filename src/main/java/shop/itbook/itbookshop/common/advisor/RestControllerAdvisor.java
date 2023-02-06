@@ -17,6 +17,8 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
@@ -46,7 +48,9 @@ public class RestControllerAdvisor {
         InvalidAuthRequestException.class,
         AlreadyAddedCategoryNameException.class,
         RoleNotFoundException.class,
-        CartNotFountException.class
+        CartNotFountException.class,
+        PointContentNotFoundException.class,
+        LackOfPointException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

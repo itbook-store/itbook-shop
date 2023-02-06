@@ -1,18 +1,25 @@
 package shop.itbook.itbookshop.productgroup.producttype.service.impl;
 
+import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
+
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttype.repository.ProductTypeRepository;
 import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
+import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
+import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
 
 /**
  * ProductTypeAdminService 인터페이스를 구현한 상품유형 Service 클래스입니다.
@@ -25,6 +32,9 @@ import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeServic
 @RequiredArgsConstructor
 public class ProductTypeServiceImpl implements ProductTypeService {
     private final ProductTypeRepository productTypeRepository;
+    private final ProductService productService;
+    private final ProductTypeRegistrationService productTypeRegistrationService;
+    private final MemberRoleService memberRoleService;
 
     /**
      * {@inheritDoc}
@@ -46,7 +56,65 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     /**
      * {@inheritDoc}
      */
+
     @Override
+    public Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
+                                                                          Integer productTypeNo,
+                                                                          Long memberNo) {
+        Page<ProductDetailsResponseDto> productList;
+        ProductTypeEnum productTypeEnum =
+            this.findProductType(productTypeNo).getProductTypeEnum();
+
+        boolean isAdmin;
+
+        if (!Objects.isNull(memberNo)) {
+            isAdmin = memberRoleService.findMemberRoleWithMemberNo(memberNo).contains("ADMIN");
+        } else {
+            isAdmin = false;
+        }
+
+
+        switch (productTypeEnum) {
+            case DISCOUNT:
+                productList =
+                    this.findDiscountBookList(pageable, isAdmin);
+                break;
+
+            case NEW_ISSUE:
+                productList = this.findNewBookList(pageable, isAdmin);
+                break;
+
+            case BESTSELLER:
+                productList = this.findBestSellerBookList(pageable, isAdmin);
+                break;
+
+            case POPULARITY:
+                productList = this.findPopularityBookList(pageable, isAdmin);
+                break;
+
+            case RECOMMENDATION:
+                List<Long> productNoList =
+                    this.findRecommendationBookList(pageable, memberNo, isAdmin);
+                productList = productService.findProductListByProductNoList(pageable, productNoList);
+                break;
+
+            case RECENTLY_SEEN_PRODUCT:
+                productList = this.findRecentlySeenProductList(pageable);
+                break;
+
+            default:
+                productList =
+                    productTypeRegistrationService.findProductList(pageable, productTypeNo,
+                        isAdmin);
+                break;
+        }
+
+        setExtraFieldsForList(productList);
+
+        return productList;
+    }
+
+
     public Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable,
                                                            boolean isAdmin) {
         if (isAdmin) {
@@ -56,10 +124,6 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable,
                                                                 boolean isAdmin) {
         if (isAdmin) {
@@ -69,10 +133,6 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable,
                                                                   boolean isAdmin) {
         if (isAdmin) {
@@ -82,10 +142,6 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable,
                                                                   boolean isAdmin) {
         if (isAdmin) {
@@ -95,10 +151,6 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<Long> findRecommendationBookList(Pageable pageable,
                                                  Long memberNo,
                                                  boolean isAdmin) {
@@ -126,17 +178,10 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
         return
             productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
-
-//        if (isAdmin) {
-//            return productService.findProductListByProductNoList(pageable, productNoList);
-//        } else {
-//            return productService.findProductListByProductNoList(pageable, productNoList);
-//        }
     }
 
 
     // TODO 수연님 여기서 최근 본 상품 개발하시면 됩니당
-    @Override
     public Page<ProductDetailsResponseDto> findRecentlySeenProductList(Pageable pageable) {
         return null;
     }

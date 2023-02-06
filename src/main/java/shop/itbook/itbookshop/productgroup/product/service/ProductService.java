@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
@@ -23,12 +24,10 @@ public interface ProductService {
      *
      * @param requestDto 도서 정보를 포함한 상품 등록에 필요한 dto 객체입니다.                   도서가 아닐 경우 도서와 관련된 정보는 null 값이 되어 이후 수정할 예정입니다.
      * @param thumbnails 썸네일 사진 파일입니다.
-     * @param ebook      ebook 파일입니다.
      * @return Pk 값인 상품 번호를 반환합니다.
      * @author 이하늬
      */
-    Long addProduct(ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                    MultipartFile ebook);
+    Long addProduct(ProductRequestDto requestDto, MultipartFile thumbnails);
 
 
     /**
@@ -38,11 +37,10 @@ public interface ProductService {
      * @param productNo  the product no
      * @param requestDto 도서 정보를 포함한 상품 수정에 필요한 dto 객체입니다.                   도서가 아닐 경우 도서와 관련된 정보는 null 값이 되어 이후 수정할 예정입니다.
      * @param thumbnails 수정할 썸네일 사진 파일입니다.
-     * @param ebook      수정할 ebook 파일입니다.
      * @author 이하늬
      */
-    void modifyProduct(Long productNo, ProductBookRequestDto requestDto, MultipartFile thumbnails,
-                       MultipartFile ebook);
+    void modifyProduct(Long productNo, ProductRequestDto requestDto,
+                       MultipartFile thumbnails);
 
     /**
      * 상품 삭제를 담당하는 메서드입니다.
@@ -87,19 +85,6 @@ public interface ProductService {
                                                                    List<Long> productNoList);
 
     /**
-     * 상품유형별로 상품 조회를 담당하는 메서드입니다.
-     * 관리자는 모든 상품을 조회 가능하지만, 사용자는 노출여부가 false인 상품을 조회 가능합니다.
-     *
-     * @param pageable the pageable
-     * @param memberNo
-     * @return 노출여부가 false인 리스트를 반환합니다.
-     * @author 이하늬
-     */
-    Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
-                                                                   Integer productTypeNo,
-                                                                   Long memberNo);
-
-    /**
      * 상품 조회를 담당하는 메서드입니다.
      * 관리자는 모든 상품을 조회 가능하지만, 사용자는 노출여부가 false인 상품을 조회 가능합니다.
      *
@@ -109,4 +94,5 @@ public interface ProductService {
      */
     ProductDetailsResponseDto findProduct(Long productNo);
 
+    ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto);
 }

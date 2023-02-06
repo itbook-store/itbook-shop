@@ -1,11 +1,14 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service.impl;
 
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
@@ -14,6 +17,8 @@ import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundExcepti
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
@@ -28,6 +33,8 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
     private final CouponTypeService couponTypeService;
+    private final CategoryCouponService categoryCouponService;
+    private final CouponIssueService couponIssueService;
 
     @Override
     @Transactional
@@ -36,7 +43,18 @@ public class CouponServiceImpl implements CouponService {
         Coupon coupon = CouponTransfer.dtoToEntity(couponRequestDto);
         coupon.setCode(UUID.randomUUID().toString());
         coupon.setCouponType(couponTypeService.findCouponType(couponRequestDto.getCouponType()));
-        return couponRepository.save(coupon).getCouponNo();
+
+        coupon = couponRepository.save(coupon);
+        if (!Objects.isNull(couponRequestDto.getCategoryNo())) {
+            categoryCouponService.addCategoryCoupon(
+                new CategoryCouponRequestDto(coupon.getCouponNo(),
+                    couponRequestDto.getCategoryNo()));
+        }
+        if (couponRequestDto.getCouponType().equals(CouponTypeEnum.NORMAL_COUPON.getCouponType())) {
+            couponIssueService.addCouponIssueByNormalCoupon(couponRequestDto.getUserId(),
+                coupon.getCouponNo());
+        }
+        return coupon.getCouponNo();
     }
 
     @Override

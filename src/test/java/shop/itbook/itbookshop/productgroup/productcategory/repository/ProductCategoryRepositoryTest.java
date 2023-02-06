@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.PageRequest;
@@ -41,16 +40,17 @@ class ProductCategoryRepositoryTest {
 
     @Autowired
     TestEntityManager entityManager;
-    Product dummyProduct;
+    Product dummyProduct1;
+    Product dummyProduct2;
     Category dummySubCategory;
     Category dummyMainCategory;
-    ProductCategory dummyProductCategory;
 
 
     @BeforeEach
     void setUp() {
 
-        dummyProduct = ProductDummy.getProductSuccess();
+        dummyProduct1 = ProductDummy.getProductSuccess();
+        dummyProduct2 = ProductDummy.getProductSuccess();
         dummySubCategory = CategoryDummy.getCategoryHiddenStuff();
         dummyMainCategory = CategoryDummy.getCategoryNoHiddenBook();
         dummyMainCategory.setCategoryName("main");
@@ -60,22 +60,41 @@ class ProductCategoryRepositoryTest {
         dummySubCategory.setCategoryName("sub");
         dummySubCategory.setParentCategory(savedMainCategory);
 
-        Product savedProduct = productRepository.save(dummyProduct);
-        Category savedSubCategory = categoryRepository.save(dummySubCategory);
-
-        dummyProductCategory = new ProductCategory(savedProduct, savedSubCategory);
-        productCategoryRepository.save(dummyProductCategory);
-
         entityManager.flush();
         entityManager.clear();
     }
 
     @Test
+    @DisplayName("상품 카테고리 등록 성공 테스트")
+    void Save_ProductCategory_ByProductNo() {
+        Product savedProduct1 = productRepository.save(dummyProduct1);
+        Product savedProduct2 = productRepository.save(dummyProduct2);
+        Category savedSubCategory = categoryRepository.save(dummySubCategory);
+
+        ProductCategory dummyProductCategory1 =
+            new ProductCategory(savedProduct1, savedSubCategory);
+        ProductCategory dummyProductCategory2 =
+            new ProductCategory(savedProduct2, savedSubCategory);
+        productCategoryRepository.save(dummyProductCategory1);
+        productCategoryRepository.save(dummyProductCategory2);
+
+        Assertions.assertThat(productCategoryRepository.findAll()).hasSize(2);
+    }
+
+    @Test
     @DisplayName("상품 번호로 상품 카테고리 삭제 성공 테스트")
     void Delete_ProductCategory_ByProductNo() {
-        productCategoryRepository.deleteByPk_productNo(dummyProduct.getProductNo());
+
+        Product savedProduct1 = productRepository.save(dummyProduct1);
+        Category savedSubCategory = categoryRepository.save(dummySubCategory);
+
+        ProductCategory dummyProductCategory1 =
+            new ProductCategory(savedProduct1, savedSubCategory);
+        productCategoryRepository.save(dummyProductCategory1);
+
+        productCategoryRepository.deleteByPk_productNo(dummyProduct1.getProductNo());
         Optional<ProductCategory> productCategory =
-            productCategoryRepository.findById(new ProductCategory.Pk(dummyProduct.getProductNo(),
+            productCategoryRepository.findById(new ProductCategory.Pk(dummyProduct1.getProductNo(),
                 dummySubCategory.getCategoryNo()));
         Assertions.assertThat(productCategory).isNotPresent();
     }
@@ -83,6 +102,14 @@ class ProductCategoryRepositoryTest {
     @Test
     @DisplayName("카테고리 번호에 해당하는 모든 상품 리스트 조회 성공 테스트")
     void Find_ProductList_ByCategoryNo() {
+
+        Product savedProduct1 = productRepository.save(dummyProduct1);
+        Category savedSubCategory = categoryRepository.save(dummySubCategory);
+
+        ProductCategory dummyProductCategory1 =
+            new ProductCategory(savedProduct1, savedSubCategory);
+        productCategoryRepository.save(dummyProductCategory1);
+
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
         List<ProductDetailsResponseDto> productList
             = productCategoryRepository.getProductListWithCategoryNo(pageable,
@@ -90,7 +117,7 @@ class ProductCategoryRepositoryTest {
         ProductDetailsResponseDto actual = productList.get(0);
 
         Assertions.assertThat(productList).hasSize(1);
-        Assertions.assertThat(actual.getProductNo()).isEqualTo(dummyProduct.getProductNo());
+        Assertions.assertThat(actual.getProductNo()).isEqualTo(dummyProduct1.getProductNo());
     }
 
     @Test
@@ -98,7 +125,14 @@ class ProductCategoryRepositoryTest {
     void Find_CategoryList_ByProductNo() {
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
 
-        Long productNo = dummyProduct.getProductNo();
+        Product savedProduct1 = productRepository.save(dummyProduct1);
+        Category savedSubCategory = categoryRepository.save(dummySubCategory);
+
+        ProductCategory dummyProductCategory1 =
+            new ProductCategory(savedProduct1, savedSubCategory);
+        productCategoryRepository.save(dummyProductCategory1);
+
+        Long productNo = dummyProduct1.getProductNo();
         List<CategoryDetailsResponseDto> categoryList
             = productCategoryRepository.getCategoryListWithProductNo(pageable, productNo)
             .getContent();

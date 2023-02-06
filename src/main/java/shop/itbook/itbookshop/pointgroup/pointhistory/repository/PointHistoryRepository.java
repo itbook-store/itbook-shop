@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom.CustomPointHistoryRepository;
 
@@ -11,4 +13,5 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom.CustomPo
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long>,
     CustomPointHistoryRepository {
 
+    Optional<PointHistory> findFirstByMemberOrderByPointHistoryNoDesc(Member member);
 }

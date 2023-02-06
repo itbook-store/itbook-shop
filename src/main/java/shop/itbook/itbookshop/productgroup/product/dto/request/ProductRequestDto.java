@@ -62,6 +62,15 @@ public class ProductRequestDto {
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
     private Double discountPercent;
 
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isPointApplying;
+
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isPointApplyingBasedSellingPrice;
+
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isSubscription;
+
     @Setter
     private String fileThumbnailsUrl;
 }

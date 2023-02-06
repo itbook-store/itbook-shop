@@ -33,11 +33,16 @@ public class OrderCancelIncreasePointHistory {
     private Long pointHistoryNo;
 
     @MapsId("pointHistoryNo")
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "point_history_no", nullable = false)
     private PointHistory pointHistory;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no", nullable = false, unique = true)
     private Order order;
+
+    public OrderCancelIncreasePointHistory(Long pointHistoryNo, Order order) {
+        this.pointHistoryNo = pointHistoryNo;
+        this.order = order;
+    }
 }
