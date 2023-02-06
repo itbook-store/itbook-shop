@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.controller.adminapi;
 
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -9,12 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSearchRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountByMembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberCountResponseDto;
@@ -29,6 +32,7 @@ import shop.itbook.itbookshop.membergroup.member.service.adminapi.MemberAdminSer
  * @author 노수연
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/admin/members")
 @RequiredArgsConstructor
@@ -225,6 +229,27 @@ public class MemberAdminController {
             page = memberAdminService.findMemberListBySearchWord(searchWord, memberStatusName,
                 pageable);
         }
+
+        PageResponse<MemberExceptPwdResponseDto> pageResponse = new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                pageResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @PostMapping("/search/{memberStatusName}")
+    public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> memberListSearchByDateOfJoining(
+        @PathVariable("memberStatusName") String memberStatusName,
+        @Valid @RequestBody MemberSearchRequestDto memberSearchRequestDto,
+        @PageableDefault Pageable pageable) {
+
+        Page<MemberExceptPwdResponseDto> page =
+            memberAdminService.findMemberListByDateOfJoining(memberSearchRequestDto.getStart(),
+                memberSearchRequestDto.getEnd(), memberStatusName, pageable);
 
         PageResponse<MemberExceptPwdResponseDto> pageResponse = new PageResponse<>(page);
 

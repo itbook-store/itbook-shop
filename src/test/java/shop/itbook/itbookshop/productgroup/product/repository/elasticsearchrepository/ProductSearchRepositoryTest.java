@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
@@ -21,6 +24,9 @@ import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 class ProductSearchRepositoryTest {
     @Autowired
     ProductSearchRepository productSearchRepository;
+
+    @MockBean
+    BookService bookService;
 
 
     private SearchProduct elasticProduct;
@@ -34,7 +40,7 @@ class ProductSearchRepositoryTest {
             .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
             .detailsDescription("상세 설명")
             .stock(1)
-            .isForceSoldOut(true)
+            .isSelled(true)
             .isDeleted(false)
             .thumbnailUrl("testUrl")
             .fixedPrice(20000L)
@@ -59,7 +65,8 @@ class ProductSearchRepositoryTest {
     @Test
     void productSearchTest() {
         Pageable pageable = PageRequest.of(0, 10);
-        List<SearchProduct> searchProducts = productSearchRepository.findByName(pageable,"테스트").getContent();
+        List<SearchProduct> searchProducts =
+            productSearchRepository.findByName(pageable, "테스트").getContent();
         assertThat(searchProducts).hasSize(1);
     }
 

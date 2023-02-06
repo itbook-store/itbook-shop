@@ -41,4 +41,13 @@ public class ProductRelationGroup {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    public ProductRelationGroup(Product basedProduct, Product product) {
+        this.basedProduct = basedProduct;
+        this.product = product;
+        this.isDeleted = false;
+    }
 }

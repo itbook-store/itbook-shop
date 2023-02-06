@@ -4,6 +4,7 @@ package shop.itbook.itbookshop.coupongroup.couponissue.service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.request.CouponIssueNoRequest;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -13,10 +14,9 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * @since 1.0
  */
 public interface CouponIssueService {
-    Long addCouponIssueByNormalCoupon(String memberId, Long couponNo);
-    List<CouponIssue> addCouponIssueByWelcomeCoupon(Member member);
+    Long addCouponIssueByCoupon(Long memberNo, Long couponNo);
+    List<CouponIssue> addCouponIssueByCoupons(Long memberNo, String couponType);
     Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(Pageable pageable,
-                                                                       String memberId);
-
+                                                                       String memberNo);
     void usePointCouponAndCreatePointHistory(Long couponIssueNo);
 }

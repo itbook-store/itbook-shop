@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.coupongroup.categorycoupon.controller.adminapi;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.resultmessageenum.CategoryCouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 
 /**
  * @author 송다혜
@@ -27,7 +25,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultM
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/coupon/category-coupon")
+@RequestMapping("/api/admin/category-coupons")
 public class CategoryCouponController {
 
     private final CategoryCouponService categoryCouponService;
@@ -42,7 +40,7 @@ public class CategoryCouponController {
         CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                    CategoryCouponResultMessageEnum.CATEGORY_COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 couponList);
 
         return ResponseEntity.ok().body(commonResponseBody);
@@ -58,7 +56,7 @@ public class CategoryCouponController {
 
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
-                CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                CategoryCouponResultMessageEnum.CATEGORY_COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
             couponNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

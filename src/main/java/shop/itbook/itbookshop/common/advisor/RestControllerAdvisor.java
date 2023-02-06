@@ -14,8 +14,16 @@ import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
+import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
+import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
@@ -42,7 +50,8 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NoParentCategoryException.class,
         SearchProductNotFoundException.class,
-        MethodArgumentNotValidException.class, MemberNotFoundException.class,
+        MethodArgumentNotValidException.class,
+        MemberNotFoundException.class,
         MembershipNotFoundException.class,
         DeliveryNoWaitStatusException.class,
         InvalidAuthRequestException.class,
@@ -50,7 +59,16 @@ public class RestControllerAdvisor {
         RoleNotFoundException.class,
         CartNotFountException.class,
         PointContentNotFoundException.class,
-        LackOfPointException.class
+        LackOfPointException.class,
+        RoleNotFoundException.class,
+        MemberDestinationNotFoundException.class,
+        AlreadyAddedCouponIssueMemberCouponException.class,
+        CouponIssueNotFoundException.class,
+        NotPointCouponException.class,
+        UnableToCreateCouponException.class,
+        CouponTypeNotFoundException.class,
+        UsageStatusNotFoundException.class,
+        CouponNotFoundException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

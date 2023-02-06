@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
+import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
@@ -24,14 +25,13 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponse
 public class CategoryCouponServiceImpl implements CategoryCouponService {
 
     private final CategoryCouponRepository categoryCouponRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @Override
     @Transactional
     public Long addCategoryCoupon(CategoryCouponRequestDto couponRequestDto) {
 
-        Category category = categoryRepository.findById(couponRequestDto.getCategoryNo())
-            .orElseThrow(CategoryNotFoundException::new);
+        Category category = categoryService.findCategoryEntity(couponRequestDto.getCategoryNo());
         CategoryCoupon categoryCoupon =
             new CategoryCoupon(couponRequestDto.getCouponNo(), category);
         return categoryCouponRepository.save(categoryCoupon).getCouponNo();
