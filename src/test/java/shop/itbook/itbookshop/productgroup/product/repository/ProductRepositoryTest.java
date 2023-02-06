@@ -102,7 +102,7 @@ class ProductRepositoryTest {
         productNoList.add(dummyProductSuccess2.getProductNo());
 
         Page<ProductDetailsResponseDto> productList =
-            productRepository.findProductListByProductNoList(pageable, productNoList);
+            productRepository.findProductListByProductNoListForUser(pageable, productNoList);
         Assertions.assertThat(productList).isNotEmpty();
         Assertions.assertThat(productList).hasSize(2);
 
