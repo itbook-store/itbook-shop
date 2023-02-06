@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
@@ -47,15 +51,21 @@ public class CouponIssueServiceImpl implements CouponIssueService {
         Member member = memberService.findMemberByMemberNo(memberNo);
 
         Coupon coupon = couponService.findByCouponEntity(couponNo);
-        UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
 
-        CouponIssue couponIssue = CouponIssue.builder()
-            .member(member)
-            .coupon(coupon)
-            .usageStatus(usageStatus)
-            .couponExpiredAt(coupon.getCouponExpiredAt())
-            .build();
-        return couponIssueRepository.save(couponIssue).getCouponIssueNo();
+        CouponIssue couponIssue = makeCouponIssue(member, coupon);
+        try {
+            couponIssue = couponIssueRepository.save(couponIssue);
+        } catch (DataIntegrityViolationException e) {
+            Throwable rootCause = e.getRootCause();
+            String message = rootCause.getMessage();
+
+            if (message.contains("coupon_issue.memberNoAndCouponNo")) {
+                throw new AlreadyAddedCouponIssueMemberCouponException();
+            }
+
+            throw e;
+        }
+        return couponIssue.getCouponIssueNo();
     }
 
     @Override
@@ -65,21 +75,32 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
         List<Coupon> couponList = couponService.findByAvailableCouponByCouponType(couponType);
 
-        UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
-
         List<CouponIssue> couponIssueList = new ArrayList<>();
         for (Coupon coupon : couponList) {
 
-            CouponIssue couponIssue = CouponIssue.builder()
-                .coupon(coupon)
-                .member(member)
-                .usageStatus(usageStatus)
-                .couponExpiredAt(coupon.getCouponExpiredAt())
-                .build();
-            couponIssueList.add(couponIssue);
+            try {
+                CouponIssue couponIssue = makeCouponIssue(member, coupon);
+                couponIssueList.add(couponIssue);
+            } catch (UnableToCreateCouponException e) {
+                log.error("쿠폰 수량이 부족합니다.");
+            }
         }
 
         return couponIssueRepository.saveAll(couponIssueList);
+    }
+
+    public CouponIssue makeCouponIssue(Member member, Coupon coupon) {
+
+        coupon = couponService.useCoupon(coupon);
+
+        UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
+
+        return CouponIssue.builder()
+            .member(member)
+            .coupon(coupon)
+            .usageStatus(usageStatus)
+            .couponExpiredAt(coupon.getCouponExpiredAt())
+            .build();
     }
 
     @Override

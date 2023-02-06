@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.coupon.controller.adminapi;
 
+import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -83,7 +84,7 @@ public class CouponAdminController {
      * @param couponType the coupon type
      * @return the response entity
      */
-    @GetMapping("/{couponType}")
+    @GetMapping("/list/{couponType}")
     public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponTypeList(
         Pageable pageable, @PathVariable String couponType) {
 
@@ -92,6 +93,19 @@ public class CouponAdminController {
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
                 couponService.findByCouponAtCouponTypeList(pageable, couponType));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping("/list/all/{couponType}")
+    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> couponTypeListAll(
+        @PathVariable String couponType) {
+
+        CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                couponService.findByAvailableCouponDtoByCouponType(couponType));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

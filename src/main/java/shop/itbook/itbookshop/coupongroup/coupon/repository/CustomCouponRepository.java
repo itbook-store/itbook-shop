@@ -26,6 +26,8 @@ public interface CustomCouponRepository {
 
     List<Coupon> findByAvailableCouponByCouponType(CouponTypeEnum couponTypeEnum);
 
+    List<CouponListResponseDto> findByAvailableCouponDtoByCouponType(CouponTypeEnum couponTypeEnum);
+
     Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
-                                                   CouponTypeEnum couponTypeEnum);
+                                                             CouponTypeEnum couponTypeEnum);
 }

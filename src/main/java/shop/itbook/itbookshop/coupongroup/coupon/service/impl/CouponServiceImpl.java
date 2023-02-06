@@ -18,7 +18,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundExcepti
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
-import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
@@ -75,7 +75,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable, String couponType) {
+    public Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
+                                                                    String couponType) {
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
 
         return couponRepository.findByCouponAtCouponTypeList(pageable, couponTypeEnum);
@@ -87,9 +88,31 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
+    @Transactional
+    public Coupon useCoupon(Coupon coupon) {
+        return couponQuantity(coupon);
+    }
+
+    @Override
     public List<Coupon> findByAvailableCouponByCouponType(String couponType) {
 
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
         return couponRepository.findByAvailableCouponByCouponType(couponTypeEnum);
+    }
+
+    @Override
+    public List<CouponListResponseDto> findByAvailableCouponDtoByCouponType(String couponType) {
+        CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
+        return couponRepository.findByAvailableCouponDtoByCouponType(couponTypeEnum);
+    }
+
+    public Coupon couponQuantity(Coupon coupon) {
+        int quantity = coupon.getIssuedQuantity();
+
+        if (coupon.getTotalQuantity() != 0 && coupon.getTotalQuantity() == quantity) {
+            throw new UnableToCreateCouponException();
+        }
+        coupon.setIssuedQuantity(++quantity);
+        return couponRepository.save(coupon);
     }
 }

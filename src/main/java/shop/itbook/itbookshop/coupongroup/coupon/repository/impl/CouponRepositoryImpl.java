@@ -37,6 +37,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
 
         List<CouponListResponseDto> couponList = from(qCoupon)
             .select(Projections.fields(CouponListResponseDto.class,
+                qCoupon.couponNo,
                 qCoupon.name,
                 qCoupon.code,
                 qCoupon.couponCreatedAt,
@@ -68,6 +69,30 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         return jpqlQuery.fetch();
     }
 
+    @Override
+    public List<CouponListResponseDto> findByAvailableCouponDtoByCouponType(CouponTypeEnum couponTypeEnum) {
+
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+
+
+        JPQLQuery<CouponListResponseDto> jpqlQuery = from(qCoupon)
+            .select(Projections.fields(CouponListResponseDto.class,
+                    qCoupon.couponNo,
+                    qCoupon.name,
+                    qCoupon.code,
+                    qCoupon.couponCreatedAt,
+                    qCoupon.couponExpiredAt,
+                    qCoupon.amount,
+                    qCoupon.percent,
+                    qCoupon.point,
+                    qCouponType.couponTypeEnum.stringValue().as("couponType")))
+            .join(qCoupon.couponType, qCouponType)
+            .where(qCoupon.couponType.couponTypeEnum.eq(couponTypeEnum))
+            .where(qCoupon.couponCreatedAt.before(LocalDateTime.now()))
+            .where(qCoupon.couponExpiredAt.after(LocalDateTime.now()));
+        return jpqlQuery.fetch();
+    }
     /**
      * 쿠폰 종류별로 페이지네이션 하여 가져오는 메소드입니다.
      *
@@ -86,6 +111,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
 
         List<CouponListResponseDto> couponList = from(qCoupon)
             .select(Projections.fields(CouponListResponseDto.class,
+                qCoupon.couponNo,
                 qCoupon.name,
                 qCoupon.code,
                 qCoupon.couponCreatedAt,
