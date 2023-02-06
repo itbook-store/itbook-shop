@@ -27,6 +27,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
 
 /**
  * @author 노수연
@@ -46,6 +47,9 @@ class MemberControllerTest {
 
     @MockBean
     MemberRepository memberRepository;
+
+    @MockBean
+    PointHistoryService pointHistoryService;
 
     @Autowired
     ObjectMapper objectMapper;

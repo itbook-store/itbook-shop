@@ -122,7 +122,8 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 qPointHistory.increaseDecreasePoint,
                 qPointHistory.pointIncreaseDecreaseContent.contentEnum.stringValue().as("content"),
                 qPointHistory.remainedPoint,
-                qPointHistory.historyCreatedAt));
+                qPointHistory.historyCreatedAt,
+                qPointHistory.isDecrease));
 
         if (Objects.nonNull(pointIncreaseDecreaseContentEnum)) {
             jpqlQuery

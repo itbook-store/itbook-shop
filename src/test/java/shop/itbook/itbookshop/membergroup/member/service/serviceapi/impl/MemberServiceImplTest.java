@@ -38,6 +38,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.membergroup.memberstatus.service.adminapi.MemberStatusAdminService;
 import shop.itbook.itbookshop.membergroup.memberstatushistory.repository.MemberStatusHistoryRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.service.GiftIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.role.service.RoleService;
 
 /**
@@ -77,6 +78,9 @@ class MemberServiceImplTest {
 
     @MockBean
     RoleService roleService;
+
+    @MockBean
+    GiftIncreaseDecreasePointHistoryService giftIncreaseDecreasePointHistoryService;
 
     MemberResponseDto member1;
 
