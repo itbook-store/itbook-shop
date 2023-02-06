@@ -9,8 +9,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.couponissue.eventlistner.SignedUpEvent;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -65,6 +67,8 @@ public class MemberServiceImpl implements MemberService {
 
     private final RoleService roleService;
 
+    private final ApplicationEventPublisher publisher;
+
     /**
      * {@inheritDoc}
      */
@@ -113,6 +117,8 @@ public class MemberServiceImpl implements MemberService {
         Role role = roleService.findRole("USER");
 
         memberRoleService.addMemberRole(member, role);
+
+        publisher.publishEvent(new SignedUpEvent(this, member));
 
         return memberNo;
     }

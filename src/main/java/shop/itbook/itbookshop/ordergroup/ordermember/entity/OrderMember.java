@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
@@ -33,24 +33,24 @@ public class OrderMember {
     @Column(name = "order_no")
     private Long orderNo;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     @PrimaryKeyJoinColumn(name = "order_no")
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipient_destination_no", nullable = false)
-    private MemberDestination memberDestination;
+    @JoinColumn(name = "member_no", nullable = false)
+    private Member member;
 
     /**
      * 회원 주문 엔티티의 생성자입니다.
      *
-     * @param order             주문 엔티티
-     * @param memberDestination 회원 배송지 엔티티
+     * @param order  주문 엔티티
+     * @param member 회원 엔티티
      */
-    public OrderMember(Order order, MemberDestination memberDestination) {
+    public OrderMember(Order order, Member member) {
         this.orderNo = order.getOrderNo();
         this.order = order;
-        this.memberDestination = memberDestination;
+        this.member = member;
     }
 
 }

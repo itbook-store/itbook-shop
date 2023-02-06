@@ -51,7 +51,6 @@ class OrderMemberRepositoryTest {
     TestEntityManager testEntityManager;
 
     Member member;
-    MemberDestination memberDestination;
     Order order;
 
     @BeforeEach
@@ -72,15 +71,8 @@ class OrderMemberRepositoryTest {
 
         testEntityManager.flush();
 
-        // Member destination
-        memberDestination = MemberDestinationDummy.createMemberDestination(member);
-
-        memberDestinationRepository.save(memberDestination);
-
         // Order
         order = OrderDummy.getOrder();
-        order.setOrderCreatedAt(LocalDateTime.now());
-        order.setSelectedDeliveryDate(LocalDateTime.now());
         orderRepository.save(order);
 
         testEntityManager.flush();
@@ -90,7 +82,7 @@ class OrderMemberRepositoryTest {
     @Test
     @DisplayName("회원의 주문정보 테이블에 save 성공")
     void saveSuccessTest() {
-        OrderMember orderMember = OrderMemberDummy.createOrderMember(order, memberDestination);
+        OrderMember orderMember = OrderMemberDummy.createOrderMember(order, member);
         orderMember.setOrder(order);
         orderMember.setOrderNo(order.getOrderNo());
 
@@ -103,7 +95,7 @@ class OrderMemberRepositoryTest {
     @Test
     @DisplayName("주문 번호로 조회 성공")
     void findByOrder_OrderNo() {
-        OrderMember orderMember = OrderMemberDummy.createOrderMember(order, memberDestination);
+        OrderMember orderMember = OrderMemberDummy.createOrderMember(order, member);
 
         orderMemberRepository.save(orderMember);
 

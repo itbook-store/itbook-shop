@@ -17,6 +17,8 @@ import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitSta
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
+import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
@@ -46,6 +48,9 @@ public class RestControllerAdvisor {
         DeliveryNoWaitStatusException.class,
         InvalidAuthRequestException.class,
         AlreadyAddedCategoryNameException.class,
+        RoleNotFoundException.class,
+        PointContentNotFoundException.class,
+        LackOfPointException.class,
         RoleNotFoundException.class,
         MemberDestinationNotFoundException.class
     })

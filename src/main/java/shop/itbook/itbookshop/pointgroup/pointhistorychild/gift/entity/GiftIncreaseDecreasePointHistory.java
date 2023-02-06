@@ -34,11 +34,16 @@ public class GiftIncreaseDecreasePointHistory {
     private Long pointHistoryNo;
 
     @MapsId("pointHistoryNo")
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "point_history_no", nullable = false)
     private PointHistory pointHistory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
+
+    public GiftIncreaseDecreasePointHistory(Long pointHistoryNo, Member member) {
+        this.pointHistoryNo = pointHistoryNo;
+        this.member = member;
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
+import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.QMemberDestination;
 import shop.itbook.itbookshop.membergroup.memberrecentlyviewedproduct.entity.QMemberRecentlyViewedProduct;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
@@ -239,7 +240,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         QOrder qOrder = QOrder.order;
 
         return getBestSeller(qProduct, qBook, qOrderProduct, qOrder)
-                .fetchFirst().getProductNo();
+            .fetchFirst().getProductNo();
     }
 
     /**
@@ -248,7 +249,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
     @Override
     public Long findRecentlyPurchaseProduct(Long memberNo) {
         QOrderMember qOrderMember = QOrderMember.orderMember;
-        QMemberDestination qMemberDestination = QMemberDestination.memberDestination;
+        QMember qMember = QMember.member;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
         QOrder qOrder = QOrder.order;
 
@@ -257,8 +258,8 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             .select(qOrderProduct.product.productNo)
             .where(qOrderProduct.order.eq(JPAExpressions.select(qOrderMember.order)
                 .from(qOrderMember)
-                    .innerJoin(qOrderMember.memberDestination, qMemberDestination)
-                    .where(qMemberDestination.member.memberNo.eq(memberNo))))
+                .innerJoin(qOrderMember.member, qMember)
+                .where(qMember.memberNo.eq(memberNo))))
             .orderBy(qOrder.orderCreatedAt.desc())
             .fetchFirst();
     }

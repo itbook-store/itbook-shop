@@ -32,7 +32,7 @@ public class ProductCoupon {
     @Id
     private Long couponNo;
 
-    @MapsId("couponNo")
+    @MapsId("couponNo")//persist merge
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_no", nullable = false)
     private Coupon coupon;

@@ -1,8 +1,7 @@
 package shop.itbook.itbookshop.pointgroup.pointhistorychild.review.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.entity.OrderCancelIncreasePointHistory;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.ReviewIncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.ReviewIncreasePointHistory;
 
 /**
  * @author 최겸준

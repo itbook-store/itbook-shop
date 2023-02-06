@@ -37,5 +37,5 @@ public class UsageStatus {
 
     @Convert(converter = UsageStatusEnumConverter.class)
     @Column(name = "usage_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
-    private UsageStatusEnum usageStatusEnum;
+    private UsageStatusEnum usageStatusName;
 }

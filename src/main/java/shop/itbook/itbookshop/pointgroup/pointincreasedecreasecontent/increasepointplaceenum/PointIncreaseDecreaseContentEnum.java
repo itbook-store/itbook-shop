@@ -18,10 +18,10 @@ public enum PointIncreaseDecreaseContentEnum {
     COUPON("쿠폰"),
     REVIEW("리뷰");
 
-    private final String statusName;
+    private final String content;
 
-    PointIncreaseDecreaseContentEnum(String statusName) {
-        this.statusName = statusName;
+    PointIncreaseDecreaseContentEnum(String content) {
+        this.content = content;
     }
 
     public static PointIncreaseDecreaseContentEnum stringToEnum(String content) {
@@ -29,7 +29,7 @@ public enum PointIncreaseDecreaseContentEnum {
         PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum = null;
 
         for (PointIncreaseDecreaseContentEnum value : PointIncreaseDecreaseContentEnum.values()) {
-            if (value.getStatusName().equals(content)) {
+            if (value.getContent().equals(content)) {
                 pointIncreaseDecreaseContentEnum = value;
                 break;
             }
