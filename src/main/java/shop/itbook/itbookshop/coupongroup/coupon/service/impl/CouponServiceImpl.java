@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service.impl;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
  * 쿠폰의
+ *
  * @author 송다혜
  * @since 1.0
  */
@@ -34,7 +36,6 @@ public class CouponServiceImpl implements CouponService {
     private final CouponRepository couponRepository;
     private final CouponTypeService couponTypeService;
     private final CategoryCouponService categoryCouponService;
-    private final CouponIssueService couponIssueService;
 
     @Override
     @Transactional
@@ -50,10 +51,7 @@ public class CouponServiceImpl implements CouponService {
                 new CategoryCouponRequestDto(coupon.getCouponNo(),
                     couponRequestDto.getCategoryNo()));
         }
-        if (couponRequestDto.getCouponType().equals(CouponTypeEnum.NORMAL_COUPON.getCouponType())) {
-            couponIssueService.addCouponIssueByNormalCoupon(couponRequestDto.getUserId(),
-                coupon.getCouponNo());
-        }
+
         return coupon.getCouponNo();
     }
 
@@ -74,5 +72,24 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public Page<CouponListResponseDto> findByCouponList(Pageable pageable) {
         return couponRepository.findCouponList(pageable);
+    }
+
+    @Override
+    public Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable, String couponType) {
+        CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
+
+        return couponRepository.findByCouponAtCouponTypeList(pageable, couponTypeEnum);
+    }
+
+    @Override
+    public Coupon findByCouponEntity(Long couponNo) {
+        return couponRepository.findById(couponNo).orElseThrow(CouponNotFoundException::new);
+    }
+
+    @Override
+    public List<Coupon> findByAvailableCouponByCouponType(String couponType) {
+
+        CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
+        return couponRepository.findByAvailableCouponByCouponType(couponTypeEnum);
     }
 }

@@ -10,8 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
-import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
+import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
@@ -21,8 +20,8 @@ import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
-import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
-import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
+import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
 
 /**
@@ -37,20 +36,17 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
     private final CouponIssueRepository couponIssueRepository;
     private final UsageStatusService usageStatusService;
-    private final MemberRepository memberRepository;
-    private final CouponRepository couponRepository;
+    private final MemberService memberService;
+    private final CouponService couponService;
     private final CouponIncreasePointHistoryService couponIncreasePointHistoryService;
 
     @Override
     @Transactional
-    public Long addCouponIssueByNormalCoupon(String memberId, Long couponNo) {
+    public Long addCouponIssueByCoupon(Long memberNo, Long couponNo) {
 
-        Member member = memberRepository.findByMemberIdReceiveMember(memberId)
-            .orElseThrow(MemberNotFoundException::new);
+        Member member = memberService.findMemberByMemberNo(memberNo);
 
-        Coupon coupon = couponRepository.findById(couponNo)
-            .orElseThrow(CouponNotFoundException::new);
-
+        Coupon coupon = couponService.findByCouponEntity(couponNo);
         UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
 
         CouponIssue couponIssue = CouponIssue.builder()
@@ -63,15 +59,16 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     }
 
     @Override
-    @Transactional
-    public List<CouponIssue> addCouponIssueByWelcomeCoupon(Member member) {
+    public List<CouponIssue> addCouponIssueByCoupons(Long memberNo, String couponType) {
 
-        List<Coupon> welcomeCouponList = couponRepository.findByAvailableWelcomeCoupon();
+        Member member = memberService.findMemberByMemberNo(memberNo);
+
+        List<Coupon> couponList = couponService.findByAvailableCouponByCouponType(couponType);
 
         UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
 
         List<CouponIssue> couponIssueList = new ArrayList<>();
-        for (Coupon coupon : welcomeCouponList) {
+        for (Coupon coupon : couponList) {
 
             CouponIssue couponIssue = CouponIssue.builder()
                 .coupon(coupon)

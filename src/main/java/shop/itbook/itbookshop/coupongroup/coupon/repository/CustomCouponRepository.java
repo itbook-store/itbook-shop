@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 
 /**
  * 쿼리 dsl 을 처리하기 위한 레포지토리 인터페이스입니다.
@@ -23,5 +24,8 @@ public interface CustomCouponRepository {
      */
     Page<CouponListResponseDto> findCouponList(Pageable pageable);
 
-    List<Coupon> findByAvailableWelcomeCoupon();
+    List<Coupon> findByAvailableCouponByCouponType(CouponTypeEnum couponTypeEnum);
+
+    Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
+                                                   CouponTypeEnum couponTypeEnum);
 }

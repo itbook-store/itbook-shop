@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CouponListResponseDto {
     private Long couponNo;
+    private String couponType;
     private String name;
     private String code;
     private Long amount;
