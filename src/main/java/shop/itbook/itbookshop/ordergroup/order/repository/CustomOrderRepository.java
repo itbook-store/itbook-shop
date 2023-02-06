@@ -1,6 +1,9 @@
 package shop.itbook.itbookshop.ordergroup.order.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 
 /**
@@ -12,5 +15,6 @@ import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetRespo
 @NoRepositoryBean
 public interface CustomOrderRepository {
 
-    public OrderSheetResponseDto findOrderPaperInfo();
+    Page<OrderListViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
+                                                                  Long memberNo);
 }

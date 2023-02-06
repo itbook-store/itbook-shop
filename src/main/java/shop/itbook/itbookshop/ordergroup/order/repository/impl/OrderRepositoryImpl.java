@@ -1,9 +1,22 @@
 package shop.itbook.itbookshop.ordergroup.order.repository.impl;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPQLQuery;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
+import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
+import shop.itbook.itbookshop.membergroup.member.entity.QMember;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
+import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.QOrderProductHistory;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
 
 /**
  * CustomOrderRepository 인터페이스의 기능을 구현합니다.
@@ -18,10 +31,54 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         super(Order.class);
     }
 
-
     @Override
-    public OrderSheetResponseDto findOrderPaperInfo() {
+    public Page<OrderListViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
+                                                                         Long memberNo) {
 
-        return null;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+
+        QOrderProductHistory qOrderProductHistory1 = QOrderProductHistory.orderProductHistory;
+        QOrderProductHistory qOrderProductHistory2 =
+            new QOrderProductHistory("qOrderProductHistory2");
+
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+
+        QDelivery qDelivery = QDelivery.delivery;
+
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+        QMember qMember = QMember.member;
+
+        QOrder qOrder = QOrder.order;
+
+        JPQLQuery<OrderListViewResponseDto> jpqlQuery = from(qOrderProductHistory1)
+            .leftJoin(qOrderProductHistory2)
+            .on(qOrderProductHistory1.orderProduct.orderProductNo.eq(
+                qOrderProductHistory2.orderProduct.orderProductNo).and(
+                qOrderProductHistory1.orderProductOrderStatusNo.lt(
+                    qOrderProductHistory2.orderProductOrderStatusNo)))
+            .innerJoin(qOrderProductHistory1.orderStatus, qOrderStatus)
+            .innerJoin(qOrderProductHistory1.orderProduct, qOrderProduct)
+            .innerJoin(qDelivery).on(qDelivery.order.eq(qOrderProduct.order))
+            .fetchJoin()
+            .innerJoin(qOrderMember).on(qOrderMember.order.eq(qOrderProduct.order)
+                .and(qOrderMember.member.memberNo.eq(memberNo)))
+            .fetchJoin()
+            .innerJoin(qOrderMember.member, qMember)
+            .innerJoin(qOrder).on(qOrder.eq(qOrderProduct.order))
+            .where(qOrderProductHistory2.orderProductOrderStatusNo.isNull())
+            .select(Projections.fields(OrderListViewResponseDto.class,
+                qOrderProduct.order.orderNo, qOrderProductHistory1.orderStatusCreatedAt,
+                qMember.memberId, qOrder.recipientName,
+                qOrder.recipientPhoneNumber, qDelivery.trackingNo
+            ));
+
+        List<OrderListViewResponseDto> orderListViewResponseDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(orderListViewResponseDtoList, pageable,
+            jpqlQuery::fetchCount);
     }
 }

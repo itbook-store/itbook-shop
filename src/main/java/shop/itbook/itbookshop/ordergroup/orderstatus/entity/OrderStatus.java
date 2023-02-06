@@ -24,12 +24,11 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.converter.OrderStatusEn
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "order_status")
 @Entity
 public class OrderStatus {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_status_no", nullable = false)
@@ -38,5 +37,9 @@ public class OrderStatus {
     @Convert(converter = OrderStatusEnumConverter.class)
     @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
     private OrderStatusEnum orderStatusEnum;
+
+    public OrderStatus(OrderStatusEnum orderStatusEnum) {
+        this.orderStatusEnum = orderStatusEnum;
+    }
 }
 

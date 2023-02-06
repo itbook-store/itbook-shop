@@ -1,0 +1,23 @@
+package shop.itbook.itbookshop.ordergroup.order.dto.response;
+
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+/**
+ * 주문 정보를 담은 응답용 Dto 입니다.
+ *
+ * @author 정재원
+ * @since 1.0
+ */
+@NoArgsConstructor
+@Getter
+public class OrderListViewResponseDto {
+
+    private Long orderNo;
+    private LocalDateTime orderStatusCreatedAt;
+    private String memberId;
+    private String recipientName;
+    private String recipientPhoneNumber;
+    private String trackingNo;
+}
