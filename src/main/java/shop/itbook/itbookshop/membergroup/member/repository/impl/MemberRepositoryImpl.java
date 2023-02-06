@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -329,6 +330,29 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.phoneNumber.contains(phoneNumber)));
+
+        List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDate start,
+                                                                          LocalDate end,
+                                                                          String memberStatusName,
+                                                                          Pageable pageable) {
+
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId, qmembership.membershipGrade,
+                    qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
+                    qmember.email,
+                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
+                .and(qmember.memberCreatedAt.between(start.atStartOfDay(), end.atStartOfDay())));
 
         List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
