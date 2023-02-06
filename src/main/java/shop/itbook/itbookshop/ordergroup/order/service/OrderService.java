@@ -2,8 +2,8 @@ package shop.itbook.itbookshop.ordergroup.order.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderAddResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 
 /**
@@ -13,8 +13,10 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
  * @since 1.0
  */
 public interface OrderService {
-    void addOrderOfMember(OrderAddRequestDto orderAddRequestDto, Long memberNo);
+    OrderAddResponseDto addOrderOfMember(OrderAddRequestDto orderAddRequestDto, Long memberNo);
 
     Page<OrderListMemberViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
                                                                         Long memberNo);
+
+    void completeOrderPay(Long orderNo);
 }

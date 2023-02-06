@@ -15,6 +15,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderAddResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 
@@ -38,6 +39,7 @@ public class OrderController {
      * @param pageable 보여줄 페이지 정보
      * @param memberNo 회원 번호
      * @return 주문 정보를 담은 Dto 리스트를 담은 페이지 객체
+     * @author 정재원 *
      */
     @GetMapping("/list/{memberNo}")
     public ResponseEntity<CommonResponseBody<PageResponse<OrderListMemberViewResponseDto>>> orderListFind(
@@ -60,19 +62,43 @@ public class OrderController {
     /**
      * 주문 데이터를 추가합니다.
      *
+     * @param memberNo           the member no
+     * @param orderAddRequestDto the order add request dto
      * @return 추가한 결과를 담은 응답 객체
+     * @author 정재원 *
      */
     @PostMapping("/{memberNo}")
-    public ResponseEntity<CommonResponseBody<Void>> orderAdd(
+    public ResponseEntity<CommonResponseBody<OrderAddResponseDto>> orderAdd(
         @PathVariable("memberNo") Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
-        orderService.addOrderOfMember(orderAddRequestDto, memberNo);
+        CommonResponseBody<OrderAddResponseDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.addOrderOfMember(orderAddRequestDto, memberNo)
+            );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    /**
+     * Order pay completion response entity.
+     *
+     * @param orderNo the order no
+     * @return the response entity
+     * @author 정재원 *
+     */
+    @PostMapping("/pay-completion/{orderNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderPayCompletion(
+        @PathVariable("orderNo") Long orderNo) {
+
+        orderService.completeOrderPay(orderNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
+                    OrderResultMessageEnum.ORDER_PAY_SUCCESS_MESSAGE.getResultMessage()
                 ), null
             );
 

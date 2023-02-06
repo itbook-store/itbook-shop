@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.orderproducthistory.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.OrderProductHistory;
 
 /**
@@ -10,4 +12,5 @@ import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.OrderProduct
  * @since 1.0
  */
 public interface OrderProductHistoryRepository extends JpaRepository<OrderProductHistory, Long> {
+    Optional<OrderProductHistory> findByOrderProduct_Order(Order order);
 }

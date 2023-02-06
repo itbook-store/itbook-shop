@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
-import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -80,4 +79,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         return PageableExecutionUtils.getPage(orderListViewResponseDtoListMember, pageable,
             jpqlQuery::fetchCount);
     }
+
+
 }
