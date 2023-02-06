@@ -9,5 +9,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
  * @since 1.0
  */
 @Repository
-public interface ProductCouponRepository extends JpaRepository<ProductCoupon, Long> {
+public interface ProductCouponRepository extends JpaRepository<ProductCoupon, Long>,
+    CustomProductCouponRepository{
 }
