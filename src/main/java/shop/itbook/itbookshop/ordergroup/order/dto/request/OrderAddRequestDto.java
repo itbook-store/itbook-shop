@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.dto.request;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class OrderAddRequestDto {
 
     private List<Long> productNoList;
     private List<Integer> productCountList;
-    private LocalDateTime selectedDeliveryDate;
+    private LocalDate selectedDeliveryDate;
     private String recipientName;
     private String recipientPhoneNumber;
     private Integer postcode;

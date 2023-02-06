@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +15,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
@@ -47,35 +45,36 @@ class OrderServiceTest {
     void getOrderListOfMemberWithStatus() {
 
         // given
-        List<OrderListViewResponseDto> orderListViewResponseDtoList = new ArrayList<>();
+        List<OrderListMemberViewResponseDto> orderListViewResponseDtoListMember = new ArrayList<>();
 
-        OrderListViewResponseDto orderListViewResponseDto = new OrderListViewResponseDto();
-        ReflectionTestUtils.setField(orderListViewResponseDto, "orderNo", 1L);
-        ReflectionTestUtils.setField(orderListViewResponseDto, "orderStatusCreatedAt",
+        OrderListMemberViewResponseDto
+            orderListMemberViewResponseDto = new OrderListMemberViewResponseDto();
+        ReflectionTestUtils.setField(orderListMemberViewResponseDto, "orderNo", 1L);
+        ReflectionTestUtils.setField(orderListMemberViewResponseDto, "orderStatusCreatedAt",
             LocalDateTime.now());
-        ReflectionTestUtils.setField(orderListViewResponseDto, "recipientName", "테스트 이름");
-        ReflectionTestUtils.setField(orderListViewResponseDto, "recipientPhoneNumber",
+        ReflectionTestUtils.setField(orderListMemberViewResponseDto, "recipientName", "테스트 이름");
+        ReflectionTestUtils.setField(orderListMemberViewResponseDto, "recipientPhoneNumber",
             "010-xxx-test");
-        ReflectionTestUtils.setField(orderListViewResponseDto, "trackingNo", "1234567");
+        ReflectionTestUtils.setField(orderListMemberViewResponseDto, "trackingNo", "1234567");
 
-        orderListViewResponseDtoList.add(orderListViewResponseDto);
-        Page<OrderListViewResponseDto> page = new PageImpl<>(orderListViewResponseDtoList);
+        orderListViewResponseDtoListMember.add(orderListMemberViewResponseDto);
+        Page<OrderListMemberViewResponseDto> page = new PageImpl<>(
+            orderListViewResponseDtoListMember);
 
         given(orderRepository.getOrderListOfMemberWithStatus(any(), any())).willReturn(page);
 
         PageRequest pageable = PageRequest.of(0, 10);
 
-        OrderListViewResponseDto resultDto =
+        OrderListMemberViewResponseDto resultDto =
             orderService.getOrderListOfMemberWithStatus(pageable, 1L).getContent().get(0);
 
         // then
-        assertThat(resultDto.getOrderNo()).isEqualTo(orderListViewResponseDto.getOrderNo());
-        assertThat(resultDto.getOrderStatusCreatedAt()).isEqualTo(
-            orderListViewResponseDto.getOrderStatusCreatedAt());
+        assertThat(resultDto.getOrderNo()).isEqualTo(orderListMemberViewResponseDto.getOrderNo());
         assertThat(resultDto.getRecipientName()).isEqualTo(
-            orderListViewResponseDto.getRecipientName());
+            orderListMemberViewResponseDto.getRecipientName());
         assertThat(resultDto.getRecipientPhoneNumber()).isEqualTo(
-            orderListViewResponseDto.getRecipientPhoneNumber());
-        assertThat(resultDto.getTrackingNo()).isEqualTo(orderListViewResponseDto.getTrackingNo());
+            orderListMemberViewResponseDto.getRecipientPhoneNumber());
+        assertThat(resultDto.getTrackingNo()).isEqualTo(
+            orderListMemberViewResponseDto.getTrackingNo());
     }
 }

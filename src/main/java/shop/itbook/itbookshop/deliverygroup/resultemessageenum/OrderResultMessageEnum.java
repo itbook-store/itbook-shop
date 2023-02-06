@@ -11,7 +11,8 @@ import lombok.Getter;
 @Getter
 public enum OrderResultMessageEnum {
 
-    ORDER_LIST_OF_MEMBER_WITH_STATUS_FIND_SUCCESS_MESSAGE("회원의 주문 목록 조회에 성공했습니다.");
+    ORDER_LIST_OF_MEMBER_WITH_STATUS_FIND_SUCCESS_MESSAGE("회원의 주문 목록 조회에 성공했습니다."),
+    ORDER_SHEET_SUCCESS_MESSAGE("회원의 주문서 작성이 완료되었습니다.");
 
     private final String resultMessage;
 

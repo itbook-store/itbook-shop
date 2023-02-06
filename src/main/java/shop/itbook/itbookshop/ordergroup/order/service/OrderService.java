@@ -2,7 +2,9 @@ package shop.itbook.itbookshop.ordergroup.order.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
+import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 
 /**
  * 주문 관련 비즈니스 로직을 담당합니다.
@@ -11,6 +13,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewRespons
  * @since 1.0
  */
 public interface OrderService {
-    Page<OrderListViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
-                                                                  Long memberNo);
+    void addOrderOfMember(OrderAddRequestDto orderAddRequestDto, Long memberNo);
+
+    Page<OrderListMemberViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
+                                                                        Long memberNo);
 }

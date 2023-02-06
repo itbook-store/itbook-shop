@@ -6,14 +6,16 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.resultemessageenum.OrderResultMessageEnum;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 
 /**
@@ -37,15 +39,15 @@ public class OrderController {
      * @param memberNo 회원 번호
      * @return 주문 정보를 담은 Dto 리스트를 담은 페이지 객체
      */
-    @GetMapping
-    public ResponseEntity<CommonResponseBody<PageResponse<OrderListViewResponseDto>>> orderListFind(
+    @GetMapping("/list/{memberNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderListMemberViewResponseDto>>> orderListFind(
         @PageableDefault
-        Pageable pageable, @RequestParam Long memberNo) {
+        Pageable pageable, @PathVariable("memberNo") Long memberNo) {
 
-        PageResponse<OrderListViewResponseDto> pageResponse =
+        PageResponse<OrderListMemberViewResponseDto> pageResponse =
             new PageResponse<>(orderService.getOrderListOfMemberWithStatus(pageable, memberNo));
 
-        CommonResponseBody<PageResponse<OrderListViewResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<OrderListMemberViewResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_LIST_OF_MEMBER_WITH_STATUS_FIND_SUCCESS_MESSAGE.getResultMessage()
@@ -56,13 +58,24 @@ public class OrderController {
     }
 
     /**
-     * Order add response entity.
+     * 주문 데이터를 추가합니다.
      *
-     * @return the response entity
+     * @return 추가한 결과를 담은 응답 객체
      */
-    @PostMapping
-    public ResponseEntity<CommonResponseBody<Void>> orderAdd() {
+    @PostMapping("/{memberNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderAdd(
+        @PathVariable("memberNo") Long memberNo,
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        orderService.addOrderOfMember(orderAddRequestDto, memberNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
+                ), null
+            );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 }

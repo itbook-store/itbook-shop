@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
@@ -22,7 +20,7 @@ import shop.itbook.itbookshop.membergroup.membership.repository.MembershipReposi
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.ordermember.dummy.OrderMemberDummy;
@@ -112,10 +110,10 @@ class OrderRepositoryTest {
 
         PageRequest pageable = PageRequest.of(0, 10);
 
-        Page<OrderListViewResponseDto> orderListOfMemberWithStatus =
+        Page<OrderListMemberViewResponseDto> orderListOfMemberWithStatus =
             orderRepository.getOrderListOfMemberWithStatus(pageable, 1L);
 
-        assertThat(orderListOfMemberWithStatus.getContent().get(0).getMemberId()).isEqualTo(
-            member.getMemberId());
+        assertThat(orderListOfMemberWithStatus.getContent().get(0).getOrderNo()).isEqualTo(
+            order.getOrderNo());
     }
 }

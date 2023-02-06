@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
@@ -32,8 +32,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public Page<OrderListViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
-                                                                         Long memberNo) {
+    public Page<OrderListMemberViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
+                                                                               Long memberNo) {
 
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
 
@@ -46,11 +46,10 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QDelivery qDelivery = QDelivery.delivery;
 
         QOrderMember qOrderMember = QOrderMember.orderMember;
-        QMember qMember = QMember.member;
 
         QOrder qOrder = QOrder.order;
 
-        JPQLQuery<OrderListViewResponseDto> jpqlQuery = from(qOrderProductHistory1)
+        JPQLQuery<OrderListMemberViewResponseDto> jpqlQuery = from(qOrderProductHistory1)
             .leftJoin(qOrderProductHistory2)
             .on(qOrderProductHistory1.orderProduct.orderProductNo.eq(
                 qOrderProductHistory2.orderProduct.orderProductNo).and(
@@ -63,22 +62,22 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qOrderMember).on(qOrderMember.order.eq(qOrderProduct.order)
                 .and(qOrderMember.member.memberNo.eq(memberNo)))
             .fetchJoin()
-            .innerJoin(qOrderMember.member, qMember)
             .innerJoin(qOrder).on(qOrder.eq(qOrderProduct.order))
             .where(qOrderProductHistory2.orderProductOrderStatusNo.isNull())
-            .select(Projections.fields(OrderListViewResponseDto.class,
-                qOrderProduct.order.orderNo, qOrderProductHistory1.orderStatusCreatedAt,
-                qMember.memberId, qOrder.recipientName,
+            .select(Projections.fields(OrderListMemberViewResponseDto.class,
+                qOrderProduct.order.orderNo,
+                qOrderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                qOrder.recipientName,
                 qOrder.recipientPhoneNumber, qDelivery.trackingNo
             ));
 
-        List<OrderListViewResponseDto> orderListViewResponseDtoList =
+        List<OrderListMemberViewResponseDto> orderListViewResponseDtoListMember =
             jpqlQuery
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return PageableExecutionUtils.getPage(orderListViewResponseDtoList, pageable,
+        return PageableExecutionUtils.getPage(orderListViewResponseDtoListMember, pageable,
             jpqlQuery::fetchCount);
     }
 }
