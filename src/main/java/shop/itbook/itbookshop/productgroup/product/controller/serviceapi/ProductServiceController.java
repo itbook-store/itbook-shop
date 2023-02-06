@@ -1,8 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.controller.serviceapi;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,20 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import shop.itbook.itbookshop.auth.dto.AuthorizationHeaderDto;
-import shop.itbook.itbookshop.auth.receiver.AuthHeaderReceiver;
-import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
-import shop.itbook.itbookshop.book.service.BookService;
-import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCategoryResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
-import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
 
@@ -75,7 +66,7 @@ public class ProductServiceController {
         @PageableDefault Pageable pageable, @PathVariable List<Long> productNoList) {
 
         Page<ProductDetailsResponseDto> productList =
-            productService.findProductListByProductNoList(pageable, productNoList);
+            productService.findProductListByProductNoListForUser(pageable, productNoList);
 
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
