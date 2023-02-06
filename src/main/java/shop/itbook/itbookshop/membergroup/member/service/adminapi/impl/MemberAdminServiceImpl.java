@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.membergroup.member.service.adminapi.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -128,6 +130,24 @@ public class MemberAdminServiceImpl implements MemberAdminService {
                                                                         Pageable pageable) {
 
         return memberRepository.findMemberListByPhoneNumber(phoneNumber, memberStatusName,
+            pageable);
+    }
+
+    @Override
+    public Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDate start,
+                                                                          LocalDate end,
+                                                                          String memberStatusName,
+                                                                          Pageable pageable) {
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        System.out.println(">>> ");
+        System.out.println(LocalDate.parse(dateTimeFormatter.format(start)));
+
+        return memberRepository.findMemberListByDateOfJoining(
+            LocalDate.parse(dateTimeFormatter.format(start)),
+            LocalDate.parse(dateTimeFormatter.format(end)),
+            memberStatusName,
             pageable);
     }
 
