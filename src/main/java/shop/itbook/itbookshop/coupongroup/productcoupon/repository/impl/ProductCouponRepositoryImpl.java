@@ -32,7 +32,7 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
         QProduct qProduct = QProduct.product;
         JPQLQuery<ProductCoupon> jpqlQuery = from(qProductCoupon);
 
-        JPQLQuery<CouponListResponseDto> jpqlQuery1 = jpqlQuery
+        List<CouponListResponseDto> productCouponList = jpqlQuery
             .select(Projections.fields(CouponListResponseDto.class,
                 qCoupon.couponNo,
                 qCoupon.amount, qCoupon.point, qCoupon.percent,
@@ -41,12 +41,9 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(qProductCoupon.coupon, qCoupon)
             .innerJoin(qProductCoupon.product, qProduct)
             .offset(pageable.getOffset())
-            .limit(pageable.getPageSize());
-
-        List<CouponListResponseDto> productCouponList = jpqlQuery1
+            .limit(pageable.getPageSize())
             .fetch();
 
         return PageableExecutionUtils.getPage(productCouponList, pageable, jpqlQuery::fetchCount);
-
     }
 }

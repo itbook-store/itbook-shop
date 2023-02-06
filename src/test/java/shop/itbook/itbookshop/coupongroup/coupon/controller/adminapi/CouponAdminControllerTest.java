@@ -71,7 +71,7 @@ class CouponAdminControllerTest {
         given(couponService.addCoupon(any(CouponRequestDto.class))).willReturn(0L);
 
         //when then
-        mvc.perform(post("/api/admin/coupon")
+        mvc.perform(post("/api/admin/coupons")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(couponRequestDto)))
