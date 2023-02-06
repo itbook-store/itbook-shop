@@ -14,6 +14,13 @@ import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
+import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
@@ -54,7 +61,14 @@ public class RestControllerAdvisor {
         PointContentNotFoundException.class,
         LackOfPointException.class,
         RoleNotFoundException.class,
-        MemberDestinationNotFoundException.class
+        MemberDestinationNotFoundException.class,
+        AlreadyAddedCouponIssueMemberCouponException.class,
+        CouponIssueNotFoundException.class,
+        NotPointCouponException.class,
+        UnableToCreateCouponException.class,
+        CouponTypeNotFoundException.class,
+        UsageStatusNotFoundException.class,
+        CouponNotFoundException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
