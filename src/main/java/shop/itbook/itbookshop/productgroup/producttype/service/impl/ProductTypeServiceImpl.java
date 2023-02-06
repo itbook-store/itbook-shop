@@ -95,7 +95,8 @@ public class ProductTypeServiceImpl implements ProductTypeService {
             case RECOMMENDATION:
                 List<Long> productNoList =
                     this.findRecommendationBookList(pageable, memberNo, isAdmin);
-                productList = productService.findProductListByProductNoList(pageable, productNoList);
+                productList =
+                    productService.findProductListByProductNoListForUser(pageable, productNoList);
                 break;
 
             case RECENTLY_SEEN_PRODUCT:
@@ -156,7 +157,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
                                                  boolean isAdmin) {
         Long basedProductNo;
 
-        if(Optional.ofNullable(memberNo).isEmpty()) {
+        if (Optional.ofNullable(memberNo).isEmpty()) {
             basedProductNo = productTypeRepository.findBestSellingBook();
             return
                 productTypeRepository.findPurchasedTogetherProductList(basedProductNo);

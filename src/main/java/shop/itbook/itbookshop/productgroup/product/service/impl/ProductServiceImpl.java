@@ -5,14 +5,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.category.entity.Category;
-import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -122,15 +120,32 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductListByProductNoList(Pageable pageable,
-                                                                          List<Long> productNoList) {
+    public Page<ProductDetailsResponseDto> findProductListByProductNoListForUser(Pageable pageable,
+                                                                                 List<Long> productNoList) {
 
         List<Long> productNoListRemovedNull = productNoList.stream()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
 
         Page<ProductDetailsResponseDto> productListByProductNoList =
-            productRepository.findProductListByProductNoList(pageable, productNoListRemovedNull);
+            productRepository.findProductListByProductNoListForUser(pageable,
+                productNoListRemovedNull);
+        setExtraFieldsForList(productListByProductNoList);
+
+        return productListByProductNoList;
+    }
+
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListByProductNoListForAdmin(Pageable pageable,
+                                                                                  List<Long> productNoList) {
+
+        List<Long> productNoListRemovedNull = productNoList.stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+
+        Page<ProductDetailsResponseDto> productListByProductNoList =
+            productRepository.findProductListByProductNoListForAdmin(pageable,
+                productNoListRemovedNull);
         setExtraFieldsForList(productListByProductNoList);
 
         return productListByProductNoList;
