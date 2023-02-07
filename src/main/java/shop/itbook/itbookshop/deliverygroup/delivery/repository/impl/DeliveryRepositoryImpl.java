@@ -98,7 +98,8 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
                 .orderBy(qDelivery.deliveryNo.asc());
 
         List<DeliveryWithStatusResponseDto> deliveryWithStatusWaitResponseDtoList =
-            jpqlQuery.offset(pageable.getOffset())
+            jpqlQuery
+                .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
