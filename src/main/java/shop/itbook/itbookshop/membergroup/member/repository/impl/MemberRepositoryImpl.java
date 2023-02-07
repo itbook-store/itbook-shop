@@ -5,7 +5,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -338,8 +338,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     }
 
     @Override
-    public Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDate start,
-                                                                          LocalDate end,
+    public Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDateTime start,
+                                                                          LocalDateTime end,
                                                                           String memberStatusName,
                                                                           Pageable pageable) {
 
@@ -352,7 +352,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
-                .and(qmember.memberCreatedAt.between(start.atStartOfDay(), end.atStartOfDay())));
+                .and(qmember.memberCreatedAt.between(start, end)));
 
         List<MemberExceptPwdResponseDto> memberList = jpqlQuery.offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
