@@ -91,8 +91,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderListMemberViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
-                                                                               Long memberNo) {
+    public Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
+                                                                                Long memberNo) {
         return orderRepository.getOrderListOfMemberWithStatus(pageable, memberNo);
     }
 

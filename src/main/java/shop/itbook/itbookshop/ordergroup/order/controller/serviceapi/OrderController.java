@@ -47,7 +47,7 @@ public class OrderController {
         Pageable pageable, @PathVariable("memberNo") Long memberNo) {
 
         PageResponse<OrderListMemberViewResponseDto> pageResponse =
-            new PageResponse<>(orderService.getOrderListOfMemberWithStatus(pageable, memberNo));
+            new PageResponse<>(orderService.findOrderListOfMemberWithStatus(pageable, memberNo));
 
         CommonResponseBody<PageResponse<OrderListMemberViewResponseDto>> commonResponseBody =
             new CommonResponseBody<>(

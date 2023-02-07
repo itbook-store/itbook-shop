@@ -15,8 +15,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
 public interface OrderService {
     OrderAddResponseDto addOrderOfMember(OrderAddRequestDto orderAddRequestDto, Long memberNo);
 
-    Page<OrderListMemberViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
-                                                                        Long memberNo);
+    Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
+                                                                         Long memberNo);
 
     void completeOrderPay(Long orderNo);
 }
