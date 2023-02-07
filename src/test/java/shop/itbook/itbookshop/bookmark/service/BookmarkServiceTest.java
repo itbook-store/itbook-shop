@@ -1,0 +1,218 @@
+package shop.itbook.itbookshop.bookmark.service;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.List;
+import java.util.Optional;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.itbook.itbookshop.book.BookDummy;
+import shop.itbook.itbookshop.book.entity.Book;
+import shop.itbook.itbookshop.bookmark.dto.request.BookmarkRequestDto;
+import shop.itbook.itbookshop.bookmark.dummy.BookmarkDummy;
+import shop.itbook.itbookshop.bookmark.entity.Bookmark;
+import shop.itbook.itbookshop.bookmark.repository.BookmarkRepository;
+import shop.itbook.itbookshop.bookmark.service.impl.BookmarkServiceImpl;
+import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
+import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
+import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
+
+/**
+ * @author 강명관
+ * @since 1.0
+ */
+@ExtendWith(SpringExtension.class)
+class BookmarkServiceTest {
+
+    BookmarkService bookmarkService;
+
+    @MockBean
+    MemberRepository memberRepository;
+
+    @MockBean
+    ProductRepository productRepository;
+
+    @MockBean
+    BookmarkRepository bookmarkRepository;
+
+    Member member;
+
+    Product product;
+
+    Book book;
+
+    Bookmark bookmark;
+
+    BookmarkRequestDto bookmarkRequestDto;
+
+    ProductDetailsResponseDto productDetailsResponseDto;
+
+    @BeforeEach
+    void setUp() {
+        member = MemberDummy.getMember1();
+        product = ProductDummy.getProductSuccess();
+        book = BookDummy.getBookSuccess();
+
+        bookmarkRequestDto = new BookmarkRequestDto(
+            member.getMemberNo(),
+            product.getProductNo()
+        );
+
+        bookmark = BookmarkDummy.getBookmark(member, product);
+
+        productDetailsResponseDto = ProductDummy.getProductDetailsResponseDto();
+
+        bookmarkService =
+            new BookmarkServiceImpl(bookmarkRepository, memberRepository, productRepository);
+
+    }
+
+    @DisplayName("즐겨찾기에 상품 등록 테스트")
+    @Test
+    void addProductInBookmark() {
+        // given
+        given(bookmarkRepository.existsByMember_MemberNoAndProduct_ProductNo(
+            member.getMemberNo(),
+            product.getProductNo()
+        )).willReturn(Boolean.FALSE);
+        given(memberRepository.findById(member.getMemberNo())).willReturn(Optional.of(member));
+        given(productRepository.findById(product.getProductNo())).willReturn(Optional.of(product));
+        given(bookmarkRepository.save(any(Bookmark.class))).willReturn(bookmark);
+
+        // when
+        boolean expect = bookmarkService.addProductInBookmark(bookmarkRequestDto);
+
+        // then
+        assertTrue(expect);
+
+    }
+
+    @DisplayName("즐겨찾기에 상품 등록_이미 등록된 상품_실패 테스트")
+    @Test
+    void addProductInBookmark_thenAlreadyExistProduct_returnFalse() {
+        // given
+        given(bookmarkRepository.existsByMember_MemberNoAndProduct_ProductNo(
+            member.getMemberNo(),
+            product.getProductNo()
+        )).willReturn(Boolean.TRUE);
+
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+
+        // when
+        boolean expect = bookmarkService.addProductInBookmark(bookmarkRequestDto);
+
+        // then
+        assertFalse(expect);
+
+    }
+
+    @DisplayName("즐겨찾기 상품 등록_회원이 존재하지 않는 경우 실패 테스트")
+    @Test
+    void addProductInBookmark_notExistMember_thenMemberNotFoundException() {
+        // given
+        given(bookmarkRepository.existsByMember_MemberNoAndProduct_ProductNo(
+            member.getMemberNo(),
+            product.getProductNo()
+        )).willReturn(Boolean.FALSE);
+
+        given(memberRepository.findById(anyLong())).willThrow(MemberNotFoundException.class);
+        given(productRepository.findById(anyLong())).willReturn(Optional.of(product));
+
+        // when, then
+        assertThatThrownBy(() -> bookmarkService.addProductInBookmark(bookmarkRequestDto))
+            .isInstanceOf(MemberNotFoundException.class);
+    }
+
+    @DisplayName("즐겨찾기 상품 등록_상품이 존재하지 않는 경우 실패 테스트")
+    @Test
+    void addProductInBookmark_notExistProduct_thenMemberNotFoundException() {
+        // given
+        given(bookmarkRepository.existsByMember_MemberNoAndProduct_ProductNo(
+            member.getMemberNo(),
+            product.getProductNo()
+        )).willReturn(Boolean.FALSE);
+
+        given(memberRepository.findById(member.getMemberNo())).willReturn(Optional.of(member));
+        given(productRepository.findById(anyLong())).willThrow(ProductNotFoundException.class);
+
+        // when, then
+        assertThatThrownBy(() -> bookmarkService.addProductInBookmark(bookmarkRequestDto))
+            .isInstanceOf(ProductNotFoundException.class);
+    }
+
+    @DisplayName("즐겨찾기에 상품 삭제 테스트")
+    @Test
+    void deleteProductInBookmarkTest() {
+        // given, when
+        bookmarkService.deleteProductInBookmark(bookmarkRequestDto);
+
+        // then
+        verify(bookmarkRepository, times(1)).deleteByMemberNoAndProductNo(
+            bookmark.getMember().getMemberNo(),
+            bookmark.getProduct().getProductNo()
+        );
+    }
+
+    @DisplayName("즐겨찾기 회원번호로 모든 상품 삭제 테스트")
+    @Test
+    void deleteAllProductInBookmarkTest() {
+        // given, when
+        bookmarkService.deleteAllProductInBookmark(member.getMemberNo());
+
+        // then
+        verify(bookmarkRepository, times(1)).deleteAllByMemberNo(
+            bookmark.getMember().getMemberNo()
+        );
+    }
+
+    @DisplayName("회원번호를 통해 모든 상품 상세 리스트 조회 테스트")
+    @Test
+    void getAllProductInBookmarkTest() {
+        // given
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+
+
+        given(memberRepository.existsById(member.getMemberNo()))
+            .willReturn(true);
+
+        given(bookmarkRepository.findAllProductDetailsByMemberNo(
+            pageable,
+            bookmark.getMember().getMemberNo()
+        )).willReturn(new PageImpl<>(List.of(productDetailsResponseDto), pageable, 0));
+
+        // when
+        Page<ProductDetailsResponseDto> allProductInBookmark =
+            bookmarkService.getAllProductInBookmark(
+                pageable,
+                member.getMemberNo()
+            );
+
+        List<ProductDetailsResponseDto> content = allProductInBookmark.getContent();
+
+        // then
+        assertThat(content).hasSize(1);
+        assertThat(content.get(0).getProductNo()).isEqualTo(product.getProductNo());
+    }
+}
