@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -26,7 +27,7 @@ public class MemberRequestDto {
     private String memberStatusName;
 
     @NotBlank(message = "아이디는 null값 및 공백을 허용하지 않습니다.")
-    @Length(min = 2, max = 15, message = "아이디는 최소 2자부터 시작하며 최대 15자까지 작성해야합니다.")
+    @Pattern(regexp = "^[a-z0-9-_]{2,15}$", message = "아이디는 특수문자를 제외한 2 ~ 15자리여야 합니다.")
     private String memberId;
 
     @NotBlank(message = "닉네임은 null값 및 공백을 허용하지 않습니다.")
@@ -44,9 +45,11 @@ public class MemberRequestDto {
     private LocalDateTime birth;
 
     @NotBlank(message = "비밀번호는 null값 및 공백을 허용하지 않습니다.")
-    @Length(max = 255, message = "비밀번호는 최대 255자까지 허용합니다.")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,20}",
+        message = "비밀번호는 영문 대소문자와 숫자, 특수기호가 적어도 1개 이상씩 포함되어야하고 길이는 8자 ~ 255자의 비밀번호여야 합니다.")
     private String password;
 
+    @Pattern(regexp = "^[0-9]{11}$", message = "전화번호 형식에 맞춰 입력해주세요. 숫자만 입력할 수 있습니다.")
     @NotBlank(message = "핸드폰 번호는 null값 및 공백을 허용하지 않습니다.")
     private String phoneNumber;
 
