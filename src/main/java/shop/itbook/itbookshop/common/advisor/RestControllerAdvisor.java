@@ -1,11 +1,14 @@
 package shop.itbook.itbookshop.common.advisor;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
@@ -16,6 +19,13 @@ import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
+import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
@@ -61,7 +71,14 @@ public class RestControllerAdvisor {
         LackOfPointException.class,
         RoleNotFoundException.class,
         MemberDestinationNotFoundException.class,
-        DataIntegrityViolationException.class,
+        AlreadyAddedCouponIssueMemberCouponException.class,
+        CouponIssueNotFoundException.class,
+        NotPointCouponException.class,
+        UnableToCreateCouponException.class,
+        CouponTypeNotFoundException.class,
+        UsageStatusNotFoundException.class,
+        CouponNotFoundException.class,
+        MemberDestinationNotFoundException.class,
         ProductNotFoundException.class,
         BookNotFoundException.class,
         ProductCategoryNotFoundException.class,
@@ -115,5 +132,5 @@ public class RestControllerAdvisor {
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(exceptionCommonResponseBody);
     }
-
+    
 }

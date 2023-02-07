@@ -1,9 +1,15 @@
 package shop.itbook.itbookshop.coupongroup.productcoupon.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
+import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -13,15 +19,22 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
  */
 @Service
 @RequiredArgsConstructor
-public class ProductCouponServiceImpl {
+public class ProductCouponServiceImpl implements ProductCouponService {
 
     private final ProductCouponRepository productCouponRepository;
     private final CouponService couponService;
     private final ProductService productService;
 
-//    @Override
-//    public Long addProductCoupon(){
-//
-//    }
+    @Override
+    public Long addProductCoupon(ProductCouponRequestDto productCouponRequestDto) {
+        Product product = productService.findProductEntity(productCouponRequestDto.getProductNo());
+        ProductCoupon productCoupon =
+            new ProductCoupon(productCouponRequestDto.getCouponNo(), product);
+        return productCouponRepository.save(productCoupon).getCouponNo();
+    }
 
+    @Override
+    public Page<CouponListResponseDto> findProductCouponList(Pageable pageable) {
+        return productCouponRepository.findProductCouponList(pageable);
+    }
 }
