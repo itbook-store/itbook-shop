@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.deliverygroup.deliverystatus.converter;
+package shop.itbook.itbookshop.deliverygroup.deliverystatusenum.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
@@ -22,4 +22,6 @@ public class DeliveryStatusEnumConverter implements AttributeConverter<DeliveryS
     public DeliveryStatusEnum convertToEntityAttribute(String s) {
         return DeliveryStatusEnum.stringToEnum(s);
     }
+
+
 }

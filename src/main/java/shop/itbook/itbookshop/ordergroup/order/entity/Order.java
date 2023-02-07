@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -37,7 +38,7 @@ public class Order {
     private LocalDateTime orderCreatedAt;
 
     @Column(name = "selected_delivery_date", nullable = false)
-    private LocalDateTime selectedDeliveryDate;
+    private LocalDate selectedDeliveryDate;
 
     @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProducts;
@@ -70,7 +71,7 @@ public class Order {
      * @author 정재원
      */
     @Builder
-    public Order(LocalDateTime orderCreatedAt, LocalDateTime selectedDeliveryDate,
+    public Order(LocalDateTime orderCreatedAt, LocalDate selectedDeliveryDate,
                  String recipientName,
                  String recipientPhoneNumber, Integer postcode, String roadNameAddress,
                  String recipientAddressDetails) {
