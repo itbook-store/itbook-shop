@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.membergroup.member.repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -172,7 +172,8 @@ public interface CustomMemberRepository {
                                                                  String memberStatusName,
                                                                  Pageable pageable);
 
-    Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDate start, LocalDate end,
+    Page<MemberExceptPwdResponseDto> findMemberListByDateOfJoining(LocalDateTime start,
+                                                                   LocalDateTime end,
                                                                    String memberStatusName,
                                                                    Pageable pageable);
 
