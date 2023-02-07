@@ -139,14 +139,13 @@ public class MemberAdminServiceImpl implements MemberAdminService {
                                                                           String memberStatusName,
                                                                           Pageable pageable) {
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-        System.out.println(">>> ");
-        System.out.println(LocalDate.parse(dateTimeFormatter.format(start)));
+        DateTimeFormatter LocalDateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter LocalDateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
         return memberRepository.findMemberListByDateOfJoining(
-            LocalDate.parse(dateTimeFormatter.format(start)),
-            LocalDate.parse(dateTimeFormatter.format(end)),
+            LocalDateTime.parse(LocalDateFormatter.format(start) + "000000",
+                LocalDateTimeFormatter),
+            LocalDateTime.parse(LocalDateFormatter.format(end) + "235959", LocalDateTimeFormatter),
             memberStatusName,
             pageable);
     }
