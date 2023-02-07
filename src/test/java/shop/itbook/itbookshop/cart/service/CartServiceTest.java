@@ -114,7 +114,6 @@ class CartServiceTest {
     @DisplayName("장바구니 상품등록 실패 테스트")
     @Test
     void registerCart_existProduct_thenReturnFalse() {
-
         // given
         given(cartRepository.existsById(cart.getPk())).willReturn(true);
 
