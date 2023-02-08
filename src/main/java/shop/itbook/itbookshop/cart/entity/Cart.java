@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.cart.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -15,6 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -25,8 +27,6 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * @since 1.0
  */
 @Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "cart")
@@ -45,6 +45,7 @@ public class Cart {
     @JoinColumn(name = "product_no")
     private Product product;
 
+    @Setter
     @Column(name = "product_count", columnDefinition = "integer default 1")
     private Integer productCount;
 
@@ -66,5 +67,32 @@ public class Cart {
         private Long productNo;
 
     }
+
+    /**
+     * 장바구니 엔티티에 대한 생성자입니다.
+     *
+     * @param member  회원
+     * @param product 상품
+     */
+
+    public Cart(Member member, Product product) {
+        this.pk = new Pk(member.getMemberNo(), product.getProductNo());
+        this.member = member;
+        this.product = product;
+        this.productCount = 1;
+    }
+
+    /**
+     * 장바구니 상품의 갯수를 수정하는 메서드 입니다.
+     *
+     * @param productCount 수정할 상품 갯수
+     * @author 강명관
+     */
+    public void changeProductCount(Integer productCount) {
+        if (Objects.nonNull(productCount)) {
+            this.productCount = productCount;
+        }
+    }
+
 }
 

@@ -52,7 +52,7 @@ public class SearchProduct {
     @Column
     private Boolean isDeleted;
     @Column
-    private Boolean isForceSoldOut;
+    private Boolean isSelled;
 
     @Column
     private String thumbnailUrl;
@@ -94,7 +94,7 @@ public class SearchProduct {
     @Builder
     public SearchProduct(Long productNo, String name, String simpleDescription,
                          String detailsDescription, Integer stock,
-                         LocalDateTime productCreatedAt, Boolean isForceSoldOut, Boolean isDeleted,
+                         LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
                          String thumbnailUrl, Long dailyHits, Long fixedPrice,
                          Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.productNo = productNo;
@@ -103,7 +103,7 @@ public class SearchProduct {
         this.detailsDescription = detailsDescription;
         this.stock = stock;
         this.productCreatedAt = productCreatedAt;
-        this.isForceSoldOut = isForceSoldOut;
+        this.isSelled = isSelled;
         this.isDeleted = isDeleted;
         this.thumbnailUrl = thumbnailUrl;
         this.dailyHits = dailyHits;

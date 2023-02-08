@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.coupon.controller.adminapi;
 
 import java.util.List;
-import java.util.Objects;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,13 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
@@ -33,7 +32,7 @@ import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEn
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/coupon")
+@RequestMapping("/api/admin/coupons")
 public class CouponAdminController {
 
     private final CouponService couponService;
@@ -62,16 +61,51 @@ public class CouponAdminController {
     /**
      * 쿠폰의 리스트를 반환하는 메소드 입니다.
      *
+     * @param pageable the pageable
      * @return 쿠폰 정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponList(Pageable pageable) {
+    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponList(
+        Pageable pageable) {
 
         CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 couponService.findByCouponList(pageable));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * 쿠폰의 종류별로 분류해서 보여주는 클레스 입니다.
+     *
+     * @param pageable   the pageable
+     * @param couponType the coupon type
+     * @return the response entity
+     */
+    @GetMapping("/list/{couponType}")
+    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponTypeList(
+        Pageable pageable, @PathVariable String couponType) {
+
+        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                couponService.findByCouponAtCouponTypeList(pageable, couponType));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @GetMapping("/list/all/{couponType}")
+    public ResponseEntity<CommonResponseBody<List<CouponListResponseDto>>> couponTypeListAll(
+        @PathVariable String couponType) {
+
+        CommonResponseBody<List<CouponListResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                couponService.findByAvailableCouponDtoByCouponType(couponType));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

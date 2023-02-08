@@ -3,22 +3,40 @@ package shop.itbook.itbookshop.common.advisor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
+import shop.itbook.itbookshop.book.exception.BookNotFoundException;
+import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
 import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
+import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
+import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
+import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
+import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
+import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
 /**
@@ -41,14 +59,31 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NoParentCategoryException.class,
         SearchProductNotFoundException.class,
-        MethodArgumentNotValidException.class, MemberNotFoundException.class,
+        MethodArgumentNotValidException.class,
+        MemberNotFoundException.class,
         MembershipNotFoundException.class,
         DeliveryNoWaitStatusException.class,
         InvalidAuthRequestException.class,
         AlreadyAddedCategoryNameException.class,
         RoleNotFoundException.class,
+        CartNotFountException.class,
         PointContentNotFoundException.class,
-        LackOfPointException.class
+        LackOfPointException.class,
+        RoleNotFoundException.class,
+        MemberDestinationNotFoundException.class,
+        AlreadyAddedCouponIssueMemberCouponException.class,
+        CouponIssueNotFoundException.class,
+        NotPointCouponException.class,
+        UnableToCreateCouponException.class,
+        CouponTypeNotFoundException.class,
+        UsageStatusNotFoundException.class,
+        CouponNotFoundException.class,
+        MemberDestinationNotFoundException.class,
+        ProductNotFoundException.class,
+        BookNotFoundException.class,
+        ProductCategoryNotFoundException.class,
+        ProductTypeNotFoundException.class,
+        InvalidTokenException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
@@ -97,5 +132,5 @@ public class RestControllerAdvisor {
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(exceptionCommonResponseBody);
     }
-
+    
 }

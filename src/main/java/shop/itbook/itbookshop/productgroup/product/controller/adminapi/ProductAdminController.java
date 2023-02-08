@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.auth.dto.AuthorizationHeaderDto;
-import shop.itbook.itbookshop.auth.receiver.AuthHeaderReceiver;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCategoryResultMessageEnum;
@@ -91,29 +89,6 @@ public class ProductAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
-    /**
-     * 상품유형별로 상품 조회를 요청하는 메서드입니다.
-     * 쿼리스트링으로 상품유형 번호가 파라미터로 들어올 시, 해당 상품유형 번호의 상품들을 조회합니다.
-     *
-     * @param productTypeNo 조회할 상품유형 번호입니다.
-     * @return 상품유형 번호에 해당하는 상품 리스트를 response entity에 담아 반환합니다.
-     * @author 이하늬
-     */
-    @GetMapping(params = "productTypeNo, memberNo")
-    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListFilteredByProductTypeNo(
-        @PageableDefault Pageable pageable, @RequestParam Integer productTypeNo, @RequestParam Long memberNo) {
-
-        Page<ProductDetailsResponseDto> productList =
-            productService.findProductListByProductTypeNo(pageable, productTypeNo, memberNo);
-
-        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
-                new PageResponse<>(productList));
-
-        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
-    }
 
     /**
      * 상품별로 카테고리 조회를 요청하는 메서드입니다.
@@ -144,18 +119,16 @@ public class ProductAdminController {
      *
      * @param requestDto 상품(도서) 등록을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @param thumbnails the thumbnails
-     * @param ebook      the ebook
      * @return 성공 시 성공 메세지와 등록한 상품의 상품 번호를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> productAdd(
-        @RequestPart ProductBookRequestDto requestDto,
-        @RequestPart MultipartFile thumbnails,
-        @RequestPart(required = false) MultipartFile ebook) {
+        @RequestPart ProductRequestDto requestDto,
+        @RequestPart MultipartFile thumbnails) {
 
         ProductNoResponseDto productPk =
-            new ProductNoResponseDto(productService.addProduct(requestDto, thumbnails, ebook));
+            new ProductNoResponseDto(productService.addProduct(requestDto, thumbnails));
 
         CommonResponseBody<ProductNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -180,11 +153,11 @@ public class ProductAdminController {
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart ProductBookRequestDto requestDto,
+        @RequestPart ProductRequestDto requestDto,
         @RequestPart MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 
-        productService.modifyProduct(productNo, requestDto, thumbnails, ebook);
+        productService.modifyProduct(productNo, requestDto, thumbnails);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

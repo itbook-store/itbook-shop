@@ -13,16 +13,14 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 /**
- * 상품을 등록 및 수정하기 위한 데이터를 전달하는 상품과 도서 정보가 담긴 requestDto 클래스입니다.
- *
  * @author 이하늬
  * @since 1.0
  */
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class ProductBookRequestDto {
-
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")
     private String productName;
@@ -62,11 +60,25 @@ public class ProductBookRequestDto {
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
     private Double discountPercent;
 
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isPointApplying;
+
+    private Boolean isPointApplyingBasedSellingPrice;
+
+    @NotNull(message = "null을 허용하지 않습니다.")
+    private Boolean isSubscription;
+
+    @Setter
+    private String fileThumbnailsUrl;
+
+//    book
+
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
+    @Length(min = 10, max = 13, message = "isbn은 10자-13자가 되어야 합니다.")
     private String isbn;
 
     @NotNull(message = "null을 허용하지 않습니다.")
-    @PositiveOrZero(message = "페이지 수는 0페이지 이상이어야 합니다.")
+    @PositiveOrZero(message = "페이지 수는 0p 이상이어야 합니다.")
     private Integer pageCount;
 
     @NotNull(message = "null을 허용하지 않습니다.")
@@ -76,16 +88,13 @@ public class ProductBookRequestDto {
     private Boolean isEbook;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
-    @Length(max = 255, message = "이름 길이는 1자-20자가 되어야 합니다.")
+    @Length(max = 255, message = "출판사 길이는 1자-20자가 되어야 합니다.")
     private String publisherName;
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
-    @Length(max = 255, message = "이름 길이는 1자-255자가 되어야 합니다.")
+    @Length(max = 255, message = "작가 이름은 1자-255자가 되어야 합니다.")
     private String authorName;
 
     @Setter
-    private String fileThumbnailsUrl;
-    @Setter
     private String fileEbookUrl;
-
 }

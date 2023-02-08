@@ -27,6 +27,7 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
 
 /**
  * @author 노수연
@@ -47,6 +48,9 @@ class MemberControllerTest {
     @MockBean
     MemberRepository memberRepository;
 
+    @MockBean
+    PointHistoryService pointHistoryService;
+
     @Autowired
     ObjectMapper objectMapper;
 
@@ -61,8 +65,8 @@ class MemberControllerTest {
         ReflectionTestUtils.setField(memberRequestDto, "isMan", true);
         ReflectionTestUtils.setField(memberRequestDto, "birth",
             LocalDateTime.of(2000, 1, 1, 0, 0, 0));
-        ReflectionTestUtils.setField(memberRequestDto, "password", "1234");
-        ReflectionTestUtils.setField(memberRequestDto, "phoneNumber", "010-9999-9999");
+        ReflectionTestUtils.setField(memberRequestDto, "password", "Abcd@1234");
+        ReflectionTestUtils.setField(memberRequestDto, "phoneNumber", "01099949999");
         ReflectionTestUtils.setField(memberRequestDto, "email", "user1000@test.com");
         ReflectionTestUtils.setField(memberRequestDto, "isSocial", false);
 

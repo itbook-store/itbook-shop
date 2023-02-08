@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service.impl;
 
-import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFields;
+import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
@@ -94,9 +95,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, Integer categoryNo) {
         Page<ProductDetailsResponseDto> productList =
             productCategoryRepository.getProductListWithCategoryNo(pageable, categoryNo);
-        for (ProductDetailsResponseDto product : productList) {
-            setExtraFields(product);
-        }
+        setExtraFieldsForList(productList);
         return productList;
     }
 }

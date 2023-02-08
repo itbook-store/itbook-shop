@@ -2,11 +2,9 @@ package shop.itbook.itbookshop.coupongroup.coupon.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -82,7 +80,7 @@ class CouponRepositoryTest {
     }
 
     @Test
-    void findByAvailableWelcomeCoupon(){
+    void findByAvailableCoupon(){
         CouponType welcomeCouponType = couponTypeRepository.save(
             new CouponType(0, CouponTypeEnum.WELCOME_COUPON));
 
@@ -90,14 +88,21 @@ class CouponRepositoryTest {
 
         Coupon percentDummyCoupon = CouponDummy.getPercentCoupon();
         percentDummyCoupon.setCouponType(welcomeCouponType);
+        percentDummyCoupon.setCouponExpiredAt(LocalDateTime.now().plusDays(1L));
 
         Coupon pointDummyCoupon = CouponDummy.getPointCoupon();
         pointDummyCoupon.setCouponType(welcomeCouponType);
+        pointDummyCoupon.setCouponExpiredAt(LocalDateTime.now().plusDays(1L));
+
+        Coupon pointDummyCoupon2 = CouponDummy.getPointCoupon();
+        pointDummyCoupon2.setCouponType(welcomeCouponType);
+        pointDummyCoupon2.setCouponExpiredAt(LocalDateTime.now().minusDays(1L));
 
         couponRepository.save(percentDummyCoupon);
         couponRepository.save(pointDummyCoupon);
+        couponRepository.save(pointDummyCoupon2);
 
-        List<Coupon> coupons = couponRepository.findByAvailableWelcomeCoupon();
+        List<Coupon> coupons = couponRepository.findByAvailableCouponByCouponType(CouponTypeEnum.WELCOME_COUPON);
 
         assertThat(coupons.size()).isEqualTo(2);
     }

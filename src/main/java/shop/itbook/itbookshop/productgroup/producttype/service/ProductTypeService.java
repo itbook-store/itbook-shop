@@ -32,17 +32,15 @@ public interface ProductTypeService {
      */
     ProductType findProductType(Integer productTypeNo);
 
-    Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable, boolean isAdmin);
-
-    Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable, boolean isAdmin);
-
-    Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable,
-                                                           boolean isAdmin);
-
-    Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable,
-                                                           boolean isAdmin);
-
-    List<Long> findRecommendationBookList(Pageable pageable, Long memberNo, boolean isAdmin);
-
-    Page<ProductDetailsResponseDto> findRecentlySeenProductList(Pageable pageable);
+    /**
+     * 상품 유형 번호로 상품을 조회하는 메서드입니다.
+     *
+     * @param pageable      the pageable
+     * @param productTypeNo 조회할 상품 유형 번호입니다.
+     * @param memberNo      현재 로그인한 회원 정보입니다.
+     * @return
+     */
+    Page<ProductDetailsResponseDto> findProductListByProductTypeNo(Pageable pageable,
+                                                                   Integer productTypeNo,
+                                                                   Long memberNo);
 }

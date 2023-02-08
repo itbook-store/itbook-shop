@@ -1,0 +1,25 @@
+GET /api/coupons/category-coupon
+Host: localhost:8082
+Content-Type: application/json
+
+
+###
+
+POST /api/admin/coupons/category-coupon/add
+Host: localhost:8082
+Content-Type: application/json
+
+{
+  "couponNo" : 57,
+  "categoryNo" : 7
+}
+
+###
+GET /api/coupon/coupon-issues/welcomecoupon
+Host: localhost:8082
+Content-Type: application/json
+
+###
+PUT /api/coupon-issues/9/point-coupon-use
+Host: localhost:8082
+Content-Type: application/json

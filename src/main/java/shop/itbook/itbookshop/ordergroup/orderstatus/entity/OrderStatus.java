@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.orderstatus.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.converter.OrderStatusEnumConverter;
 
 /**
  * 주문상태에 대한 엔티티입니다.
@@ -22,18 +24,22 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "order_status")
 @Entity
 public class OrderStatus {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_status_no", nullable = false)
     private Integer orderStatusNo;
 
+    @Convert(converter = OrderStatusEnumConverter.class)
     @Column(name = "order_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
-    @Enumerated(EnumType.STRING)
     private OrderStatusEnum orderStatusEnum;
+
+    public OrderStatus(OrderStatusEnum orderStatusEnum) {
+        this.orderStatusEnum = orderStatusEnum;
+    }
 }
 

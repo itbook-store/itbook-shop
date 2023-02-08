@@ -26,7 +26,6 @@ import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
  */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "order_product_history")
 @Entity
@@ -45,12 +44,18 @@ public class OrderProductHistory {
     @JoinColumn(name = "order_status_no", nullable = false)
     private OrderStatus orderStatus;
 
-    @Column(name = "order_status_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "order_status_created_at", nullable = false)
     private LocalDateTime orderStatusCreatedAt;
 
-    @Builder
+    /**
+     * 주문 상품 엔티티와 주문 상태로 주문 상품 이력 엔티티의 인스턴스를 생성하는 생성자입니다.
+     *
+     * @param orderProduct 주문 상품 엔티티의 인스턴스
+     * @param orderStatus  주문 상태 엔티티의 인스턴스
+     */
     public OrderProductHistory(OrderProduct orderProduct, OrderStatus orderStatus) {
         this.orderProduct = orderProduct;
         this.orderStatus = orderStatus;
+        this.orderStatusCreatedAt = LocalDateTime.now();
     }
 }
