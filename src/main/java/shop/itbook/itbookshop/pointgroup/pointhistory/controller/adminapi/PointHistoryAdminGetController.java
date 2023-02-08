@@ -14,7 +14,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.impl.PointHistoryAdminServiceImpl;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -26,12 +26,7 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
 @RequiredArgsConstructor
 public class PointHistoryAdminGetController {
 
-    private final PointHistoryAdminServiceImpl pointHistoryAdminServiceImpl;
-
-    @GetMapping("/{pointHistoryNo}")
-    public void pointHistoryDetails(@PathVariable Long pointHistoryNo) {
-
-    }
+    private final PointHistoryAdminService pointHistoryAdminService;
 
     @GetMapping
     public ResponseEntity<CommonResponseBody<PageResponse<PointHistoryListResponseDto>>> pointHistoryList(
@@ -39,7 +34,7 @@ public class PointHistoryAdminGetController {
         @RequestParam(required = false) String content) {
 
         Page<PointHistoryListResponseDto> pointHistoryList =
-            pointHistoryAdminServiceImpl.findPointHistoryList(pageable,
+            pointHistoryAdminService.findPointHistoryList(pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content));
 
         return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(
@@ -53,7 +48,7 @@ public class PointHistoryAdminGetController {
         @RequestParam(required = false) String content, @RequestParam String searchWord) {
 
         Page<PointHistoryListResponseDto> pointHistoryList =
-            pointHistoryAdminServiceImpl.findPointHistoryListBySearch(pageable,
+            pointHistoryAdminService.findPointHistoryListBySearch(pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content), searchWord);
 
         return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(
