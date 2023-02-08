@@ -33,29 +33,32 @@ public class OrderSheetController {
     private final MemberDestinationService memberDestinationService;
 
     /**
-     * 회원의 개별 주문서 작성 처리 로직을 담당하는 컨트롤러입니다.
+     * 회원의 주문서 작성을 처리하는 컨트롤러입니다.
      *
-     * @param productNo 주문하려는 제품의 번호
-     * @param memberNo  회원의 번호
+     * @param productNoList  주문하려는 제품의 번호 리스트
+     * @param productCntList 주문하려는 제품의 개수 리스트
+     * @param memberNo       회원의 번호
      * @return 주문서 작성을 위한 정보가 담긴 Dto
      * @author 정재원 *
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderWrite(
-        @RequestParam("productNo") Long productNo, @RequestParam("memberNo") Long memberNo) {
+    public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderSheet(
+        @RequestParam("productNo") List<Long> productNoList,
+        @RequestParam("productCnt") List<Integer> productCntList,
+        @RequestParam("memberNo") String memberNo) {
+
+        productService.checkSellProductList(productNoList, productCntList);
 
         List<ProductDetailsResponseDto> orderSheetProductResponseDtoList = new ArrayList<>();
 
-        ProductDetailsResponseDto product = productService.findProduct(productNo);
-        product.setSelledPrice(
-            (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01)));
+        productNoList.stream().map(productNo -> )
 
         orderSheetProductResponseDtoList.add(product);
 
         List<MemberDestinationResponseDto> memberDestinationResponseDtoList =
             memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
 
-        CommonResponseBody commonResponseBody =
+        CommonResponseBody<OrderSheetResponseDto> commonResponseBody =
             new CommonResponseBody(new CommonResponseBody.CommonHeader(
                 OrderSheetMessageEnum.ORDER_SHEET_FIND_INFO_SUCCESS_MESSAGE.getSuccessMessage()),
                 OrderSheetTransfer.createOrderSheetResponseDto(orderSheetProductResponseDtoList,

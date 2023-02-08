@@ -27,6 +27,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDest
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
@@ -68,7 +69,8 @@ public class RestControllerAdvisor {
         UnableToCreateCouponException.class,
         CouponTypeNotFoundException.class,
         UsageStatusNotFoundException.class,
-        CouponNotFoundException.class
+        CouponNotFoundException.class,
+        NotSellableProductException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

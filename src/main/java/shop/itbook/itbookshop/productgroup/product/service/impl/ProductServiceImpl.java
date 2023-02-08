@@ -1,7 +1,10 @@
 package shop.itbook.itbookshop.productgroup.product.service.impl;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +18,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookReques
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
@@ -225,4 +229,43 @@ public class ProductServiceImpl implements ProductService {
             .isPointApplyingBasedSellingPrice(requestDto.getIsPointApplyingBasedSellingPrice())
             .build();
     }
+
+    /**
+     * 모든 제품이 팔 수 있는 상품인지 검사 합니다.
+     *
+     * @param productNoList 검사할 상품들의 번호 리스트.
+     * @param productCnt    검사할 상품들의 각각 구매할 개수 리스트.
+     * @return 1개라도 팔 수 없는 상품이 있다면 false 를 반환합니다.
+     * @author 정재원 *
+     */
+    @Override
+    public void checkSellProductList(List<Long> productNoList, List<Integer> productCnt) {
+
+        Queue<Integer> productCntQueue = new LinkedList<>(productCnt);
+
+        productNoList.forEach(productNo -> {
+            if (!canSellProduct(productNo, productCntQueue.poll())) {
+                throw new NotSellableProductException(productNo);
+            }
+        });
+    }
+
+    /**
+     * 팔 수 있는 상품인지 검사합니다.
+     *
+     * @param productNo  검사할 상품의 번호
+     * @param productCnt 검사할 상품의 구매할 개수
+     * @return 팔 수 있으면 true, 팔 수 없으면 false
+     * @author 정재원 *
+     */
+    @Override
+    public boolean canSellProduct(Long productNo, Integer productCnt) {
+
+        Product product = findProductEntity(productNo);
+
+        return product.getIsSelled() || !product.getIsForceSoldOut()
+            || (product.getStock() - productCnt >= 0);
+    }
+
+
 }
