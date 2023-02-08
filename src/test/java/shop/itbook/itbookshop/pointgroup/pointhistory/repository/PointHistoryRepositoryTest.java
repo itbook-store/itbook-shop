@@ -32,7 +32,6 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository
  * @since 1.0
  */
 @DataJpaTest
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class PointHistoryRepositoryTest {
 
     @Autowired
@@ -129,6 +128,7 @@ class PointHistoryRepositoryTest {
 
     @Test
     void findFirstByMemberOrderByPointHistoryNoDesc() {
+
         PointHistory actual = pointHistoryRepository.findFirstByMemberOrderByPointHistoryNoDesc(
             member1).get();
 
