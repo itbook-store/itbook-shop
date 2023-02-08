@@ -177,7 +177,6 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
         QMember qMember = QMember.member;
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
-        QProduct qProduct = QProduct.product;
 
         return from(qCouponIssue)
             .select(Projections.fields(ProductCouponIssueListResponseDto.class,

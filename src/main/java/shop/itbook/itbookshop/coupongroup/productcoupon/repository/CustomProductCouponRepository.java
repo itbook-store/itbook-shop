@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.coupongroup.productcoupon.repository;
 
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupongroup.ordertotalapplicablecoupon.entity;
+package shop.itbook.itbookshop.coupongroup.productcouponapply.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,10 +12,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
- * 주문총액쿠폰적용 테이블 엔터티 입니다.
+ * 상품쿠폰적용 관련 엔티티입니다.
  *
  * @author 송다혜
  * @since 1.0
@@ -24,9 +24,9 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "product_coupon_apply")
 @Entity
-@Table(name = "order_total_coupon_apply")
-public class OrderTotalCouponApply {
+public class ProductCouponApply {
 
     @Id
     private Long couponIssueNo;
@@ -37,6 +37,7 @@ public class OrderTotalCouponApply {
     private CouponIssue couponIssue;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_no", nullable = false, unique = true)
-    private Order order;
+    @JoinColumn(name = "order_product_no", nullable = false, unique = true)
+    private OrderProduct orderProduct;
+
 }

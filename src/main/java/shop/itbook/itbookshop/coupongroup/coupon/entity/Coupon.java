@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
-import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 
 /**
  * 쿠폰에 대한 엔터티입니다.

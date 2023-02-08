@@ -27,6 +27,8 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         super(Coupon.class);
     }
 
+    private static String COUPON_TYPE = "couponType";
+
     @Override
     public Page<CouponListResponseDto> findCouponList(Pageable pageable) {
         QCoupon qCoupon = QCoupon.coupon;
@@ -45,7 +47,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
-                qCouponType.couponTypeEnum.stringValue().as("couponType")))
+                qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE)))
             .join(qCoupon.couponType, qCouponType)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -86,7 +88,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                     qCoupon.amount,
                     qCoupon.percent,
                     qCoupon.point,
-                    qCouponType.couponTypeEnum.stringValue().as("couponType")))
+                    qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE)))
             .join(qCoupon.couponType, qCouponType)
             .where(qCoupon.couponType.couponTypeEnum.eq(couponTypeEnum))
             .where(qCoupon.couponCreatedAt.before(LocalDateTime.now()))
@@ -119,7 +121,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
-                qCouponType.couponTypeEnum.stringValue().as("couponType")))
+                qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE)))
             .join(qCoupon.couponType, qCouponType)
             .where(qCouponType.couponTypeEnum.eq(couponTypeEnum))
             .offset(pageable.getOffset())
