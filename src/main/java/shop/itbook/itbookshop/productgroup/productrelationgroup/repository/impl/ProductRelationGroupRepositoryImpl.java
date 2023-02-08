@@ -41,7 +41,7 @@ public class ProductRelationGroupRepositoryImpl extends QuerydslRepositorySuppor
             from(qProductRelationGroup)
                 .innerJoin(qProductRelationGroup.basedProduct, qProduct)
                 .leftJoin(qProduct.book, qBook)
-                .select(qProductRelationGroup.productRelationGroupNo)
+                .select(qProductRelationGroup.product.productNo)
                 .where(qProductRelationGroup.basedProduct.productNo.eq(basedProductNo));
 
         return productNoListQuery.fetch();

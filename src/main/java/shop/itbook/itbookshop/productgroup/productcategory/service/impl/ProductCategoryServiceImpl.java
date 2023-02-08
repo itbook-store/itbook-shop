@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.productgroup.productcategory.service.impl;
 
+import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -93,6 +95,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, Integer categoryNo) {
         Page<ProductDetailsResponseDto> productList =
             productCategoryRepository.getProductListWithCategoryNo(pageable, categoryNo);
+        setExtraFieldsForList(productList);
         return productList;
     }
 }

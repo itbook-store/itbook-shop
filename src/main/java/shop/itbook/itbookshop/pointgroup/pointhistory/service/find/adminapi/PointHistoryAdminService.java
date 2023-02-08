@@ -2,7 +2,7 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -11,10 +11,10 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 public interface PointHistoryAdminService {
 
-    Page<PointHistoryListDto> findPointHistoryList(Pageable pageable,
-                                                   PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
+    Page<PointHistoryListResponseDto> findPointHistoryList(Pageable pageable,
+                                                           PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
 
-    Page<PointHistoryListDto> findPointHistoryListBySearch(Pageable pageable,
-                                                           PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
-                                                           String searchWord);
+    Page<PointHistoryListResponseDto> findPointHistoryListBySearch(Pageable pageable,
+                                                                   PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
+                                                                   String searchWord);
 }

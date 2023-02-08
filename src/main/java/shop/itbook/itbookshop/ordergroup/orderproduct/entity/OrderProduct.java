@@ -53,17 +53,17 @@ public class OrderProduct {
     private Integer count;
 
     @Column(name = "is_hidden", nullable = false)
-    private boolean isHidden;
+    private Boolean isHidden;
 
 
     /**
      * 주문상품 엔티티의 생성자입니다.
      *
-     * @param order    the order
-     * @param product  the product
-     * @param count    the count
-     * @param isHidden the is hidden
-     * @author 노수연
+     * @param order    주문 엔티티
+     * @param product  상품 엔티티
+     * @param count    상품 개수
+     * @param isHidden 주문 숨김 여부
+     * @author 정재원
      */
     @Builder
     public OrderProduct(Order order, Product product, Integer count, boolean isHidden) {

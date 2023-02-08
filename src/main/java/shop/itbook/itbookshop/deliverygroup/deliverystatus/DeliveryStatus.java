@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.deliverygroup.deliverystatus.converter.DeliveryStatusEnumConverter;
+import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.converter.DeliveryStatusEnumConverter;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 
 /**

@@ -7,10 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
-import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
-import shop.itbook.itbookshop.productgroup.producttype.repository.ProductTypeRepository;
-import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeService;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.exception.ProductTypeRegistrationNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.repository.ProductTypeRegistrationRepository;
@@ -50,8 +46,8 @@ public class ProductTypeRegistrationServiceImpl implements
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, Integer productTypeNo,
-                                                           boolean isAdmin) {
+    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable,
+                                                           Integer productTypeNo) {
         Page<ProductDetailsResponseDto> productListWithProductTypeNo =
             productTypeRegistrationRepository.findProductListAdminWithProductTypeNo(pageable,
                 productTypeNo);
