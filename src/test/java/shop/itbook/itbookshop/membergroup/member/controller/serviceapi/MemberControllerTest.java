@@ -28,6 +28,7 @@ import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 
 /**
  * @author 노수연
@@ -49,7 +50,7 @@ class MemberControllerTest {
     MemberRepository memberRepository;
 
     @MockBean
-    PointHistoryService pointHistoryService;
+    PointHistoryCommonService pointHistoryService;
 
     @Autowired
     ObjectMapper objectMapper;
