@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.orderproducthistory.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,9 +54,9 @@ class OrderProductHistoryRepositoryTest {
         orderProduct = OrderProductDummy.createOrderProduct(order, product);
         orderProductRepository.save(orderProduct);
 
-        orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.DEPOSIT_COMPLETE);
+        orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
         orderStatusRepository.save(orderStatus);
-        
+
         testEntityManager.flush();
         testEntityManager.clear();
     }

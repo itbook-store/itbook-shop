@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import java.util.LinkedList;
-import java.util.Optional;
 import java.util.Queue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -105,7 +104,7 @@ public class OrderServiceImpl implements OrderService {
         OrderProductHistory savedOrderProductHistory =
             orderProductHistoryRepository.findByOrderProduct_Order(order).orElseThrow();
         OrderStatus orderStatus = orderStatusService.findByOrderStatusEnum(
-            OrderStatusEnum.DEPOSIT_COMPLETE);
+            OrderStatusEnum.PAYMENT_COMPLETE);
 
         OrderProductHistory orderProductHistory = new OrderProductHistory(
             savedOrderProductHistory.getOrderProduct(),
