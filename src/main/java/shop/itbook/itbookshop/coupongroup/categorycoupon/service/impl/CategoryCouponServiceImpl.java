@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 
 /**
  * @author 송다혜
@@ -26,14 +27,16 @@ public class CategoryCouponServiceImpl implements CategoryCouponService {
 
     private final CategoryCouponRepository categoryCouponRepository;
     private final CategoryService categoryService;
+    private final CouponService couponService;
 
     @Override
     @Transactional
     public Long addCategoryCoupon(CategoryCouponRequestDto couponRequestDto) {
 
         Category category = categoryService.findCategoryEntity(couponRequestDto.getCategoryNo());
+        Long couponNo = couponService.addCoupon(couponRequestDto.getCouponRequestDto());
         CategoryCoupon categoryCoupon =
-            new CategoryCoupon(couponRequestDto.getCouponNo(), category);
+            new CategoryCoupon(couponNo, category);
         return categoryCouponRepository.save(categoryCoupon).getCouponNo();
     }
 

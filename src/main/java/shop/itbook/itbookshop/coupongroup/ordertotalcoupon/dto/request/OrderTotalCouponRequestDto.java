@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request;
+package shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,10 +10,8 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
  * @since 1.0
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class CategoryCouponRequestDto {
-
-    CouponRequestDto couponRequestDto;
-    private Integer categoryNo;
+@AllArgsConstructor
+public class OrderTotalCouponRequestDto {
+    private CouponRequestDto couponRequestDto;
 }
