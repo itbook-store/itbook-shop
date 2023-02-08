@@ -8,11 +8,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
-import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepository.ProductSearchRepository;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 import shop.itbook.itbookshop.productgroup.product.transfer.SearchProductTransfer;
@@ -79,6 +77,19 @@ public class ProductSearchServiceImpl implements ProductSearchService {
 
 
         return new PageImpl<>(result, pageable, searchProducts.getTotalElements());
+    }
+
+    @Override
+    public List<ProductSearchResponseDto> searchProductsByTitle(String name) {
+
+        List<SearchProduct> searchProducts = productSearchRepository.findByName(name);
+
+        return searchProducts
+            .stream()
+            .map(SearchProductTransfer::documentToDto)
+            .collect(Collectors.toList());
+
+
     }
 
 }
