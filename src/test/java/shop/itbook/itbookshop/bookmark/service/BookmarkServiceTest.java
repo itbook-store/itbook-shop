@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -21,9 +22,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.book.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.bookmark.dto.request.BookmarkRequestDto;
+import shop.itbook.itbookshop.bookmark.dto.response.BookmarkResponseDto;
 import shop.itbook.itbookshop.bookmark.dummy.BookmarkDummy;
 import shop.itbook.itbookshop.bookmark.entity.Bookmark;
 import shop.itbook.itbookshop.bookmark.repository.BookmarkRepository;
@@ -35,6 +38,7 @@ import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 
@@ -68,6 +72,9 @@ class BookmarkServiceTest {
 
     ProductDetailsResponseDto productDetailsResponseDto;
 
+    BookmarkResponseDto bookmarkResponseDto;
+
+
     @BeforeEach
     void setUp() {
         member = MemberDummy.getMember1();
@@ -82,6 +89,9 @@ class BookmarkServiceTest {
         bookmark = BookmarkDummy.getBookmark(member, product);
 
         productDetailsResponseDto = ProductDummy.getProductDetailsResponseDto();
+
+        bookmarkResponseDto =
+            new BookmarkResponseDto(LocalDateTime.now(), productDetailsResponseDto);
 
         bookmarkService =
             new BookmarkServiceImpl(bookmarkRepository, memberRepository, productRepository);
@@ -162,6 +172,24 @@ class BookmarkServiceTest {
             .isInstanceOf(ProductNotFoundException.class);
     }
 
+    @DisplayName("즐겨찾기 상품 등록_유효하지 않은 상품의 경우 실패 테스트")
+    @Test
+    void addProductInBookmark_invalidProduct_thenThrowIvalidProductException() {
+        // given
+        given(bookmarkRepository.existsByMember_MemberNoAndProduct_ProductNo(
+            member.getMemberNo(),
+            product.getProductNo()
+        )).willReturn(Boolean.FALSE);
+
+        given(memberRepository.findById(member.getMemberNo())).willReturn(Optional.of(member));
+        given(productRepository.findById(product.getProductNo())).willReturn(Optional.of(product));
+
+        ReflectionTestUtils.setField(product, "isDeleted", Boolean.TRUE);
+        // when, then
+        assertThatThrownBy(() -> bookmarkService.addProductInBookmark(bookmarkRequestDto))
+            .isInstanceOf(InvalidProductException.class);
+    }
+
     @DisplayName("즐겨찾기에 상품 삭제 테스트")
     @Test
     void deleteProductInBookmarkTest() {
@@ -187,7 +215,7 @@ class BookmarkServiceTest {
         );
     }
 
-    @DisplayName("회원번호를 통해 모든 상품 상세 리스트 조회 테스트")
+    @DisplayName("회원번호를 통해 모든 상품 상세 리스트 조회 성공 테스트")
     @Test
     void getAllProductInBookmarkTest() {
         // given
@@ -200,19 +228,41 @@ class BookmarkServiceTest {
         given(bookmarkRepository.findAllProductDetailsByMemberNo(
             pageable,
             bookmark.getMember().getMemberNo()
-        )).willReturn(new PageImpl<>(List.of(productDetailsResponseDto), pageable, 0));
+        )).willReturn(new PageImpl<>(List.of(bookmarkResponseDto), pageable, 0));
 
         // when
-        Page<ProductDetailsResponseDto> allProductInBookmark =
+        Page<BookmarkResponseDto> allProductInBookmark =
             bookmarkService.getAllProductInBookmark(
                 pageable,
                 member.getMemberNo()
             );
 
-        List<ProductDetailsResponseDto> content = allProductInBookmark.getContent();
+        List<BookmarkResponseDto> content = allProductInBookmark.getContent();
 
         // then
         assertThat(content).hasSize(1);
-        assertThat(content.get(0).getProductNo()).isEqualTo(product.getProductNo());
+        assertThat(content.get(0).getBookmarkCreateAt()).isBeforeOrEqualTo(LocalDateTime.now());
+        assertThat(content.get(0).getProductDetailsResponseDto().getProductNo()).isEqualTo(
+            product.getProductNo());
+    }
+
+    @DisplayName("회원번호를 통해 모든 상품 상세 리스트 조회_회원정보 없음_실패 테스트")
+    @Test
+    void getAllProductInBookmarkTest_notExistMember_thenMemberNotFoundException() {
+        // given
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+
+
+        given(memberRepository.existsById(anyLong())).willThrow(MemberNotFoundException.class);
+
+        given(bookmarkRepository.findAllProductDetailsByMemberNo(
+            pageable,
+            bookmark.getMember().getMemberNo()
+        )).willReturn(new PageImpl<>(List.of(bookmarkResponseDto), pageable, 0));
+
+        // when, then
+        assertThatThrownBy(() -> bookmarkService.getAllProductInBookmark(pageable, anyLong()))
+            .isInstanceOf(MemberNotFoundException.class);
+
     }
 }
