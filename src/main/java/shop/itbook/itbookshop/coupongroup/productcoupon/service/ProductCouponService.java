@@ -12,5 +12,5 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCoupo
 public interface ProductCouponService {
     Long addProductCoupon(ProductCouponRequestDto productCouponRequestDto);
 
-    Page<CouponListResponseDto> findProductCouponList(Pageable pageable);
+    Page<CouponListResponseDto> findProductCouponPageList(Pageable pageable);
 }

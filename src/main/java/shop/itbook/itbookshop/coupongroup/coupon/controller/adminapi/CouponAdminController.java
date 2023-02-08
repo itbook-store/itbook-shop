@@ -12,17 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
-import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
-import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
-import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
+
 
 /**
  * 관리자의 쿠폰 서비스 컨트롤러 클레스입니다.
@@ -43,7 +41,7 @@ public class CouponAdminController {
      * @param couponRequestDto 쿠폰의 정보를 담고있는 dto 객체입니다.
      * @return 저장한 쿠폰 번호를 ResponseEntity 에 담아 반환합니다.
      */
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<CommonResponseBody<CouponNoResponseDto>> couponAdd(
         @Valid @RequestBody CouponRequestDto couponRequestDto) {
 
@@ -65,14 +63,20 @@ public class CouponAdminController {
      * @return 쿠폰 정보의 리스트를 ResponseEntity 에 담아 반환합니다.
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponList(
+    public ResponseEntity<CommonResponseBody<PageResponse<CouponListResponseDto>>> couponList(
         Pageable pageable) {
 
-        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
+        Page<CouponListResponseDto> page =
+            couponService.findByCouponList(pageable);
+
+        PageResponse<CouponListResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                couponService.findByCouponList(pageable));
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -85,14 +89,20 @@ public class CouponAdminController {
      * @return the response entity
      */
     @GetMapping("/list/{couponType}")
-    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> couponTypeList(
+    public ResponseEntity<CommonResponseBody<PageResponse<CouponListResponseDto>>> couponTypeList(
         Pageable pageable, @PathVariable String couponType) {
 
-        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
+        Page<CouponListResponseDto> page =
+            couponService.findByCouponAtCouponTypeList(pageable, couponType);
+
+        PageResponse<CouponListResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
-                couponService.findByCouponAtCouponTypeList(pageable, couponType));
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

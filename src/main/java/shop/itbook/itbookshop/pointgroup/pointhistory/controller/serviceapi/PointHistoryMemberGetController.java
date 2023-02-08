@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.serviceapi.impl.PointHistoryMemberServiceImpl;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.serviceapi.PointHistoryMemberService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -26,19 +26,14 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
 @RequiredArgsConstructor
 public class PointHistoryMemberGetController {
 
-    private final PointHistoryMemberServiceImpl pointHistoryMemberServiceImpl;
-
-    @GetMapping("/{pointHistoryNo}")
-    public void pointHistoryDetails(@PathVariable Long pointHistoryNo) {
-
-    }
+    private final PointHistoryMemberService pointHistoryMemberService;
 
     @GetMapping("/my-point/{memberNo}")
-    public ResponseEntity<CommonResponseBody<PageResponse<PointHistoryListDto>>> memberPointHistoryList(
+    public ResponseEntity<CommonResponseBody<PageResponse<PointHistoryListResponseDto>>> memberPointHistoryList(
         @PathVariable Long memberNo, @PageableDefault Pageable pageable,
         @RequestParam(required = false) String content) {
-        Page<PointHistoryListDto> pointHistoryList =
-            pointHistoryMemberServiceImpl.findMyPointHistoryList(memberNo, pageable,
+        Page<PointHistoryListResponseDto> pointHistoryList =
+            pointHistoryMemberService.findMyPointHistoryList(memberNo, pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content));
 
         return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(

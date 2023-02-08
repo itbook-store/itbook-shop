@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
+import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.QProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.CustomProductCouponRepository;
@@ -26,10 +27,12 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<CouponListResponseDto> findProductCouponList(Pageable pageable) {
+    public Page<CouponListResponseDto> findProductCouponPageList(Pageable pageable) {
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
         QCoupon qCoupon = QCoupon.coupon;
         QProduct qProduct = QProduct.product;
+        QCouponType qCouponType = QCouponType.couponType;
+
         JPQLQuery<ProductCoupon> jpqlQuery = from(qProductCoupon);
 
         List<CouponListResponseDto> productCouponList = jpqlQuery
@@ -37,7 +40,9 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
                 qCoupon.couponNo,
                 qCoupon.amount, qCoupon.point, qCoupon.percent,
                 qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
-                qProduct.productNo, qProduct.name))
+                qProduct.productNo, qProduct.name,
+                qCouponType.couponTypeEnum.stringValue().as("couponType")))
+            .join(qCoupon.couponType, qCouponType)
             .innerJoin(qProductCoupon.coupon, qCoupon)
             .innerJoin(qProductCoupon.product, qProduct)
             .offset(pageable.getOffset())
