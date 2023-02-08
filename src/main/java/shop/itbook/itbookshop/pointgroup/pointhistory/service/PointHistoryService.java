@@ -11,10 +11,6 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 public interface PointHistoryService {
 
-    Optional<PointHistory> findRecentPointHistory(Member member);
-
-    Long findRecentlyPoint(Member member);
-
     PointHistory getSavedIncreasePointHistory(Member member, Long pointToApply,
                                               PointIncreaseDecreaseContentEnum contentEnum);
 

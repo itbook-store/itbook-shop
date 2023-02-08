@@ -25,4 +25,6 @@ public class PointHistoryMemberServiceImpl implements PointHistoryMemberService 
         return pointHistoryRepository.findMyPointHistoryListDto(memberNo, pageable,
             pointIncreaseDecreaseContentEnum);
     }
+
+
 }
