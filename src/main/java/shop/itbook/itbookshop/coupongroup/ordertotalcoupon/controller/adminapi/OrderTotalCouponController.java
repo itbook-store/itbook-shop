@@ -17,6 +17,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
+import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.request.OrderTotalCouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.service.OrderTotalCouponService;
 
 /**
@@ -31,10 +32,10 @@ public class OrderTotalCouponController {
     private final OrderTotalCouponService orderTotalCouponService;
     @PostMapping("/add")
     public ResponseEntity<CommonResponseBody<CouponNoResponseDto>> couponAdd(
-        @Valid @RequestBody CouponRequestDto couponRequestDto) {
+        @Valid @RequestBody OrderTotalCouponRequestDto orderTotalCouponRequestDto) {
 
         CouponNoResponseDto couponNoResponseDto =
-            new CouponNoResponseDto(orderTotalCouponService.addOrderTotalCoupon(couponRequestDto));
+            new CouponNoResponseDto(orderTotalCouponService.addOrderTotalCoupon(orderTotalCouponRequestDto));
 
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
