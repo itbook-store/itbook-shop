@@ -17,6 +17,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CouponIssueLi
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
@@ -140,5 +141,33 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(memberNo);
         return new CouponIssueListByGroupResponseDto(orderTotalCouponList, categoryCouponList,
             productCouponList);
+    }
+
+    @Override
+    public CouponIssue findCouponIssueByCouponIssueNo(Long couponIssueNo) {
+        return couponIssueRepository.findById(couponIssueNo).orElseThrow(
+            CouponIssueNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public Long usingCouponIssue(Long couponIssueNo) {
+
+        CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
+        couponIssue.setUsageStatus(
+            usageStatusService.findUsageStatus(UsageStatusEnum.COMPLETED.getUsageStatus()));
+        couponIssue.setCouponUsageCreatedAt(LocalDateTime.now());
+        return couponIssueRepository.save(couponIssue).getCouponIssueNo();
+    }
+
+    @Override
+    @Transactional
+    public Long cancelCouponIssue(Long couponIssueNo) {
+
+        CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
+        couponIssue.setUsageStatus(
+            usageStatusService.findUsageStatus(UsageStatusEnum.AVAILABLE.getUsageStatus()));
+        couponIssue.setCouponUsageCreatedAt(null);
+        return couponIssueRepository.save(couponIssue).getCouponIssueNo();
     }
 }

@@ -20,4 +20,10 @@ public interface CouponIssueService {
     void usePointCouponAndCreatePointHistory(Long couponIssueNo);
 
     CouponIssueListByGroupResponseDto findMemberAvailableCouponIssuesList(Long memberNo);
+
+    CouponIssue findCouponIssueByCouponIssueNo(Long couponIssueNo);
+
+    Long usingCouponIssue(Long couponIssueNo);
+
+    Long cancelCouponIssue(Long couponIssueNo);
 }
