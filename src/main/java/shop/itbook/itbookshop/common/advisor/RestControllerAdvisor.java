@@ -3,12 +3,8 @@ package shop.itbook.itbookshop.common.advisor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
@@ -16,7 +12,7 @@ import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
-import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
+import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -132,5 +128,5 @@ public class RestControllerAdvisor {
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(exceptionCommonResponseBody);
     }
-    
+
 }

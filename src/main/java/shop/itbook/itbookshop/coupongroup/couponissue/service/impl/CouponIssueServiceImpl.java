@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
@@ -25,7 +24,6 @@ import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
-import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
 
 /**
