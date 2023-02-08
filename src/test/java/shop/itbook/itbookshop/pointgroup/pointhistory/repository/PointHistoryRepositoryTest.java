@@ -126,6 +126,7 @@ class PointHistoryRepositoryTest {
             .isEqualTo(dummyPointHistory.getIncreaseDecreasePoint());
     }
 
+    @DisplayName("특정멤버의 가장 나중에 등록된 포인트내역을 내림차순으로 첫번재 것을 잘 가져온다.")
     @Test
     void findFirstByMemberOrderByPointHistoryNoDesc() {
 
