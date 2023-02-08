@@ -3,7 +3,7 @@ package shop.itbook.itbookshop.bookmark.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.bookmark.dto.request.BookmarkRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.bookmark.dto.response.BookmarkResponseDto;
 
 /**
  * 즐겨찾기 비지니스 로직을 담당하는 서비스 인터페이스 입니다.
@@ -47,7 +47,7 @@ public interface BookmarkService {
      * @param memberNo 회원 번호
      * @return 페이징 처리된 상품 정보 리스트
      */
-    Page<ProductDetailsResponseDto> getAllProductInBookmark(Pageable pageable, Long memberNo);
+    Page<BookmarkResponseDto> getAllProductInBookmark(Pageable pageable, Long memberNo);
 
 
 }
