@@ -4,11 +4,11 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.response.OrderTotalCouponResponseListDto;
-import shop.itbook.itbookshop.coupongroup.productcoupon.dto.response.ProductCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
 
 /**
  * @author 송다혜
@@ -21,12 +21,12 @@ public interface CustomCouponIssueRepository {
 
     CouponIssue findByIdFetchJoin(Long couponIssueNo);
 
-    List<OrderTotalCouponResponseListDto> findAvailableOrderTotalCouponIssueByMemberNo(
+    List<OrderTotalCouponIssueResponseListDto> findAvailableOrderTotalCouponIssueByMemberNo(
         Long memberNo);
 
-    List<CategoryCouponListResponseDto> findAvailableCategoryCouponIssueByMemberNo(
+    List<CategoryCouponIssueListResponseDto> findAvailableCategoryCouponIssueByMemberNo(
         Long memberNo);
 
-    List<ProductCouponListResponseDto> findAvailableProductCouponIssueByMemberNo(
+    List<ProductCouponIssueListResponseDto> findAvailableProductCouponIssueByMemberNo(
         Long memberNo);
 }

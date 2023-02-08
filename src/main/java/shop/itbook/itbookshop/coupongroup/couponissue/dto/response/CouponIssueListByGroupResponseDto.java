@@ -4,9 +4,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.response.OrderTotalCouponResponseListDto;
-import shop.itbook.itbookshop.coupongroup.productcoupon.dto.response.ProductCouponListResponseDto;
 
 /**
  * @author 송다혜
@@ -16,7 +13,7 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.dto.response.ProductCoup
 @AllArgsConstructor
 @NoArgsConstructor
 public class CouponIssueListByGroupResponseDto {
-    private List<OrderTotalCouponResponseListDto> orderTotalCouponList;
-    private List<CategoryCouponListResponseDto> categoryCouponList;
-    private List<ProductCouponListResponseDto> productCouponList;
+    private List<OrderTotalCouponIssueResponseListDto> orderTotalCouponList;
+    private List<CategoryCouponIssueListResponseDto> categoryCouponList;
+    private List<ProductCouponIssueListResponseDto> productCouponList;
 }

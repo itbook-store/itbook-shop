@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
@@ -17,9 +17,9 @@ import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CustomCouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.response.OrderTotalCouponResponseListDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.QOrderTotalCoupon;
-import shop.itbook.itbookshop.coupongroup.productcoupon.dto.response.ProductCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.QProductCoupon;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.QUsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
@@ -96,7 +96,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public List<OrderTotalCouponResponseListDto> findAvailableOrderTotalCouponIssueByMemberNo(
+    public List<OrderTotalCouponIssueResponseListDto> findAvailableOrderTotalCouponIssueByMemberNo(
         Long memberNo) {
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
@@ -106,19 +106,17 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QOrderTotalCoupon qOrderTotalCoupon = QOrderTotalCoupon.orderTotalCoupon;
 
         return from(qCouponIssue)
-            .select(Projections.fields(OrderTotalCouponResponseListDto.class,
-                Projections.fields(CouponListResponseDto.class,
+            .select(Projections.fields(OrderTotalCouponIssueResponseListDto.class,
                 qCouponIssue.couponIssueNo,
-                qCoupon.name,
-                qCoupon.code,
-                qCoupon.amount,
-                qCoupon.percent,
-                qCoupon.point,
-                qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
-                qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
-                qCouponIssue.couponIssueCreatedAt,
                 qCouponIssue.couponExpiredAt,
-                qCouponIssue.couponUsageCreatedAt).as("couponListResponseDto")))
+                Projections.fields(CouponListResponseDto.class,
+                    qCouponIssue.couponIssueNo, qCoupon.name,
+                    qCoupon.code, qCoupon.amount,
+                    qCoupon.percent, qCoupon.point,
+                    qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
+                    qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
+                    qCoupon.couponCreatedAt,
+                    qCoupon.couponExpiredAt).as("couponListResponseDto")))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
@@ -134,7 +132,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public List<CategoryCouponListResponseDto> findAvailableCategoryCouponIssueByMemberNo(
+    public List<CategoryCouponIssueListResponseDto> findAvailableCategoryCouponIssueByMemberNo(
         Long memberNo) {
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
@@ -144,20 +142,18 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
 
         return from(qCouponIssue)
-            .select(Projections.fields(CategoryCouponListResponseDto.class,
+            .select(Projections.fields(CategoryCouponIssueListResponseDto.class,
                 qCategoryCoupon.category.categoryNo.as("categoryNo"),
+                qCouponIssue.couponIssueNo,
+                qCouponIssue.couponExpiredAt,
                 Projections.fields(CouponListResponseDto.class,
-                    qCouponIssue.couponIssueNo,
-                    qCoupon.name,
-                    qCoupon.code,
-                    qCoupon.amount,
-                    qCoupon.percent,
-                    qCoupon.point,
+                    qCoupon.couponNo, qCoupon.name,
+                    qCoupon.code, qCoupon.amount,
+                    qCoupon.percent, qCoupon.point,
                     qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
                     qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
-                    qCouponIssue.couponIssueCreatedAt,
-                    qCouponIssue.couponExpiredAt,
-                    qCouponIssue.couponUsageCreatedAt).as("couponListResponseDto")))
+                    qCoupon.couponCreatedAt,
+                    qCoupon.couponExpiredAt).as("couponListResponseDto")))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
@@ -173,7 +169,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public List<ProductCouponListResponseDto> findAvailableProductCouponIssueByMemberNo(
+    public List<ProductCouponIssueListResponseDto> findAvailableProductCouponIssueByMemberNo(
         Long memberNo) {
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
@@ -184,20 +180,18 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
 
         return from(qCouponIssue)
-            .select(Projections.fields(ProductCouponListResponseDto.class,
+            .select(Projections.fields(ProductCouponIssueListResponseDto.class,
                 qProductCoupon.product.productNo.as("productNo"),
+                qCouponIssue.couponIssueNo,
+                qCouponIssue.couponExpiredAt,
                 Projections.fields(CouponListResponseDto.class,
-                    qCouponIssue.couponIssueNo,
-                    qCoupon.name,
-                    qCoupon.code,
-                    qCoupon.amount,
-                    qCoupon.percent,
-                    qCoupon.point,
+                    qCoupon.couponNo, qCoupon.name,
+                    qCoupon.code, qCoupon.amount,
+                    qCoupon.percent, qCoupon.point,
                     qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
                     qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
-                    qCouponIssue.couponIssueCreatedAt,
-                    qCouponIssue.couponExpiredAt,
-                    qCouponIssue.couponUsageCreatedAt).as("couponListResponseDto")))
+                    qCoupon.couponCreatedAt,
+                    qCoupon.couponExpiredAt).as("couponListResponseDto")))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)

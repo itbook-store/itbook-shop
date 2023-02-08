@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
-import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response.CategoryCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
@@ -27,10 +27,10 @@ import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.coupontype.dummy.CouponTypeDummy;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
 import shop.itbook.itbookshop.coupongroup.coupontype.repository.CouponTypeRepository;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.response.OrderTotalCouponResponseListDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
-import shop.itbook.itbookshop.coupongroup.productcoupon.dto.response.ProductCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.usagestatus.dummy.UsageStatusDummy;
@@ -195,7 +195,7 @@ class CouponIssueRepositoryTest {
     @Test
     @DisplayName("멤버가 가지고 있는 사용 가능한 모든 주문 총액 쿠폰이 불러지는지 확인")
     void findAvailableOrderTotalCouponIssueByMemberNo_success_test() {
-        List<OrderTotalCouponResponseListDto> result1 =
+        List<OrderTotalCouponIssueResponseListDto> result1 =
             couponIssueRepository.findAvailableOrderTotalCouponIssueByMemberNo(
                 member1.getMemberNo());
 
@@ -203,9 +203,11 @@ class CouponIssueRepositoryTest {
         for(int i = 0; i<result1.size(); i++){
             CouponListResponseDto couponResult = result1.get(i).getCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("OrderTotalCoupon");
+            assertThat(result1.get(i).getCouponIssueNo()).isNotNull();
+            assertThat(result1.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
         }
 
-        List<OrderTotalCouponResponseListDto> result2 =
+        List<OrderTotalCouponIssueResponseListDto> result2 =
             couponIssueRepository.findAvailableOrderTotalCouponIssueByMemberNo(
                 member2.getMemberNo());
 
@@ -213,13 +215,15 @@ class CouponIssueRepositoryTest {
         for(int i = 0; i<result2.size(); i++){
             CouponListResponseDto couponResult = result2.get(i).getCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("OrderTotalCoupon");
+            assertThat(result2.get(i).getCouponIssueNo()).isNotNull();
+            assertThat(result2.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
         }
     }
 
     @Test
     @DisplayName("멤버가 가지고 있는 사용 가능한 모든 카테고리 쿠폰이 불러지는지 확인")
     void findAvailableCategoryCouponIssueByMemberNo_success_test() {
-        List<CategoryCouponListResponseDto> result1 =
+        List<CategoryCouponIssueListResponseDto> result1 =
             couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(
                 member1.getMemberNo());
 
@@ -228,9 +232,11 @@ class CouponIssueRepositoryTest {
             CouponListResponseDto couponResult = result1.get(i).getCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("CategoryCoupon");
             assertThat(result1.get(i).getCategoryNo()).isEqualTo(category.getCategoryNo());
+            assertThat(result1.get(i).getCouponIssueNo()).isNotNull();
+            assertThat(result1.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
         }
 
-        List<CategoryCouponListResponseDto> result2 =
+        List<CategoryCouponIssueListResponseDto> result2 =
             couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(
                 member2.getMemberNo());
 
@@ -239,13 +245,15 @@ class CouponIssueRepositoryTest {
             CouponListResponseDto couponResult = result2.get(i).getCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("CategoryCoupon");
             assertThat(result2.get(i).getCategoryNo()).isEqualTo(category.getCategoryNo());
+            assertThat(result2.get(i).getCouponIssueNo()).isNotNull();
+            assertThat(result2.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
         }
     }
 
     @Test
     @DisplayName("멤버가 가지고 있는 사용 가능한 모든 상품 쿠폰이 불러지는지 확인")
     void findAvailableProductCouponIssueByMemberNo_success_test() {
-        List<ProductCouponListResponseDto> result1 =
+        List<ProductCouponIssueListResponseDto> result1 =
             couponIssueRepository.findAvailableProductCouponIssueByMemberNo(
                 member1.getMemberNo());
 
@@ -254,9 +262,11 @@ class CouponIssueRepositoryTest {
             CouponListResponseDto couponResult = result1.get(i).getCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("ProductCoupon");
             assertThat(result1.get(i).getProductNo()).isEqualTo(product.getProductNo());
+            assertThat(result1.get(i).getCouponIssueNo()).isNotNull();
+            assertThat(result1.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
         }
 
-        List<ProductCouponListResponseDto> result2 =
+        List<ProductCouponIssueListResponseDto> result2 =
             couponIssueRepository.findAvailableProductCouponIssueByMemberNo(
                 member2.getMemberNo());
 
@@ -265,6 +275,8 @@ class CouponIssueRepositoryTest {
             CouponListResponseDto couponResult = result2.get(i).getCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("ProductCoupon");
             assertThat(result2.get(i).getProductNo()).isEqualTo(product.getProductNo());
+            assertThat(result2.get(i).getCouponIssueNo()).isNotNull();
+            assertThat(result2.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
         }
     }
 }
