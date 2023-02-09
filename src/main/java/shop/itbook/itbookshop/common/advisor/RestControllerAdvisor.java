@@ -3,12 +3,8 @@ package shop.itbook.itbookshop.common.advisor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
@@ -37,6 +33,7 @@ import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundExce
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
 /**
@@ -83,7 +80,8 @@ public class RestControllerAdvisor {
         BookNotFoundException.class,
         ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
-        InvalidTokenException.class
+        InvalidTokenException.class,
+        ReviewAlreadyRegisteredException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
@@ -132,5 +130,5 @@ public class RestControllerAdvisor {
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(exceptionCommonResponseBody);
     }
-    
+
 }
