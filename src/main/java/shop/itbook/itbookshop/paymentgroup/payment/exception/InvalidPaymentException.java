@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentgroup;
+package shop.itbook.itbookshop.paymentgroup.payment.exception;
 
 /**
  * 결제가 유효하지 않을 때 발생시킬 예외 클래스입니다.

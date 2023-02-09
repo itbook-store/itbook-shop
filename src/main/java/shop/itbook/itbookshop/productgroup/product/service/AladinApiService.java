@@ -1,8 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import lombok.Data;
+import java.util.Optional;
 import lombok.Getter;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.dto.response.BookResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 
@@ -22,7 +21,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 @Service
 public class AladinApiService {
 
-    private final String TTBKEY = "ttb1096222126001";
+    private static final String TTBKEY = "ttb1096222126001";
     private final RestTemplate restTemplate = new RestTemplate();
 
     public Item getBookDetails(String isbn) {
@@ -44,10 +43,11 @@ public class AladinApiService {
         ResponseEntity<BookResponse> response = restTemplate.exchange(requestUrl, HttpMethod.GET,
             new HttpEntity<>(headers), BookResponse.class);
 
-        BookResponse bookResponse = response.getBody();
+        BookResponse bookResponse = Optional.ofNullable(response.getBody())
+            .orElseThrow(BookNotFoundException::new);
 
-        if (bookResponse.getItem().size() == 0) {
-            return null;
+        if (bookResponse.getItem().isEmpty()) {
+            throw new BookNotFoundException();
         }
 
         return bookResponse.getItem().get(0);

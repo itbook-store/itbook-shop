@@ -1,9 +1,8 @@
 package shop.itbook.itbookshop.paymentgroup.paymentstatus.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.paymentgroup.paymentstatusenum.PaymentStatusEnum;
+import shop.itbook.itbookshop.paymentgroup.paymentstatus.impl.PaymentStatusEnumConverter;
+import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.PaymentStatusEnum;
 
 /**
  * 결제상태에 대한 엔티티입니다.
@@ -33,7 +33,7 @@ public class PaymentStatus {
     @Column(name = "payment_status_no", nullable = false)
     private Integer paymentStatusNo;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "payment_status_name", columnDefinition = "varchar(255)", unique = true, nullable = false)
+    @Convert(converter = PaymentStatusEnumConverter.class)
+    @Column(name = "payment_status_name", unique = true, nullable = false)
     private PaymentStatusEnum paymentStatusEnum;
 }

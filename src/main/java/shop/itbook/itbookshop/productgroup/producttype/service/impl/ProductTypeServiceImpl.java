@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.productgroup.producttype.service.impl;
 import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -85,13 +84,13 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
             case RECOMMENDATION:
                 List<Long> productNoList =
-                    this.findRecommendationBookList(pageable, memberNo);
+                    this.findRecommendationBookList(memberNo);
                 productList =
                     productService.findProductListByProductNoListForUser(pageable, productNoList);
                 break;
 
             case RECENTLY_SEEN_PRODUCT:
-                productList = this.findRecentlySeenProductList(pageable);
+                productList = this.findRecentlySeenProductList();
                 break;
 
             default:
@@ -108,41 +107,24 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
     public Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable/*,
                                                            boolean isAdmin*/) {
-        /*if (isAdmin) {
-            return productTypeRepository.findNewBookListAdmin(pageable);
-        } else {*/
         return productTypeRepository.findNewBookListUser(pageable);
-//        }
     }
 
     public Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable/*,
                                                                 boolean isAdmin*/) {
-        /*if (isAdmin) {
-            return productTypeRepository.findDiscountBookListAdmin(pageable);
-        } else {*/
         return productTypeRepository.findDiscountBookListUser(pageable);
-//        }
     }
 
     public Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable/*,
                                                                   boolean isAdmin*/) {
-//        if (isAdmin) {
-//            return productTypeRepository.findBestSellerBookListAdmin(pageable);
-//        } else {
         return productTypeRepository.findBestSellerBookListUser(pageable);
-//        }
     }
 
     public Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable) {
-//        if (isAdmin) {
-//            return productTypeRepository.findPopularityBookListAdmin(pageable);
-//        } else {
         return productTypeRepository.findPopularityBookListUser(pageable);
-//        }
     }
 
-    public List<Long> findRecommendationBookList(Pageable pageable,
-                                                 Long memberNo) {
+    public List<Long> findRecommendationBookList(Long memberNo) {
         Long basedProductNo;
 
         if (Optional.ofNullable(memberNo).isEmpty()) {
@@ -171,7 +153,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
 
     // TODO 수연님 여기서 최근 본 상품 개발하시면 됩니당
-    public Page<ProductDetailsResponseDto> findRecentlySeenProductList(Pageable pageable) {
+    public Page<ProductDetailsResponseDto> findRecentlySeenProductList() {
         return null;
     }
 }

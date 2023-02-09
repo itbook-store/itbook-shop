@@ -56,9 +56,6 @@ public class Payment {
     @JoinColumn(name = "card_no", nullable = false, columnDefinition = "varchar(20)")
     private Card card;
 
-    @Column(name = "total_amount", nullable = false)
-    private Long totalAmount;
-
     @Column(name = "payment_key", nullable = false, columnDefinition = "varchar(255)")
     private String paymentKey;
 
@@ -68,20 +65,14 @@ public class Payment {
     @Column(name = "order_name", nullable = false, columnDefinition = "varchar(20)")
     private String orderName;
 
-    @Column(name = "success_url", nullable = false, columnDefinition = "text")
-    private String successUrl;
-
-    @Column(name = "fail_url", nullable = false, columnDefinition = "text")
-    private String failUrl;
-
     @Column(name = "requested_at", nullable = false)
     private LocalDateTime requestedAt;
 
+    @Column(name = "approved_at", nullable = false)
+    private LocalDateTime approvedAt;
     @Column(name = "receipt_url", nullable = false, columnDefinition = "test")
     private String receiptUrl;
 
-    @Column(name = "approved_at", nullable = false)
-    private LocalDateTime approvedAt;
 
     @Column(name = "country", nullable = false, columnDefinition = "varchar(100)")
     private String country;
@@ -98,12 +89,9 @@ public class Payment {
      * @param paymentStatus the payment status
      * @param order         the order id
      * @param card          the card
-     * @param totalAmount   the total amount
      * @param paymentKey    the payment key
      * @param orderId       the order no
      * @param orderName     the order name
-     * @param successUrl    the success url
-     * @param failUrl       the fail url
      * @param requestedAt   the requested at
      * @param receiptUrl    the receipt url
      * @param approvedAt    the approved at
@@ -114,19 +102,16 @@ public class Payment {
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
-    public Payment(PaymentStatus paymentStatus, Order order, Card card, Long totalAmount,
-                   String paymentKey, String orderId, String orderName, String successUrl,
-                   String failUrl, LocalDateTime requestedAt, String receiptUrl,
+    public Payment(PaymentStatus paymentStatus, Order order, Card card,
+                   String paymentKey, String orderId, String orderName, LocalDateTime requestedAt,
+                   String receiptUrl,
                    LocalDateTime approvedAt, String country, String checkoutUrl, Long vat) {
         this.paymentStatus = paymentStatus;
         this.order = order;
         this.card = card;
-        this.totalAmount = totalAmount;
         this.paymentKey = paymentKey;
         this.orderId = orderId;
         this.orderName = orderName;
-        this.successUrl = successUrl;
-        this.failUrl = failUrl;
         this.requestedAt = requestedAt;
         this.receiptUrl = receiptUrl;
         this.approvedAt = approvedAt;

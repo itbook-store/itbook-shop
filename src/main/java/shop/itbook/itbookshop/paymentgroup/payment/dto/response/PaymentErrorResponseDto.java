@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentgroup.dto.response;
+package shop.itbook.itbookshop.paymentgroup.payment.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

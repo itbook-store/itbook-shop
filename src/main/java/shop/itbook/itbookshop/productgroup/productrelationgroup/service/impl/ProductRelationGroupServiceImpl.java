@@ -112,11 +112,7 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
     @Override
     public Page<ProductRelationResponseDto> findAllMainProductRelationForAdmin(Pageable pageable) {
 
-        Page<ProductRelationResponseDto> mainProductRelationList =
-            productRelationRepository.getAllBasedProductNoListAdmin(pageable);
-
-
-        return mainProductRelationList;
+        return productRelationRepository.getAllBasedProductNoListAdmin(pageable);
     }
 
     /**

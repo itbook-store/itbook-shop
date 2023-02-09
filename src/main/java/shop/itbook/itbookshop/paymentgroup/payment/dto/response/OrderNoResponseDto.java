@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentgroup.dto.request;
+package shop.itbook.itbookshop.paymentgroup.payment.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +13,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentApproveRequestDto {
-    private String paymentKey;
-    private String orderId;
-    private Long amount;
+public class OrderNoResponseDto {
+    Long orderNo;
 }

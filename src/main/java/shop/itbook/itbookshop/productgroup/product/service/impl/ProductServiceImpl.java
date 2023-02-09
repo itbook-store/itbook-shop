@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.category.entity.Category;
-import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -77,8 +76,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = updateProduct(requestDto, productNo);
         productRepository.save(product);
 
-        Category parentCategory =
-            productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
+        productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
 
     }
 

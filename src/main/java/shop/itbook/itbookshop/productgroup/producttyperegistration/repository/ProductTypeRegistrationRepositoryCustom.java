@@ -1,11 +1,9 @@
 package shop.itbook.itbookshop.productgroup.producttyperegistration.repository;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 
 /**

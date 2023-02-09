@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.productrelationgroup.dto.response.ProductRelationResponseDto;
 import shop.itbook.itbookshop.productgroup.productrelationgroup.entity.ProductRelationGroup;
