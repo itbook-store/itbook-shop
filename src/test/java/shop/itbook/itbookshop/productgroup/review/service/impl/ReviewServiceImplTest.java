@@ -2,12 +2,13 @@ package shop.itbook.itbookshop.productgroup.review.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,20 +22,36 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
+import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
+import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
+import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
+import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
+import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
+import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
+import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dummy.ReviewDummy;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
 import shop.itbook.itbookshop.productgroup.review.transfer.ReviewTransfer;
@@ -63,6 +80,24 @@ class ReviewServiceImplTest {
     @MockBean
     ReviewRepository reviewRepository;
 
+    @MockBean
+    MemberStatusRepository memberStatusRepository;
+
+    @MockBean
+    MembershipRepository membershipRepository;
+
+    @MockBean
+    OrderRepository orderRepository;
+
+    @MockBean
+    ProductRepository productRepository;
+
+    @MockBean
+    MemberRepository memberRepository;
+
+    @MockBean
+    OrderProductRepository orderProductRepository;
+
     ReviewRequestDto reviewRequestDto;
 
     ReviewResponseDto reviewResponseDto;
@@ -72,6 +107,15 @@ class ReviewServiceImplTest {
     ProductRequestDto productRequestDto;
 
     MemberRequestDto memberRequestDto;
+
+    Review dummyReview;
+    OrderProduct dummyOrderProduct;
+    Order dummyOrder;
+    Product dummyProduct;
+    Member dummyMember;
+    MemberStatus dummyMemberStatus;
+    Membership dummyMembership;
+
 
     @BeforeEach
     void setUp() throws IOException {
@@ -102,20 +146,32 @@ class ReviewServiceImplTest {
             .image("testurl")
             .build();
 
-        productRequestDto = ProductBookRequestDummy.getProductRequest();
+        dummyMemberStatus = MemberStatusDummy.getNormalMemberStatus();
+        memberStatusRepository.save(dummyMemberStatus);
 
-        memberRequestDto = new MemberRequestDto();
-        ReflectionTestUtils.setField(memberRequestDto, "membershipName", "일반");
-        ReflectionTestUtils.setField(memberRequestDto, "memberStatusName", "정상회원");
-        ReflectionTestUtils.setField(memberRequestDto, "memberId", "user1000");
-        ReflectionTestUtils.setField(memberRequestDto, "nickname", "감자");
-        ReflectionTestUtils.setField(memberRequestDto, "name", "신짱구");
-        ReflectionTestUtils.setField(memberRequestDto, "isMan", true);
-        ReflectionTestUtils.setField(memberRequestDto, "birth",
-            LocalDateTime.of(2000, 1, 1, 0, 0, 0));
-        ReflectionTestUtils.setField(memberRequestDto, "password", "1234");
-        ReflectionTestUtils.setField(memberRequestDto, "phoneNumber", "010-9999-9999");
-        ReflectionTestUtils.setField(memberRequestDto, "email", "user1000@test.com");
+        dummyMembership = MembershipDummy.getMembership();
+        membershipRepository.save(dummyMembership);
+
+        dummyMember = MemberDummy.getMember1();
+        dummyMember.setMemberStatus(dummyMemberStatus);
+        dummyMember.setMembership(dummyMembership);
+        memberRepository.save(dummyMember);
+
+        dummyOrder = OrderDummy.getOrder();
+        orderRepository.save(dummyOrder);
+
+        dummyProduct = ProductDummy.getProductSuccess();
+        productRepository.save(dummyProduct);
+
+        dummyOrderProduct = OrderProductDummy.createOrderProduct(dummyOrder, dummyProduct);
+        orderProductRepository.save(dummyOrderProduct);
+
+        dummyReview = ReviewDummy.getReview();
+        dummyReview.setOrderProductNo(dummyProduct.getProductNo());
+        dummyReview.setOrderProduct(dummyOrderProduct);
+        dummyReview.setProduct(dummyProduct);
+        dummyReview.setMember(dummyMember);
+        reviewRepository.save(dummyReview);
     }
 
     @Test
@@ -151,5 +207,24 @@ class ReviewServiceImplTest {
         Long actual = reviewService.addReview(reviewRequestDto, mockImageFile);
 
         Assertions.assertThat(actual).isEqualTo(review.getOrderProductNo());
+    }
+
+    @Test
+    void findReviewById() {
+
+        given(reviewRepository.findById(anyLong())).willReturn(Optional.of(dummyReview));
+
+        ReviewResponseDto actualReview = reviewService.findReviewById(1L);
+
+        Assertions.assertThat(actualReview.getOrderProductNo())
+            .isEqualTo(dummyReview.getOrderProductNo());
+    }
+
+    @Test
+    void findReviewByIdFailure() {
+        given(reviewRepository.findById(anyLong())).willReturn(Optional.empty());
+        Assertions.assertThatThrownBy(() -> reviewService.findReviewById(1L))
+            .isInstanceOf(ReviewNotFoundException.class)
+            .hasMessage(ReviewNotFoundException.MESSAGE);
     }
 }

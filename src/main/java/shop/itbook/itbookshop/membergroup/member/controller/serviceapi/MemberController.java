@@ -320,7 +320,7 @@ public class MemberController {
                 MemberDestinationResultMessageEnum.MEMBER_DESTINATION_DELETE_MESSAGE.getSuccessMessage()),
             null);
 
-        return ResponseEntity.ok().body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
 
     @PostMapping("/memberDestinations/add")

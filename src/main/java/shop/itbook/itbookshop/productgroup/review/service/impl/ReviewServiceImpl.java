@@ -19,6 +19,7 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
 import shop.itbook.itbookshop.productgroup.review.transfer.ReviewTransfer;
@@ -97,5 +98,24 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return imageUrl;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ReviewResponseDto findReviewById(Long orderProductNo) {
+
+        return ReviewTransfer.entityToDto(
+            reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void deleteReview(Long orderProductNo) {
+        reviewRepository.deleteById(orderProductNo);
     }
 }

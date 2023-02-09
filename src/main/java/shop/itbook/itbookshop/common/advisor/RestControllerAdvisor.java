@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
+import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NotChildCategoryException;
-import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -35,6 +35,7 @@ import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFou
 import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
 /**
@@ -82,9 +83,10 @@ public class RestControllerAdvisor {
         ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
         InvalidTokenException.class,
-        ReviewAlreadyRegisteredException.class
+        ReviewAlreadyRegisteredException.class,
         CouponNotFoundException.class,
-        InvalidProductException.class
+        InvalidProductException.class,
+        ReviewNotFoundException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

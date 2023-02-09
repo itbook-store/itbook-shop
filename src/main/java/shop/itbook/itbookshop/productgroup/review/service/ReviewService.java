@@ -32,8 +32,27 @@ public interface ReviewService {
      * 프론트 서버에서 dto를 통해 리뷰 정보들이 넘어오면 이를 테이블에 저장합니다.
      *
      * @param reviewRequestDto 프론트에서 넘어온 정보들을 저장한 DTO 입니다.
+     * @param images           the images
      * @return the long 리뷰를 테이블에 저장한 뒤 저장된 orderProductNo를 반환합니다.
      * @author 노수연
      */
     Long addReview(ReviewRequestDto reviewRequestDto, MultipartFile images);
+
+    /**
+     * pk인 orderProductNo로 테이블에서 리뷰 데이터를 찾습니다.
+     *
+     * @param orderProductNo 데이터를 찾을 파라미터입니다.
+     * @return 리뷰 엔티티를 반환합니다.
+     * @author 노수연
+     */
+    ReviewResponseDto findReviewById(Long orderProductNo);
+
+
+    /**
+     * orderProductNo로 테이블에서 리뷰 데이터를 찾아 삭제합니다.
+     *
+     * @param orderProductNo 데이터를 찾을 파라미터입니다.
+     * @author 노수연
+     */
+    void deleteReview(Long orderProductNo);
 }

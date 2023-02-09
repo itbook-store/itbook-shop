@@ -71,9 +71,9 @@ public class MembershipServiceImpl implements MembershipService {
     }
 
     @Override
-    public Membership findMembership(Integer membershipNo) {
-        return membershipRepository.findById(membershipNo)
-            .orElseThrow(MembershipNotFoundException::new);
+    public MembershipResponseDto findMembership(Integer membershipNo) {
+        return MembershipTransfer.entityToDto(membershipRepository.findById(membershipNo)
+            .orElseThrow(MembershipNotFoundException::new));
     }
 
     @Override

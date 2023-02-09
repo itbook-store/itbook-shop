@@ -12,7 +12,9 @@ import lombok.Getter;
 public enum ReviewResultMessageEnum {
 
     REVIEW_LIST_GET_SUCCESS("리뷰 리스트 반환에 성공하였습니다."),
-    REVIEW_ADD_SUCCESS("리뷰 등록에 성공하였습니다.");
+    REVIEW_GET_SUCCESS("리뷰 반환에 성공하였습니다."),
+    REVIEW_ADD_SUCCESS("리뷰 등록에 성공하였습니다."),
+    REVIEW_DELETE_SUCCESS("리뷰 삭제에 성공하였습니다.");
 
     private String resultMessage;
 
