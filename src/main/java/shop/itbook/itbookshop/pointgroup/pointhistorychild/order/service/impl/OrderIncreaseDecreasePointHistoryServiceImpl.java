@@ -7,7 +7,6 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.CouponIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.entity.OrderIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.repository.OrderIncreaseDecreasePointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;

@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
-import java.util.List;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
@@ -109,7 +108,7 @@ public class CategoryAdminController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryResultMessageEnum.CATEGORY_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                new PageResponse(mainCategoryListPage));
+                new PageResponse<>(mainCategoryListPage));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

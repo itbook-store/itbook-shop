@@ -11,7 +11,7 @@ import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
-import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
+import shop.itbook.itbookshop.category.exception.NotChildCategoryException;
 import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
@@ -53,7 +53,7 @@ public class RestControllerAdvisor {
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
         CategoryContainsProductsException.class,
-        NoParentCategoryException.class,
+        NotChildCategoryException.class,
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class,
         MemberNotFoundException.class,
