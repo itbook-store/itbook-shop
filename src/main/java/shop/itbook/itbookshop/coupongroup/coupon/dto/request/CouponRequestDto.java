@@ -54,6 +54,8 @@ public class CouponRequestDto {
 
     private String couponModifiedAt;
 
+    private Integer usagePeriod;
+
     private String image;
 
     @Length(min = 1, max = 255, message = "쿠폰의 코드 길이는 255자를 넘을 수 없습니다.")

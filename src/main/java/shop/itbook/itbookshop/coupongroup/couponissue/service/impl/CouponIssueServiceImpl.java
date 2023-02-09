@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.coupongroup.couponissue.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -60,7 +61,7 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             couponIssue = couponIssueRepository.save(couponIssue);
         } catch (DataIntegrityViolationException e) {
             Throwable rootCause = e.getRootCause();
-            String message = rootCause.getMessage();
+            String message = Objects.requireNonNull(rootCause).getMessage();
 
             if (message.contains("coupon_issue.memberNoAndCouponNo")) {
                 throw new AlreadyAddedCouponIssueMemberCouponException();
@@ -151,23 +152,23 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
     @Override
     @Transactional
-    public Long usingCouponIssue(Long couponIssueNo) {
+    public CouponIssue usingCouponIssue(Long couponIssueNo) {
 
         CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
         couponIssue.setUsageStatus(
             usageStatusService.findUsageStatus(UsageStatusEnum.COMPLETED.getUsageStatus()));
         couponIssue.setCouponUsageCreatedAt(LocalDateTime.now());
-        return couponIssueRepository.save(couponIssue).getCouponIssueNo();
+        return couponIssueRepository.save(couponIssue);
     }
 
     @Override
     @Transactional
-    public Long cancelCouponIssue(Long couponIssueNo) {
+    public CouponIssue cancelCouponIssue(Long couponIssueNo) {
 
         CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
         couponIssue.setUsageStatus(
             usageStatusService.findUsageStatus(UsageStatusEnum.AVAILABLE.getUsageStatus()));
         couponIssue.setCouponUsageCreatedAt(null);
-        return couponIssueRepository.save(couponIssue).getCouponIssueNo();
+        return couponIssueRepository.save(couponIssue);
     }
 }

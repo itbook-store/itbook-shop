@@ -24,7 +24,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.QProductCoupon;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.QUsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
-import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 
 /**
  * @author 송다혜

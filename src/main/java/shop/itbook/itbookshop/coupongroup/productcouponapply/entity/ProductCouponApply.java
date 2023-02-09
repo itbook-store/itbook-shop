@@ -40,4 +40,8 @@ public class ProductCouponApply {
     @JoinColumn(name = "order_product_no", nullable = false, unique = true)
     private OrderProduct orderProduct;
 
+    public ProductCouponApply(Long couponIssueNo, OrderProduct orderProduct) {
+        this.couponIssueNo = couponIssueNo;
+        this.orderProduct = orderProduct;
+    }
 }

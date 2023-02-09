@@ -63,6 +63,9 @@ public class Coupon {
     @Column(name = "coupon_modified_at")
     private LocalDateTime couponModifiedAt;
 
+    @Column(name = "usage_period")
+    private Integer usagePeriod;
+
     @Column(name = "image")
     private String image;
 
@@ -82,6 +85,8 @@ public class Coupon {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_type_no", nullable = false)
     private CouponType couponType;
+
+
 
     /**
      * 쿠폰의 생성자 입니다.

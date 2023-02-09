@@ -23,7 +23,7 @@ public interface CouponIssueService {
 
     CouponIssue findCouponIssueByCouponIssueNo(Long couponIssueNo);
 
-    Long usingCouponIssue(Long couponIssueNo);
+    CouponIssue usingCouponIssue(Long couponIssueNo);
 
-    Long cancelCouponIssue(Long couponIssueNo);
+    CouponIssue cancelCouponIssue(Long couponIssueNo);
 }

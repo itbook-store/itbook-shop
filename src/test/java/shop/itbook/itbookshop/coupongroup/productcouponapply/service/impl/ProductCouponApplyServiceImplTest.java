@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.impl;
+package shop.itbook.itbookshop.coupongroup.productcouponapply.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -15,52 +15,61 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.coupongroup.couponissue.dummy.CouponIssueDummy;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.OrderTotalCouponApplyService;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.service.ProductCouponApplyService;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * @author 송다혜
  * @since 1.0
  */
 @ExtendWith(SpringExtension.class)
-@Import(OrderTotalCouponApplyServiceImpl.class)
-class OrderTotalCouponApplyServiceImplTest {
+@Import(ProductCouponApplyServiceImpl.class)
+class ProductCouponApplyServiceImplTest {
 
     @Autowired
-    OrderTotalCouponApplyService orderTotalCouponApplyService;
+    ProductCouponApplyService productCouponApplyService;
 
     @MockBean
-    OrderTotalCouponApplyRepositoy orderTotalCouponApplyRepositoy;
+    ProductCouponApplyRepository productCouponApplyRepository;
     @MockBean
     CouponIssueService couponIssueService;
 
+    OrderProduct orderProduct;
+    Product product;
     Order order;
 
     @BeforeEach
     void setUp(){
+        product = ProductDummy.getProductSuccess();
         order = OrderDummy.getOrder();
+        orderProduct = OrderProductDummy.createOrderProduct(order, product);
     }
+
     @Test
-    void saveOrderTotalCouponApplyAndChangeCouponIssue() {
+    void saveProductCouponApplyAndChangeCouponIssue() {
         //given
         Long couponIssueNo = 1L;
         given(couponIssueService.usingCouponIssue(anyLong())).willReturn(CouponIssueDummy.getCouponIssue());
         //when
-        orderTotalCouponApplyService.saveOrderTotalCouponApplyAndChangeCouponIssue(couponIssueNo, order);
+        productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo, orderProduct);
         //then
-        verify(orderTotalCouponApplyRepositoy).save(any());
+        verify(productCouponApplyRepository).save(any());
     }
 
     @Test
-    void cancelOrderTotalCouponApplyAndChangeCouponIssue() {
+    void cancelProductCouponApplyAndChangeCouponIssue() {
         //given
         Long couponIssueNo = 1L;
         given(couponIssueService.cancelCouponIssue(anyLong())).willReturn(CouponIssueDummy.getCouponIssue());
         //when
-        orderTotalCouponApplyService.cancelOrderTotalCouponApplyAndChangeCouponIssue(couponIssueNo);
+        productCouponApplyService.cancelProductCouponApplyAndChangeCouponIssue(couponIssueNo);
         //then
-        verify(orderTotalCouponApplyRepositoy).deleteById(any());
+        verify(productCouponApplyRepository).deleteById(any());
     }
 }

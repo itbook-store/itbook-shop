@@ -41,9 +41,10 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
                 qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
                 qCategory.categoryNo, qCategory.categoryName,
                 qCouponType.couponTypeEnum.stringValue().as("couponType")))
-            .join(qCoupon.couponType, qCouponType)
             .innerJoin(qCategoryCoupon.coupon, qCoupon)
             .innerJoin(qCategoryCoupon.category, qCategory)
+            .join(qCouponType).on(qCategoryCoupon.coupon.couponType.couponTypeEnum.eq(
+                qCouponType.couponTypeEnum))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize());
 

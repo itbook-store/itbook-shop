@@ -27,7 +27,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         super(Coupon.class);
     }
 
-    private static String COUPON_TYPE = "couponType";
+    private static final String COUPON_TYPE = "couponType";
 
     @Override
     public Page<CouponListResponseDto> findCouponList(Pageable pageable) {
