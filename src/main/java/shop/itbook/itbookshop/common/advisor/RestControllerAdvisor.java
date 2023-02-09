@@ -31,6 +31,7 @@ import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.paymentgroup.InvalidPaymentException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
@@ -83,7 +84,8 @@ public class RestControllerAdvisor {
         BookNotFoundException.class,
         ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
-        InvalidTokenException.class
+        InvalidTokenException.class,
+        InvalidPaymentException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
@@ -132,5 +134,5 @@ public class RestControllerAdvisor {
         return ResponseEntity.internalServerError().contentType(MediaType.APPLICATION_JSON)
             .body(exceptionCommonResponseBody);
     }
-    
+
 }

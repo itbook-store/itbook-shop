@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import shop.itbook.itbookshop.paymentgroup.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.dto.request.PaymentApproveRequestDto;
@@ -28,8 +29,6 @@ import shop.itbook.itbookshop.paymentgroup.payment.service.PayService;
 @RequiredArgsConstructor
 public class TossPayServiceImpl implements PayService {
 
-    @Value("${toss.payment.client.key}")
-    private String TEST_CLIENT_KEY;
     @Value("${toss.payment.secret.key}")
     private String TEST_SECRET_KEY;
     private final String TOSS_REQUEST_URL =
@@ -51,11 +50,13 @@ public class TossPayServiceImpl implements PayService {
         HttpEntity<PaymentApproveRequestDto> httpEntity =
             new HttpEntity<>(paymentApproveRequestDto, headers);
 
-        ResponseEntity<PaymentResponseDto> response =
-            restTemplate.exchange(TOSS_REQUEST_URL, HttpMethod.POST, httpEntity,
-                PaymentResponseDto.class);
+        ResponseEntity<PaymentResponseDto> response = null;
 
-        if (!response.getStatusCode().equals(HttpStatus.OK)) {
+        try {
+            response = restTemplate.exchange(TOSS_REQUEST_URL, HttpMethod.POST, httpEntity,
+                PaymentResponseDto.class);
+        } catch (HttpClientErrorException e) {
+            log.info(e.getMessage());
             throw new InvalidPaymentException();
         }
 
