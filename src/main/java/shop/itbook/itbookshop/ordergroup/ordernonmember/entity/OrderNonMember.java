@@ -31,8 +31,7 @@ public class OrderNonMember {
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     @PrimaryKeyJoinColumn(name = "order_no")
     private Order order;
-
-
+    
     @Column(name = "non_member_order_code", nullable = false)
     private Long nonMemberOrderCode;
 

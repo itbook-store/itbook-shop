@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.dto.request;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 주문 등록을 위한 Dto 입니다.
@@ -22,4 +23,18 @@ public class OrderAddRequestDto {
     private Integer postcode;
     private String roadNameAddress;
     private String recipientAddressDetails;
+
+    @Override
+    public String toString() {
+        return "OrderAddRequestDto{" +
+            "productNoList=" + productNoList +
+            ", productCntList=" + productCntList +
+            ", selectedDeliveryDate=" + selectedDeliveryDate +
+            ", recipientName='" + recipientName + '\'' +
+            ", recipientPhoneNumber='" + recipientPhoneNumber + '\'' +
+            ", postcode=" + postcode +
+            ", roadNameAddress='" + roadNameAddress + '\'' +
+            ", recipientAddressDetails='" + recipientAddressDetails + '\'' +
+            '}';
+    }
 }

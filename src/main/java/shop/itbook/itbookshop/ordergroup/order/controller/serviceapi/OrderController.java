@@ -1,6 +1,9 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
+import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -10,12 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderAddResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 
@@ -28,6 +32,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/orders")
+@Slf4j
 public class OrderController {
 
     private final OrderService orderService;
@@ -67,16 +72,22 @@ public class OrderController {
      * @return 추가한 결과를 담은 응답 객체
      * @author 정재원 *
      */
-    @PostMapping("/{memberNo}")
-    public ResponseEntity<CommonResponseBody<OrderAddResponseDto>> orderAdd(
-        @PathVariable("memberNo") Long memberNo,
+    @PostMapping()
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAdd(
+        @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
-        CommonResponseBody<OrderAddResponseDto> commonResponseBody =
+        Optional<Long> optMemberNo = Optional.empty();
+
+        if (Objects.nonNull(memberNo)) {
+            optMemberNo = Optional.of(memberNo);
+        }
+
+        CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderOfMember(orderAddRequestDto, memberNo)
+                ), orderService.addOrder(orderAddRequestDto, optMemberNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

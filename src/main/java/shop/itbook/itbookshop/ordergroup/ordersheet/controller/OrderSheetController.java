@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.ordergroup.ordersheet.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -43,25 +45,27 @@ public class OrderSheetController {
      */
     @GetMapping
     public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderSheet(
-        @RequestParam("productNo") List<Long> productNoList,
-        @RequestParam("productCnt") List<Integer> productCntList,
-        @RequestParam("memberNo") String memberNo) {
+        @RequestParam("productNoList") List<Long> productNoList,
+        @RequestParam("productCntList") List<Integer> productCntList,
+        @RequestParam(value = "memberNo", required = false) Long memberNo) {
 
         productService.checkSellProductList(productNoList, productCntList);
 
-        List<ProductDetailsResponseDto> orderSheetProductResponseDtoList = new ArrayList<>();
+        List<ProductDetailsResponseDto> productDetailsResponseDtoList =
+            productNoList.stream().map(productService::findProduct).collect(
+                Collectors.toList());
 
-        productNoList.stream().map(productNo -> )
+        List<MemberDestinationResponseDto> memberDestinationResponseDtoList = new ArrayList<>();
 
-        orderSheetProductResponseDtoList.add(product);
-
-        List<MemberDestinationResponseDto> memberDestinationResponseDtoList =
-            memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
+        if (Objects.nonNull(memberNo)) {
+            memberDestinationResponseDtoList =
+                memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
+        }
 
         CommonResponseBody<OrderSheetResponseDto> commonResponseBody =
-            new CommonResponseBody(new CommonResponseBody.CommonHeader(
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 OrderSheetMessageEnum.ORDER_SHEET_FIND_INFO_SUCCESS_MESSAGE.getSuccessMessage()),
-                OrderSheetTransfer.createOrderSheetResponseDto(orderSheetProductResponseDtoList,
+                OrderSheetTransfer.createOrderSheetResponseDto(productDetailsResponseDtoList,
                     memberDestinationResponseDtoList));
 
         return ResponseEntity.ok().body(commonResponseBody);
