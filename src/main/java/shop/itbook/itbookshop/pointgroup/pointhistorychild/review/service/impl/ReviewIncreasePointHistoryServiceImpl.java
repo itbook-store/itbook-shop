@@ -27,6 +27,7 @@ public class ReviewIncreasePointHistoryServiceImpl
         reviewIncreasePointHistoryRepository;
 
     @Override
+    @Transactional
     public ReviewIncreasePointHistory savePointHistoryAboutReviewIncrease(Member member,
                                                                           Review review,
                                                                           Long pointToApply) {
