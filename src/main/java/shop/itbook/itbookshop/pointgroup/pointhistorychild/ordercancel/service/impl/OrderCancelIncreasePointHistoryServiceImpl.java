@@ -27,6 +27,7 @@ public class OrderCancelIncreasePointHistoryServiceImpl
         orderCancelIncreasePointHistoryRepository;
 
     @Override
+    @Transactional
     public OrderCancelIncreasePointHistory savePointHistoryAboutOrderCancelIncrease(Member member,
                                                                                     Order order,
                                                                                     Long pointToApply) {
