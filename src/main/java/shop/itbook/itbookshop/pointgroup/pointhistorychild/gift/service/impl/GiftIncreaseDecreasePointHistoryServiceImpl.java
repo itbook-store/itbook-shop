@@ -44,7 +44,7 @@ public class GiftIncreaseDecreasePointHistoryServiceImpl
     private GiftIncreaseDecreasePointHistory saveGiftPointHistory(Member mainMember,
                                                                   Member subMember,
                                                                   Long pointToApply,
-                                                                  Boolean isDecrease) {
+                                                                  boolean isDecrease) {
         PointHistory savedPointHistory;
         if (isDecrease) {
             savedPointHistory = pointHistoryService.getSavedDecreasePointHistory(mainMember,

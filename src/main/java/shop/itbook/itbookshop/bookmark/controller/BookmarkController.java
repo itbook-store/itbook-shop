@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.bookmark.controller;
 
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.bookmark.dto.request.BookmarkRequestDto;
+import shop.itbook.itbookshop.bookmark.dto.response.BookmarkResponseDto;
 import shop.itbook.itbookshop.bookmark.resultmessage.BookmarkResultMessageEnum;
 import shop.itbook.itbookshop.bookmark.service.BookmarkService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 
 /**
  * 즐겨찾기에 대한 REST API 입니다.
@@ -28,6 +29,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsRe
  * @author 강명관
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/bookmark")
@@ -72,12 +74,13 @@ public class BookmarkController {
     public ResponseEntity<CommonResponseBody<Void>> bookmarkDeleteProduct(
         @Valid @RequestBody BookmarkRequestDto bookmarkRequestDto
     ) {
+
         bookmarkService.deleteProductInBookmark(bookmarkRequestDto);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    BookmarkResultMessageEnum.BOOKMARK_ADD_PRODUCT.getSuccessMessage()
+                    BookmarkResultMessageEnum.BOOKMARK_DELETE_PRODUCT.getSuccessMessage()
                 ),
                 null
             );
@@ -101,7 +104,7 @@ public class BookmarkController {
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    BookmarkResultMessageEnum.BOOKMARK_ADD_PRODUCT.getSuccessMessage()
+                    BookmarkResultMessageEnum.BOOKMARK_DELETE_ALL_PRODUCT.getSuccessMessage()
                 ),
                 null
             );
@@ -117,18 +120,18 @@ public class BookmarkController {
      * @return 공용 페이지네이션 처리 객체
      */
     @GetMapping("/{memberNo}")
-    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> bookmarkProductList(
+    public ResponseEntity<CommonResponseBody<PageResponse<BookmarkResponseDto>>> bookmarkProductList(
         @PageableDefault Pageable pageable,
         @PathVariable(value = "memberNo") Long memberNo
     ) {
 
-        Page<ProductDetailsResponseDto> allProductInBookmark =
+        Page<BookmarkResponseDto> allProductInBookmark =
             bookmarkService.getAllProductInBookmark(pageable, memberNo);
 
-        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<BookmarkResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    BookmarkResultMessageEnum.BOOKMARK_ADD_PRODUCT.getSuccessMessage()
+                    BookmarkResultMessageEnum.BOOKMARK_GET_PRODUCT.getSuccessMessage()
                 ),
                 new PageResponse<>(allProductInBookmark)
             );

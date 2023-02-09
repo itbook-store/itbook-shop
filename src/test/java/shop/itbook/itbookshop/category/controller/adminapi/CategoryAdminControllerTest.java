@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -196,5 +197,81 @@ class CategoryAdminControllerTest {
                 .content(objectMapper.writeValueAsString(categoryRequestDto)))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+
+    @DisplayName("url로 요청이 잘가고 CategoryListResponseDto 형태와 200 상태값이 잘 반환된다.")
+    @Test
+    void mainCategoryList() throws Exception {
+
+        CategoryListResponseDto category1 = new CategoryListResponseDto();
+        ReflectionTestUtils.setField(category1, "categoryNo", 1);
+        ReflectionTestUtils.setField(category1, "categoryName", "도서");
+
+        CategoryListResponseDto category2 = new CategoryListResponseDto();
+        ReflectionTestUtils.setField(category2, "categoryNo", 2);
+        ReflectionTestUtils.setField(category2, "categoryName", "잡화");
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(category1, category2), pageRequest, 10);
+        given(categoryService.findMainCategoryList(any()))
+            .willReturn(page);
+
+
+        mvc.perform(get("/api/admin/categories/main-categories"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.result.content[0].categoryNo", equalTo(1)))
+            .andExpect(jsonPath("$.result.content[0].categoryName", equalTo("도서")))
+            .andExpect(jsonPath("$.result.content[1].categoryNo", equalTo(2)))
+            .andExpect(jsonPath("$.result.content[1].categoryName", equalTo("잡화")));
+    }
+
+    @DisplayName("url에 맞게 잘 요청되고 200 상태값이 잘 반환되며 service 메서드도 정상적으로 호출된다.")
+    @Test
+    void childCategorySequenceModify() throws Exception {
+
+        mvc.perform(
+                put("/api/admin/categories/1/child-sequence?hopingPositionCategoryNo=2"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(categoryService).modifyChildSequence(anyInt(), anyInt());
+    }
+
+    @DisplayName("url에 맞게 잘 요청되고 200 상태값이 잘 반환되며 service 메소드가 정상적으로 호출된다.")
+    @Test
+    void mainCategorySequenceModify() throws Exception {
+
+        mvc.perform(
+                put("/api/admin/categories/1/main-sequence?sequence=3"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(categoryService).modifyMainSequence(anyInt(), anyInt());
+    }
+
+    @DisplayName("url에 맞게 잘 요청되고 200 상태값이 잘 반환되며 service 메서드도 정상적으로 호출된다.")
+    @Test
+    void categoryModifyHidden() throws Exception {
+
+        mvc.perform(
+                put("/api/admin/categories/1/hidden"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(categoryService).modifyCategoryHidden(anyInt());
+    }
+
+    @DisplayName("url에 맞게 잘 요청되고 200 상태값이 잘 반환되며 service 메서드도 정상적으로 호출된다.")
+    @Test
+    void categoryRemove() throws Exception {
+
+        mvc.perform(
+                delete("/api/admin/categories/1"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+        verify(categoryService).removeCategory(anyInt());
     }
 }

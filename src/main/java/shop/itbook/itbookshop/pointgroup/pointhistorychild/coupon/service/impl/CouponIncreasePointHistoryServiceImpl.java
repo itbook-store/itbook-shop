@@ -11,7 +11,6 @@ import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.CouponI
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.repository.CouponIncreasePointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
-import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.service.PointIncreaseDecreaseContentService;
 
 /**
  * @author 최겸준

@@ -43,4 +43,6 @@ public interface ProductSearchService {
      * @return 검색된 내용을 반환합니다.
      */
     Page<ProductSearchResponseDto> searchProductByTitle(Pageable pageable, String name);
+
+    List<ProductSearchResponseDto> searchProductsByTitle(String name);
 }

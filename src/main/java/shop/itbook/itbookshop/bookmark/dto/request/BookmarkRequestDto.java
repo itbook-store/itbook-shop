@@ -22,5 +22,5 @@ public class BookmarkRequestDto {
 
     @NotNull(message = "상품번호는 필수 입니다.")
     private Long productNo;
-    
+
 }

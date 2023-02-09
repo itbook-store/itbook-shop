@@ -11,8 +11,8 @@ import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
-import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
-import shop.itbook.itbookshop.category.service.impl.AlreadyAddedCategoryNameException;
+import shop.itbook.itbookshop.category.exception.NotChildCategoryException;
+import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -29,6 +29,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDest
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
@@ -54,7 +55,7 @@ public class RestControllerAdvisor {
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
         CategoryContainsProductsException.class,
-        NoParentCategoryException.class,
+        NotChildCategoryException.class,
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class,
         MemberNotFoundException.class,
@@ -82,6 +83,8 @@ public class RestControllerAdvisor {
         ProductTypeNotFoundException.class,
         InvalidTokenException.class,
         ReviewAlreadyRegisteredException.class
+        CouponNotFoundException.class,
+        InvalidProductException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

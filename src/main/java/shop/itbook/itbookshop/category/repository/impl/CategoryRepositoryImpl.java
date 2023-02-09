@@ -39,7 +39,7 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
     public Page<CategoryListResponseDto> findCategoryListByEmployee(Pageable pageable) {
 
         QCategory qCategory = QCategory.category;
-        QCategory qChildCategory = new QCategory("parentCategory");
+        QCategory qChildCategory = new QCategory("parent_category");
         QProductCategory qProductCategory = QProductCategory.productCategory;
 
         JPQLQuery<CategoryListResponseDto> categoryListJPQLQuery =
@@ -165,13 +165,12 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
         QCategory qCategory = QCategory.category;
         QCategory qParentCategory = new QCategory("parentCategory");
 
-        Optional<Category> category = Optional.of(from(qCategory)
+        return Optional.of(from(qCategory)
             .innerJoin(qCategory.parentCategory, qParentCategory)
             .fetchJoin()
             .where(qCategory.categoryNo.eq(categoryNo))
             .select(qCategory)
             .fetchOne());
-        return category;
     }
 
     @Override
