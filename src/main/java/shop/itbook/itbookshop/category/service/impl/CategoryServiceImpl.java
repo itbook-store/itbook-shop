@@ -247,11 +247,11 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category currentCategory =
             getSequenceNotSameSubCategory(categoryNo, hopingPositionCategoryNo);
-        // not null 유무
+
         if (Objects.isNull(currentCategory)) {
             return;
         }
-// , 현재 카테고리의 번호와 부모번호가 다른지 유무(같으면 자식카테고리가 아니라 부모카테고리다),
+
         Category parentCategoryOfCurrentCategory = currentCategory.getParentCategory();
         if (Objects.equals(categoryNo, parentCategoryOfCurrentCategory.getCategoryNo())) {
             throw new NotChildCategoryException();
@@ -269,7 +269,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Integer parentCategoryNoOfCurrentCategory = parentCategoryOfCurrentCategory.getCategoryNo();
         currentCategory.setSequence(hopingSequence);
-        // 두놈의 부모가 같은지 유무 -> 다르면 부모 저장하는거까지 가야한다.
+
         if (Objects.equals(parentCategoryNoOfCurrentCategory,
             parentCategoryNoOfHopingPositionCategory)) {
             return;
