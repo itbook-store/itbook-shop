@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.review.repository;
 
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
@@ -14,5 +13,4 @@ import shop.itbook.itbookshop.productgroup.review.entity.Review;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, CustomReviewRepository {
 
-    Optional<Review> findById(Long orderProductNo);
 }

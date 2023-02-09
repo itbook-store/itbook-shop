@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.review.service.impl;
 
 import java.util.Objects;
+import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final FileService fileService;
 
+    private final EntityManager entityManager;
+
     @Value("${object.storage.folder-path.review}")
     private String folderPathImage;
 
@@ -77,7 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
         Long reviewNo;
 
         try {
-            review.setImage(uploadAndSetFile(reviewRequestDto, images));
+            review.setImage(uploadAndSetFile(images));
             reviewNo = reviewRepository.save(review).getOrderProductNo();
         } catch (DataIntegrityViolationException e) {
             throw new InvalidInputException();
@@ -86,7 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewNo;
     }
 
-    private String uploadAndSetFile(ReviewRequestDto reviewRequestDto, MultipartFile images) {
+    private String uploadAndSetFile(MultipartFile images) {
 
         String imageUrl;
 
@@ -117,5 +120,25 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void deleteReview(Long orderProductNo) {
         reviewRepository.deleteById(orderProductNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void modifyReview(Long orderProductNo, ReviewRequestDto reviewRequestDto,
+                             MultipartFile images) {
+
+        if (Objects.nonNull(images)) {
+            reviewRequestDto.setImage(uploadAndSetFile(images));
+        }
+
+        Review review =
+            reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new);
+
+        review.modifyReview(reviewRequestDto.getStarPoint(), reviewRequestDto.getContent(),
+            reviewRequestDto.getImage());
+
     }
 }

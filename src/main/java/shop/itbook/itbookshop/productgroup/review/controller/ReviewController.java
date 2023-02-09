@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,7 +77,7 @@ public class ReviewController {
     @PostMapping("/add")
     public ResponseEntity<CommonResponseBody<ReviewNoResponseDto>> reviewAdd(
         @RequestPart ReviewRequestDto reviewRequestDto,
-        @RequestPart MultipartFile images) {
+        @RequestPart(required = false) MultipartFile images) {
 
         ReviewNoResponseDto reviewNoResponseDto =
             new ReviewNoResponseDto(reviewService.addReview(reviewRequestDto, images));
@@ -132,6 +133,33 @@ public class ReviewController {
             null);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
+    }
+
+
+    /**
+     * orderProductNo를 기반으로 테이블에서 데이터를 찾아
+     * 수정할 정보가 담긴 dto의 데이터로 수정합니다.
+     *
+     * @param orderProductNo   수정할 데이터의 번호입니다.
+     * @param reviewRequestDto 수정할 정보가 담긴 dto 입니다.
+     * @param images           수정할 이미지가 담긴 파일입니다.
+     * @return Void를 ResponseEntity에 감싸 반환합니다.
+     * @author 노수연
+     */
+    @PutMapping("/{orderProductNo}/modify")
+    public ResponseEntity<CommonResponseBody<Void>> reviewModify(
+        @PathVariable("orderProductNo") Long orderProductNo,
+        @RequestPart ReviewRequestDto reviewRequestDto,
+        @RequestPart(required = false) MultipartFile images) {
+
+        reviewService.modifyReview(orderProductNo, reviewRequestDto, images);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                ReviewResultMessageEnum.REVIEW_MODIFY_SUCCESS.getResultMessage()),
+            null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
 }

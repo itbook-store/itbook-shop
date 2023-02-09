@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.review.entity;
 
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -29,6 +31,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
 @Getter
 @Setter
 @ToString
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -80,5 +83,29 @@ public class Review {
         this.starPoint = starPoint;
         this.content = content;
         this.image = image;
+    }
+
+
+    /**
+     * 리뷰의 별점, 내용, 이미지 url을 수정하는 메서드입니다.
+     *
+     * @param starPoint 수정할 별점
+     * @param content   수정할 내용
+     * @param image     수정할 이미지url
+     * @author 노수연
+     */
+    public void modifyReview(Integer starPoint, String content, String image) {
+
+        if (Objects.nonNull(starPoint)) {
+            this.starPoint = starPoint;
+        }
+
+        if (Objects.nonNull(content)) {
+            this.content = content;
+        }
+
+        if (Objects.nonNull(image)) {
+            this.image = image;
+        }
     }
 }

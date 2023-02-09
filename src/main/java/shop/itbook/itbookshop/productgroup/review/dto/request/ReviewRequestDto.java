@@ -39,7 +39,6 @@ public class ReviewRequestDto {
     @NotBlank(message = "리뷰 내용은 null이거나 공백이어서는 안됩니다.")
     private String content;
 
-    // TODO no_image 넣어야하므로 notblank 밸리데이션 주기
     private String image;
 
 }
