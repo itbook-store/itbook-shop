@@ -36,7 +36,7 @@ public class PointHistoryMemberGetController {
             pointHistoryMemberService.findMyPointHistoryList(memberNo, pageable,
                 PointIncreaseDecreaseContentEnum.stringToEnum(content));
 
-        return ResponseEntity.ok(new CommonResponseBody(new CommonResponseBody.CommonHeader(
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
             PointHistroyResultMessageEnum.MY_POINT_HISTORY_LIST_GET_SUCCESS.getResultMessage())
             , new PageResponse<>(pointHistoryList)));
     }

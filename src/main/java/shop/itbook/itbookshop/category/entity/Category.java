@@ -1,8 +1,5 @@
 package shop.itbook.itbookshop.category.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,9 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,9 +36,6 @@ public class Category {
     @JoinColumn(name = "parent_category_no")
     private Category parentCategory;
 
-    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    List<Category> childCategoryList = new ArrayList<>();
-
     @Column(name = "category_name", columnDefinition = "varchar(20)",
         unique = true, nullable = false)
     private String categoryName;
@@ -58,10 +50,9 @@ public class Category {
     private Integer sequence;
 
     @Builder
-    public Category(Category parentCategory, List<Category> childCategoryList, String categoryName,
+    public Category(Category parentCategory, String categoryName,
                     Boolean isHidden, Integer level, Integer sequence) {
         this.parentCategory = parentCategory;
-        this.childCategoryList = childCategoryList;
         this.categoryName = categoryName;
         this.isHidden = isHidden;
         this.level = level;
