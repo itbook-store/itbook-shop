@@ -35,7 +35,6 @@ public class CouponServiceImpl implements CouponService {
 
     private final CouponRepository couponRepository;
     private final CouponTypeService couponTypeService;
-    private final CategoryCouponService categoryCouponService;
 
     @Override
     @Transactional
@@ -45,14 +44,7 @@ public class CouponServiceImpl implements CouponService {
         coupon.setCode(UUID.randomUUID().toString());
         coupon.setCouponType(couponTypeService.findCouponType(couponRequestDto.getCouponType()));
 
-        coupon = couponRepository.save(coupon);
-        if (!Objects.isNull(couponRequestDto.getCategoryNo())) {
-            categoryCouponService.addCategoryCoupon(
-                new CategoryCouponRequestDto(coupon.getCouponNo(),
-                    couponRequestDto.getCategoryNo()));
-        }
-
-        return coupon.getCouponNo();
+        return couponRepository.save(coupon).getCouponNo();
     }
 
     @Override

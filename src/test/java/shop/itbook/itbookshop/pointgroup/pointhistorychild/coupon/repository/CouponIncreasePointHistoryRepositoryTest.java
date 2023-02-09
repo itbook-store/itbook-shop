@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -116,7 +115,7 @@ class CouponIncreasePointHistoryRepositoryTest {
         member1.setIsSocial(false);
         member1 = memberRepository.save(member1);
 
-        usageStatus = usageStatusRepository.save(UsageStatusDummy.getUsageStatus());
+        usageStatus = usageStatusRepository.save(UsageStatusDummy.getAvailableUsageStatus());
         couponIssue = CouponIssueDummy.getCouponIssue();
         couponIssue.setCoupon(pointDummyCoupon);
         couponIssue.setMember(member1);

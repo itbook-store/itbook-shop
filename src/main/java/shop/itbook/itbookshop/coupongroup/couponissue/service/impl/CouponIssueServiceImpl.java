@@ -10,8 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CouponIssueListByGroupResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
@@ -19,6 +21,8 @@ import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponEx
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
@@ -122,5 +126,19 @@ public class CouponIssueServiceImpl implements CouponIssueService {
         couponIssue.setUsageStatus(usageStatus);
         couponIssue.setCouponUsageCreatedAt(LocalDateTime.now());
         couponIssueRepository.save(couponIssue);
+    }
+
+    @Override
+    public CouponIssueListByGroupResponseDto findMemberAvailableCouponIssuesList(Long memberNo) {
+        List<OrderTotalCouponIssueResponseListDto> orderTotalCouponList =
+            couponIssueRepository.findAvailableOrderTotalCouponIssueByMemberNo(memberNo);
+
+        List<ProductCouponIssueListResponseDto> productCouponList =
+            couponIssueRepository.findAvailableProductCouponIssueByMemberNo(memberNo);
+
+        List<CategoryCouponIssueListResponseDto> categoryCouponList =
+            couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(memberNo);
+        return new CouponIssueListByGroupResponseDto(orderTotalCouponList, categoryCouponList,
+            productCouponList);
     }
 }

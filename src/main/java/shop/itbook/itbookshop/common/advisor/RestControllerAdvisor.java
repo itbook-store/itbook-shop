@@ -29,6 +29,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDest
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
@@ -79,7 +80,9 @@ public class RestControllerAdvisor {
         BookNotFoundException.class,
         ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
-        InvalidTokenException.class
+        InvalidTokenException.class,
+        CouponNotFoundException.class,
+        InvalidProductException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

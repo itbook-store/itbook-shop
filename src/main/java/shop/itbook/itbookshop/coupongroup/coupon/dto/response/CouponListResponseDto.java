@@ -23,8 +23,8 @@ public class CouponListResponseDto {
     private Long point;
     private LocalDateTime couponCreatedAt;
     private LocalDateTime couponExpiredAt;
-    private Integer categoryNo;
-    private String categoryName;
-    private Long productNo;
-    private String productName;
+//    private Integer categoryNo;
+//    private String categoryName;
+//    private Long productNo;
+//    private String productName;
 }
