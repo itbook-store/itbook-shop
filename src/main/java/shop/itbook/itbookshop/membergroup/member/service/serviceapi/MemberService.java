@@ -30,11 +30,11 @@ public interface MemberService {
     /**
      * 프론트 서버에서 유저가 비밀번호를 포함하여 자신의 모든 개인정보를 조회할 수 있도록 테이블에서 모든 필드들의 값을 가져오는 메서드입니다.
      *
-     * @param memberId 멤버 아이디로 테이블에서 해당 멤버를 찾습니다.
+     * @param memberNo 멤버 No로 테이블에서 해당 멤버를 찾습니다.
      * @return 테이블의 필드들을 MemberResponseDto로 받아와 반환합니다.
      * @author 노수연
      */
-    MemberResponseDto findMember(String memberId);
+    MemberResponseDto findMember(Long memberNo);
 
     /**
      * 프론트 서버에서 DTO를 통해 유저가 입력한 정보들이 넘어오면 이를 테이블에 저장하는 메서드입니다.
@@ -48,20 +48,20 @@ public interface MemberService {
     /**
      * 프론트 서버에서 DTO를 통해 유저가 수정하려고자 하는 정보들이 넘어오면 이를 dirty checking으로 테이블을 수정하는 메서드입니다.
      *
-     * @param memberId   멤버 아이디로 테이블에서 해당 멤버를 찾습니다.
+     * @param memberNo   멤버 No로 테이블에서 해당 멤버를 찾습니다.
      * @param requestDto 수정할 정보가 담긴 DTO 입니다.
      * @author 노수연
      */
-    void modifyMember(String memberId, MemberUpdateRequestDto requestDto);
+    void modifyMember(Long memberNo, MemberUpdateRequestDto requestDto);
 
     /**
      * 특정 유저 탈퇴 로직이 담긴 메서드입니다.
      *
-     * @param memberId   멤버 아이디로 테이블에서 해당 멤버를 찾습니다.
+     * @param memberNo   멤버 No로 테이블에서 해당 멤버를 찾습니다.
      * @param requestDto '탈퇴 회원'이라는 멤버 상태가 담긴 DTO 입니다. 이 DTO로 해당 멤버의 멤버상태를 '탈퇴회원'으로 바꿉니다.
      * @author 노수연
      */
-    void withDrawMember(String memberId, MemberStatusUpdateAdminRequestDto requestDto);
+    void withDrawMember(Long memberNo, MemberStatusUpdateAdminRequestDto requestDto);
 
     /**
      * @param email the email

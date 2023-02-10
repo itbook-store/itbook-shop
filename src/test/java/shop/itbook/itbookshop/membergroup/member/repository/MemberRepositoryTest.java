@@ -69,7 +69,7 @@ class MemberRepositoryTest {
 
         // when
         MemberExceptPwdResponseDto
-            testMember = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
+            testMember = memberRepository.findByMemberNo(member.getMemberNo()).orElseThrow();
 
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
@@ -81,7 +81,7 @@ class MemberRepositoryTest {
 
         // when
         MemberResponseDto testMember =
-            memberRepository.findByMemberIdAllInfo(member.getMemberId()).orElseThrow();
+            memberRepository.findByMemberNoAllInfo(member.getMemberNo()).orElseThrow();
 
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
@@ -93,7 +93,7 @@ class MemberRepositoryTest {
 
         // when
         Member testMember =
-            memberRepository.findByMemberIdReceiveMember(member.getMemberId()).orElseThrow();
+            memberRepository.findByMemberNoReceiveMember(member.getMemberNo()).orElseThrow();
 
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());

@@ -76,9 +76,9 @@ class MembershipHistoryRepositoryTest {
     }
 
     @Test
-    void findByMemberId() {
+    void findByMemberNo() {
         List<MembershipHistoryResponseDto> membershipHistoryResponseDtoList =
-            membershipHistoryRepository.findByMemberId(member.getMemberId());
+            membershipHistoryRepository.findByMemberNo(member.getMemberNo());
 
         assertThat(membershipHistoryResponseDtoList.size()).isEqualTo(1);
     }

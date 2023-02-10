@@ -43,19 +43,19 @@ public class MemberAdminController {
     /**
      * 특정 멤버 번호의 멤버를 조회하는 메서드입니다.
      *
-     * @param memberId 멤버 아이디로 멤버를 조회합니다.
+     * @param memberNo 멤버 No로 멤버를 조회합니다.
      * @return MemberExceptPwdResponseDto를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
-    @GetMapping("/{memberId}")
+    @GetMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<MemberExceptPwdResponseDto>> memberDetails(
-        @PathVariable("memberId") String memberId) {
+        @PathVariable("memberNo") Long memberNo) {
 
         CommonResponseBody<MemberExceptPwdResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
-                memberAdminService.findMember(memberId)
+                memberAdminService.findMember(memberNo)
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
@@ -162,17 +162,17 @@ public class MemberAdminController {
      * 멤버상태 값을 수정하는 메서드입니다.
      * 관리자는 개별 멤버별로 차단회원, 정상회원 상태 값을 변경할 수 있습니다.
      *
-     * @param memberId   멤버 아이디로 해당 멤버의 상태정보를 수정합니다.
+     * @param memberNo   멤버 No로 해당 멤버의 상태정보를 수정합니다.
      * @param requestDto 멤버상태 값이 담긴 dto 입니다. 차단회원, 정상회원 2개의 상태가 담길 수 있습니다.
      * @return ResponseEntity에 아무것도 담지 않고 반환합니다.
      * @author 노수연
      */
-    @PutMapping("/{memberId}")
+    @PutMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<Void>> memberStatusModify(
-        @PathVariable("memberId") String memberId,
+        @PathVariable("memberNo") Long memberNo,
         @Valid @RequestBody MemberStatusUpdateAdminRequestDto requestDto) {
 
-        memberAdminService.modifyMember(memberId, requestDto);
+        memberAdminService.modifyMemberStatusInfo(memberNo, requestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -265,19 +265,19 @@ public class MemberAdminController {
     /**
      * 차단된 회원의 상세 정보를 반환하는 API 입니다.
      *
-     * @param memberId url로 넘어온 멤버 아이디로 해당 멤버를 찾습니다.
+     * @param memberNo url로 넘어온 멤버 아이디로 해당 멤버를 찾습니다.
      * @return 비밀번호를 제외한 정보가 들어있는 DTO를 반환합니다.
      * @author 노수연
      */
-    @GetMapping("/{memberId}/block")
+    @GetMapping("/{memberNo}/block")
     public ResponseEntity<CommonResponseBody<MemberExceptPwdBlockResponseDto>> blockMemberDetails(
-        @PathVariable("memberId") String memberId) {
+        @PathVariable("memberNo") Long memberNo) {
 
         CommonResponseBody<MemberExceptPwdBlockResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                memberAdminService.findBlockMember(memberId));
+                memberAdminService.findBlockMember(memberNo));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
 
