@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -127,9 +128,9 @@ class MemberServiceImplTest {
 
     @Test
     void findMember() {
-        given(memberRepository.findByMemberIdAllInfo("user1000")).willReturn(Optional.of(member1));
+        given(memberRepository.findByMemberNoAllInfo(1L)).willReturn(Optional.of(member1));
 
-        MemberResponseDto testMember = memberService.findMember("user1000");
+        MemberResponseDto testMember = memberService.findMember(1L);
 
         assertThat(testMember.getMemberId()).isEqualTo("user1000");
     }
@@ -159,10 +160,10 @@ class MemberServiceImplTest {
         ReflectionTestUtils.setField(memberUpdateRequestDto, "email", "banana@test.com");
 
         Member member = mock(Member.class);
-        given(memberRepository.findByMemberIdReceiveMember(anyString())).willReturn(
+        given(memberRepository.findByMemberNoReceiveMember(anyLong())).willReturn(
             Optional.of(member));
 
-        memberService.modifyMember("user1000", memberUpdateRequestDto);
+        memberService.modifyMember(1L, memberUpdateRequestDto);
 
     }
 
@@ -176,14 +177,14 @@ class MemberServiceImplTest {
             "탈퇴처리한 회원");
 
         Member member = mock(Member.class);
-        given(memberRepository.findByMemberIdReceiveMember(anyString())).willReturn(
+        given(memberRepository.findByMemberNoReceiveMember(anyLong())).willReturn(
             Optional.of(member));
 
         MemberStatusResponseDto memberStatusDto =
             MemberStatusResponseDto.builder().memberStatusName("탈퇴회원").memberStatusNo(3).build();
         given(memberStatusAdminService.findMemberStatus(anyString())).willReturn(memberStatusDto);
 
-        memberService.withDrawMember("user6", memberStatusUpdateAdminRequestDto);
+        memberService.withDrawMember(1L, memberStatusUpdateAdminRequestDto);
 
         verify(member).setMemberStatus(any());
     }

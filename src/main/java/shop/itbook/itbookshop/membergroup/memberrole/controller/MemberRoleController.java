@@ -49,11 +49,11 @@ public class MemberRoleController {
 
     private final RoleService roleService;
 
-    @PostMapping("/{memberId}/{roleName}/add")
+    @PostMapping("/{memberNo}/{roleName}/add")
     public ResponseEntity<CommonResponseBody<Void>> memberRoleAdd(
-        @PathVariable("memberId") String memberId, @PathVariable("roleName") String roleName) {
+        @PathVariable("memberNo") Long memberNo, @PathVariable("roleName") String roleName) {
 
-        MemberResponseDto memberResponseDto = memberService.findMember(memberId);
+        MemberResponseDto memberResponseDto = memberService.findMember(memberNo);
         Member member = MemberTransfer.dtoToEntityByResponseDto(memberResponseDto);
 
         Membership membership =

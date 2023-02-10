@@ -43,9 +43,9 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      * {@inheritDoc}
      */
     @Override
-    public MemberExceptPwdResponseDto findMember(String memberId) {
+    public MemberExceptPwdResponseDto findMember(Long memberNo) {
 
-        return memberRepository.findByMemberId(memberId).orElseThrow(MemberNotFoundException::new);
+        return memberRepository.findByMemberNo(memberNo).orElseThrow(MemberNotFoundException::new);
     }
 
     /**
@@ -78,9 +78,10 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      */
     @Override
     @Transactional
-    public void modifyMember(String memberId, MemberStatusUpdateAdminRequestDto requestDto) {
+    public void modifyMemberStatusInfo(Long memberNo,
+                                       MemberStatusUpdateAdminRequestDto requestDto) {
 
-        Member member = memberRepository.findByMemberIdReceiveMember(memberId)
+        Member member = memberRepository.findByMemberNoReceiveMember(memberNo)
             .orElseThrow(MemberNotFoundException::new);
 
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
@@ -159,9 +160,9 @@ public class MemberAdminServiceImpl implements MemberAdminService {
     }
 
     @Override
-    public MemberExceptPwdBlockResponseDto findBlockMember(String memberId) {
+    public MemberExceptPwdBlockResponseDto findBlockMember(Long memberNo) {
 
-        return memberRepository.findBlockMemberByMemberId(memberId);
+        return memberRepository.findBlockMemberByMemberNo(memberNo);
     }
 
     @Override

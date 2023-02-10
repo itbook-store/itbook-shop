@@ -175,8 +175,6 @@ public class ReviewController {
         @PathVariable("productNo") Long productNo,
         @PageableDefault Pageable pageable) {
 
-        log.info("productNo = {}", productNo);
-
         Page<ReviewResponseDto> page =
             reviewService.findReviewListByProductNo(pageable, productNo);
 
