@@ -12,6 +12,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRep
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
+import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 
 /**
  * @author 최겸준
@@ -53,5 +54,11 @@ public class PointHistoryAdminServiceImpl implements PointHistoryAdminService {
         Long pointHistoryNo) {
 
         return pointHistoryRepository.findMembershipResponseDtoThroughPointHistory(pointHistoryNo);
+    }
+
+    @Override
+    public ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo) {
+
+        return pointHistoryRepository.findPointHistoryReviewDetailsDto(pointHistoryNo);
     }
 }

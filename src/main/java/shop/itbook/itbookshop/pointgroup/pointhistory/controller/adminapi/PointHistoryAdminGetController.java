@@ -18,6 +18,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHis
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
+import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 
 /**
  * @author 최겸준
@@ -30,6 +31,18 @@ public class PointHistoryAdminGetController {
 
     private final PointHistoryAdminService pointHistoryAdminService;
 
+    @GetMapping("/api/admin/point-histories/{pointHistoryNo}/review-details")
+    public ResponseEntity<CommonResponseBody<ReviewResponseDto>> poinHistoryReviewDetails(
+        @PathVariable Long pointHistoryNo) {
+
+        ReviewResponseDto reviewResponseDto =
+            pointHistoryAdminService.findPointHistoryReviewDetailsDto(pointHistoryNo);
+
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
+            , reviewResponseDto));
+    }
 
     @GetMapping("{pointHistoryNo}/gift-details")
     public ResponseEntity<CommonResponseBody<PointHistoryGiftDetailsResponseDto>> poinHistoryGiftDetails(

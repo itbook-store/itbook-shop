@@ -19,8 +19,12 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom.CustomPo
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.QGiftIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.entity.QGradeIncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.QReviewIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.QPointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
+import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
+import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.entity.QReview;
 
 /**
  * @author 최겸준
@@ -181,26 +185,53 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
         QMembership qMembership = QMembership.membership;
         QMember qMember = QMember.member;
 
-        PointHistoryGradeDetailsResponseDto pointHistoryGradeDetailsResponseDto =
-            from(qPointHistory)
-                .innerJoin(qPointHistory.member, qMember)
-                .innerJoin(qGradeIncreasePointHistory)
-                .on(qPointHistory.pointHistoryNo.eq(qGradeIncreasePointHistory.pointHistoryNo))
-                .innerJoin(qGradeIncreasePointHistory.membership, qMembership)
-                .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
-                .select(Projections.fields(PointHistoryGradeDetailsResponseDto.class,
-                    qMember.memberId,
-                    qMember.name.as("memberName"),
-                    qMembership.membershipNo,
-                    qMembership.membershipGrade,
-                    qMembership.membershipStandardAmount,
-                    qMembership.membershipPoint,
-                    qPointHistory.increaseDecreasePoint.as("point"),
-                    qPointHistory.remainedPoint,
-                    qPointHistory.historyCreatedAt,
-                    qPointHistory.isDecrease
-                ))
-                .fetchOne();
-        return pointHistoryGradeDetailsResponseDto;
+        return from(qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .innerJoin(qGradeIncreasePointHistory)
+            .on(qPointHistory.pointHistoryNo.eq(qGradeIncreasePointHistory.pointHistoryNo))
+            .innerJoin(qGradeIncreasePointHistory.membership, qMembership)
+            .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(Projections.fields(PointHistoryGradeDetailsResponseDto.class,
+                qMember.memberId,
+                qMember.name.as("memberName"),
+                qMembership.membershipNo,
+                qMembership.membershipGrade,
+                qMembership.membershipStandardAmount,
+                qMembership.membershipPoint,
+                qPointHistory.increaseDecreasePoint.as("point"),
+                qPointHistory.remainedPoint,
+                qPointHistory.historyCreatedAt,
+                qPointHistory.isDecrease
+            ))
+            .fetchOne();
+    }
+
+    @Override
+    public ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QReviewIncreasePointHistory qReviewIncreasePointHistory =
+            QReviewIncreasePointHistory.reviewIncreasePointHistory;
+        QReview qReview = QReview.review;
+        QProduct qProduct = QProduct.product;
+        QMember qMember = QMember.member;
+
+        return from(qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .innerJoin(qReviewIncreasePointHistory)
+            .on(qPointHistory.pointHistoryNo.eq(qReviewIncreasePointHistory.pointHistoryNo))
+            .innerJoin(qReviewIncreasePointHistory.review, qReview)
+            .innerJoin(qReview.product, qProduct)
+            .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(Projections.fields(ReviewResponseDto.class,
+                qReview.orderProductNo,
+                qProduct.productNo,
+                qProduct.name.as("productName"),
+                qMember.memberNo,
+                qReview.starPoint,
+                qReview.content,
+                qReview.image
+            ))
+            .fetchOne();
     }
 }

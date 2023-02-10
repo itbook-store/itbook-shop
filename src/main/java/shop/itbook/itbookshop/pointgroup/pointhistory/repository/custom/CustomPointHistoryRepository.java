@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.Poi
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
+import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 
 /**
  * @author 최겸준
@@ -32,4 +33,6 @@ public interface CustomPointHistoryRepository {
 
     PointHistoryGradeDetailsResponseDto findMembershipResponseDtoThroughPointHistory(
         Long pointHistoryNo);
+
+    ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo);
 }
