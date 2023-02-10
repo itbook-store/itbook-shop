@@ -2,14 +2,19 @@ package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +25,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
 import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
@@ -127,9 +135,9 @@ class MemberServiceImplTest {
 
     @Test
     void findMember() {
-        given(memberRepository.findByMemberIdAllInfo("user1000")).willReturn(Optional.of(member1));
+        given(memberRepository.findByMemberNoAllInfo(1L)).willReturn(Optional.of(member1));
 
-        MemberResponseDto testMember = memberService.findMember("user1000");
+        MemberResponseDto testMember = memberService.findMember(1L);
 
         assertThat(testMember.getMemberId()).isEqualTo("user1000");
     }
@@ -159,10 +167,10 @@ class MemberServiceImplTest {
         ReflectionTestUtils.setField(memberUpdateRequestDto, "email", "banana@test.com");
 
         Member member = mock(Member.class);
-        given(memberRepository.findByMemberIdReceiveMember(anyString())).willReturn(
+        given(memberRepository.findByMemberNoReceiveMember(anyLong())).willReturn(
             Optional.of(member));
 
-        memberService.modifyMember("user1000", memberUpdateRequestDto);
+        memberService.modifyMember(1L, memberUpdateRequestDto);
 
     }
 
@@ -176,20 +184,16 @@ class MemberServiceImplTest {
             "탈퇴처리한 회원");
 
         Member member = mock(Member.class);
-        given(memberRepository.findByMemberIdReceiveMember(anyString())).willReturn(
+        given(memberRepository.findByMemberNoReceiveMember(anyLong())).willReturn(
             Optional.of(member));
 
         MemberStatusResponseDto memberStatusDto =
             MemberStatusResponseDto.builder().memberStatusName("탈퇴회원").memberStatusNo(3).build();
         given(memberStatusAdminService.findMemberStatus(anyString())).willReturn(memberStatusDto);
 
-        memberService.withDrawMember("user6", memberStatusUpdateAdminRequestDto);
+        memberService.withDrawMember(1L, memberStatusUpdateAdminRequestDto);
 
         verify(member).setMemberStatus(any());
-    }
-
-    @Test
-    void findMemberAuthInfo() {
     }
 
     @Test
@@ -230,5 +234,38 @@ class MemberServiceImplTest {
         assertThat(
             memberService.checkPhoneNumberDuplicate("010-9999-9999").getIsExists()).isEqualTo(
             true);
+    }
+
+    @DisplayName("자사 로그인을 위한 회원 조회 서비스 테스트")
+    @Test
+    void findMemberAuthInfoTest() {
+
+        MemberAuthInfoResponseDto memberAuthInfoResponseDto = new MemberAuthInfoResponseDto(
+            member1.getMemberNo(),
+            member1.getMemberId(),
+            member1.getPassword()
+        );
+
+        List<MemberRoleResponseDto> roleList = Collections.emptyList();
+
+        MemberAuthResponseDto memberAuthResponseDto = new MemberAuthResponseDto(
+            member1.getMemberNo(),
+            member1.getMemberId(),
+            member1.getPassword(),
+            Collections.emptyList()
+        );
+
+        // given
+        given(memberRepository.findAuthInfoByMemberId(member1.getMemberId()))
+            .willReturn(Optional.of(memberAuthInfoResponseDto));
+        given(memberRoleService.findMemberRoleWithMemberNo(member1.getMemberNo()))
+            .willReturn(roleList);
+
+        // when
+        MemberAuthResponseDto memberAuthInfo =
+            memberService.findMemberAuthInfo(member1.getMemberId());
+
+        // then
+        assertThat(memberAuthInfo.getMemberNo()).isEqualTo(member1.getMemberNo());
     }
 }

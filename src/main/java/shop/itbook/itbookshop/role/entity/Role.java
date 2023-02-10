@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import shop.itbook.itbookshop.productgroup.producttype.converter.impl.ProductTypeEnumConverter;
+import shop.itbook.itbookshop.role.converter.RoleEnumConverter;
 import shop.itbook.itbookshop.role.roleenum.RoleEnum;
 
 /**
@@ -37,7 +37,11 @@ public class Role {
     private Integer roleNo;
 
 
-    @Convert(converter = ProductTypeEnumConverter.class)
+    @Convert(converter = RoleEnumConverter.class)
     @Column(name = "role_type", columnDefinition = "varchar(255)", unique = true, nullable = false)
     private RoleEnum roleType;
+
+    public Role(RoleEnum roleType) {
+        this.roleType = roleType;
+    }
 }

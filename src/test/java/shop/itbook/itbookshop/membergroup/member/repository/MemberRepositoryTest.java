@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthInfoResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberExceptPwdResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
@@ -69,7 +71,7 @@ class MemberRepositoryTest {
 
         // when
         MemberExceptPwdResponseDto
-            testMember = memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
+            testMember = memberRepository.findByMemberNo(member.getMemberNo()).orElseThrow();
 
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
@@ -81,7 +83,7 @@ class MemberRepositoryTest {
 
         // when
         MemberResponseDto testMember =
-            memberRepository.findByMemberIdAllInfo(member.getMemberId()).orElseThrow();
+            memberRepository.findByMemberNoAllInfo(member.getMemberNo()).orElseThrow();
 
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
@@ -93,7 +95,7 @@ class MemberRepositoryTest {
 
         // when
         Member testMember =
-            memberRepository.findByMemberIdReceiveMember(member.getMemberId()).orElseThrow();
+            memberRepository.findByMemberNoReceiveMember(member.getMemberNo()).orElseThrow();
 
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
@@ -152,6 +154,20 @@ class MemberRepositoryTest {
 
         //then
         assertThat(memberRepository.existsByPhoneNumber(phoneNumber)).isTrue();
+    }
+
+    @DisplayName("자사 로그인 회원 조회 성공 테스트")
+    @Test
+    void findAuthInfoByMemberIdTest() {
+
+        // given, when
+        Optional<MemberAuthInfoResponseDto> memberAuthInfoResponseDto =
+            memberRepository.findAuthInfoByMemberId(member.getMemberId());
+
+        // then
+        memberAuthInfoResponseDto.ifPresent(dto ->
+            assertThat(dto.getMemberNo()).isEqualTo(member.getMemberNo())
+        );
     }
 
 }
