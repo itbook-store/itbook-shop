@@ -37,7 +37,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.Me
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.membergroup.memberdestination.transfer.MemberDestinationTransfer;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.GiftIncreaseDecreasePointHistoryNoResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.GiftIncreaseDecreasePointHistoryNoResponseDto;
 
 /**
  * 사용자 권한을 가진 요청에 응답하는 컨트롤러입니다.
