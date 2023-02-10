@@ -29,7 +29,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 
 /**
@@ -120,8 +119,8 @@ class MemberControllerTest {
 
         ReflectionTestUtils.setField(memberUpdateRequestDto, "nickname", "바나나");
         ReflectionTestUtils.setField(memberUpdateRequestDto, "name", "신짱구");
-        ReflectionTestUtils.setField(memberUpdateRequestDto, "password", "1234");
-        ReflectionTestUtils.setField(memberUpdateRequestDto, "phoneNumber", "010-9999-9999");
+        ReflectionTestUtils.setField(memberUpdateRequestDto, "password", "Abcd@1234");
+        ReflectionTestUtils.setField(memberUpdateRequestDto, "phoneNumber", "01099999999");
         ReflectionTestUtils.setField(memberUpdateRequestDto, "email", "banana@test.com");
 
         mvc.perform(put("/api/members/1/info")

@@ -48,7 +48,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public Optional<MemberExceptPwdResponseDto> findByMemberId(String memberId) {
+    public Optional<MemberExceptPwdResponseDto> findByMemberNo(Long memberNo) {
 
         return Optional.of(jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
@@ -60,7 +60,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
-            .where(qmember.memberId.eq(memberId))
+            .where(qmember.memberNo.eq(memberNo))
             .fetchOne());
     }
 
@@ -68,7 +68,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public Optional<MemberResponseDto> findByMemberIdAllInfo(String memberId) {
+    public Optional<MemberResponseDto> findByMemberNoAllInfo(Long memberNo) {
         return Optional.of(jpaQueryFactory.select(
                 Projections.constructor(MemberResponseDto.class, qmember.memberNo,
                     qmember.memberId,
@@ -76,7 +76,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
                     qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial
                 )).from(qmember).join(qmember.membership, qmembership)
-            .join(qmember.memberStatus, qmemberStatus).where(qmember.memberId.eq(memberId))
+            .join(qmember.memberStatus, qmemberStatus).where(qmember.memberNo.eq(memberNo))
             .fetchOne());
     }
 
@@ -84,7 +84,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Member> findByMemberIdReceiveMember(String memberId) {
+    public Optional<Member> findByMemberNoReceiveMember(Long memberNo) {
 
 
         return Optional.of(jpaQueryFactory.select(qmember).from(qmember)
@@ -92,7 +92,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .fetchJoin()
             .innerJoin(qmember.memberStatus, qmemberStatus)
             .fetchJoin()
-            .where(qmember.memberId.eq(memberId))
+            .where(qmember.memberNo.eq(memberNo))
             .fetchOne());
     }
 
@@ -394,7 +394,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
-    public MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId) {
+    public MemberExceptPwdBlockResponseDto findBlockMemberByMemberNo(Long memberNo) {
         return jpaQueryFactory.select(
                 Projections.constructor(MemberExceptPwdBlockResponseDto.class, qmember.memberNo,
                     qmember.memberId, qmembership.membershipGrade,
@@ -415,7 +415,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     .join(qMemberStatusHistory)
                     .on(qmember.memberNo.eq(qMemberStatusHistory.member.memberNo))
                     .where(qmemberStatus.memberStatusEnum.stringValue().eq("차단회원")
-                        .and(qmember.memberId.eq(memberId)))
+                        .and(qmember.memberNo.eq(memberNo)))
                     .groupBy(qmember.memberNo))
             ).orderBy(qmember.memberNo.desc()).fetchOne();
     }
