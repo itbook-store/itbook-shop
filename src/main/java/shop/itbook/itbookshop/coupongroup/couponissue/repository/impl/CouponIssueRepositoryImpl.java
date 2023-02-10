@@ -36,8 +36,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
     }
 
     @Override
-    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(Pageable pageable,
-                                                                              String memberId) {
+    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(Pageable pageable,
+                                                                              Long memberNo) {
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
         QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
@@ -65,7 +65,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
             .join(qCouponIssue.member, qMember)
-            .where(qMember.memberId.eq(memberId))
+            .where(qMember.memberNo.eq(memberNo))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();

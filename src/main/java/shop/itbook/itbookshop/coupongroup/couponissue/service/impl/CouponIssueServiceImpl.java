@@ -108,9 +108,9 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     }
 
     @Override
-    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(
-        Pageable pageable, String memberId) {
-        return couponIssueRepository.findCouponIssueListByMemberId(pageable, memberId);
+    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(
+        Pageable pageable, Long memberNo) {
+        return couponIssueRepository.findCouponIssueListByMemberNo(pageable, memberNo);
     }
 
     @Override
