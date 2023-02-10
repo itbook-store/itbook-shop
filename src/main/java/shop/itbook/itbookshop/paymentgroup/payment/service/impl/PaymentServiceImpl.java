@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.paymentgroup.payment.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,14 +48,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto) {
 
-        PaymentResponseDto responseDto =
+
+        PaymentResponseDto.PaymentDataResponseDto response =
             payService.requestApprovePayment(paymentApproveRequestDto);
 
-        PaymentResponseDto.PaymentDataResponseDto response = responseDto.getData();
-
         Payment payment = PaymentTransfer.dtoToEntity(response);
-        Card card = cardService.addCard(response);
-        payment.setCard(card);
+        if (!Objects.isNull(response.getCard())) {
+            Card card = cardService.addCard(response);
+            payment.setCard(card);
+        }
 
         PaymentStatus paymentStatus =
             paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
@@ -76,10 +78,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         String paymentKey = this.findPaymentKey(paymentCanceledRequestDto.getOrderNo());
 
-        PaymentResponseDto responseDto =
+        PaymentResponseDto.PaymentDataResponseDto response =
             payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
-
-        PaymentResponseDto.PaymentDataResponseDto response = responseDto.getData();
 
         // 결제 상태를 결제 취소로 수정
         Payment payment = findPaymentByOrderNo(paymentCanceledRequestDto.getOrderNo());

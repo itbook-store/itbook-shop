@@ -1,6 +1,11 @@
 package shop.itbook.itbookshop.paymentgroup.payment.transfer;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 
@@ -22,6 +27,12 @@ public class PaymentTransfer {
      * @author
      */
     public static Payment dtoToEntity(PaymentResponseDto.PaymentDataResponseDto requestDto) {
+        LocalDateTime requestedAt = LocalDateTime.from(
+            Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(requestDto.getRequestedAt())).atZone(
+                ZoneId.of("Asia/Seoul")));
+        LocalDateTime approvedAt = LocalDateTime.from(
+            Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(requestDto.getApprovedAt())).atZone(
+                ZoneId.of("Asia/Seoul")));
 
         return Payment.builder()
 //            .paymentStatus()
@@ -30,8 +41,8 @@ public class PaymentTransfer {
             .paymentKey(requestDto.getPaymentKey())
             .orderId(requestDto.getOrderId())
             .orderName(requestDto.getOrderName())
-            .requestedAt(LocalDateTime.parse(requestDto.getRequestedAt()))
-            .approvedAt(LocalDateTime.parse(requestDto.getApprovedAt()))
+            .requestedAt(requestedAt)
+            .approvedAt(approvedAt)
             .receiptUrl(requestDto.getReceipt().getUrl())
             .country(requestDto.getCountry())
             .checkoutUrl(requestDto.getCheckout().getUrl())

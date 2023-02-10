@@ -37,7 +37,7 @@ public class TossPayServiceImpl implements PayService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
-    public PaymentResponseDto requestApprovePayment(
+    public PaymentResponseDto.PaymentDataResponseDto requestApprovePayment(
         PaymentApproveRequestDto paymentApproveRequestDto) {
 
         String TOSS_REQUEST_PAYMENT_URL =
@@ -48,16 +48,22 @@ public class TossPayServiceImpl implements PayService {
         HttpEntity<PaymentApproveRequestDto> httpEntity =
             new HttpEntity<>(paymentApproveRequestDto, headers);
 
-        ResponseEntity<PaymentResponseDto>
-            response = getPaymentResponseEntity(
-            restTemplate.exchange(TOSS_REQUEST_PAYMENT_URL, HttpMethod.POST, httpEntity,
-                PaymentResponseDto.class));
+        ResponseEntity<PaymentResponseDto.PaymentDataResponseDto> response = null;
 
+        try {
+            response = restTemplate.exchange(TOSS_REQUEST_PAYMENT_URL, HttpMethod.POST, httpEntity,
+                PaymentResponseDto.PaymentDataResponseDto.class);
+
+        } catch (HttpClientErrorException e) {
+            log.info(e.getMessage());
+            throw new InvalidPaymentException();
+        }
         return response.getBody();
+
     }
 
     @Override
-    public PaymentResponseDto requestCanceledPayment(
+    public PaymentResponseDto.PaymentDataResponseDto requestCanceledPayment(
         PaymentCanceledRequestDto paymentCanceledRequestDto, String paymentKey)
         throws JsonProcessingException {
 
@@ -76,11 +82,17 @@ public class TossPayServiceImpl implements PayService {
         HttpEntity<String> httpEntity =
             new HttpEntity<>(jsonCancelReason, headers);
 
-        ResponseEntity<PaymentResponseDto>
-            response = getPaymentResponseEntity(
-            restTemplate.exchange(REQUEST_PAYMENT_CANCELED_URL, HttpMethod.POST, httpEntity,
-                PaymentResponseDto.class));
+        ResponseEntity<PaymentResponseDto.PaymentDataResponseDto> response = null;
 
+        try {
+            response =
+                restTemplate.exchange(REQUEST_PAYMENT_CANCELED_URL, HttpMethod.POST, httpEntity,
+                    PaymentResponseDto.PaymentDataResponseDto.class);
+
+        } catch (HttpClientErrorException e) {
+            log.info(e.getMessage());
+            throw new InvalidPaymentException();
+        }
         return response.getBody();
     }
 
@@ -94,17 +106,4 @@ public class TossPayServiceImpl implements PayService {
         return headers;
     }
 
-    private ResponseEntity<PaymentResponseDto> getPaymentResponseEntity(
-        ResponseEntity<PaymentResponseDto> restTemplate) {
-        ResponseEntity<PaymentResponseDto> response = null;
-
-        try {
-            response = restTemplate;
-
-        } catch (HttpClientErrorException e) {
-            log.info(e.getMessage());
-            throw new InvalidPaymentException();
-        }
-        return response;
-    }
 }
