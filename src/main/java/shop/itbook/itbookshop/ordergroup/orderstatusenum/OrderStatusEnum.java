@@ -20,7 +20,7 @@ public enum OrderStatusEnum {
     /**
      * Deposit complete order status enum.
      */
-    DEPOSIT_COMPLETE("입금완료"),
+    PAYMENT_COMPLETE("결제완료"),
     /**
      * Delivery reception order status enum.
      */

@@ -68,17 +68,10 @@ public class Payment {
     @Column(name = "order_name", nullable = false, columnDefinition = "varchar(20)")
     private String orderName;
 
-    @Column(name = "success_url", nullable = false, columnDefinition = "text")
-    private String successUrl;
-
-    @Column(name = "fail_url", nullable = false, columnDefinition = "text")
-    private String failUrl;
-
-    @Column(name = "requested_at", nullable = false)
-    private LocalDateTime requestedAt;
-
     @Column(name = "receipt_url", nullable = false, columnDefinition = "test")
     private String receiptUrl;
+    @Column(name = "requested_at", nullable = false)
+    private LocalDateTime requestedAt;
 
     @Column(name = "approved_at", nullable = false)
     private LocalDateTime approvedAt;
@@ -102,10 +95,8 @@ public class Payment {
      * @param paymentKey    the payment key
      * @param orderId       the order no
      * @param orderName     the order name
-     * @param successUrl    the success url
-     * @param failUrl       the fail url
-     * @param requestedAt   the requested at
      * @param receiptUrl    the receipt url
+     * @param requestedAt   the requested at
      * @param approvedAt    the approved at
      * @param country       the country
      * @param checkoutUrl   the checkout url
@@ -114,10 +105,11 @@ public class Payment {
      */
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
-    public Payment(PaymentStatus paymentStatus, Order order, Card card, Long totalAmount,
-                   String paymentKey, String orderId, String orderName, String successUrl,
-                   String failUrl, LocalDateTime requestedAt, String receiptUrl,
-                   LocalDateTime approvedAt, String country, String checkoutUrl, Long vat) {
+
+    public Payment(PaymentStatus paymentStatus, Order order, Card card,
+                   Long totalAmount, String paymentKey, String orderId, String orderName,
+                   String receiptUrl, LocalDateTime requestedAt, LocalDateTime approvedAt,
+                   String country, String checkoutUrl, Long vat) {
         this.paymentStatus = paymentStatus;
         this.order = order;
         this.card = card;
@@ -125,10 +117,8 @@ public class Payment {
         this.paymentKey = paymentKey;
         this.orderId = orderId;
         this.orderName = orderName;
-        this.successUrl = successUrl;
-        this.failUrl = failUrl;
-        this.requestedAt = requestedAt;
         this.receiptUrl = receiptUrl;
+        this.requestedAt = requestedAt;
         this.approvedAt = approvedAt;
         this.country = country;
         this.checkoutUrl = checkoutUrl;

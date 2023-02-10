@@ -76,8 +76,8 @@ class DeliveryRepositoryTest {
     }
 
     @Test
-    @DisplayName("배송 상태와 함께 배송 정보 목록 조회 성공")
     @Disabled
+    @DisplayName("배송 상태와 함께 배송 정보 목록 조회 성공")
     void findDeliveryListWithStatusSuccessTest() {
         deliveryStatusRepository.save(DeliveryStatusDummy.getDummyWait());
         deliveryStatusRepository.save(DeliveryStatusDummy.getDummyInProgress());

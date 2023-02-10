@@ -17,15 +17,10 @@ import lombok.Setter;
 public class MemberDestinationResponseDto {
 
     Long recipientDestinationNo;
-
     String recipientName;
-
     String recipientPhoneNumber;
-
     Integer postcode;
-
     String roadNameAddress;
-
     String recipientAddressDetails;
 
     /**
