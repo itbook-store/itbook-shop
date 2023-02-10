@@ -6,12 +6,14 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -147,10 +149,6 @@ class MemberControllerTest {
     }
 
     @Test
-    void authLogin() {
-    }
-
-    @Test
     void memberIdDuplicateCheck() throws Exception {
 
         MemberBooleanResponseDto memberBooleanResponseDto = new MemberBooleanResponseDto();
@@ -212,5 +210,24 @@ class MemberControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.result.isExists", equalTo(true)));
+    }
+
+
+    @DisplayName("자사 로그인 컨트롤러 테스트")
+    @Test
+    void authLogin() throws Exception {
+        // given
+        String memberId = "test";
+
+        given(memberService.findMemberAuthInfo(memberId)).willReturn(any());
+
+        // when, then
+        mvc.perform(get("/api/members?memberId=" + memberId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.header.resultMessage", equalTo("특정 멤버를 불러오는데 성공하였습니다.")));
     }
 }
