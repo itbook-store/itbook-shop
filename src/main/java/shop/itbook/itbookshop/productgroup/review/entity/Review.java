@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.productgroup.review.entity;
 
+import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +16,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import lombok.ToString;
+import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * 리뷰에 대한 엔티티입니다.
@@ -26,6 +30,8 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
  */
 @Getter
 @Setter
+@ToString
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -36,7 +42,7 @@ public class Review {
     private Long orderProductNo;
 
     @MapsId("orderProductNo")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "order_product_no", nullable = false)
     private OrderProduct orderProduct;
 
@@ -48,34 +54,58 @@ public class Review {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "start_point", nullable = false)
-    private Integer startPoint;
+    @Column(name = "star_point", nullable = false)
+    private Integer starPoint;
 
-    @Column(name = "content", nullable = false, columnDefinition = "text")
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "image", columnDefinition = "text")
+    @Column(name = "image")
     private String image;
 
     /**
      * 리뷰 엔티티 생성자입니다.
      *
-     * @param orderProduct the order product
-     * @param product      the product
-     * @param member       the member
-     * @param startPoint   the star point
-     * @param content      the review content
-     * @param image        the image
+     * @param orderProduct 주문한 상품 번호
+     * @param product      주문한 상품
+     * @param member       주문한 회원
+     * @param starPoint    별점
+     * @param content      리뷰 내용
+     * @param image        사진 url
      * @author 노수연
      */
     @Builder
-    public Review(OrderProduct orderProduct, Product product, Member member, Integer startPoint,
+    public Review(OrderProduct orderProduct, Product product, Member member, Integer starPoint,
                   String content, String image) {
         this.orderProduct = orderProduct;
         this.product = product;
         this.member = member;
-        this.startPoint = startPoint;
+        this.starPoint = starPoint;
         this.content = content;
         this.image = image;
+    }
+
+
+    /**
+     * 리뷰의 별점, 내용, 이미지 url을 수정하는 메서드입니다.
+     *
+     * @param starPoint 수정할 별점
+     * @param content   수정할 내용
+     * @param image     수정할 이미지url
+     * @author 노수연
+     */
+    public void modifyReview(Integer starPoint, String content, String image) {
+
+        if (Objects.nonNull(starPoint)) {
+            this.starPoint = starPoint;
+        }
+
+        if (Objects.nonNull(content)) {
+            this.content = content;
+        }
+
+        if (Objects.nonNull(image)) {
+            this.image = image;
+        }
     }
 }
