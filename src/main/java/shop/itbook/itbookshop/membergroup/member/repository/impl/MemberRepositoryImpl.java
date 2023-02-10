@@ -238,7 +238,6 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                 qmember.memberId,
                 qmember.password
             ))
-            .where(qmember.isSocial.isFalse())
             .where(qmemberStatus.memberStatusEnum.stringValue().ne("차단회원"))
             .fetchOne());
     }
