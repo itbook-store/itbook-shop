@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,15 +17,11 @@ import shop.itbook.itbookshop.membergroup.membership.repository.MembershipReposi
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
-import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.entity.OrderCancelIncreasePointHistory;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.repository.OrderCancelIncreasePointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.PointIncreaseDecreaseContentRepository;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.dummy.PointIncreaseDecreaseContentDummy;
@@ -114,7 +109,7 @@ class GiftIncreaseDecreasePointHistoryRepositoryTest {
 
 
         giftIncreaseDecreasePointHistory2 = new GiftIncreaseDecreasePointHistory(
-            dummyPointHistory2.getPointHistoryNo(), member2);
+            dummyPointHistory2.getPointHistoryNo(), member1);
 
         giftIncreaseDecreasePointHistoryRepository.save(giftIncreaseDecreasePointHistory2);
 
@@ -150,5 +145,26 @@ class GiftIncreaseDecreasePointHistoryRepositoryTest {
 
         assertThat(actual.getPointHistoryNo())
             .isEqualTo(giftIncreaseDecreasePointHistory2.getPointHistoryNo());
+    }
+
+    @DisplayName("선물 포인트내역을 조인해서 상세정보를 잘 받아온다.")
+    @Test
+    void findPointHistoryGiftDetailsResponseDto() {
+
+        PointHistoryGiftDetailsResponseDto actual =
+            pointHistoryRepository.findPointHistoryGiftDetailsResponseDto(
+                dummyPointHistory2.getPointHistoryNo());
+
+        assertThat(actual.getPoint())
+            .isEqualTo(dummyPointHistory2.getIncreaseDecreasePoint());
+
+        assertThat(actual.getRemainedPoint())
+            .isEqualTo(dummyPointHistory2.getRemainedPoint());
+
+        assertThat(actual.getMainMemberId())
+            .isEqualTo(member2.getMemberId());
+
+        assertThat(actual.getSubMemberId())
+            .isEqualTo(member1.getMemberId());
     }
 }

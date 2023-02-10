@@ -62,7 +62,7 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
             .limit(pageable.getPageSize()).fetch();
 
         return PageableExecutionUtils.getPage(productList, pageable,
-            () -> productList.size());
+            productList::size);
     }
 
     /**
@@ -94,6 +94,6 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
             .limit(pageable.getPageSize()).fetch();
 
         return PageableExecutionUtils.getPage(categoryList, pageable,
-            () -> categoryList.size());
+            categoryList::size);
     }
 }

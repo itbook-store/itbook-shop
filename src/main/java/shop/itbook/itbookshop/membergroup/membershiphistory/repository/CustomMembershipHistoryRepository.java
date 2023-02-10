@@ -11,5 +11,5 @@ import shop.itbook.itbookshop.membergroup.membershiphistory.dto.response.Members
 @NoRepositoryBean
 public interface CustomMembershipHistoryRepository {
 
-    List<MembershipHistoryResponseDto> findByMemberId(String memberId);
+    List<MembershipHistoryResponseDto> findByMemberNo(Long memberNo);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberOauthLoginRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberPointSendRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -24,7 +25,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberPointSendRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberRecentlyPointResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -37,7 +37,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.Me
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.membergroup.memberdestination.transfer.MemberDestinationTransfer;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.GiftIncreaseDecreasePointHistoryNoResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.GiftIncreaseDecreasePointHistoryNoResponseDto;
 
 /**
  * 사용자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -82,19 +82,19 @@ public class MemberController {
 
 
     /**
-     * 프론트 서버에서 요청한 유저의 정보를 멤버아이디로 테이블에서 찾고 이를 dto에 담아 반환합니다.
+     * 프론트 서버에서 요청한 유저의 정보를 멤버No로 테이블에서 찾고 이를 dto에 담아 반환합니다.
      *
-     * @param memberId 테이블에서 해당 멤버아이디로 멤버를 찾습니다.
+     * @param memberNo 테이블에서 해당 멤버No로 멤버를 찾습니다.
      * @return 찾은 멤버의 필드 정보들을 dto에 담아 반환합니다.
      * @author 노수연
      */
-    @GetMapping("/{memberId}")
+    @GetMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<MemberResponseDto>> memberDetails(
-        @PathVariable("memberId") String memberId) {
+        @PathVariable("memberNo") Long memberNo) {
         CommonResponseBody<MemberResponseDto> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
-                memberService.findMember(memberId));
+                memberService.findMember(memberNo));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -102,17 +102,17 @@ public class MemberController {
     /**
      * 프론트 서버에서 넘어온 DTO를 받아 서비스 클래스에서 dirty checking으로 테이블의 해당 멤버 데이터를 수정합니다.
      *
-     * @param memberId   멤버아이디로 테이블에서 멤버를 찾습니다.
+     * @param memberNo   멤버No로 테이블에서 멤버를 찾습니다.
      * @param requestDto 수정할 정보가 담긴 DTO 입니다.
      * @return ResponseEntity에는 아무것도 담지않고 반환합니다.
      * @author 노수연
      */
-    @PutMapping("/{memberId}/info")
+    @PutMapping("/{memberNo}/info")
     public ResponseEntity<CommonResponseBody<Void>> memberModify(
-        @PathVariable("memberId") String memberId,
+        @PathVariable("memberNo") Long memberNo,
         @Valid @RequestBody MemberUpdateRequestDto requestDto) {
 
-        memberService.modifyMember(memberId, requestDto);
+        memberService.modifyMember(memberNo, requestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -128,18 +128,18 @@ public class MemberController {
      * 테이블에서 해당 멤버를 찾아 아이디를 제외한 유저의 개인정보들을 UUID로 수정한 뒤
      * 멤버 상태를 탈퇴 회원으로 바꿉니다.
      *
-     * @param memberId   멤버아이디로 테이블에서 멤버를 찾습니다.
+     * @param memberNo   멤버No로 테이블에서 멤버를 찾습니다.
      * @param requestDto '탈퇴 회원'이라는 값이 담긴 DTO를 넘겨받습니다.
      * @return ResponseEntity에는 아무것도 담지않고 반환합니다.
      * @author 노수연
      */
-    @PutMapping("/{memberId}/withdraw")
+    @PutMapping("/{memberNo}/withdraw")
     public ResponseEntity<CommonResponseBody<Void>> memberDelete(
-        @PathVariable("memberId") String memberId,
+        @PathVariable("memberNo") Long memberNo,
         @Valid @RequestBody MemberStatusUpdateAdminRequestDto requestDto
     ) {
 
-        memberService.withDrawMember(memberId, requestDto);
+        memberService.withDrawMember(memberNo, requestDto);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -320,7 +320,7 @@ public class MemberController {
                 MemberDestinationResultMessageEnum.MEMBER_DESTINATION_DELETE_MESSAGE.getSuccessMessage()),
             null);
 
-        return ResponseEntity.ok().body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
 
     @PostMapping("/memberDestinations/add")

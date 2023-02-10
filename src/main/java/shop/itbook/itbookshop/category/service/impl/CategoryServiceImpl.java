@@ -20,7 +20,7 @@ import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
-import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
+import shop.itbook.itbookshop.category.exception.NotChildCategoryException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
@@ -78,7 +78,12 @@ public class CategoryServiceImpl implements CategoryService {
             category = categoryRepository.save(category);
         } catch (DataIntegrityViolationException e) {
             Throwable rootCause = e.getRootCause();
-            String message = rootCause.getMessage();
+
+            String message = "";
+            if (Objects.nonNull(rootCause)) {
+                message = rootCause.getMessage();
+            }
+
 
             if (message.contains("category.parentNoAndCategoryName")) {
                 throw new AlreadyAddedCategoryNameException();
@@ -138,7 +143,7 @@ public class CategoryServiceImpl implements CategoryService {
         List<CategoryNoAndProductNoDto> categoryNoAndProductNoDtoList =
             categoryRepository.getMainCategoryNoAndProductNoForSettingCount(mainCategoryNoList);
 
-        settingCount(mainCategoryListPage.getContent(), categoryNoAndProductNoDtoList);
+        settingCount(mainCategoryList, categoryNoAndProductNoDtoList);
         return mainCategoryListPage;
     }
 
@@ -164,28 +169,25 @@ public class CategoryServiceImpl implements CategoryService {
                 mainCategoryNoCountMap.getOrDefault(categoryNo, 0L) + 1);
         }
 
-        for (CategoryListResponseDto dto : categoryListByEmployee) {
-            if (!Objects.equals(dto.getLevel(), MAIN_CATEGORY_LEVEL)) {
+        for (CategoryListResponseDto categoryListResponseDto : categoryListByEmployee) {
+            if (!Objects.equals(categoryListResponseDto.getLevel(), MAIN_CATEGORY_LEVEL)) {
                 continue;
             }
 
-            Integer categoryNo = dto.getCategoryNo();
+            Integer categoryNo = categoryListResponseDto.getCategoryNo();
             Long productCount = mainCategoryNoCountMap.get(categoryNo);
             if (Objects.isNull(productCount)) {
-                dto.setCount(0L);
+                categoryListResponseDto.setCount(0L);
                 continue;
             }
 
-            dto.setCount(productCount);
+            categoryListResponseDto.setCount(productCount);
         }
     }
 
     @Override
     public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
-        Page<CategoryListResponseDto> categoryListByNotEmployee =
-            categoryRepository.findCategoryListByNotEmployee(pageable);
-
-        return categoryListByNotEmployee;
+        return categoryRepository.findCategoryListByNotEmployee(pageable);
     }
 
 
@@ -245,44 +247,45 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category currentCategory =
             getSequenceNotSameSubCategory(categoryNo, hopingPositionCategoryNo);
+
         if (Objects.isNull(currentCategory)) {
             return;
         }
 
         Category parentCategoryOfCurrentCategory = currentCategory.getParentCategory();
-        if (Objects.isNull(parentCategoryOfCurrentCategory)) {
-            throw new NoParentCategoryException();
+        if (Objects.equals(categoryNo, parentCategoryOfCurrentCategory.getCategoryNo())) {
+            throw new NotChildCategoryException();
         }
 
         Category hopingPositionCategory = this.findCategoryEntityFetch(hopingPositionCategoryNo);
         Integer hopingSequence = hopingPositionCategory.getSequence();
 
-
-        Category ParentCategoryOfhopingPositionCategory =
+        Category parentCategoryOfhopingPositionCategory =
             hopingPositionCategory.getParentCategory();
         Integer parentCategoryNoOfHopingPositionCategory =
-            ParentCategoryOfhopingPositionCategory.getCategoryNo();
+            parentCategoryOfhopingPositionCategory.getCategoryNo();
         categoryRepository.modifyChildCategorySequence(parentCategoryNoOfHopingPositionCategory,
             hopingSequence);
 
         Integer parentCategoryNoOfCurrentCategory = parentCategoryOfCurrentCategory.getCategoryNo();
         currentCategory.setSequence(hopingSequence);
+
         if (Objects.equals(parentCategoryNoOfCurrentCategory,
             parentCategoryNoOfHopingPositionCategory)) {
             return;
         }
 
-        currentCategory.setParentCategory(ParentCategoryOfhopingPositionCategory);
+        currentCategory.setParentCategory(parentCategoryOfhopingPositionCategory);
     }
 
     private Category getSequenceNotSameSubCategory(Integer categoryNo,
                                                    Integer hopingPositionCategoryNo) {
 
-        Category category = this.findCategoryEntityFetch(categoryNo);
         if (Objects.equals(categoryNo, hopingPositionCategoryNo)) {
             return null;
         }
-        return category;
+
+        return this.findCategoryEntityFetch(categoryNo);
     }
 
     @Override

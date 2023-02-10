@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.service;
 
-import java.util.Optional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;

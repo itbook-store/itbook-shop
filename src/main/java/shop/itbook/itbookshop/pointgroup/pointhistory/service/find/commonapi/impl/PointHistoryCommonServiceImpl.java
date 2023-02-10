@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.im
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
@@ -14,6 +15,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.Poi
  */
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class PointHistoryCommonServiceImpl implements PointHistoryCommonService {
 
     private final PointHistoryRepository pointHistoryRepository;

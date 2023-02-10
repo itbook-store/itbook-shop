@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.bookmark.repository;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -21,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.book.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
+import shop.itbook.itbookshop.bookmark.dto.response.BookmarkResponseDto;
 import shop.itbook.itbookshop.bookmark.dummy.BookmarkDummy;
 import shop.itbook.itbookshop.bookmark.entity.Bookmark;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
@@ -197,12 +199,14 @@ class BookmarkRepositoryTest {
         // when
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
 
-        Page<ProductDetailsResponseDto> productList =
+        Page<BookmarkResponseDto> productList =
             bookmarkRepository.findAllProductDetailsByMemberNo(pageable, memberDummy.getMemberNo());
 
         // then
-        List<ProductDetailsResponseDto> content = productList.getContent();
+        List<BookmarkResponseDto> content = productList.getContent();
         assertThat(content).hasSize(1);
-        assertThat(content.get(0).getProductNo()).isEqualTo(productDummy.getProductNo());
+        assertThat(content.get(0).getBookmarkCreateAt()).isBeforeOrEqualTo(LocalDateTime.now());
+        assertThat(content.get(0).getProductDetailsResponseDto().getProductNo())
+            .isEqualTo(productDummy.getProductNo());
     }
 }

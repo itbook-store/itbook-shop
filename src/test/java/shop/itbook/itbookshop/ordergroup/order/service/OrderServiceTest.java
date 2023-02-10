@@ -26,6 +26,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
+import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderProductHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
@@ -38,6 +39,7 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 @ExtendWith(SpringExtension.class)
 @Import(OrderServiceImpl.class)
 class OrderServiceTest {
+
 
     @Autowired
     OrderService orderService;
@@ -52,6 +54,8 @@ class OrderServiceTest {
     OrderProductHistoryRepository orderProductHistoryRepository;
     @MockBean
     OrderMemberRepository orderMemberRepository;
+    @MockBean
+    OrderNonMemberRepository orderNonMemberRepository;
     @MockBean
     DeliveryService deliveryService;
     @MockBean

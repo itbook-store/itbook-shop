@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.service.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +66,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
     }
 
     private Long getRemainedPointToSave(Member member, Long pointToApply,
-                                        Boolean isDecrease) {
+                                        boolean isDecrease) {
 
         Long recentlyRemainedPoint = pointHistoryCommonService.findRecentlyPoint(member);
 

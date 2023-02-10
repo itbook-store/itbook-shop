@@ -3,7 +3,10 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -25,4 +28,8 @@ public interface CustomPointHistoryRepository {
                                                                         Pageable pageable,
                                                                         PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum);
 
+    PointHistoryGiftDetailsResponseDto findPointHistoryGiftDetailsResponseDto(Long pointHistoryNo);
+
+    PointHistoryGradeDetailsResponseDto findMembershipResponseDtoThroughPointHistory(
+        Long pointHistoryNo);
 }

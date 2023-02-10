@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import shop.itbook.itbookshop.auth.exception.InvalidAuthRequestException;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.cart.exception.CartNotFountException;
+import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
-import shop.itbook.itbookshop.category.exception.NoParentCategoryException;
-import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameException;
+import shop.itbook.itbookshop.category.exception.NotChildCategoryException;
 import shop.itbook.itbookshop.common.exception.MemberForbiddenException;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -27,12 +27,18 @@ import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
+import shop.itbook.itbookshop.paymentgroup.paymentstatus.exception.PaymentStatusNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.exception.PointContentNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
 /**
@@ -53,7 +59,7 @@ public class RestControllerAdvisor {
      */
     @ExceptionHandler(value = {CategoryNotFoundException.class,
         CategoryContainsProductsException.class,
-        NoParentCategoryException.class,
+        NotChildCategoryException.class,
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class,
         MemberNotFoundException.class,
@@ -79,7 +85,13 @@ public class RestControllerAdvisor {
         BookNotFoundException.class,
         ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
-        InvalidTokenException.class
+        InvalidTokenException.class,
+        ReviewAlreadyRegisteredException.class,
+        InvalidProductException.class,
+        ReviewNotFoundException.class,
+        InvalidPaymentException.class,
+        PaymentStatusNotFoundException.class,
+        NotSellableProductException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

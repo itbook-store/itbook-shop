@@ -116,6 +116,18 @@ public class MembershipController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    @GetMapping("/membershipNo/{membershipNo}")
+    public ResponseEntity<CommonResponseBody<MembershipResponseDto>> membershipDetailsByMembershipNo(
+        @PathVariable("membershipNo") Integer membershipNo) {
+
+        CommonResponseBody<MembershipResponseDto> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                MembershipResultMessageEnum.MEMBERSHIP_FIND_SUCCESS.getMessage()),
+                membershipService.findMembership(membershipNo));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
     @GetMapping()
     public ResponseEntity<CommonResponseBody<List<MembershipResponseDto>>> membershipList() {
 

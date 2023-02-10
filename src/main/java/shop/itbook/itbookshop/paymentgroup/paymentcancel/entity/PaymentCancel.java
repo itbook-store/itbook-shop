@@ -9,8 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,17 +44,10 @@ public class PaymentCancel {
     @Column(name = "cancel_reason", nullable = false, columnDefinition = "varchar(255)")
     private String cancelReason;
 
-    @Column(name = "refundable_amount", nullable = false)
-    private Long refundableAmount;
 
-    @Builder
-    public PaymentCancel(Long paymentNo, Payment payment, LocalDateTime paymentCancelCreatedAt,
-                         Long amount, String cancelReason, Long refundableAmount) {
-        this.paymentNo = paymentNo;
-        this.payment = payment;
+    public PaymentCancel(LocalDateTime paymentCancelCreatedAt, Long amount, String cancelReason) {
         this.paymentCancelCreatedAt = paymentCancelCreatedAt;
         this.amount = amount;
         this.cancelReason = cancelReason;
-        this.refundableAmount = refundableAmount;
     }
 }

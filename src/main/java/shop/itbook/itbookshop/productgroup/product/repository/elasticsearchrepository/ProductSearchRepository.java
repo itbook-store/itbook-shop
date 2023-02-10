@@ -4,7 +4,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 
 /**
@@ -15,5 +14,6 @@ import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
  */
 public interface ProductSearchRepository extends ElasticsearchRepository<SearchProduct, Long> {
     Page<SearchProduct> findByName(Pageable pageable, String name);
+
     List<SearchProduct> findByName(String name);
 }

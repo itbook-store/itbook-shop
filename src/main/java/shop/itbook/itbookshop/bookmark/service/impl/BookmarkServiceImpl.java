@@ -1,19 +1,21 @@
 package shop.itbook.itbookshop.bookmark.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.bookmark.dto.request.BookmarkRequestDto;
+import shop.itbook.itbookshop.bookmark.dto.response.BookmarkResponseDto;
 import shop.itbook.itbookshop.bookmark.entity.Bookmark;
 import shop.itbook.itbookshop.bookmark.repository.BookmarkRepository;
 import shop.itbook.itbookshop.bookmark.service.BookmarkService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 
@@ -24,6 +26,7 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
  * @since 1.0
  */
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public boolean addProductInBookmark(BookmarkRequestDto bookmarkRequestDto) {
 
@@ -57,6 +61,10 @@ public class BookmarkServiceImpl implements BookmarkService {
         Product product = productRepository.findById(bookmarkRequestDto.getProductNo())
             .orElseThrow(ProductNotFoundException::new);
 
+        if (product.getIsDeleted()) {
+            throw new InvalidProductException();
+        }
+
         Bookmark bookmark = new Bookmark(member, product);
         bookmarkRepository.save(bookmark);
 
@@ -67,6 +75,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteProductInBookmark(BookmarkRequestDto bookmarkRequestDto) {
         bookmarkRepository.deleteByMemberNoAndProductNo(
@@ -78,6 +87,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     /**
      * {@inheritDoc}
      */
+    @Transactional
     @Override
     public void deleteAllProductInBookmark(Long memberNo) {
         bookmarkRepository.deleteAllByMemberNo(memberNo);
@@ -87,8 +97,8 @@ public class BookmarkServiceImpl implements BookmarkService {
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> getAllProductInBookmark(Pageable pageable,
-                                                                   Long memberNo) {
+    public Page<BookmarkResponseDto> getAllProductInBookmark(Pageable pageable,
+                                                             Long memberNo) {
 
         if (!memberRepository.existsById(memberNo)) {
             throw new MemberNotFoundException();

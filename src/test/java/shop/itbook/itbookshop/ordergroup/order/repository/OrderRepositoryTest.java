@@ -94,7 +94,7 @@ class OrderRepositoryTest {
         OrderProduct orderProduct = OrderProductDummy.createOrderProduct(order, product);
         orderProductRepository.save(orderProduct);
 
-        OrderStatus orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.DEPOSIT_COMPLETE);
+        OrderStatus orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
         orderStatusRepository.save(orderStatus);
 
         Membership membership = MembershipDummy.getMembership();

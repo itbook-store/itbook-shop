@@ -43,7 +43,7 @@ public interface MembershipService {
     void modifyMembership(Integer membershipNo,
                           MembershipModifyRequestDto membershipModifyRequestDto);
 
-    Membership findMembership(Integer membershipNo);
+    MembershipResponseDto findMembership(Integer membershipNo);
 
     Membership findMembershipByMembershipGrade(String membershipGrade);
 

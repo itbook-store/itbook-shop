@@ -84,9 +84,9 @@ public class MemberServiceImpl implements MemberService {
      * {@inheritDoc}
      */
     @Override
-    public MemberResponseDto findMember(String memberId) {
+    public MemberResponseDto findMember(Long memberNo) {
 
-        return memberRepository.findByMemberIdAllInfo(memberId)
+        return memberRepository.findByMemberNoAllInfo(memberNo)
             .orElseThrow(MemberNotFoundException::new);
     }
 
@@ -131,9 +131,9 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-    public void modifyMember(String memberId, MemberUpdateRequestDto requestDto) {
+    public void modifyMember(Long memberNo, MemberUpdateRequestDto requestDto) {
 
-        Member member = memberRepository.findByMemberIdReceiveMember(memberId)
+        Member member = memberRepository.findByMemberNoReceiveMember(memberNo)
             .orElseThrow(MemberNotFoundException::new);
 
         member.setNickname(requestDto.getNickname());
@@ -149,9 +149,9 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-    public void withDrawMember(String memberId, MemberStatusUpdateAdminRequestDto requestDto) {
+    public void withDrawMember(Long memberNo, MemberStatusUpdateAdminRequestDto requestDto) {
 
-        Member member = memberRepository.findByMemberIdReceiveMember(memberId)
+        Member member = memberRepository.findByMemberNoReceiveMember(memberNo)
             .orElseThrow(MemberNotFoundException::new);
 
         MemberStatus memberStatus = MemberStatusTransfer.dtoToEntity(
@@ -215,7 +215,7 @@ public class MemberServiceImpl implements MemberService {
                 .password(encodedEmail).phoneNumber(email).email(email)
                 .memberCreatedAt(LocalDateTime.now()).isSocial(true).build();
 
-        Long memberId = memberRepository.save(member).getMemberNo();
+        Long memberNo = memberRepository.save(member).getMemberNo();
 
         MembershipHistory membershipHistory =
             MembershipHistory.builder().membership(membership).member(member).monthlyUsageAmount(0L)
@@ -227,13 +227,13 @@ public class MemberServiceImpl implements MemberService {
 
         memberRoleService.addMemberRole(member, role);
 
-        return memberId;
+        return memberNo;
     }
 
     @Override
     @Transactional
     public Long modifySocialMember(MemberSocialRequestDto requestDto) {
-        Member member = memberRepository.findByMemberIdReceiveMember(requestDto.getMemberId())
+        Member member = memberRepository.findByMemberNoReceiveMember(requestDto.getMemberNo())
             .orElseThrow(MemberNotFoundException::new);
 
         member.setNickname(requestDto.getNickname());

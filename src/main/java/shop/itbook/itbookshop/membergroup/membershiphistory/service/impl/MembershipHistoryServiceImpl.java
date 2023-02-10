@@ -18,8 +18,8 @@ public class MembershipHistoryServiceImpl implements MembershipHistoryService {
     private final MembershipHistoryRepository membershipHistoryRepository;
 
     @Override
-    public List<MembershipHistoryResponseDto> getMembershipHistories(String memberId) {
+    public List<MembershipHistoryResponseDto> getMembershipHistories(Long memberNo) {
 
-        return membershipHistoryRepository.findByMemberId(memberId);
+        return membershipHistoryRepository.findByMemberNo(memberNo);
     }
 }

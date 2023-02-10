@@ -35,12 +35,6 @@ Content-Type: application/json
 
 ###
 
-GET /api/service/members/sign-up/memberId/user4
-Host: localhost:8082
-Accept: application/json
-
-###
-
 PUT /api/service/members/user5
 Host: localhost:8082
 Content-Type: application/json
