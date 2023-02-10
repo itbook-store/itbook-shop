@@ -98,4 +98,8 @@ public interface ProductService {
     ProductDetailsResponseDto findProduct(Long productNo);
 
     ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto);
+
+    void checkSellProductList(List<Long> productNoList, List<Integer> productCnt);
+
+    boolean canSellProduct(Long productNo, Integer productCnt);
 }

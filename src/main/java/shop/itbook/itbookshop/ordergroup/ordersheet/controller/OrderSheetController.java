@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.ordergroup.ordersheet.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,32 +35,37 @@ public class OrderSheetController {
     private final MemberDestinationService memberDestinationService;
 
     /**
-     * 회원의 개별 주문서 작성 처리 로직을 담당하는 컨트롤러입니다.
+     * 회원의 주문서 작성을 처리하는 컨트롤러입니다.
      *
-     * @param productNo 주문하려는 제품의 번호
-     * @param memberNo  회원의 번호
+     * @param productNoList  주문하려는 제품의 번호 리스트
+     * @param productCntList 주문하려는 제품의 개수 리스트
+     * @param memberNo       회원의 번호
      * @return 주문서 작성을 위한 정보가 담긴 Dto
      * @author 정재원 *
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderWrite(
-        @RequestParam("productNo") Long productNo, @RequestParam("memberNo") Long memberNo) {
+    public ResponseEntity<CommonResponseBody<OrderSheetResponseDto>> orderSheet(
+        @RequestParam("productNoList") List<Long> productNoList,
+        @RequestParam("productCntList") List<Integer> productCntList,
+        @RequestParam(value = "memberNo", required = false) Long memberNo) {
 
-        List<ProductDetailsResponseDto> orderSheetProductResponseDtoList = new ArrayList<>();
+        productService.checkSellProductList(productNoList, productCntList);
 
-        ProductDetailsResponseDto product = productService.findProduct(productNo);
-        product.setSelledPrice(
-            (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01)));
+        List<ProductDetailsResponseDto> productDetailsResponseDtoList =
+            productNoList.stream().map(productService::findProduct).collect(
+                Collectors.toList());
 
-        orderSheetProductResponseDtoList.add(product);
+        List<MemberDestinationResponseDto> memberDestinationResponseDtoList = new ArrayList<>();
 
-        List<MemberDestinationResponseDto> memberDestinationResponseDtoList =
-            memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
+        if (Objects.nonNull(memberNo)) {
+            memberDestinationResponseDtoList =
+                memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
+        }
 
-        CommonResponseBody commonResponseBody =
-            new CommonResponseBody(new CommonResponseBody.CommonHeader(
+        CommonResponseBody<OrderSheetResponseDto> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 OrderSheetMessageEnum.ORDER_SHEET_FIND_INFO_SUCCESS_MESSAGE.getSuccessMessage()),
-                OrderSheetTransfer.createOrderSheetResponseDto(orderSheetProductResponseDtoList,
+                OrderSheetTransfer.createOrderSheetResponseDto(productDetailsResponseDtoList,
                     memberDestinationResponseDtoList));
 
         return ResponseEntity.ok().body(commonResponseBody);

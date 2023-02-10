@@ -14,4 +14,4 @@ content-type: application/json
      "increasePointPercent" : 1,
      "discountPercent" : 10,
      "rawPrice" : 12000
-   }
+}
