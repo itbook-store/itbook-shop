@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * 멤버십 response dto 입니다.
+ *
  * @author 노수연
  * @since 1.0
  */

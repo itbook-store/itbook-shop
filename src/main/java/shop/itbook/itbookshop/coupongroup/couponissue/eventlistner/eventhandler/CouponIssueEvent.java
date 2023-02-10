@@ -24,7 +24,7 @@ public class CouponIssueEvent {
 
     private final CouponIssueService couponIssueService;
 
-    @Async
+    @Async(value = "threadPoolTaskExecutor")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = AFTER_COMMIT, fallbackExecution = true)
     public void handleCouponIssueEvent(SignedUpEvent event) {

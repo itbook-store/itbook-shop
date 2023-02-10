@@ -65,36 +65,27 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         ProductTypeEnum productTypeEnum =
             this.findProductType(productTypeNo).getProductTypeEnum();
 
-        boolean isAdmin;
-
-        if (!Objects.isNull(memberNo)) {
-            isAdmin = memberRoleService.findMemberRoleWithMemberNo(memberNo).contains("ADMIN");
-        } else {
-            isAdmin = false;
-        }
-
-
         switch (productTypeEnum) {
             case DISCOUNT:
                 productList =
-                    this.findDiscountBookList(pageable, isAdmin);
+                    this.findDiscountBookList(pageable);
                 break;
 
             case NEW_ISSUE:
-                productList = this.findNewBookList(pageable, isAdmin);
+                productList = this.findNewBookList(pageable);
                 break;
 
             case BESTSELLER:
-                productList = this.findBestSellerBookList(pageable, isAdmin);
+                productList = this.findBestSellerBookList(pageable);
                 break;
 
             case POPULARITY:
-                productList = this.findPopularityBookList(pageable, isAdmin);
+                productList = this.findPopularityBookList(pageable);
                 break;
 
             case RECOMMENDATION:
                 List<Long> productNoList =
-                    this.findRecommendationBookList(pageable, memberNo, isAdmin);
+                    this.findRecommendationBookList(pageable, memberNo);
                 productList =
                     productService.findProductListByProductNoListForUser(pageable, productNoList);
                 break;
@@ -105,8 +96,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
             default:
                 productList =
-                    productTypeRegistrationService.findProductList(pageable, productTypeNo,
-                        isAdmin);
+                    productTypeRegistrationService.findProductList(pageable, productTypeNo);
                 break;
         }
 
@@ -116,45 +106,43 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     }
 
 
-    public Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable,
-                                                           boolean isAdmin) {
-        if (isAdmin) {
+    public Page<ProductDetailsResponseDto> findNewBookList(Pageable pageable/*,
+                                                           boolean isAdmin*/) {
+        /*if (isAdmin) {
             return productTypeRepository.findNewBookListAdmin(pageable);
-        } else {
-            return productTypeRepository.findNewBookListUser(pageable);
-        }
+        } else {*/
+        return productTypeRepository.findNewBookListUser(pageable);
+//        }
     }
 
-    public Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable,
-                                                                boolean isAdmin) {
-        if (isAdmin) {
+    public Page<ProductDetailsResponseDto> findDiscountBookList(Pageable pageable/*,
+                                                                boolean isAdmin*/) {
+        /*if (isAdmin) {
             return productTypeRepository.findDiscountBookListAdmin(pageable);
-        } else {
-            return productTypeRepository.findDiscountBookListUser(pageable);
-        }
+        } else {*/
+        return productTypeRepository.findDiscountBookListUser(pageable);
+//        }
     }
 
-    public Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable,
-                                                                  boolean isAdmin) {
-        if (isAdmin) {
-            return productTypeRepository.findBestSellerBookListAdmin(pageable);
-        } else {
-            return productTypeRepository.findBestSellerBookListUser(pageable);
-        }
+    public Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable/*,
+                                                                  boolean isAdmin*/) {
+//        if (isAdmin) {
+//            return productTypeRepository.findBestSellerBookListAdmin(pageable);
+//        } else {
+        return productTypeRepository.findBestSellerBookListUser(pageable);
+//        }
     }
 
-    public Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable,
-                                                                  boolean isAdmin) {
-        if (isAdmin) {
-            return productTypeRepository.findPopularityBookListAdmin(pageable);
-        } else {
-            return productTypeRepository.findPopularityBookListUser(pageable);
-        }
+    public Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable) {
+//        if (isAdmin) {
+//            return productTypeRepository.findPopularityBookListAdmin(pageable);
+//        } else {
+        return productTypeRepository.findPopularityBookListUser(pageable);
+//        }
     }
 
     public List<Long> findRecommendationBookList(Pageable pageable,
-                                                 Long memberNo,
-                                                 boolean isAdmin) {
+                                                 Long memberNo) {
         Long basedProductNo;
 
         if (Optional.ofNullable(memberNo).isEmpty()) {

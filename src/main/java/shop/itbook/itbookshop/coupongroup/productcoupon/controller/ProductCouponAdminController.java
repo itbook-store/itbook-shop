@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.resultmessageenum.CategoryCouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
@@ -26,7 +27,7 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponSer
  * @since 1.0
  */
 @Controller
-@RequestMapping("/api/product-coupon")
+@RequestMapping("/api/admin/product-coupon")
 @RequiredArgsConstructor
 public class ProductCouponAdminController {
 
@@ -49,17 +50,20 @@ public class ProductCouponAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponseBody<Page<CouponListResponseDto>>> findProductCouponList(
+    public ResponseEntity<CommonResponseBody<PageResponse<CouponListResponseDto>>> findProductCouponList(
         @PageableDefault Pageable pageable) {
 
-        Page<CouponListResponseDto> couponList =
-            productCouponService.findProductCouponList(pageable);
+        Page<CouponListResponseDto> page =
+            productCouponService.findProductCouponPageList(pageable);
 
-        CommonResponseBody<Page<CouponListResponseDto>> commonResponseBody =
+        PageResponse<CouponListResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<CouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductCouponResultMessageEnum.PRODUCT_COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                couponList);
+                pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

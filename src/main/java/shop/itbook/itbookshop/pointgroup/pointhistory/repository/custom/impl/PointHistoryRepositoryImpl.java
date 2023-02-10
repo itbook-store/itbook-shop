@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.QPointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom.CustomPointHistoryRepository;
@@ -28,22 +28,22 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<PointHistoryListDto> findPointHistoryListDto(Pageable pageable,
-                                                             PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
+    public Page<PointHistoryListResponseDto> findPointHistoryListResponseDto(Pageable pageable,
+                                                                             PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
 
         QPointHistory qPointHistory = QPointHistory.pointHistory;
         QMember qMember = QMember.member;
         QPointIncreaseDecreaseContent qPointIncreaseDecreaseContent =
             QPointIncreaseDecreaseContent.pointIncreaseDecreaseContent;
 
-        List<PointHistoryListDto> pointHistoryList =
+        List<PointHistoryListResponseDto> pointHistoryList =
             getPointHistoryList(qPointHistory, qMember, qPointIncreaseDecreaseContent,
                 pointIncreaseDecreaseContentEnum)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPQLQuery<PointHistoryListDto> countJpql =
+        JPQLQuery<PointHistoryListResponseDto> countJpql =
             getPointHistoryList(qPointHistory, qMember, qPointIncreaseDecreaseContent,
                 pointIncreaseDecreaseContentEnum);
 
@@ -52,16 +52,17 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<PointHistoryListDto> findPointHistoryListDtoThroughSearch(Pageable pageable,
-                                                                          PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
-                                                                          String searchWord) {
+    public Page<PointHistoryListResponseDto> findPointHistoryListResponseDtoThroughSearch(
+        Pageable pageable,
+        PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
+        String searchWord) {
 
         QPointHistory qPointHistory = QPointHistory.pointHistory;
         QMember qMember = QMember.member;
         QPointIncreaseDecreaseContent qPointIncreaseDecreaseContent =
             QPointIncreaseDecreaseContent.pointIncreaseDecreaseContent;
 
-        List<PointHistoryListDto> pointHistoryList =
+        List<PointHistoryListResponseDto> pointHistoryList =
             getPointHistoryList(qPointHistory, qMember, qPointIncreaseDecreaseContent,
                 pointIncreaseDecreaseContentEnum)
                 .where(qMember.memberId.startsWith(searchWord))
@@ -69,7 +70,7 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPQLQuery<PointHistoryListDto> countJpql =
+        JPQLQuery<PointHistoryListResponseDto> countJpql =
             getPointHistoryList(qPointHistory, qMember, qPointIncreaseDecreaseContent,
                 pointIncreaseDecreaseContentEnum)
                 .where(qMember.memberId.startsWith(searchWord));
@@ -79,15 +80,16 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<PointHistoryListDto> findMyPointHistoryListDto(Long memberNo, Pageable pageable,
-                                                               PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
+    public Page<PointHistoryListResponseDto> findMyPointHistoryListResponseDto(Long memberNo,
+                                                                               Pageable pageable,
+                                                                               PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
 
         QPointHistory qPointHistory = QPointHistory.pointHistory;
         QMember qMember = QMember.member;
         QPointIncreaseDecreaseContent qPointIncreaseDecreaseContent =
             QPointIncreaseDecreaseContent.pointIncreaseDecreaseContent;
 
-        List<PointHistoryListDto> myPointHistoryList =
+        List<PointHistoryListResponseDto> myPointHistoryList =
             this.getPointHistoryList(qPointHistory, qMember, qPointIncreaseDecreaseContent,
                     pointIncreaseDecreaseContentEnum)
                 .where(qPointHistory.member.memberNo.eq(memberNo))
@@ -95,7 +97,7 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        JPQLQuery<PointHistoryListDto> countJpql =
+        JPQLQuery<PointHistoryListResponseDto> countJpql =
             this.getPointHistoryList(qPointHistory, qMember, qPointIncreaseDecreaseContent,
                     pointIncreaseDecreaseContentEnum)
                 .where(qPointHistory.member.memberNo.eq(memberNo));
@@ -105,16 +107,16 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
     }
 
 
-    private JPQLQuery<PointHistoryListDto> getPointHistoryList(QPointHistory qPointHistory,
-                                                               QMember qMember,
-                                                               QPointIncreaseDecreaseContent qPointIncreaseDecreaseContent,
-                                                               PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
+    private JPQLQuery<PointHistoryListResponseDto> getPointHistoryList(QPointHistory qPointHistory,
+                                                                       QMember qMember,
+                                                                       QPointIncreaseDecreaseContent qPointIncreaseDecreaseContent,
+                                                                       PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
 
-        JPQLQuery<PointHistoryListDto> jpqlQuery = from(qPointHistory)
+        JPQLQuery<PointHistoryListResponseDto> jpqlQuery = from(qPointHistory)
             .innerJoin(qPointHistory.member, qMember)
             .innerJoin(qPointHistory.pointIncreaseDecreaseContent, qPointIncreaseDecreaseContent)
             .orderBy(qPointHistory.pointHistoryNo.desc())
-            .select(Projections.fields(PointHistoryListDto.class,
+            .select(Projections.fields(PointHistoryListResponseDto.class,
                 qMember.memberNo,
                 qMember.memberId,
                 qMember.name.as("memberName"),

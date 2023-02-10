@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListDto;
+import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.serviceapi.PointHistoryMemberService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
@@ -15,14 +16,18 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PointHistoryMemberServiceImpl implements PointHistoryMemberService {
     private final PointHistoryRepository pointHistoryRepository;
 
     @Override
-    public Page<PointHistoryListDto> findMyPointHistoryList(Long memberNo, Pageable pageable,
-                                                            PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
+    public Page<PointHistoryListResponseDto> findMyPointHistoryList(Long memberNo,
+                                                                    Pageable pageable,
+                                                                    PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum) {
 
-        return pointHistoryRepository.findMyPointHistoryListDto(memberNo, pageable,
+        return pointHistoryRepository.findMyPointHistoryListResponseDto(memberNo, pageable,
             pointIncreaseDecreaseContentEnum);
     }
+
+
 }

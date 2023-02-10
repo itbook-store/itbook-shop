@@ -1,12 +1,8 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.dto.response;
 
 import java.time.LocalDateTime;
-import javax.persistence.Convert;
 import lombok.Getter;
 import lombok.Setter;
-import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.converter.PointIncreaseDecreaseContentEnumConverter;
-import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
-import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
  * @author 최겸준
@@ -14,7 +10,7 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
  */
 @Getter
 @Setter
-public class PointHistoryListDto {
+public class PointHistoryListResponseDto {
     private Long memberNo;
     private String memberId;
     private String memberName;

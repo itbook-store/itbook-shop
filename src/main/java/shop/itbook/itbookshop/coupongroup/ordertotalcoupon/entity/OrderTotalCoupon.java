@@ -36,4 +36,7 @@ public class OrderTotalCoupon {
     @JoinColumn(name = "coupon_no", nullable = false)
     private Coupon coupon;
 
+    public OrderTotalCoupon(Long couponNo) {
+        this.couponNo = couponNo;
+    }
 }

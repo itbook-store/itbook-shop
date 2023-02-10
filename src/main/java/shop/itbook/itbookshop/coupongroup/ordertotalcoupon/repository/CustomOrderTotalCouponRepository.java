@@ -11,5 +11,5 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponse
  */
 @NoRepositoryBean
 public interface CustomOrderTotalCouponRepository {
-    Page<CouponListResponseDto> findTotalCouponList(Pageable pageable);
+    Page<CouponListResponseDto> findTotalCouponPageList(Pageable pageable);
 }

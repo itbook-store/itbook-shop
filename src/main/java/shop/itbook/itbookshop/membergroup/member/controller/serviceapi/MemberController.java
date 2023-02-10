@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberOauthLoginRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberPointSendRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
@@ -24,7 +25,6 @@ import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequest
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberAuthResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberNoResponseDto;
-import shop.itbook.itbookshop.membergroup.member.dto.response.MemberPointSendRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberRecentlyPointResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -36,7 +36,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberD
 import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.MemberDestinationResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.membergroup.memberdestination.transfer.MemberDestinationTransfer;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.GiftIncreaseDecreasePointHistoryNoResponseDto;
 
 /**
@@ -54,7 +54,7 @@ public class MemberController {
 
     private final MemberDestinationService memberDestinationService;
 
-    private final PointHistoryService pointHistoryService;
+    private final PointHistoryCommonService pointHistoryCommonService;
 
     /**
      * 프론트 서버에서 입력된 정보를 dto로 받아와 서비스 클래스로 넘겨 테이블에 멤버를 추가하고
@@ -320,7 +320,7 @@ public class MemberController {
                 MemberDestinationResultMessageEnum.MEMBER_DESTINATION_DELETE_MESSAGE.getSuccessMessage()),
             null);
 
-        return ResponseEntity.ok().body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
 
     @PostMapping("/memberDestinations/add")
@@ -380,7 +380,8 @@ public class MemberController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_POINT_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
-                new MemberRecentlyPointResponseDto(pointHistoryService.findRecentlyPoint(member))
+                new MemberRecentlyPointResponseDto(
+                    pointHistoryCommonService.findRecentlyPoint(member))
             );
 
         return ResponseEntity.ok().body(commonResponseBody);

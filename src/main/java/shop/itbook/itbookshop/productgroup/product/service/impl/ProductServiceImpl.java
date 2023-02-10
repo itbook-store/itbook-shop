@@ -7,6 +7,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookReques
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.fileservice.FileService;
@@ -51,12 +53,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Long addProduct(ProductRequestDto requestDto, MultipartFile thumbnails) {
-        uploadAndSetFile(requestDto, thumbnails);
 
-        Product product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
 
-        productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
+        Product product;
 
+        try {
+            uploadAndSetFile(requestDto, thumbnails);
+            product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
+            productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
+        }
         return product.getProductNo();
     }
 
@@ -89,7 +96,13 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void removeProduct(Long productNo) {
-        productRepository.deleteById(productNo);
+        Product product = this.findProductEntity(productNo);
+        if (product.getIsDeleted()) {
+            product.setIsDeleted(false);
+        } else {
+            product.setIsDeleted(true);
+        }
+        productRepository.save(product);
     }
 
     /**

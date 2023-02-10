@@ -28,13 +28,14 @@ public class ProductCouponServiceImpl implements ProductCouponService {
     @Override
     public Long addProductCoupon(ProductCouponRequestDto productCouponRequestDto) {
         Product product = productService.findProductEntity(productCouponRequestDto.getProductNo());
+        Long couponNo = couponService.addCoupon(productCouponRequestDto.getCouponRequestDto());
         ProductCoupon productCoupon =
-            new ProductCoupon(productCouponRequestDto.getCouponNo(), product);
+            new ProductCoupon(couponNo, product);
         return productCouponRepository.save(productCoupon).getCouponNo();
     }
 
     @Override
-    public Page<CouponListResponseDto> findProductCouponList(Pageable pageable) {
-        return productCouponRepository.findProductCouponList(pageable);
+    public Page<CouponListResponseDto> findProductCouponPageList(Pageable pageable) {
+        return productCouponRepository.findProductCouponPageList(pageable);
     }
 }

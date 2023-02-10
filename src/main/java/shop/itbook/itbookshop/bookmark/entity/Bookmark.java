@@ -11,23 +11,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
 /**
- * 장바구니 테이블에 대한 엔티티입니다.
+ * 즐겨찾기 테이블에 대한 엔티티입니다.
  *
  * @author 강명관
  * @since 1.0
  */
 @Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "bookmark", uniqueConstraints = {
@@ -42,26 +37,26 @@ public class Bookmark {
     private Long bookmarkNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_no", nullable = false)
-    private Product product;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "bookmark_created_at", nullable = false, columnDefinition = "default now()")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_no", nullable = false)
+    private Product product;
+
+    @Column(name = "bookmark_created_at", nullable = false)
     private LocalDateTime bookmarkCreatedAt;
 
     /**
      * 즐겨찾기 테이블에 대한 엔티티 생성자 입니다.
      *
-     * @param product the product
      * @param member  the member
+     * @param product the product
      * @author 강명관
      */
-    @Builder
-    public Bookmark(Product product, Member member) {
-        this.product = product;
+    public Bookmark(Member member, Product product) {
         this.member = member;
+        this.product = product;
+        this.bookmarkCreatedAt = LocalDateTime.now();
     }
 }

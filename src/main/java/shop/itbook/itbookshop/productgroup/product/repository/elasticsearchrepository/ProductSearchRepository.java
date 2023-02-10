@@ -15,4 +15,5 @@ import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
  */
 public interface ProductSearchRepository extends ElasticsearchRepository<SearchProduct, Long> {
     Page<SearchProduct> findByName(Pageable pageable, String name);
+    List<SearchProduct> findByName(String name);
 }

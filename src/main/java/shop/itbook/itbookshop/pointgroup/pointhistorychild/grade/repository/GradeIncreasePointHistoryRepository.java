@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.CouponIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.entity.GradeIncreasePointHistory;
 
 /**
