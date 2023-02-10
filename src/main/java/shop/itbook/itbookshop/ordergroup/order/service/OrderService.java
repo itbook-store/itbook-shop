@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
  * 주문 관련 비즈니스 로직을 담당합니다.
@@ -14,6 +15,9 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
  * @since 1.0
  */
 public interface OrderService {
+
+    Order findOrderEntity(Long orderNo);
+
     /**
      * 회
      *
@@ -39,5 +43,5 @@ public interface OrderService {
      *
      * @param orderNo the order no
      */
-    void completeOrderPay(Long orderNo);
+    Order completeOrderPay(Long orderNo);
 }

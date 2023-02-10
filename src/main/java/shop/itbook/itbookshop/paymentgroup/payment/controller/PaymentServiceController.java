@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,12 +33,13 @@ public class PaymentServiceController {
      * @return 결제 승인 시 반환 받은 Payment 객체입니다.
      * @author 이하늬
      */
-    @PostMapping("api/admin/payment/request-pay")
+    @PostMapping("api/admin/payment/request-pay/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderNoResponseDto>> requestPayment(
-        @RequestBody PaymentApproveRequestDto paymentApproveRequestDto) {
+        @RequestBody PaymentApproveRequestDto paymentApproveRequestDto,
+        @PathVariable Long orderNo) {
 
         OrderNoResponseDto responseDto =
-            paymentService.requestPayment(paymentApproveRequestDto);
+            paymentService.requestPayment(paymentApproveRequestDto, orderNo);
 
         CommonResponseBody<OrderNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

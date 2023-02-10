@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service.elastic;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;

@@ -5,6 +5,8 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.service.impl.CardService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
@@ -37,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final CardService cardService;
     private final PaymentCancelService paymentCancelService;
     private final PaymentStatusService paymentStatusService;
+    private final OrderService orderService;
 
     @Override
     public String findPaymentKey(Long orderNo) {
@@ -46,7 +49,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto) {
+    public OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
+                                             Long orderNo) {
 
 
         PaymentResponseDto.PaymentDataResponseDto response =
@@ -62,9 +66,8 @@ public class PaymentServiceImpl implements PaymentService {
             paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
         payment.setPaymentStatus(paymentStatus);
 
-        // TODO 주문 저장
-//        Order order = orderService.
-//        payment.setOrder(response);
+        Order order = orderService.completeOrderPay(orderNo);
+        payment.setOrder(order);
 
         Payment savePayment = paymentRepository.save(payment);
 
