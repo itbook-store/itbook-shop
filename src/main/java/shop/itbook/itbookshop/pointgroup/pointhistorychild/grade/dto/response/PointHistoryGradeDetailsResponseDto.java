@@ -1,11 +1,9 @@
-package shop.itbook.itbookshop.pointgroup.pointhistory.dto.response;
+package shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.repository.NoRepositoryBean;
 
 /**
  * @author 최겸준
@@ -14,11 +12,14 @@ import org.springframework.data.repository.NoRepositoryBean;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PointHistoryGiftDetailsResponseDto {
+public class PointHistoryGradeDetailsResponseDto {
 
-    private String mainMemberId;
-    private String mainMemberName;
-    private String subMemberId;
+    private String memberId;
+    private String memberName;
+    private Integer membershipNo;
+    private String membershipGrade;
+    private Long membershipStandardAmount;
+    private Long membershipPoint;
     private Long point;
     private Long remainedPoint;
     private LocalDateTime historyCreatedAt;
