@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.productgroup.review.service.impl;
 
 import java.util.Objects;
-import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,9 +43,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ProductService productService;
 
     private final FileService fileService;
-
-    private final EntityManager entityManager;
-
+    
     @Value("${object.storage.folder-path.review}")
     private String folderPathImage;
 
@@ -140,5 +137,14 @@ public class ReviewServiceImpl implements ReviewService {
         review.modifyReview(reviewRequestDto.getStarPoint(), reviewRequestDto.getContent(),
             reviewRequestDto.getImage());
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ReviewResponseDto> findReviewListByProductNo(Pageable pageable, Long productNo) {
+
+        return reviewRepository.findReviewListByProductNo(pageable, productNo);
     }
 }

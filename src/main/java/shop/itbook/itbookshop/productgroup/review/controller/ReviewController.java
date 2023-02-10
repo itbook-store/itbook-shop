@@ -162,4 +162,33 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * url로 넘어온 상품 번호로 찾은 리뷰 리스트를 페이징처리하여 반환하는 api 입니다.
+     *
+     * @param productNo 상품 번호로 리뷰를 찾습니다.
+     * @param pageable  반환할때 리스트를 페이징처리합니다.
+     * @return 페이징처리한 dto 리스트를 commonResponseBody에 담아 보냅니다.
+     * @author 노수연
+     */
+    @GetMapping("/list/product/{productNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<ReviewResponseDto>>> reviewListByProductNo(
+        @PathVariable("productNo") Long productNo,
+        @PageableDefault Pageable pageable) {
+
+        log.info("productNo = {}", productNo);
+
+        Page<ReviewResponseDto> page =
+            reviewService.findReviewListByProductNo(pageable, productNo);
+
+        PageResponse<ReviewResponseDto> pageResponse = new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<ReviewResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ReviewResultMessageEnum.REVIEW_LIST_GET_SUCCESS.getResultMessage()),
+                pageResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
 }

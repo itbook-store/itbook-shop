@@ -59,4 +59,35 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
         return PageableExecutionUtils.getPage(reviewList, pageable,
             () -> from(qReview).fetchCount());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ReviewResponseDto> findReviewListByProductNo(Pageable pageable, Long productNo) {
+
+        QReview qReview = QReview.review;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QProduct qProduct = QProduct.product;
+        QMember qMember = QMember.member;
+
+        JPQLQuery<ReviewResponseDto> reviewListQuery =
+            from(qReview)
+                .innerJoin(qReview.orderProduct, qOrderProduct)
+                .innerJoin(qReview.product, qProduct)
+                .innerJoin(qReview.member, qMember)
+                .select(Projections.constructor(ReviewResponseDto.class,
+                    qReview.orderProductNo, qReview.product.productNo, qReview.product.name,
+                    qReview.member.memberNo,
+                    qReview.starPoint, qReview.content, qReview.image))
+                .where(qReview.product.productNo.eq(productNo))
+                .orderBy(qReview.orderProductNo.desc());
+
+        List<ReviewResponseDto> reviewList = reviewListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(reviewList, pageable,
+            () -> from(qReview).fetchCount());
+    }
 }

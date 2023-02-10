@@ -69,4 +69,16 @@ public interface ReviewService {
     void modifyReview(Long orderProductNo,
                       ReviewRequestDto reviewRequestDto,
                       MultipartFile multipartFile);
+
+    /**
+     * 상품 번호로
+     * 리뷰 리스트들을 불러옵니다.
+     *
+     * @param pageable  페이징 처리하여 불러옵니다.
+     * @param productNo 상품 번호로 테이블에서 리뷰 데이터를 찾습니다.
+     * @return 페이징 처리된 dto 리스트를 반환합니다.
+     * @author 노수연
+     */
+    Page<ReviewResponseDto> findReviewListByProductNo(Pageable pageable,
+                                                      Long productNo);
 }

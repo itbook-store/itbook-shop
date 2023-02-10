@@ -28,7 +28,6 @@ import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
-import shop.itbook.itbookshop.membergroup.member.transfer.MemberTransfer;
 import shop.itbook.itbookshop.membergroup.membership.dummy.MembershipDummy;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.membership.repository.MembershipRepository;
@@ -46,7 +45,6 @@ import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
-import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 import shop.itbook.itbookshop.productgroup.review.dummy.ReviewDummy;
@@ -193,8 +191,8 @@ class ReviewServiceImplTest {
     @Test
     void addReview() {
 
-        Product product = ProductTransfer.dtoToEntityAdd(productRequestDto);
-        Member member = MemberTransfer.dtoToEntity(memberRequestDto);
+        Product product = dummyProduct;
+        Member member = dummyMember;
 
         Review review = ReviewTransfer.dtoToEntity(reviewRequestDto);
         review.setOrderProductNo(reviewRequestDto.getOrderProductNo());
