@@ -2,8 +2,10 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryGiftDetailsResponseDto;
+import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -19,5 +21,8 @@ public interface PointHistoryAdminService {
                                                                    PointIncreaseDecreaseContentEnum pointIncreaseDecreaseContentEnum,
                                                                    String searchWord);
 
-    PointHistoryGiftDetailsResponseDto findGiftPointHistoryGiftDetailsDto(Long pointHistoryNo);
+    PointHistoryGiftDetailsResponseDto findPointHistoryGiftDetailsDto(Long pointHistoryNo);
+
+    PointHistoryGradeDetailsResponseDto findMembershipResponseDtoThroughPointHistory(
+        Long pointHistoryNo);
 }

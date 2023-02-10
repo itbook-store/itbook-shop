@@ -4,7 +4,6 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
 
 /**
  * properties에서 rest api 서버들의 주소를 받아오기 위한 설정파일입니다.
@@ -22,6 +21,8 @@ public class ServerConfig {
     private String deliveryUrl;
     private String deliveryPostPath;
 
+    private String authUrl;
+
     public String getBatchUrl() {
         return batchUrl;
     }
@@ -32,5 +33,9 @@ public class ServerConfig {
 
     public String getDeliveryPostPath() {
         return deliveryPostPath;
+    }
+
+    public String getAuthUrl() {
+        return authUrl;
     }
 }

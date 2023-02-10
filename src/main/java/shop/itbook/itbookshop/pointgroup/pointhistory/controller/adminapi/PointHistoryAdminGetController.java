@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryGiftDetailsResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 
 /**
@@ -35,13 +36,26 @@ public class PointHistoryAdminGetController {
         @PathVariable Long pointHistoryNo) {
 
         PointHistoryGiftDetailsResponseDto pointHistoryGiftDetailsResponseDto =
-            pointHistoryAdminService.findGiftPointHistoryGiftDetailsDto(pointHistoryNo);
+            pointHistoryAdminService.findPointHistoryGiftDetailsDto(pointHistoryNo);
 
 
         return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
             PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
             , pointHistoryGiftDetailsResponseDto));
     }
+
+    @GetMapping("{pointHistoryNo}/grade-details")
+    public ResponseEntity<CommonResponseBody<PointHistoryGradeDetailsResponseDto>> pointHistoryGradeDetails(
+        @PathVariable Long pointHistoryNo) {
+
+        PointHistoryGradeDetailsResponseDto pointHistoryGiftDetailsResponseDto =
+            pointHistoryAdminService.findMembershipResponseDtoThroughPointHistory(pointHistoryNo);
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
+            , pointHistoryGiftDetailsResponseDto));
+    }
+
 
     @GetMapping
     public ResponseEntity<CommonResponseBody<PageResponse<PointHistoryListResponseDto>>> pointHistoryList(

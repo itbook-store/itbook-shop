@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import shop.itbook.itbookshop.auth.annotation.IsAdmin;
+import shop.itbook.itbookshop.auth.annotation.IsUser;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;
 import shop.itbook.itbookshop.cart.dto.response.CartProductDetailsResponseDto;

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto;
+package shop.itbook.itbookshop.pointgroup.pointhistory.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

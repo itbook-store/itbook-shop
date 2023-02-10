@@ -230,13 +230,16 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
     @Override
     public Optional<MemberAuthInfoResponseDto> findAuthInfoByMemberId(String memberId) {
         return Optional.ofNullable(jpaQueryFactory.from(qmember)
+            .innerJoin(qmember.memberStatus, qmemberStatus)
             .where(qmember.memberId.eq(memberId))
             .select(Projections.constructor(
                 MemberAuthInfoResponseDto.class,
                 qmember.memberNo,
                 qmember.memberId,
                 qmember.password
-            )).fetchOne());
+            ))
+            .where(qmemberStatus.memberStatusEnum.stringValue().ne("차단회원"))
+            .fetchOne());
     }
 
     /**
