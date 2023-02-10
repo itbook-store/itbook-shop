@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
@@ -26,7 +25,7 @@ import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.service.OrderTotalCou
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/order-total-coupon")
+@RequestMapping("/api/admin/order-total-coupons")
 public class OrderTotalCouponController {
 
     private final OrderTotalCouponService orderTotalCouponService;

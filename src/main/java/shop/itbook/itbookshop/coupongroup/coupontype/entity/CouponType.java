@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.coupongroup.coupontype.converter.CouponTypeEnumConverter;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
-import shop.itbook.itbookshop.productgroup.producttype.converter.impl.ProductTypeEnumConverter;
 
 /**
  * @author 송다혜

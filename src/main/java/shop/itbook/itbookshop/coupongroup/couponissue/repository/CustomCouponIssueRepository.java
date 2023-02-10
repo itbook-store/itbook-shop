@@ -16,8 +16,8 @@ import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCoupon
  */
 @NoRepositoryBean
 public interface CustomCouponIssueRepository {
-    Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(Pageable pageable,
-                                                                  String memberId);
+    Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(Pageable pageable,
+                                                                  Long memberNo);
 
     CouponIssue findByIdFetchJoin(Long couponIssueNo);
 

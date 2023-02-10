@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.coupongroup.coupontype.converter;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Convert;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
-import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
 
 /**
  * @author 송다혜
