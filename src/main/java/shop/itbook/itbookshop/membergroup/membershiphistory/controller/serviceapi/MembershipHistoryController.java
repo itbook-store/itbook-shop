@@ -23,14 +23,14 @@ public class MembershipHistoryController {
 
     private final MembershipHistoryService membershipHistoryService;
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<List<MembershipHistoryResponseDto>>> MembershipHistoryList(
-        @PathVariable("memberId") String memberId) {
+        @PathVariable("memberNo") Long memberNo) {
 
         CommonResponseBody<List<MembershipHistoryResponseDto>> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 MembershipHistoryResultMessageEnum.MEMBERSHIP_HISTORY_LIST_SUCCESS.getMessage()),
-                membershipHistoryService.getMembershipHistories(memberId));
+                membershipHistoryService.getMembershipHistories(memberNo));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

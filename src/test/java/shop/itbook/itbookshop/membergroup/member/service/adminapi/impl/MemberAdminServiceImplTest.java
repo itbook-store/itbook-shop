@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.service.adminapi.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -69,9 +70,9 @@ class MemberAdminServiceImplTest {
                 LocalDateTime.of(2000, 1, 1, 0, 0, 0),
                 "010-0000-0000", "user1@test.com", LocalDateTime.now());
 
-        given(memberRepository.findByMemberId("user1")).willReturn(Optional.of(memberDto));
+        given(memberRepository.findByMemberNo(1L)).willReturn(Optional.of(memberDto));
 
-        MemberExceptPwdResponseDto testMember = memberAdminService.findMember("user1");
+        MemberExceptPwdResponseDto testMember = memberAdminService.findMember(1L);
 
         assertThat(testMember.getMemberId()).isEqualTo("user1");
     }
@@ -117,14 +118,14 @@ class MemberAdminServiceImplTest {
             "악성 민원");
 
         Member member = mock(Member.class);
-        given(memberRepository.findByMemberIdReceiveMember(anyString())).willReturn(
+        given(memberRepository.findByMemberNoReceiveMember(anyLong())).willReturn(
             Optional.of(member));
 
         MemberStatusResponseDto memberStatusDto =
             MemberStatusResponseDto.builder().memberStatusName("차단회원").memberStatusNo(1).build();
         given(memberStatusAdminService.findMemberStatus(anyString())).willReturn(memberStatusDto);
 
-        memberAdminService.modifyMember("user6", memberStatusUpdateAdminRequestDto);
+        memberAdminService.modifyMemberStatusInfo(1L, memberStatusUpdateAdminRequestDto);
 
         verify(member).setMemberStatus(any());
     }

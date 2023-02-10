@@ -26,14 +26,14 @@ public class MembershipHistoryRepositoryImpl extends QuerydslRepositorySupport
     QMember qMember = QMember.member;
 
     @Override
-    public List<MembershipHistoryResponseDto> findByMemberId(String memberId) {
+    public List<MembershipHistoryResponseDto> findByMemberNo(Long memberNo) {
 
         return from(qMembershipHistory)
             .innerJoin(qMembership)
             .on(qMembershipHistory.membership.membershipNo.eq(qMembership.membershipNo))
             .innerJoin(qMember)
             .on(qMembershipHistory.member.memberNo.eq(qMember.memberNo))
-            .where(qMember.memberId.eq(memberId))
+            .where(qMember.memberNo.eq(memberNo))
             .select(Projections.constructor(MembershipHistoryResponseDto.class,
                 qMembershipHistory.membershipHistoryNo, qMembershipHistory.monthlyUsageAmount,
                 qMembershipHistory.membershipHistoryCreatedAt, qMember.memberNo,

@@ -21,6 +21,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRe
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
@@ -114,7 +115,7 @@ class GiftIncreaseDecreasePointHistoryRepositoryTest {
 
 
         giftIncreaseDecreasePointHistory2 = new GiftIncreaseDecreasePointHistory(
-            dummyPointHistory2.getPointHistoryNo(), member2);
+            dummyPointHistory2.getPointHistoryNo(), member1);
 
         giftIncreaseDecreasePointHistoryRepository.save(giftIncreaseDecreasePointHistory2);
 
@@ -150,5 +151,26 @@ class GiftIncreaseDecreasePointHistoryRepositoryTest {
 
         assertThat(actual.getPointHistoryNo())
             .isEqualTo(giftIncreaseDecreasePointHistory2.getPointHistoryNo());
+    }
+
+    @DisplayName("선물 포인트내역을 조인해서 상세정보를 잘 받아온다.")
+    @Test
+    void findPointHistoryGiftDetailsResponseDto() {
+
+        PointHistoryGiftDetailsResponseDto actual =
+            pointHistoryRepository.findPointHistoryGiftDetailsResponseDto(
+                dummyPointHistory2.getPointHistoryNo());
+
+        assertThat(actual.getPoint())
+            .isEqualTo(dummyPointHistory2.getIncreaseDecreasePoint());
+
+        assertThat(actual.getRemainedPoint())
+            .isEqualTo(dummyPointHistory2.getRemainedPoint());
+
+        assertThat(actual.getMainMemberId())
+            .isEqualTo(member2.getMemberId());
+
+        assertThat(actual.getSubMemberId())
+            .isEqualTo(member1.getMemberId());
     }
 }
