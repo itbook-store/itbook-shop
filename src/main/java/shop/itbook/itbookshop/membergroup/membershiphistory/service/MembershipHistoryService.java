@@ -9,6 +9,6 @@ import shop.itbook.itbookshop.membergroup.membershiphistory.dto.response.Members
  */
 public interface MembershipHistoryService {
 
-    List<MembershipHistoryResponseDto> getMembershipHistories(String memberId);
+    List<MembershipHistoryResponseDto> getMembershipHistories(Long memberNo);
 
 }

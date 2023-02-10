@@ -21,34 +21,34 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 public interface CustomMemberRepository {
 
     /**
-     * memberId로 특정 멤버 정보를 찾는 메서드입니다.
+     * memberNo로 특정 멤버 정보를 찾는 메서드입니다.
      * 프론트 서버에서 관리자가 특정 회원의 정보를 열람할 때 비밀번호를 제외한 모든 필드들의 값을 볼 수 있게 합니다.
      *
-     * @param memberId memberId로 테이블에서 멤버를 찾습니다.
+     * @param memberNo memberNo로 테이블에서 멤버를 찾습니다.
      * @return 멤버 Dto로 반환합니다.
      * @author 노수연
      */
-    Optional<MemberExceptPwdResponseDto> findByMemberId(String memberId);
+    Optional<MemberExceptPwdResponseDto> findByMemberNo(Long memberNo);
 
     /**
-     * memberId로 특정 멤버 정보를 찾는 메서드입니다.
+     * memberNo로 특정 멤버 정보를 찾는 메서드입니다.
      * 프론트 서버에서 유저가 비밀번호를 포함하여 자신의 모든 개인정보를 조회할 수 있도록 멤버 엔티티의 모든 필드들을 dto를 통해 반환합니다.
      *
-     * @param memberId memberId로 테이블에서 멤버를 찾습니다.
+     * @param memberNo memberNo로 테이블에서 멤버를 찾습니다.
      * @return 멤버 Dto로 반환합니다.
      * @author 노수연
      */
-    Optional<MemberResponseDto> findByMemberIdAllInfo(String memberId);
+    Optional<MemberResponseDto> findByMemberNoAllInfo(Long memberNo);
 
     /**
      * 멤버를 수정할 때 특정 멤버 아이디로 멤버 엔티티를 불러와 dirty checking 일어날 수 있도록
      * Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.
      *
-     * @param memberId memberId로 테이블에서 멤버를 찾습니다.
+     * @param memberNo memberNo로 테이블에서 멤버를 찾습니다.
      * @return Optional wrapper 클래스로 멤버 엔티티를 감싸 반환합니다.
      * @author 노수연
      */
-    Optional<Member> findByMemberIdReceiveMember(String memberId);
+    Optional<Member> findByMemberNoReceiveMember(Long memberNo);
 
     /**
      * 모든 회원 리스트를 가져오는 메서드입니다.
@@ -192,13 +192,13 @@ public interface CustomMemberRepository {
                                                                 Pageable pageable);
 
     /**
-     * 멤버 아이디로 차단된 회원 정보를 찾기 위한 query dsl 입니다.
+     * 멤버 No로 차단된 회원 정보를 찾기 위한 query dsl 입니다.
      *
-     * @param memberId 검색할 멤버 아이디입니다.
+     * @param memberNo 검색할 멤버 아이디입니다.
      * @return 검색된 멤버 정보를 담을 dto 입니다.
      * @author 노수연
      */
-    MemberExceptPwdBlockResponseDto findBlockMemberByMemberId(String memberId);
+    MemberExceptPwdBlockResponseDto findBlockMemberByMemberNo(Long memberNo);
 
     /**
      * 전체 멤버 수를 카운트하기 위한 query dsl 입니다.
