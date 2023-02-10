@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.category.dto.request;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
 
@@ -16,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
 public class CategoryRequestDto {
 
     @NotNull(message = "부모 카테고리 번호는 널일수 없습니다.")
-    @Min(value = 0, message = "부모 카테고리 번호는 존재하지 않는경우가 가장 작은 값이며 최소값은 0입니다.")
+    @PositiveOrZero(message = "부모 카테고리 번호는 존재하지 않는경우가 가장 작은 값이며 최소값은 0입니다.")
     private Integer parentCategoryNo;
 
     @Length(min = 1, max = 20, message = "카테고리 명은 최소 한자 이상 스무자 이하여야합니다.")

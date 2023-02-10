@@ -22,6 +22,7 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponS
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
  * @author 송다혜
@@ -66,12 +67,11 @@ class CouponAdminControllerTest {
         ReflectionTestUtils.setField(couponRequestDto, "code", UUID.randomUUID().toString());
         ReflectionTestUtils.setField(couponRequestDto, "isDuplicateUse", false);
         ReflectionTestUtils.setField(couponRequestDto, "totalQuantity", 0);
-        ReflectionTestUtils.setField(couponRequestDto, "totalQuantity", 0);
 
         given(couponService.addCoupon(any(CouponRequestDto.class))).willReturn(0L);
 
         //when then
-        mvc.perform(post("/api/admin/coupons")
+        mvc.perform(post("/api/admin/coupons/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(couponRequestDto)))

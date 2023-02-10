@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CustomCategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
+import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 
 /**
  * @author 송다혜
@@ -30,6 +31,7 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCoupon qCoupon = QCoupon.coupon;
         QCategory qCategory = QCategory.category;
+        QCouponType qCouponType = QCouponType.couponType;
 
         JPQLQuery<CategoryCoupon> jpqlQuery = from(qCategoryCoupon);
 
@@ -38,7 +40,9 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
                 qCoupon.couponNo,
                 qCoupon.amount, qCoupon.point, qCoupon.percent,
                 qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
-                qCategory.categoryNo, qCategory.categoryName))
+                qCategory.categoryNo, qCategory.categoryName,
+                qCouponType.couponTypeEnum.stringValue().as("couponType")))
+            .join(qCoupon.couponType, qCouponType)
             .innerJoin(qCategoryCoupon.coupon, qCoupon)
             .innerJoin(qCategoryCoupon.category, qCategory)
             .offset(pageable.getOffset())

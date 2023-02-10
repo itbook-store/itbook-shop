@@ -11,7 +11,10 @@ import lombok.Getter;
 @Getter
 public enum BookmarkResultMessageEnum {
 
-    BOOKMARK_ADD_PRODUCT("즐겨찾기 상품 등록에 성공 했습니다.");
+    BOOKMARK_ADD_PRODUCT("즐겨찾기 상품 등록에 성공 했습니다."),
+    BOOKMARK_DELETE_PRODUCT("즐겨찾기 상품 삭제에 성공 했습니다."),
+    BOOKMARK_DELETE_ALL_PRODUCT("즐겨찾기 전체 상품 삭제에 성공 했습니다."),
+    BOOKMARK_GET_PRODUCT("즐겨찾기 상품 조회에 성공 했습니다.");
 
     private final String successMessage;
 

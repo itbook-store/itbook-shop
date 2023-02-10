@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.controller.elastic;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +54,19 @@ public class ProductElasticController {
                 new CommonResponseBody.CommonHeader(
                     ProductSearchResultMessageEnum.PRODUCT_SEARCH_SUCCESS.getMessage()),
                 new PageResponse<>(product));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<CommonResponseBody<List<ProductSearchResponseDto>>>
+    getProductSearchByName(@RequestParam String name) {
+
+        CommonResponseBody<List<ProductSearchResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductSearchResultMessageEnum.PRODUCT_SEARCH_SUCCESS.getMessage()),
+                productSearchService.searchProductsByTitle(name));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

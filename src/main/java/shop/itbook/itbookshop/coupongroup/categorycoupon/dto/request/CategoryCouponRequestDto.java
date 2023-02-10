@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 
 /**
  * @author 송다혜
@@ -13,6 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryCouponRequestDto {
 
-    private Long couponNo;
+    CouponRequestDto couponRequestDto;
     private Integer categoryNo;
 }

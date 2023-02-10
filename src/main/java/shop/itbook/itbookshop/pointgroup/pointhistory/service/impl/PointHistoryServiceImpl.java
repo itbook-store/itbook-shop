@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.pointgroup.pointhistory.service.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +8,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.service.PointIncreaseDecreaseContentService;
@@ -29,23 +29,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
 
     private final PointIncreaseDecreaseContentService pointIncreaseDecreaseContentService;
 
-    @Override
-    public Optional<PointHistory> findRecentPointHistory(Member member) {
-
-        return pointHistoryRepository.findFirstByMemberOrderByPointHistoryNoDesc(member);
-    }
-
-    @Override
-    public Long findRecentlyPoint(Member member) {
-        Optional<PointHistory> recentPointHistory = this.findRecentPointHistory(member);
-
-        Long recentlyRemainedPoint = 0L;
-        if (recentPointHistory.isPresent()) {
-            recentlyRemainedPoint = recentPointHistory.get().getRemainedPoint();
-        }
-
-        return recentlyRemainedPoint;
-    }
+    private final PointHistoryCommonService pointHistoryCommonService;
 
     @Override
     @Transactional
@@ -82,9 +66,9 @@ public class PointHistoryServiceImpl implements PointHistoryService {
     }
 
     private Long getRemainedPointToSave(Member member, Long pointToApply,
-                                        Boolean isDecrease) {
+                                        boolean isDecrease) {
 
-        Long recentlyRemainedPoint = this.findRecentlyPoint(member);
+        Long recentlyRemainedPoint = pointHistoryCommonService.findRecentlyPoint(member);
 
         if (isDecrease) {
 

@@ -11,11 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 
@@ -26,8 +23,6 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
  * @since 1.0
  */
 @Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "bookmark", uniqueConstraints = {
@@ -59,7 +54,6 @@ public class Bookmark {
      * @param product the product
      * @author 강명관
      */
-    @Builder
     public Bookmark(Member member, Product product) {
         this.member = member;
         this.product = product;

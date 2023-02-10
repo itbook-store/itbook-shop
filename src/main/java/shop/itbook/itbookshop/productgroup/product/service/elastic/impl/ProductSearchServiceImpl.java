@@ -79,4 +79,17 @@ public class ProductSearchServiceImpl implements ProductSearchService {
         return new PageImpl<>(result, pageable, searchProducts.getTotalElements());
     }
 
+    @Override
+    public List<ProductSearchResponseDto> searchProductsByTitle(String name) {
+
+        List<SearchProduct> searchProducts = productSearchRepository.findByName(name);
+
+        return searchProducts
+            .stream()
+            .map(SearchProductTransfer::documentToDto)
+            .collect(Collectors.toList());
+
+
+    }
+
 }
