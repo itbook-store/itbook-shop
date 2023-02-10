@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.service.OrderTotalCou
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/order-total-coupon")
+@RequestMapping("/api/admin/order-total-coupons")
 public class OrderTotalCouponController {
 
     private final OrderTotalCouponService orderTotalCouponService;

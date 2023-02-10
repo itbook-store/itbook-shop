@@ -26,7 +26,7 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponSer
  * @since 1.0
  */
 @Controller
-@RequestMapping("/api/admin/product-coupon")
+@RequestMapping("/api/admin/product-coupons")
 @RequiredArgsConstructor
 public class ProductCouponAdminController {
 
