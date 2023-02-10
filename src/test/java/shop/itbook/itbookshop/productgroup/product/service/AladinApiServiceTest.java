@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.dto.response.BookResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 
@@ -42,10 +43,9 @@ class AladinApiServiceTest {
 
     @Test
     void responseBookTest_failure() {
-        Item bookDetails =
-            aladinApiService.getBookDetails("97889981397666");
-
-        Assertions.assertThat(bookDetails).isNull();
+        Assertions.assertThatExceptionOfType(BookNotFoundException.class)
+            .isThrownBy(() -> aladinApiService.getBookDetails("97889981397666"))
+            .withMessageContaining(BookNotFoundException.MESSAGE);
     }
 
 }
