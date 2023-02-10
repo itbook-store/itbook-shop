@@ -20,7 +20,8 @@ public interface PaymentService {
      */
     String findPaymentKey(Long orderNo);
 
-    OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto);
+    OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
+                                      Long orderNo);
 
     /**
      * 토스 서버에 결제 취소를 요청 하여 결제 취소 하는 기능을 담당합니다.

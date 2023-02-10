@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderPro
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -55,6 +57,15 @@ public class OrderServiceImpl implements OrderService {
     private final MemberService memberService;
     private final OrderStatusService orderStatusService;
     private final ProductService productService;
+
+    @Value("${payment.origin.url}")
+    public String ORIGIN_URL;
+
+
+    @Override
+    public Order findOrderEntity(Long orderNo) {
+        return orderRepository.findById(orderNo).orElseThrow();
+    }
 
     /**
      * Add order.
@@ -121,9 +132,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return OrderPaymentDto.builder()
+            .orderNo(order.getOrderNo())
             .orderId(orderId)
             .orderName(stringBuilder.toString())
             .amount(amount.get())
+            .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
+            .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo())
             .build();
     }
 
@@ -152,7 +166,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void completeOrderPay(Long orderNo) {
+    public Order completeOrderPay(Long orderNo) {
 
         Order order = orderRepository.findById(orderNo).orElseThrow();
 
@@ -167,5 +181,7 @@ public class OrderServiceImpl implements OrderService {
         );
 
         orderProductHistoryRepository.save(orderProductHistory);
+
+        return order;
     }
 }

@@ -35,11 +35,9 @@ public class PaymentTransfer {
                 ZoneId.of("Asia/Seoul")));
 
         return Payment.builder()
-//            .paymentStatus()
-//            .order(requestDto)
-//            .card(requestDto.getCard())
             .paymentKey(requestDto.getPaymentKey())
             .orderId(requestDto.getOrderId())
+            .totalAmount(requestDto.getCard().getAmount())
             .orderName(requestDto.getOrderName())
             .requestedAt(requestedAt)
             .approvedAt(approvedAt)

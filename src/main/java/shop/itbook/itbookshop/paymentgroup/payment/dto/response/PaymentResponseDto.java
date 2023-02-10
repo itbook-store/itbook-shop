@@ -41,7 +41,6 @@ public class PaymentResponseDto {
         private String country;
         private Failure failure;
         private Long vat;
-
     }
 
     @Getter
