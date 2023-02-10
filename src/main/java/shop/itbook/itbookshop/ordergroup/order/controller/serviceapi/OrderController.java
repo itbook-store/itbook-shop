@@ -19,6 +19,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
@@ -72,8 +73,7 @@ public class OrderController {
      */
 // TODO: 2023/02/10 비회원 주문조회
     public ResponseEntity<CommonResponseBody<Void>> orderNonMemberList(
-        @PageableDefault
-        Pageable pageable, @PathVariable("orderNo") Long orderNo
+        @PageableDefault Pageable pageable, @PathVariable("orderNo") Long orderNo
     ) {
 
         CommonResponseBody<Void> commonResponseBody =
@@ -138,4 +138,19 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
+    @GetMapping("/details/{orderNo}")
+    public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
+        @PathVariable("orderNo") Long orderNo) {
+
+        orderService.completeOrderPay(orderNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_PAY_SUCCESS_MESSAGE.getResultMessage()
+                ), null
+            );
+
+        return null;
+    }
 }

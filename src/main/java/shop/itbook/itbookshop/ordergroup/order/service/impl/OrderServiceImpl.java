@@ -99,9 +99,10 @@ public class OrderServiceImpl implements OrderService {
                     Product product = productService.findProductEntity(productNo);
                     Integer productCnt = productCntQueue.poll();
 
-                    amount.set((long) (amount.get() +
-                        (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01) *
-                            productCnt)));
+                    Long productPrice =
+                        (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
+
+                    amount.set(amount.get() + productPrice * productCnt);
 
                     if (stringBuilder.length() == 0) {
                         stringBuilder.append(product.getName());
@@ -111,6 +112,7 @@ public class OrderServiceImpl implements OrderService {
                         .order(order)
                         .product(product)
                         .count(productCnt)
+                        .productPrice(productPrice)
                         .isHidden(false)
                         .build();
                 })

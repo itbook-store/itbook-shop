@@ -242,12 +242,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 모든 제품이 팔 수 있는 상품인지 검사 합니다.
-     *
-     * @param productNoList 검사할 상품들의 번호 리스트.
-     * @param productCnt    검사할 상품들의 각각 구매할 개수 리스트.
-     * @return 1개라도 팔 수 없는 상품이 있다면 false 를 반환합니다.
-     * @author 정재원 *
+     * {@inheritDoc}
      */
     @Override
     public void checkSellProductList(List<Long> productNoList, List<Integer> productCnt) {
@@ -262,12 +257,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
-     * 팔 수 있는 상품인지 검사합니다.
-     *
-     * @param productNo  검사할 상품의 번호
-     * @param productCnt 검사할 상품의 구매할 개수
-     * @return 팔 수 있으면 true, 팔 수 없으면 false
-     * @author 정재원 *
+     * {@inheritDoc}
      */
     @Override
     public boolean canSellProduct(Long productNo, Integer productCnt) {
