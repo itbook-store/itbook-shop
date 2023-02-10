@@ -8,9 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
+import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
-import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.QMembership;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.QCouponIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
@@ -231,6 +234,40 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 qReview.starPoint,
                 qReview.content,
                 qReview.image
+            ))
+            .fetchOne();
+    }
+
+    @Override
+    public PointHistoryCouponDetailsResponseDto findPointHistoryCouponDetailsDto(
+        Long pointHistoryNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QCouponIncreasePointHistory qCouponIncreasePointHistory =
+            QCouponIncreasePointHistory.couponIncreasePointHistory;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QCoupon qCoupon = QCoupon.coupon;
+        QMember qMember = QMember.member;
+
+        return from(qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .innerJoin(qCouponIncreasePointHistory)
+            .on(qPointHistory.pointHistoryNo.eq(qCouponIncreasePointHistory.pointHistoryNo))
+            .innerJoin(qCouponIncreasePointHistory.couponIssue, qCouponIssue)
+            .innerJoin(qCouponIssue.coupon, qCoupon)
+            .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(Projections.fields(PointHistoryCouponDetailsResponseDto.class,
+                qMember.memberId,
+                qMember.name.as("memberName"),
+                qCoupon.name.as("couponName"),
+                qCoupon.couponType.couponTypeEnum.stringValue().as("couponType"),
+                qCoupon.point.as("couponPoint"),
+                qCoupon.code.as("couponCode"),
+                qCoupon.isDuplicateUse.as("isDuplicateUse"),
+                qPointHistory.increaseDecreasePoint.as("point"),
+                qPointHistory.remainedPoint,
+                qPointHistory.historyCreatedAt,
+                qPointHistory.isDecrease
             ))
             .fetchOne();
     }

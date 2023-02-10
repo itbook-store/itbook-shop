@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
@@ -31,8 +32,22 @@ public class PointHistoryAdminGetController {
 
     private final PointHistoryAdminService pointHistoryAdminService;
 
+
+    @GetMapping("/{pointHistoryNo}/coupon-details")
+    public ResponseEntity<CommonResponseBody<PointHistoryCouponDetailsResponseDto>> pointHistoryCouponDetails(
+        @PathVariable Long pointHistoryNo) {
+
+        PointHistoryCouponDetailsResponseDto pointHistoryCouponDetailsResponseDto =
+            pointHistoryAdminService.findPointHistoryCouponDetailsDto(pointHistoryNo);
+
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
+            , pointHistoryCouponDetailsResponseDto));
+    }
+
     @GetMapping("/api/admin/point-histories/{pointHistoryNo}/review-details")
-    public ResponseEntity<CommonResponseBody<ReviewResponseDto>> poinHistoryReviewDetails(
+    public ResponseEntity<CommonResponseBody<ReviewResponseDto>> pointHistoryReviewDetails(
         @PathVariable Long pointHistoryNo) {
 
         ReviewResponseDto reviewResponseDto =
@@ -45,7 +60,7 @@ public class PointHistoryAdminGetController {
     }
 
     @GetMapping("{pointHistoryNo}/gift-details")
-    public ResponseEntity<CommonResponseBody<PointHistoryGiftDetailsResponseDto>> poinHistoryGiftDetails(
+    public ResponseEntity<CommonResponseBody<PointHistoryGiftDetailsResponseDto>> pointHistoryGiftDetails(
         @PathVariable Long pointHistoryNo) {
 
         PointHistoryGiftDetailsResponseDto pointHistoryGiftDetailsResponseDto =
