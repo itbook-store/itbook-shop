@@ -6,11 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
@@ -26,6 +28,20 @@ import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepo
 public class PointHistoryAdminGetController {
 
     private final PointHistoryAdminService pointHistoryAdminService;
+
+
+    @GetMapping("{pointHistoryNo}/gift-details")
+    public ResponseEntity<CommonResponseBody<PointHistoryGiftDetailsResponseDto>> poinHistoryGiftDetails(
+        @PathVariable Long pointHistoryNo) {
+
+        PointHistoryGiftDetailsResponseDto pointHistoryGiftDetailsResponseDto =
+            pointHistoryAdminService.findGiftPointHistoryGiftDetailsDto(pointHistoryNo);
+
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
+            , pointHistoryGiftDetailsResponseDto));
+    }
 
     @GetMapping
     public ResponseEntity<CommonResponseBody<PageResponse<PointHistoryListResponseDto>>> pointHistoryList(
