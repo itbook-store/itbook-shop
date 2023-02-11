@@ -21,6 +21,7 @@ public class OrderDummy {
             .postcode(12345)
             .roadNameAddress("테스트 도로명주소")
             .recipientAddressDetails("테스트 상세주소")
+            .isHidden(false)
             .build();
     }
 }

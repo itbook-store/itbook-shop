@@ -40,7 +40,7 @@ public interface OrderService {
                                                                          Long memberNo);
 
     /**
-     * Complete order pay.
+     * 결제 완료후 로직 처리
      *
      * @param orderNo the order no
      */

@@ -55,9 +55,6 @@ public class OrderProduct {
     @Column(name = "product_price", nullable = false)
     private Long productPrice;
 
-    @Column(name = "is_hidden", nullable = false)
-    private Boolean isHidden;
-
     /**
      * 주문상품 엔티티의 생성자입니다.
      *
@@ -65,16 +62,13 @@ public class OrderProduct {
      * @param product      상품 엔티티
      * @param count        상품 개수
      * @param productPrice 구매할 당시 상품의 가격
-     * @param isHidden     주문 숨김 여부
      * @author 정재원
      */
     @Builder
-    public OrderProduct(Order order, Product product, Integer count, Long productPrice,
-                        Boolean isHidden) {
+    public OrderProduct(Order order, Product product, Integer count, Long productPrice) {
         this.order = order;
         this.product = product;
         this.count = count;
         this.productPrice = productPrice;
-        this.isHidden = isHidden;
     }
 }

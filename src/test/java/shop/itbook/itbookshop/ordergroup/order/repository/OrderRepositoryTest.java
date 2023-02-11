@@ -31,9 +31,9 @@ import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepos
 import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.dummy.OrderProductHistoryDummy;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.OrderProductHistory;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderProductHistoryRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.dummy.OrderStatusHistoryDummy;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.dummy.OrderStatusDummy;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.repository.OrderStatusRepository;
@@ -60,7 +60,7 @@ class OrderRepositoryTest {
     @Autowired
     OrderStatusRepository orderStatusRepository;
     @Autowired
-    OrderProductHistoryRepository orderProductHistoryRepository;
+    OrderStatusHistoryRepository orderStatusHistoryRepository;
     @Autowired
     ProductRepository productRepository;
     @Autowired
@@ -103,9 +103,9 @@ class OrderRepositoryTest {
         MemberStatus normalMemberStatus = MemberStatusDummy.getNormalMemberStatus();
         memberStatusRepository.save(normalMemberStatus);
 
-        OrderProductHistory orderProductHistory =
-            OrderProductHistoryDummy.createOrderProductHistory(orderProduct, orderStatus);
-        orderProductHistoryRepository.save(orderProductHistory);
+        OrderStatusHistory orderStatusHistory =
+            OrderStatusHistoryDummy.createOrderStatusHistory(orderProduct, orderStatus);
+        orderStatusHistoryRepository.save(orderStatusHistory);
 
         Member member = MemberDummy.getMember1();
         member.setMembership(membership);
