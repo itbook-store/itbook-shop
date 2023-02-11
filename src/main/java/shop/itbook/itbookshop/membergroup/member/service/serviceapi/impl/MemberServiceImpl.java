@@ -47,7 +47,6 @@ import shop.itbook.itbookshop.role.service.RoleService;
  * @author 노수연
  * @since 1.0
  */
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -88,6 +87,14 @@ public class MemberServiceImpl implements MemberService {
 
         return memberRepository.findByMemberNoAllInfo(memberNo)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MemberResponseDto findMemberByMemberId(String memberId) {
+        return memberRepository.findByMemberId(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
     /**
