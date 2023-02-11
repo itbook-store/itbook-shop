@@ -13,4 +13,13 @@ import shop.itbook.itbookshop.productgroup.review.entity.Review;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, CustomReviewRepository {
 
+
+    /**
+     * 주문 상품 번호로 테이블에서 해당 번호가 존재하는지 찾는 메서드입니다.
+     *
+     * @param orderProductNo 테이블에 존재하는지 여부를 판단할 주문 상품번호입니다.
+     * @return 있으면 true, 없으면 false를 반환합니다.
+     * @author 노수연
+     */
+    Boolean existsByOrderProductNo(Long orderProductNo);
 }
