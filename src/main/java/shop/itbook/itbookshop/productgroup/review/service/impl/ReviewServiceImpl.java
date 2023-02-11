@@ -13,12 +13,15 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.service.ReviewIncreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
@@ -42,8 +45,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ProductService productService;
 
+    private final ReviewIncreasePointHistoryService reviewIncreasePointHistoryService;
+
     private final FileService fileService;
-    
+
     @Value("${object.storage.folder-path.review}")
     private String folderPathImage;
 
@@ -63,6 +68,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Long addReview(ReviewRequestDto reviewRequestDto, MultipartFile images) {
 
+        if (reviewRepository.existsByOrderProductNo(reviewRequestDto.getOrderProductNo())) {
+            throw new ReviewAlreadyRegisteredException();
+        }
 
         Review review = ReviewTransfer.dtoToEntity(reviewRequestDto);
 
@@ -79,6 +87,12 @@ public class ReviewServiceImpl implements ReviewService {
         try {
             review.setImage(uploadAndSetFile(images));
             reviewNo = reviewRepository.save(review).getOrderProductNo();
+
+            // TODO 메타 데이터의 포인트 값 가져오기
+            reviewIncreasePointHistoryService.savePointHistoryAboutReviewIncrease(member, review,
+                100L);
+
+
         } catch (DataIntegrityViolationException e) {
             throw new InvalidInputException();
         }
@@ -116,7 +130,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(Long orderProductNo) {
-        reviewRepository.deleteById(orderProductNo);
+        Review review =
+            reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new);
+
+        review.setStarPoint(-1);
     }
 
     /**
@@ -146,5 +163,14 @@ public class ReviewServiceImpl implements ReviewService {
     public Page<ReviewResponseDto> findReviewListByProductNo(Pageable pageable, Long productNo) {
 
         return reviewRepository.findReviewListByProductNo(pageable, productNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<UnwrittenReviewOrderProductResponseDto> findUnwrittenReviewOrderProductList(
+        Pageable pageable, Long memberNo) {
+        return reviewRepository.findUnwrittenReviewOrderProductList(pageable, memberNo);
     }
 }

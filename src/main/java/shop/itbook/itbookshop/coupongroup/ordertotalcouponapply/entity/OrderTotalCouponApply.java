@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupongroup.ordertotalapplicablecoupon.entity;
+package shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,4 +39,9 @@ public class OrderTotalCouponApply {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no", nullable = false, unique = true)
     private Order order;
+
+    public OrderTotalCouponApply(Long couponIssueNo, Order order) {
+        this.couponIssueNo = couponIssueNo;
+        this.order = order;
+    }
 }

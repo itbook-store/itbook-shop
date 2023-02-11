@@ -27,6 +27,7 @@ public class CouponResponseDto {
     private LocalDateTime couponCreatedAt;
     private LocalDateTime couponExpiredAt;
     private LocalDateTime couponModifiedAt;
+    private Integer usagePeriod;
     private String image;
     private String code;
     private Boolean isDuplicateUse;

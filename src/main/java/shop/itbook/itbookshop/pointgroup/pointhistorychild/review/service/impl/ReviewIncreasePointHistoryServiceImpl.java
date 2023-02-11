@@ -33,7 +33,7 @@ public class ReviewIncreasePointHistoryServiceImpl
                                                                           Long pointToApply) {
         PointHistory savedPointHistory =
             pointHistoryService.getSavedIncreasePointHistory(member, pointToApply,
-                PointIncreaseDecreaseContentEnum.ORDER_CANCEL);
+                PointIncreaseDecreaseContentEnum.REVIEW);
 
         ReviewIncreasePointHistory reviewIncreasePointHistory =
             new ReviewIncreasePointHistory(savedPointHistory.getPointHistoryNo(), review);

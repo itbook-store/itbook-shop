@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.coupongroup.categoryapplicablecoupon.entity;
+package shop.itbook.itbookshop.coupongroup.productcouponapply.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,7 +15,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
- * 카테고리쿠폰적용 관련 쿠폰입니다.
+ * 상품쿠폰적용 관련 엔티티입니다.
  *
  * @author 송다혜
  * @since 1.0
@@ -24,9 +24,9 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "product_coupon_apply")
 @Entity
-@Table(name = "category_coupon_apply")
-public class CategoryCouponApply {
+public class ProductCouponApply {
 
     @Id
     private Long couponIssueNo;
@@ -40,4 +40,8 @@ public class CategoryCouponApply {
     @JoinColumn(name = "order_product_no", nullable = false, unique = true)
     private OrderProduct orderProduct;
 
+    public ProductCouponApply(Long couponIssueNo, OrderProduct orderProduct) {
+        this.couponIssueNo = couponIssueNo;
+        this.orderProduct = orderProduct;
+    }
 }
