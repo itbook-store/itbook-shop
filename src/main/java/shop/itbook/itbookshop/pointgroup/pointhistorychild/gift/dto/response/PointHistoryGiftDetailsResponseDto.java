@@ -15,7 +15,6 @@ import org.springframework.data.repository.NoRepositoryBean;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PointHistoryGiftDetailsResponseDto {
-
     private String mainMemberId;
     private String mainMemberName;
     private String subMemberId;

@@ -51,7 +51,8 @@ public class PointHistoryAdminGetController {
         @PathVariable Long pointHistoryNo) {
 
         ReviewResponseDto reviewResponseDto =
-            pointHistoryAdminService.findPointHistoryReviewDetailsDto(pointHistoryNo);
+            pointHistoryAdminService.findReviewResponseDtoForPointHistoryReviewDetails(
+                pointHistoryNo);
 
 
         return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
@@ -77,7 +78,7 @@ public class PointHistoryAdminGetController {
         @PathVariable Long pointHistoryNo) {
 
         PointHistoryGradeDetailsResponseDto pointHistoryGiftDetailsResponseDto =
-            pointHistoryAdminService.findMembershipResponseDtoThroughPointHistory(pointHistoryNo);
+            pointHistoryAdminService.findPointHistoryGradeDetailsDto(pointHistoryNo);
 
         return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
             PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())

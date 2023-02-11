@@ -50,14 +50,15 @@ public class PointHistoryAdminServiceImpl implements PointHistoryAdminService {
     }
 
     @Override
-    public PointHistoryGradeDetailsResponseDto findMembershipResponseDtoThroughPointHistory(
+    public PointHistoryGradeDetailsResponseDto findPointHistoryGradeDetailsDto(
         Long pointHistoryNo) {
 
         return pointHistoryRepository.findMembershipResponseDtoThroughPointHistory(pointHistoryNo);
     }
 
     @Override
-    public ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo) {
+    public ReviewResponseDto findReviewResponseDtoForPointHistoryReviewDetails(
+        Long pointHistoryNo) {
 
         return pointHistoryRepository.findPointHistoryReviewDetailsDto(pointHistoryNo);
     }

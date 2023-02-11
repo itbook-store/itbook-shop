@@ -24,10 +24,9 @@ public interface PointHistoryAdminService {
 
     PointHistoryGiftDetailsResponseDto findPointHistoryGiftDetailsDto(Long pointHistoryNo);
 
-    PointHistoryGradeDetailsResponseDto findMembershipResponseDtoThroughPointHistory(
-        Long pointHistoryNo);
+    PointHistoryGradeDetailsResponseDto findPointHistoryGradeDetailsDto(Long pointHistoryNo);
 
-    ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo);
+    ReviewResponseDto findReviewResponseDtoForPointHistoryReviewDetails(Long pointHistoryNo);
 
     PointHistoryCouponDetailsResponseDto findPointHistoryCouponDetailsDto(Long pointHistoryNo);
 }

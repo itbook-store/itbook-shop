@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.serviceapi.PointHistoryMemberService;
 
 /**
@@ -37,6 +38,9 @@ class PointHistoryMemberGetControllerTest {
 
     @Autowired
     PointHistoryMemberGetController pointHistoryAdminGetController;
+
+    @MockBean
+    PointHistoryAdminService pointHistoryAdminService;
 
     @MockBean
     PointHistoryMemberService pointHistoryMemberService;
