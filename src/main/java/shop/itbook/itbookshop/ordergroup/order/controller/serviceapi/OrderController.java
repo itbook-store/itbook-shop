@@ -45,7 +45,7 @@ public class OrderController {
      * @param pageable 보여줄 페이지 정보
      * @param memberNo 회원 번호
      * @return 주문 정보를 담은 Dto 리스트를 담은 페이지 객체
-     * @author 정재원
+     * @author 정재원 *
      */
     @GetMapping("/list/{memberNo}")
     public ResponseEntity<CommonResponseBody<PageResponse<OrderListMemberViewResponseDto>>> orderMemberListFind(
@@ -68,8 +68,10 @@ public class OrderController {
     /**
      * 비회원 주문 조회 요청을 처리합니다.
      *
-     * @param orderNo 주문 조회할 주문 번호
+     * @param pageable the pageable
+     * @param orderNo  주문 조회할 주문 번호
      * @return 비회원이 주문한 건의 상세 정보 Dto 를 담은 응답 객체
+     * @author 정재원 *
      */
 // TODO: 2023/02/10 비회원 주문조회
     public ResponseEntity<CommonResponseBody<Void>> orderNonMemberList(
@@ -92,10 +94,10 @@ public class OrderController {
      * @param memberNo           회원 번호(null 일 경우 비회원)
      * @param orderAddRequestDto 주문시 작성한 정보를 담은 Dto
      * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
-     * @author 정재원
+     * @author 정재원 *
      */
     @PostMapping()
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAdd(
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAddBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
@@ -108,11 +110,33 @@ public class OrderController {
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrder(orderAddRequestDto, optMemberNo)
+                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    /**
+     * 결제 전 주문 취소 요청을 처리합니다.
+     *
+     * @param orderNo 취소 처리할 주문 번호
+     * @return 성공시 ok 응답 객체
+     * @author 정재원 *
+     */
+    @PostMapping("/cancel/{orderNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
+        @PathVariable("orderNo") Long orderNo) {
+
+        orderService.cancelOrderBeforePayment(orderNo);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
+            ), null
+        );
+
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 
     /**
@@ -120,7 +144,7 @@ public class OrderController {
      *
      * @param orderNo the order no
      * @return the response entity
-     * @author 정재원
+     * @author 정재원 *
      */
     @PostMapping("/success-payment/{orderNo}")
     public ResponseEntity<CommonResponseBody<Void>> orderPayCompletion(
@@ -138,6 +162,13 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
+    /**
+     * Order details response entity.
+     *
+     * @param orderNo the order no
+     * @return the response entity
+     * @author 정재원 *
+     */
     @GetMapping("/details/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
         @PathVariable("orderNo") Long orderNo) {
@@ -145,7 +176,7 @@ public class OrderController {
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_PAY_SUCCESS_MESSAGE.getResultMessage()
+                    OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
                 ), null
             );
 

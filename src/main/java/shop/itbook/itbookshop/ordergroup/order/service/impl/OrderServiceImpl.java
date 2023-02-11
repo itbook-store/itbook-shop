@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
-import com.querydsl.jpa.JPQLQuery;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +21,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
@@ -33,11 +32,8 @@ import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMembe
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
-import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
-import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -56,14 +52,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
-    private final OrderStatusHistoryRepository orderStatusHistoryRepository;
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
 
+    private final OrderStatusHistoryService orderStatusHistoryService;
     private final DeliveryService deliveryService;
     private final MemberService memberService;
-    private final OrderStatusService orderStatusService;
     private final ProductService productService;
 
     @Value("${payment.origin.url}")
@@ -72,34 +67,23 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findOrderEntity(Long orderNo) {
-        return orderRepository.findById(orderNo).orElseThrow();
+        return orderRepository.findById(orderNo).orElseThrow(OrderNotFoundException::new);
     }
 
     /**
-     * Add order.
+     * {@inheritDoc}
      */
-    public void addOrder() {
-        // TODO: 2023/02/04 쿠폰 이력 추가
-        // TODO: 2023/02/04 포인트 이력 추가
-
-        // TODO: 2023/02/04 주문 상태 변경
-    }
-
     @Override
     @Transactional
-    public OrderPaymentDto addOrder(OrderAddRequestDto orderAddRequestDto,
-                                    Optional<Long> memberNo) {
+    public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
+                                                 Optional<Long> memberNo) {
 
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
         orderRepository.save(order);
 
         // 주문_상태_이력 테이블 저장
-        OrderStatus orderStatus =
-            orderStatusService.findByOrderStatusEnum(OrderStatusEnum.WAITING_FOR_PAYMENT);
-        OrderStatusHistory orderStatusHistory =
-            new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
-        orderStatusHistoryRepository.save(orderStatusHistory);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAITING_FOR_PAYMENT);
 
 //        // 배송 상태 생성 후 저장
 //        deliveryService.registerDelivery(order);
@@ -138,11 +122,11 @@ public class OrderServiceImpl implements OrderService {
                 orderProductRepository.save(orderProduct);
             });
 
+        // TODO: 2023/02/04 쿠폰 이력 추가
+        // TODO: 2023/02/04 포인트 이력 추가
+
         // 결제를 위한 order ID 생성
-        String orderNoString = String.valueOf(order.getOrderNo());
-        String randomUuidString = UUID.randomUUID().toString();
-        randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
-        String orderId = UUID.fromString(randomUuidString).toString();
+        String orderId = createOrderUUID(order);
 
         if (orderAddRequestDto.getProductNoList().size() > 1) {
             stringBuilder.append(" 외 ").append(orderAddRequestDto.getProductNoList().size() - 1)
@@ -157,6 +141,25 @@ public class OrderServiceImpl implements OrderService {
             .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo())
             .build();
+    }
+
+    private static String createOrderUUID(Order order) {
+        String orderNoString = String.valueOf(order.getOrderNo());
+        String randomUuidString = UUID.randomUUID().toString();
+        randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
+        String orderId = UUID.fromString(randomUuidString).toString();
+        return orderId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void cancelOrderBeforePayment(Long orderNo) {
+        Order order = findOrderEntity(orderNo);
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
     }
 
     private void checkMemberAndSaveOrder(Order order,
@@ -183,21 +186,23 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.getOrderListOfMemberWithStatus(pageable, memberNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Order completeOrderPay(Long orderNo) {
 
-        Order order = orderRepository.findById(orderNo).orElseThrow();
-        OrderStatus orderStatus = orderStatusService.findByOrderStatusEnum(
-            OrderStatusEnum.PAYMENT_COMPLETE);
+        Order order = findOrderEntity(orderNo);
 
-        OrderStatusHistory orderStatusHistory =
-            new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
-        orderStatusHistoryRepository.save(orderStatusHistory);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
 
         return order;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
 
