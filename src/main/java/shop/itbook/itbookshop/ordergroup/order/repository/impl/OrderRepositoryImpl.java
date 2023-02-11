@@ -53,8 +53,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrderStatusHistory2.orderStatusHistoryNo)))
             .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
             .fetchJoin()
-            .innerJoin(qOrderStatusHistory.order, qOrderMember.order)
-            .on(qOrderMember.member.memberNo.eq(memberNo))
+            .innerJoin(qOrderMember)
+            .on(qOrderMember.order.eq(qOrderStatusHistory.order)
+                .and(qOrderMember.member.memberNo.eq(memberNo)))
             .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
             .select(Projections.fields(OrderListMemberViewResponseDto.class,
                 qOrderStatusHistory.order.orderNo,
@@ -73,8 +74,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .fetch();
 
         List<Delivery> deliveryList = from(qDelivery)
-            .innerJoin(qDelivery.order, qOrderMember.order)
-            .on(qOrderMember.member.memberNo.eq(memberNo))
+            .innerJoin(qOrderMember)
+            .on(qOrderMember.order.eq(qDelivery.order)
+                .and(qOrderMember.member.memberNo.eq(memberNo)))
             .select(qDelivery)
             .orderBy(qDelivery.order.orderNo.asc())
             .fetch();
