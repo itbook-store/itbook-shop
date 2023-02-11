@@ -68,6 +68,7 @@ public class OrderSubscription {
     @Builder
     public OrderSubscription(Order order, LocalDate subscriptionStartDate, Integer sequence,
                              Integer subscriptionPeriod) {
+        this.orderNo = order.getOrderNo();
         this.order = order;
         this.subscriptionStartDate = subscriptionStartDate;
         this.sequence = sequence;

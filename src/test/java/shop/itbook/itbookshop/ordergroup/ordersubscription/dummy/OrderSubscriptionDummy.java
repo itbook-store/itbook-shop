@@ -14,7 +14,10 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscript
 public class OrderSubscriptionDummy {
     public static OrderSubscription createOrderSubscription(Order order) {
         return OrderSubscription.builder()
+            .order(order)
             .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
+            .sequence(1)
+            .subscriptionPeriod(6)
             .build();
     }
 }
