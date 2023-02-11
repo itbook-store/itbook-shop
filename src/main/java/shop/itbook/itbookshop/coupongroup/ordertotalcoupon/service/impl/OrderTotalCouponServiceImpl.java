@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.request.OrderTotalCouponRequestDto;
@@ -31,7 +32,7 @@ public class OrderTotalCouponServiceImpl implements OrderTotalCouponService {
     }
 
     @Override
-    public Page<OrderCouponListResponseDto> findTotalCouponPageList(Pageable pageable) {
+    public Page<AdminCouponListResponseDto> findTotalCouponPageList(Pageable pageable) {
         return orderTotalCouponRepository.findTotalCouponPageList(pageable);
     }
 }

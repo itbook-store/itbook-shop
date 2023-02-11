@@ -16,6 +16,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.resultmessageenum.CategoryCouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 
@@ -30,14 +31,14 @@ public class CategoryCouponController {
 
     private final CategoryCouponService categoryCouponService;
 
-    @GetMapping
-    public ResponseEntity<CommonResponseBody<Page<OrderCouponListResponseDto>>> findCategoryCouponList(
+    @GetMapping("/list")
+    public ResponseEntity<CommonResponseBody<Page<AdminCouponListResponseDto>>> findCategoryCouponList(
         @PageableDefault Pageable pageable) {
 
-        Page<OrderCouponListResponseDto> couponList =
+        Page<AdminCouponListResponseDto> couponList =
             categoryCouponService.findCategoryCouponList(pageable);
 
-        CommonResponseBody<Page<OrderCouponListResponseDto>> commonResponseBody =
+        CommonResponseBody<Page<AdminCouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     CategoryCouponResultMessageEnum.CATEGORY_COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),

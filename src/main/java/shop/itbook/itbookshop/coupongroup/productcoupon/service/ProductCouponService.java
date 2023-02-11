@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.coupongroup.productcoupon.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCouponRequestDto;
 
@@ -12,5 +13,5 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCoupo
 public interface ProductCouponService {
     Long addProductCoupon(ProductCouponRequestDto productCouponRequestDto);
 
-    Page<OrderCouponListResponseDto> findProductCouponPageList(Pageable pageable);
+    Page<AdminCouponListResponseDto> findProductCouponPageList(Pageable pageable);
 }
