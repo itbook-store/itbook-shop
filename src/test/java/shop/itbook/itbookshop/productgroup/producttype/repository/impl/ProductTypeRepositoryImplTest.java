@@ -90,14 +90,14 @@ class ProductTypeRepositoryImplTest {
         order.setOrderCreatedAt(LocalDateTime.now().minusDays(90));
         orderRepository.save(order);
 
-        OrderProduct orderProduct1 = new OrderProduct(order, product1, 10, false);
+        OrderProduct orderProduct1 = new OrderProduct(order, product1, 10, 10000L, false);
         orderProductRepository.save(orderProduct1);
 
         Order order2 = OrderDummy.getOrder();
         order2.setOrderCreatedAt(LocalDateTime.now().minusDays(13));
 
         orderRepository.save(order2);
-        OrderProduct orderProduct2 = new OrderProduct(order2, product2, 5, false);
+        OrderProduct orderProduct2 = new OrderProduct(order2, product2, 5, 10000L, false);
         orderProductRepository.save(orderProduct2);
 
         Product product3 = ProductDummy.getProductSuccess();
@@ -107,7 +107,7 @@ class ProductTypeRepositoryImplTest {
         new_book.setProductNo(product3.getProductNo());
         bookRepository.save(new_book);
 
-        OrderProduct orderProduct3 = new OrderProduct(order2, product3, 7, false);
+        OrderProduct orderProduct3 = new OrderProduct(order2, product3, 7, 10000L, false);
         orderProductRepository.save(orderProduct3);
 
         List<ProductDetailsResponseDto> bestSellerList =

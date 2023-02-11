@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
@@ -15,6 +16,8 @@ import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.Delivery
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -25,6 +28,7 @@ import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.OrderProductHistory;
@@ -32,7 +36,8 @@ import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderPro
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
-import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -52,6 +57,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderProductHistoryRepository orderProductHistoryRepository;
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
+    private final PaymentRepository paymentRepository;
 
     private final DeliveryService deliveryService;
     private final MemberService memberService;
@@ -185,5 +191,20 @@ public class OrderServiceImpl implements OrderService {
         orderProductHistoryRepository.save(orderProductHistory);
 
         return order;
+    }
+
+    @Override
+    public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
+
+        List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
+            orderProductRepository.findOrderProductsByOrderNo(orderNo);
+        List<OrderDestinationDto> orderDestinationList =
+            orderRepository.findOrderDestinationsByOrderNo(orderNo);
+        PaymentCardResponseDto paymentCardResponseDto =
+            paymentRepository.findPaymentCardByOrderNo(orderNo);
+        String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
+
+        return new OrderDetailsResponseDto(orderProductDetailResponseDtoList, orderDestinationList,
+            paymentCardResponseDto, orderStatus);
     }
 }

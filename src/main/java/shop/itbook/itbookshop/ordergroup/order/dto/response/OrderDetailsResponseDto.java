@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.ordergroup.order.dto.response;
 
 import java.util.List;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 
@@ -11,9 +13,12 @@ import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardRespo
  * @author 정재원
  * @since 1.0
  */
-@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderDetailsResponseDto {
-    List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList;
-    List<OrderDestinationDto> orderDestinationDtoList;
-    PaymentCardResponseDto paymentCardResponseDto;
+    private List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList;
+    private List<OrderDestinationDto> orderDestinationDtoList;
+    private PaymentCardResponseDto paymentCardResponseDto;
+    private String orderStatus;
 }

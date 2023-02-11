@@ -30,6 +30,7 @@ import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMembe
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderProductHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
+import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
@@ -56,6 +57,9 @@ class OrderServiceTest {
     OrderMemberRepository orderMemberRepository;
     @MockBean
     OrderNonMemberRepository orderNonMemberRepository;
+    @MockBean
+    PaymentRepository paymentRepository;
+
     @MockBean
     DeliveryService deliveryService;
     @MockBean
@@ -97,5 +101,11 @@ class OrderServiceTest {
             orderListMemberViewResponseDto.getRecipientPhoneNumber());
         assertThat(resultDto.getTrackingNo()).isEqualTo(
             orderListMemberViewResponseDto.getTrackingNo());
+    }
+
+    @Test
+    @DisplayName("주문 상세 Dto 조회 성공")
+    void findOrderDetailsSuccessTest() {
+        
     }
 }

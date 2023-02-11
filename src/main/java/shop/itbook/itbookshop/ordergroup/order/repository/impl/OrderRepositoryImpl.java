@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -80,5 +81,43 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             jpqlQuery::fetchCount);
     }
 
+    @Override
+    public String findOrderStatusByOrderNo(Long orderNo) {
 
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+
+        QOrderProductHistory qOrderProductHistory1 = QOrderProductHistory.orderProductHistory;
+        QOrderProductHistory qOrderProductHistory2 =
+            new QOrderProductHistory("qOrderProductHistory2");
+
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+
+        return from(qOrderProductHistory1)
+            .leftJoin(qOrderProductHistory2)
+            .on(qOrderProductHistory1.orderProduct.orderProductNo.eq(
+                qOrderProductHistory2.orderProduct.orderProductNo).and(
+                qOrderProductHistory1.orderProductOrderStatusNo.lt(
+                    qOrderProductHistory2.orderProductOrderStatusNo)))
+            .innerJoin(qOrderProductHistory1.orderStatus, qOrderStatus)
+            .innerJoin(qOrderProductHistory1.orderProduct, qOrderProduct)
+            .on(qOrderProduct.order.orderNo.eq(orderNo))
+            .fetchJoin()
+            .where(qOrderProductHistory2.orderProductOrderStatusNo.isNull())
+            .select(qOrderStatus)
+            .fetchOne().getOrderStatusEnum().getOrderStatus();
+    }
+
+    @Override
+    public List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo) {
+
+        QOrder qOrder = QOrder.order;
+
+        return from(qOrder)
+            .where(qOrder.orderNo.eq(orderNo))
+            .select(Projections.fields(OrderDestinationDto.class,
+                qOrder.recipientName, qOrder.recipientPhoneNumber,
+                qOrder.postcode, qOrder.roadNameAddress, qOrder.recipientAddressDetails
+            ))
+            .fetch();
+    }
 }
