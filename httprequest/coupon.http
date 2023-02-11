@@ -1,4 +1,10 @@
-GET /api/coupons/category-coupon
+GET /api/admin/coupons/category-coupon
+Host: localhost:8082
+Content-Type: application/json
+
+###
+
+GET /api/admin/coupons
 Host: localhost:8082
 Content-Type: application/json
 

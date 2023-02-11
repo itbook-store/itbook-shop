@@ -4,7 +4,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 
@@ -22,12 +23,12 @@ public interface CustomCouponRepository {
      *
      * @return 쿠폰목록입니다.
      */
-    Page<CouponListResponseDto> findCouponList(Pageable pageable);
+    Page<AdminCouponListResponseDto> findCouponList(Pageable pageable);
 
     List<Coupon> findByAvailableCouponByCouponType(CouponTypeEnum couponTypeEnum);
 
-    List<CouponListResponseDto> findByAvailableCouponDtoByCouponType(CouponTypeEnum couponTypeEnum);
+    List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(CouponTypeEnum couponTypeEnum);
 
-    Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
-                                                             CouponTypeEnum couponTypeEnum);
+    Page<AdminCouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
+                                                                  CouponTypeEnum couponTypeEnum);
 }

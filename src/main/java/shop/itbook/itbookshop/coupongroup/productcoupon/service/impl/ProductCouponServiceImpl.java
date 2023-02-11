@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
@@ -35,7 +35,7 @@ public class ProductCouponServiceImpl implements ProductCouponService {
     }
 
     @Override
-    public Page<CouponListResponseDto> findProductCouponPageList(Pageable pageable) {
+    public Page<OrderCouponListResponseDto> findProductCouponPageList(Pageable pageable) {
         return productCouponRepository.findProductCouponPageList(pageable);
     }
 }

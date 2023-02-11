@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCouponRequestDto;
@@ -49,16 +49,16 @@ public class ProductCouponAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<CommonResponseBody<PageResponse<CouponListResponseDto>>> findProductCouponList(
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderCouponListResponseDto>>> findProductCouponList(
         @PageableDefault Pageable pageable) {
 
-        Page<CouponListResponseDto> page =
+        Page<OrderCouponListResponseDto> page =
             productCouponService.findProductCouponPageList(pageable);
 
-        PageResponse<CouponListResponseDto> pageResponse =
+        PageResponse<OrderCouponListResponseDto> pageResponse =
             new PageResponse<>(page);
 
-        CommonResponseBody<PageResponse<CouponListResponseDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<OrderCouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductCouponResultMessageEnum.PRODUCT_COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
@@ -108,7 +108,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .select(Projections.fields(OrderTotalCouponIssueResponseListDto.class,
                 qCouponIssue.couponIssueNo,
                 qCouponIssue.couponExpiredAt,
-                Projections.fields(CouponListResponseDto.class,
+                Projections.fields(OrderCouponListResponseDto.class,
                     qCouponIssue.couponIssueNo, qCoupon.name,
                     qCoupon.code, qCoupon.amount,
                     qCoupon.percent, qCoupon.point,
@@ -145,7 +145,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCategoryCoupon.category.categoryNo.as("categoryNo"),
                 qCouponIssue.couponIssueNo,
                 qCouponIssue.couponExpiredAt,
-                Projections.fields(CouponListResponseDto.class,
+                Projections.fields(OrderCouponListResponseDto.class,
                     qCoupon.couponNo, qCoupon.name,
                     qCoupon.code, qCoupon.amount,
                     qCoupon.percent, qCoupon.point,
@@ -182,7 +182,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qProductCoupon.product.productNo.as("productNo"),
                 qCouponIssue.couponIssueNo,
                 qCouponIssue.couponExpiredAt,
-                Projections.fields(CouponListResponseDto.class,
+                Projections.fields(OrderCouponListResponseDto.class,
                     qCoupon.couponNo, qCoupon.name,
                     qCoupon.code, qCoupon.amount,
                     qCoupon.percent, qCoupon.point,

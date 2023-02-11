@@ -11,7 +11,7 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCou
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 
 /**
@@ -46,7 +46,7 @@ public class CategoryCouponServiceImpl implements CategoryCouponService {
     }
 
     @Override
-    public Page<CouponListResponseDto> findCategoryCouponList(Pageable pageable) {
+    public Page<OrderCouponListResponseDto> findCategoryCouponList(Pageable pageable) {
 
         return categoryCouponRepository.findCategoryCouponList(pageable);
     }

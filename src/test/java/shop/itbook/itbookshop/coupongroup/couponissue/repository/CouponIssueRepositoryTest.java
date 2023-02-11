@@ -18,7 +18,7 @@ import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
@@ -201,7 +201,7 @@ class CouponIssueRepositoryTest {
 
         assertThat(result1).hasSize(3);
         for(int i = 0; i<result1.size(); i++){
-            CouponListResponseDto couponResult = result1.get(i).getCouponListResponseDto();
+            OrderCouponListResponseDto couponResult = result1.get(i).getOrderCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("OrderTotalCoupon");
             assertThat(result1.get(i).getCouponIssueNo()).isNotNull();
             assertThat(result1.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
@@ -213,7 +213,7 @@ class CouponIssueRepositoryTest {
 
         assertThat(result2).hasSize(3);
         for(int i = 0; i<result2.size(); i++){
-            CouponListResponseDto couponResult = result2.get(i).getCouponListResponseDto();
+            OrderCouponListResponseDto couponResult = result2.get(i).getOrderCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("OrderTotalCoupon");
             assertThat(result2.get(i).getCouponIssueNo()).isNotNull();
             assertThat(result2.get(i).getCouponExpiredAt()).isAfter(LocalDateTime.now());
@@ -229,7 +229,7 @@ class CouponIssueRepositoryTest {
 
         assertThat(result1).hasSize(2);
         for(int i = 0; i<result1.size(); i++){
-            CouponListResponseDto couponResult = result1.get(i).getCouponListResponseDto();
+            OrderCouponListResponseDto couponResult = result1.get(i).getOrderCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("CategoryCoupon");
             assertThat(result1.get(i).getCategoryNo()).isEqualTo(category.getCategoryNo());
             assertThat(result1.get(i).getCouponIssueNo()).isNotNull();
@@ -242,7 +242,7 @@ class CouponIssueRepositoryTest {
 
         assertThat(result2).hasSize(2);
         for(int i = 0; i<result2.size(); i++){
-            CouponListResponseDto couponResult = result2.get(i).getCouponListResponseDto();
+            OrderCouponListResponseDto couponResult = result2.get(i).getOrderCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("CategoryCoupon");
             assertThat(result2.get(i).getCategoryNo()).isEqualTo(category.getCategoryNo());
             assertThat(result2.get(i).getCouponIssueNo()).isNotNull();
@@ -259,7 +259,7 @@ class CouponIssueRepositoryTest {
 
         assertThat(result1).hasSize(2);
         for(int i = 0; i<result1.size(); i++){
-            CouponListResponseDto couponResult = result1.get(i).getCouponListResponseDto();
+            OrderCouponListResponseDto couponResult = result1.get(i).getOrderCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("ProductCoupon");
             assertThat(result1.get(i).getProductNo()).isEqualTo(product.getProductNo());
             assertThat(result1.get(i).getCouponIssueNo()).isNotNull();
@@ -272,7 +272,7 @@ class CouponIssueRepositoryTest {
 
         assertThat(result2).hasSize(2);
         for(int i = 0; i<result2.size(); i++){
-            CouponListResponseDto couponResult = result2.get(i).getCouponListResponseDto();
+            OrderCouponListResponseDto couponResult = result2.get(i).getOrderCouponListResponseDto();
             assertThat(couponResult.getName()).isEqualTo("ProductCoupon");
             assertThat(result2.get(i).getProductNo()).isEqualTo(product.getProductNo());
             assertThat(result2.get(i).getCouponIssueNo()).isNotNull();
