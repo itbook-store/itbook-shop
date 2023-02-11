@@ -13,9 +13,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.category.entity.Category;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
@@ -44,21 +45,19 @@ public class ProductServiceImpl implements ProductService {
     @Value("${object.storage.folder-path.thumbnail}")
     private String folderPathThumbnail;
 
-    @Value("${object.storage.folder-path.ebook}")
-    private String folderPathEbook;
-
     /**
      * {@inheritDoc}
      */
     @Override
     @Transactional
-    public Long addProduct(ProductRequestDto requestDto, MultipartFile thumbnails) {
+    public Long addProduct(ProductAddRequestDto requestDto, MultipartFile thumbnails) {
 
 
         Product product;
 
         try {
-            uploadAndSetFile(requestDto, thumbnails);
+            String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
+            requestDto.setFileThumbnailsUrl(fileUrl);
             product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
         } catch (DataIntegrityViolationException e) {
@@ -72,34 +71,38 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Transactional
-    public void modifyProduct(Long productNo, ProductRequestDto requestDto,
+    public void modifyProduct(Long productNo, ProductModifyRequestDto requestDto,
                               MultipartFile thumbnails) {
-        uploadAndSetFile(requestDto, thumbnails);
+        if (!Objects.isNull(thumbnails)) {
+            String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
+            requestDto.setFileThumbnailsUrl(fileUrl);
+        }
 
         Product product = updateProduct(requestDto, productNo);
-        productRepository.save(product);
 
-        productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
-
+        if (!Objects.isNull(requestDto.getCategoryNoList())) {
+            productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
+        }
     }
-
-    private void uploadAndSetFile(ProductRequestDto requestDto, MultipartFile thumbnails) {
-        String thumbnailUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
-        requestDto.setFileThumbnailsUrl(thumbnailUrl);
-    }
-
 
     /**
      * {@inheritDoc}
      */
     @Override
     @Transactional
-    public void removeProduct(Long productNo) {
+    public void changeBooleanField(Long productNo, String fieldName) {
         Product product = this.findProductEntity(productNo);
-        if (product.getIsDeleted()) {
-            product.setIsDeleted(false);
-        } else {
-            product.setIsDeleted(true);
+
+        if (fieldName.equals("delete")) {
+            product.setIsDeleted(!product.getIsDeleted());
+        }
+
+        if (fieldName.equals("isForceSoldOut")) {
+            product.setIsForceSoldOut(!product.getIsForceSoldOut());
+        }
+
+        if (fieldName.equals("isSelled")) {
+            product.setIsSelled(!product.getIsSelled());
         }
         productRepository.save(product);
     }
@@ -187,23 +190,53 @@ public class ProductServiceImpl implements ProductService {
      * @param productNo  수정해야 할 상품 번호입니다.
      * @return 수정 완료된 상품을 반환합니다.
      */
-    private Product updateProduct(ProductRequestDto requestDto, Long productNo) {
+    private Product updateProduct(ProductModifyRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
         product.setName(requestDto.getProductName());
         product.setSimpleDescription(requestDto.getSimpleDescription());
         product.setDetailsDescription(requestDto.getDetailsDescription());
         product.setStock(requestDto.getStock());
-        product.setIsSelled(requestDto.getIsSelled());
-        product.setIsForceSoldOut(requestDto.getIsForceSoldOut());
+        product.setIsPointApplying(requestDto.getIsPointApplying());
+        product.setIsPointApplyingBasedSellingPrice(
+            requestDto.getIsPointApplyingBasedSellingPrice());
+        if (!Objects.isNull(requestDto.getFileThumbnailsUrl())) {
+            product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
+        }
+        product.setFixedPrice(requestDto.getFixedPrice());
+        product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
+        product.setDiscountPercent(requestDto.getDiscountPercent());
+        product.setRawPrice(requestDto.getRawPrice());
+        product.setIsSubscription(requestDto.getIsSubscription());
+        productRepository.save(product);
+        return product;
+    }
+
+    /**
+     * 상품 번호로 상품을 찾아 해당 상품 정보를 수정해주는 메서드입니다.
+     *
+     * @param requestDto 상품 수정을 위한 정보를 담은 dto 객체입니다.
+     * @param productNo  수정해야 할 상품 번호입니다.
+     * @return 수정 완료된 상품을 반환합니다.
+     */
+    @Override
+    public Product updateProduct(BookModifyRequestDto requestDto, Long productNo) {
+        Product product = this.findProductEntity(productNo);
+
+        product.setName(requestDto.getProductName());
+        product.setSimpleDescription(requestDto.getSimpleDescription());
+        product.setDetailsDescription(requestDto.getDetailsDescription());
+        product.setStock(requestDto.getStock());
+        product.setIsPointApplying(requestDto.getIsPointApplying());
+        product.setIsPointApplyingBasedSellingPrice(
+            requestDto.getIsPointApplyingBasedSellingPrice());
         product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         product.setFixedPrice(requestDto.getFixedPrice());
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
         product.setDiscountPercent(requestDto.getDiscountPercent());
         product.setRawPrice(requestDto.getRawPrice());
-        product.setIsPointApplyingBasedSellingPrice(
-            requestDto.getIsPointApplyingBasedSellingPrice());
         product.setIsSubscription(requestDto.getIsSubscription());
+        productRepository.save(product);
         return product;
     }
 
@@ -222,8 +255,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
-        return ProductRequestDto.builder()
+    public ProductAddRequestDto toProductRequestDto(ProductBookRequestDto requestDto) {
+        return ProductAddRequestDto.builder()
             .productName(requestDto.getProductName())
             .categoryNoList(requestDto.getCategoryNoList())
             .simpleDescription(requestDto.getSimpleDescription())

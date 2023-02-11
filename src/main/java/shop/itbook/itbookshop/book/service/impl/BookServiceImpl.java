@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.dto.request.BookRequestDto;
+import shop.itbook.itbookshop.book.dto.request.BookAddRequestDto;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.book.dto.response.BookBooleanResponseDto;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.entity.Book;
@@ -21,8 +22,11 @@ import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.AladinApiService;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
+import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
 /**
  * BookService 인터페이스를 구현한 도서 Service 클래스입니다.
@@ -36,11 +40,15 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 public class BookServiceImpl implements BookService {
     private final FileService fileService;
     private final ProductService productService;
+    private final ProductCategoryService productCategoryService;
     private final BookRepository bookRepository;
     private final AladinApiService aladinApiService;
 
     @Value("${object.storage.folder-path.ebook}")
     private String folderPathEbook;
+
+    @Value("${object.storage.folder-path.thumbnail}")
+    private String folderPathThumbnail;
 
     /**
      * {@inheritDoc}
@@ -81,7 +89,8 @@ public class BookServiceImpl implements BookService {
             productService.addProduct(productService.toProductRequestDto(requestDto), thumbnails);
 
         if (Objects.nonNull(ebook)) {
-            uploadAndSetFile(requestDto, ebook);
+            String fileUrl = fileService.uploadFile(ebook, folderPathEbook);
+            requestDto.setFileEbookUrl(fileUrl);
         }
 
         Book book = BookTransfer.dtoToEntityAdd(requestDto, productNo);
@@ -95,20 +104,25 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     @Transactional
-    public void modifyBook(Long productNo, ProductBookRequestDto requestDto, MultipartFile ebook) {
-        if (!Objects.isNull(ebook)) {
-            uploadAndSetFile(requestDto, ebook);
+    public void modifyBook(Long productNo, BookModifyRequestDto requestDto,
+                           MultipartFile thumbnails, MultipartFile ebook) {
+
+        if (!Objects.isNull(thumbnails)) {
+            String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
+            requestDto.setFileThumbnailsUrl(fileUrl);
         }
 
-        BookRequestDto bookRequestDto = this.toBookRequestDto(requestDto);
+        if (!Objects.isNull(ebook)) {
+            String fileUrl = fileService.uploadFile(ebook, folderPathEbook);
+            requestDto.setFileEbookUrl(fileUrl);
+        }
 
-        Book book = updateBook(bookRequestDto, productNo);
-        bookRepository.save(book);
-    }
+        Product product = productService.updateProduct(requestDto, productNo);
+        Book book = this.updateBook(requestDto, productNo, product);
 
-    private void uploadAndSetFile(ProductBookRequestDto requestDto, MultipartFile ebook) {
-        String ebookUrl = fileService.uploadFile(ebook, folderPathEbook);
-        requestDto.setFileEbookUrl(ebookUrl);
+        if (!Objects.isNull(requestDto.getCategoryNoList())) {
+            productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
+        }
     }
 
     /**
@@ -126,25 +140,6 @@ public class BookServiceImpl implements BookService {
             return new BookBooleanResponseDto(Boolean.TRUE);
         }
         return new BookBooleanResponseDto(Boolean.FALSE);
-    }
-
-    private Book updateBook(shop.itbook.itbookshop.book.dto.request.BookRequestDto requestDto,
-                            Long productNo) {
-        Book book = this.findBookEntity(productNo);
-
-        DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate ld = LocalDate.parse(requestDto.getBookCreatedAt(), DATEFORMATTER);
-        LocalDateTime date = LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
-
-        book.setIsbn(requestDto.getIsbn());
-        book.setPageCount(requestDto.getPageCount());
-        book.setBookCreatedAt(date);
-        book.setIsEbook(requestDto.getIsEbook());
-        book.setEbookUrl(requestDto.getEbookUrl());
-        book.setPublisherName(requestDto.getPublisherName());
-        book.setAuthorName(requestDto.getAuthorName());
-
-        return book;
     }
 
     /**
@@ -171,9 +166,9 @@ public class BookServiceImpl implements BookService {
      * {@inheritDoc}
      */
     @Override
-    public shop.itbook.itbookshop.book.dto.request.BookRequestDto toBookRequestDto(
+    public BookAddRequestDto toBookRequestDto(
         ProductBookRequestDto requestDto) {
-        return shop.itbook.itbookshop.book.dto.request.BookRequestDto.builder()
+        return BookAddRequestDto.builder()
             .isbn(requestDto.getIsbn())
             .pageCount(requestDto.getPageCount())
             .bookCreatedAt(requestDto.getBookCreatedAt())
@@ -184,5 +179,23 @@ public class BookServiceImpl implements BookService {
             .build();
     }
 
+    public Book updateBook(BookModifyRequestDto requestDto, Long productNo, Product product) {
+        Book book = this.findBookEntity(productNo);
 
+        DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate ld = LocalDate.parse(requestDto.getBookCreatedAt(), DATEFORMATTER);
+        LocalDateTime date = LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
+
+        book.setProduct(product);
+        book.setIsbn(requestDto.getIsbn());
+        book.setPageCount(requestDto.getPageCount());
+        book.setBookCreatedAt(date);
+        if (!Objects.isNull(requestDto.getFileEbookUrl())) {
+            book.setEbookUrl(requestDto.getFileEbookUrl());
+        }
+        book.setPublisherName(requestDto.getPublisherName());
+        book.setAuthorName(requestDto.getAuthorName());
+        bookRepository.save(book);
+        return book;
+    }
 }

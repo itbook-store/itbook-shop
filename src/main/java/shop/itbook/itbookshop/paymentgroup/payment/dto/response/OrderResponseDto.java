@@ -13,6 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderNoResponseDto {
+public class OrderResponseDto {
     Long orderNo;
+    Long totalAmount;
 }

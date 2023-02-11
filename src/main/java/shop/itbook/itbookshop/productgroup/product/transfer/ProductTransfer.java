@@ -2,7 +2,7 @@ package shop.itbook.itbookshop.productgroup.product.transfer;
 
 import java.time.LocalDateTime;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -22,7 +22,7 @@ public class ProductTransfer {
      * @return 엔티티로 변환된 상품 엔티티입니다.
      * @author
      */
-    public static Product dtoToEntityAdd(ProductRequestDto requestDto) {
+    public static Product dtoToEntityAdd(ProductAddRequestDto requestDto) {
         return Product.builder()
             .name(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())

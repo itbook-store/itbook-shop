@@ -10,6 +10,10 @@ public class InvalidPaymentException extends RuntimeException {
 
     public static final String MESSAGE = "유효하지 않은 결제입니다.";
 
+    public InvalidPaymentException(String message) {
+        super(message);
+    }
+
     public InvalidPaymentException() {
         super(MESSAGE);
     }
