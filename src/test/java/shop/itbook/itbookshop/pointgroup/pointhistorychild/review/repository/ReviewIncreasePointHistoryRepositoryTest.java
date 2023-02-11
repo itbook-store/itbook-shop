@@ -212,4 +212,22 @@ class ReviewIncreasePointHistoryRepositoryTest {
         assertThat(actual.getContent())
             .isEqualTo(review.getContent());
     }
+
+    @DisplayName("특정 멤버의 리뷰적립 포인트 상세조회가 잘 이루어 진다.")
+    @Test
+    void findMyPointHistoryReviewDetailsDto() {
+        ReviewResponseDto actual =
+            pointHistoryRepository.findMyPointHistoryReviewDetailsDto(
+                dummyPointHistory2.getPointHistoryNo(), member1.getMemberNo());
+
+        assertThat(actual.getImage())
+            .isEqualTo(review.getImage());
+        assertThat(actual.getProductNo())
+            .isEqualTo(review.getProduct().getProductNo());
+        assertThat(actual.getStarPoint())
+            .isEqualTo(review.getStarPoint());
+        assertThat(actual.getContent())
+            .isEqualTo(review.getContent());
+    }
+    
 }

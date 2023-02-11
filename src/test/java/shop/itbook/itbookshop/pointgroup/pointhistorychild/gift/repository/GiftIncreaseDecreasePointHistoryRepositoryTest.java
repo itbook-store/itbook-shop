@@ -167,4 +167,27 @@ class GiftIncreaseDecreasePointHistoryRepositoryTest {
         assertThat(actual.getSubMemberId())
             .isEqualTo(member1.getMemberId());
     }
+
+    @DisplayName("특정 멤버의 선물 포인트내역을 조인해서 상세정보를 잘 받아온다.")
+    @Test
+    void findMyPointHistoryGiftDetailsResponseDto() {
+
+        PointHistoryGiftDetailsResponseDto actual =
+            pointHistoryRepository.findMyPointHistoryGiftDetailsResponseDto(
+                dummyPointHistory2.getPointHistoryNo(), member2.getMemberNo());
+
+        assertThat(actual.getPoint())
+            .isEqualTo(dummyPointHistory2.getIncreaseDecreasePoint());
+
+        assertThat(actual.getRemainedPoint())
+            .isEqualTo(dummyPointHistory2.getRemainedPoint());
+
+        assertThat(actual.getMainMemberId())
+            .isEqualTo(member2.getMemberId());
+
+        assertThat(actual.getSubMemberId())
+            .isEqualTo(member1.getMemberId());
+    }
+
+
 }
