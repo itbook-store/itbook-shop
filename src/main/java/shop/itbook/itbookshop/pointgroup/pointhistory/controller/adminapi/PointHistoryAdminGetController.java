@@ -46,12 +46,13 @@ public class PointHistoryAdminGetController {
             , pointHistoryCouponDetailsResponseDto));
     }
 
-    @GetMapping("/api/admin/point-histories/{pointHistoryNo}/review-details")
+    @GetMapping("/{pointHistoryNo}/review-details")
     public ResponseEntity<CommonResponseBody<ReviewResponseDto>> pointHistoryReviewDetails(
         @PathVariable Long pointHistoryNo) {
 
         ReviewResponseDto reviewResponseDto =
-            pointHistoryAdminService.findPointHistoryReviewDetailsDto(pointHistoryNo);
+            pointHistoryAdminService.findReviewResponseDtoForPointHistoryReviewDetails(
+                pointHistoryNo);
 
 
         return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
@@ -59,7 +60,7 @@ public class PointHistoryAdminGetController {
             , reviewResponseDto));
     }
 
-    @GetMapping("{pointHistoryNo}/gift-details")
+    @GetMapping("/{pointHistoryNo}/gift-details")
     public ResponseEntity<CommonResponseBody<PointHistoryGiftDetailsResponseDto>> pointHistoryGiftDetails(
         @PathVariable Long pointHistoryNo) {
 
@@ -72,12 +73,12 @@ public class PointHistoryAdminGetController {
             , pointHistoryGiftDetailsResponseDto));
     }
 
-    @GetMapping("{pointHistoryNo}/grade-details")
+    @GetMapping("/{pointHistoryNo}/grade-details")
     public ResponseEntity<CommonResponseBody<PointHistoryGradeDetailsResponseDto>> pointHistoryGradeDetails(
         @PathVariable Long pointHistoryNo) {
 
         PointHistoryGradeDetailsResponseDto pointHistoryGiftDetailsResponseDto =
-            pointHistoryAdminService.findMembershipResponseDtoThroughPointHistory(pointHistoryNo);
+            pointHistoryAdminService.findPointHistoryGradeDetailsDto(pointHistoryNo);
 
         return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
             PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())

@@ -37,4 +37,15 @@ public interface CustomPointHistoryRepository {
     ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo);
 
     PointHistoryCouponDetailsResponseDto findPointHistoryCouponDetailsDto(Long pointHistoryNo);
+
+    PointHistoryGiftDetailsResponseDto findMyPointHistoryGiftDetailsResponseDto(Long pointHistoryNo,
+                                                                                Long memberNo);
+
+    PointHistoryGradeDetailsResponseDto findMyMembershipResponseDtoThroughPointHistory(
+        Long pointHistoryNo, Long memberNo);
+
+    ReviewResponseDto findMyPointHistoryReviewDetailsDto(Long pointHistoryNo, Long memberNo);
+
+    PointHistoryCouponDetailsResponseDto findMyPointHistoryCouponDetailsDto(Long pointHistoryNo,
+                                                                            Long memberNo);
 }
