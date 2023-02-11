@@ -46,7 +46,7 @@ public class PointHistoryAdminGetController {
             , pointHistoryCouponDetailsResponseDto));
     }
 
-    @GetMapping("/api/admin/point-histories/{pointHistoryNo}/review-details")
+    @GetMapping("/{pointHistoryNo}/review-details")
     public ResponseEntity<CommonResponseBody<ReviewResponseDto>> pointHistoryReviewDetails(
         @PathVariable Long pointHistoryNo) {
 
@@ -59,7 +59,7 @@ public class PointHistoryAdminGetController {
             , reviewResponseDto));
     }
 
-    @GetMapping("{pointHistoryNo}/gift-details")
+    @GetMapping("/{pointHistoryNo}/gift-details")
     public ResponseEntity<CommonResponseBody<PointHistoryGiftDetailsResponseDto>> pointHistoryGiftDetails(
         @PathVariable Long pointHistoryNo) {
 
@@ -72,7 +72,7 @@ public class PointHistoryAdminGetController {
             , pointHistoryGiftDetailsResponseDto));
     }
 
-    @GetMapping("{pointHistoryNo}/grade-details")
+    @GetMapping("/{pointHistoryNo}/grade-details")
     public ResponseEntity<CommonResponseBody<PointHistoryGradeDetailsResponseDto>> pointHistoryGradeDetails(
         @PathVariable Long pointHistoryNo) {
 
