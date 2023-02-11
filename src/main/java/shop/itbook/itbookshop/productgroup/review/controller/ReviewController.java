@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +20,7 @@ import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewNoResponseDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.review.resultMessageEnum.ReviewResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
 
@@ -121,7 +121,7 @@ public class ReviewController {
      * @return Void를 ResponseEntity에 담아 반환합니다.
      * @author 노수연
      */
-    @DeleteMapping("/{orderProductNo}/delete")
+    @PutMapping("/{orderProductNo}/delete")
     public ResponseEntity<CommonResponseBody<Void>> reviewDelete(
         @PathVariable("orderProductNo") Long orderProductNo) {
 
@@ -184,6 +184,36 @@ public class ReviewController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ReviewResultMessageEnum.REVIEW_LIST_GET_SUCCESS.getResultMessage()),
+                pageResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+
+    /**
+     * pathVariable로 멤버 번호를 받아 아직 리뷰가 쓰여지지 않은 주문 상품 리스트를 가져와 반환하는 api 입니다.
+     *
+     * @param memberNo 멤버 번호로 찾습니다.
+     * @param pageable 반환할때 리스트를 페이징처리합니다.
+     * @return 페이징처리한 dto 리스트를 commonResponseBody에 담아 보냅니다.
+     * @author 노수연
+     */
+    @GetMapping("/unwritten-list/member/{memberNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<UnwrittenReviewOrderProductResponseDto>>> unwrittenReviewOrderProductList(
+        @PathVariable("memberNo") Long memberNo,
+        @PageableDefault Pageable pageable) {
+
+        Page<UnwrittenReviewOrderProductResponseDto> page =
+            reviewService.findUnwrittenReviewOrderProductList(pageable, memberNo);
+
+        PageResponse<UnwrittenReviewOrderProductResponseDto> pageResponse =
+            new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<UnwrittenReviewOrderProductResponseDto>>
+            commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ReviewResultMessageEnum.UNWRITTEN_REVIEW_ORDER_PRODUCT_LIST_GET_SUCCESS.getResultMessage()),
                 pageResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);

@@ -84,6 +84,22 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
+    public Optional<MemberResponseDto> findByMemberId(String memberId) {
+        return Optional.of(jpaQueryFactory.select(
+                Projections.constructor(MemberResponseDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
+                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial
+                )).from(qmember).join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus).where(qmember.memberId.eq(memberId))
+            .fetchOne());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Optional<Member> findByMemberNoReceiveMember(Long memberNo) {
 
 

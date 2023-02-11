@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.metadata;
+package shop.itbook.itbookshop.metadata.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
