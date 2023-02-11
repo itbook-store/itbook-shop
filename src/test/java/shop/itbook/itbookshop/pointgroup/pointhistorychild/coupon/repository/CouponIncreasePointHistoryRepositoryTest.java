@@ -32,6 +32,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRe
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.CouponIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.PointIncreaseDecreaseContentRepository;
@@ -101,6 +102,7 @@ class CouponIncreasePointHistoryRepositoryTest {
         pointDummyCoupon = CouponDummy.getPointCoupon();
         pointDummyCoupon.setCouponType(couponType);
 
+        pointDummyCoupon.setPoint(1000L);
         pointDummyCoupon = couponRepository.save(pointDummyCoupon);
 
         member1 = MemberDummy.getMember1();
@@ -148,8 +150,8 @@ class CouponIncreasePointHistoryRepositoryTest {
 
         couponIncreasePointHistoryRepository.save(couponIncreasePointHistory);
 
-//        entityManager.flush();
-//        entityManager.clear();
+        entityManager.flush();
+        entityManager.clear();
     }
 
     @DisplayName("쿠폰 적립 포인트내역이 잘 저장된다.")
@@ -192,5 +194,23 @@ class CouponIncreasePointHistoryRepositoryTest {
 
         assertThat(actual.getPointHistoryNo())
             .isEqualTo(dummyPointHistory2.getPointHistoryNo());
+    }
+
+
+    @DisplayName("쿠폰 포인트 적립에 대한 상세 정보를 잘 불러온다.")
+    @Test
+    void findPointHistoryCouponDetailsDto() {
+        PointHistoryCouponDetailsResponseDto pointHistoryCouponDetailsDto =
+            pointHistoryRepository.findPointHistoryCouponDetailsDto(
+                dummyPointHistory2.getPointHistoryNo());
+
+        assertThat(pointHistoryCouponDetailsDto.getCouponPoint())
+            .isEqualTo(pointDummyCoupon.getPoint());
+        assertThat(pointHistoryCouponDetailsDto.getCouponName())
+            .isEqualTo(pointDummyCoupon.getName());
+        assertThat(pointHistoryCouponDetailsDto.getRemainedPoint())
+            .isEqualTo(dummyPointHistory2.getRemainedPoint());
+        assertThat(pointHistoryCouponDetailsDto.getMemberId())
+            .isEqualTo(member1.getMemberId());
     }
 }

@@ -6,8 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.category.entity.Category;
-import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
-import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;

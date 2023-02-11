@@ -3,8 +3,6 @@ package shop.itbook.itbookshop.coupongroup.usagestatus.entity;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,6 +34,7 @@ public class UsageStatus {
     private Integer usageStatusNo;
 
     @Convert(converter = UsageStatusEnumConverter.class)
-    @Column(name = "usage_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "usage_status_name", nullable = false,
+        columnDefinition = "varchar(255)", unique = true)
     private UsageStatusEnum usageStatusName;
 }

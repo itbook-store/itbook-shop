@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.entity.QCategory;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
@@ -42,9 +41,10 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
                 qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
                 qCategory.categoryNo, qCategory.categoryName,
                 qCouponType.couponTypeEnum.stringValue().as("couponType")))
-            .join(qCoupon.couponType, qCouponType)
             .innerJoin(qCategoryCoupon.coupon, qCoupon)
             .innerJoin(qCategoryCoupon.category, qCategory)
+            .join(qCouponType).on(qCategoryCoupon.coupon.couponType.couponTypeEnum.eq(
+                qCouponType.couponTypeEnum))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize());
 

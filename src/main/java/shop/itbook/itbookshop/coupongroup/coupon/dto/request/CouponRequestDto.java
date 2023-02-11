@@ -18,12 +18,6 @@ public class CouponRequestDto {
     @NotNull(message = "쿠폰 타입은 공란 일 수 없습니다.")
     private String couponType;
 
-    private String userId;
-
-    private Integer categoryNo;
-
-    private Long searchResult;
-
     @NotNull(message = "이름은 공란 일 수 없습니다.")
     @Length(min = 1, max = 20, message = "이름의 길이는 20자를 넘을 수 없습니다.")
     private String name;
@@ -53,6 +47,8 @@ public class CouponRequestDto {
     private String couponExpiredAt;
 
     private String couponModifiedAt;
+
+    private Integer usagePeriod;
 
     private String image;
 
