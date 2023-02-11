@@ -1,7 +1,6 @@
-package shop.itbook.itbookshop.ordergroup.ordersubscription.entity;
+package shop.itbook.itbookshop.ordergroup.ordersubscription.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,7 @@ import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.dummy.OrderSubscriptionDummy;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 
 /**
@@ -20,7 +20,7 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubsc
  * @since 1.0
  */
 @DataJpaTest
-class OrderSubscriptionTest {
+class OrderSubscriptionRepositoryTest {
     @Autowired
     OrderSubscriptionRepository orderSubscriptionRepository;
     @Autowired
