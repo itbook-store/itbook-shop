@@ -104,7 +104,7 @@ class OrderRepositoryTest {
         memberStatusRepository.save(normalMemberStatus);
 
         OrderStatusHistory orderStatusHistory =
-            OrderStatusHistoryDummy.createOrderStatusHistory(orderProduct, orderStatus);
+            OrderStatusHistoryDummy.createOrderStatusHistory(order, orderStatus);
         orderStatusHistoryRepository.save(orderStatusHistory);
 
         Member member = MemberDummy.getMember1();
