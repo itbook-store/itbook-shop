@@ -101,8 +101,8 @@ public class OrderServiceImpl implements OrderService {
             new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
         orderStatusHistoryRepository.save(orderStatusHistory);
 
-        // 배송 상태 생성 후 저장
-        deliveryService.registerDelivery(order);
+//        // 배송 상태 생성 후 저장
+//        deliveryService.registerDelivery(order);
 
         // 회원, 비회원 구분해서 저장
         checkMemberAndSaveOrder(order, memberNo);
