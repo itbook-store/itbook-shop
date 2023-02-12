@@ -56,4 +56,12 @@ public interface CartService {
      * @author 강명관
      */
     void modifyProductCount(CartModifyRequestDto cartModifyRequestDto);
+
+
+    /**
+     * 스케쥴러를 통해넘어온 정보를 모두 저장하는 메서드 입니다.
+     *
+     * @param cartRequestDtoList 회원번호, 상품번호, 상품 카운트 세개를 갖고 있는 리스트 입니다.
+     */
+    void saveAllCartProduct(List<CartModifyRequestDto> cartRequestDtoList);
 }
