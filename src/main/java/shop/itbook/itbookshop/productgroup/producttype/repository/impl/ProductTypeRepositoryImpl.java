@@ -354,7 +354,8 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                 qProduct.isPointApplyingBasedSellingPrice,
                 qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
                 qProduct.dailyHits))
-            .where(qBook.bookCreatedAt.after(LocalDateTime.now().minusDays(7)))
+            .where(qBook.bookCreatedAt.between(LocalDateTime.now().minusDays(7),
+                LocalDateTime.now()))
             .orderBy(qBook.bookCreatedAt.desc());
     }
 

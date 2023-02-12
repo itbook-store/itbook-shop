@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.service;
+package shop.itbook.itbookshop.book.service;
 
 import java.util.Optional;
 import lombok.Getter;

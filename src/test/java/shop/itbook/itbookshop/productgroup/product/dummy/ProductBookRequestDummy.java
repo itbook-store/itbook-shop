@@ -1,11 +1,12 @@
 package shop.itbook.itbookshop.productgroup.product.dummy;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
 
 /**
  * @author 이하늬
@@ -13,17 +14,38 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto
  */
 public class ProductBookRequestDummy {
 
-    public static ProductRequestDto getProductRequest() {
+    public static ProductAddRequestDto getProductRequest() {
 
         List<Integer> categoryList = new ArrayList<>();
         categoryList.add(4);
 
-        return ProductRequestDto.builder()
+        return ProductAddRequestDto.builder()
             .productName("객체지향의 사실과 오해")
             .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
             .detailsDescription("상세 설명")
             .isSelled(Boolean.TRUE)
             .isForceSoldOut(Boolean.FALSE)
+            .stock(1)
+            .categoryNoList(categoryList)
+            .increasePointPercent(1)
+            .rawPrice(12000L)
+            .fixedPrice(20000L)
+            .discountPercent(10.0)
+            .isPointApplyingBasedSellingPrice(true)
+            .isPointApplying(true)
+            .isSubscription(false)
+            .build();
+    }
+
+    public static ProductModifyRequestDto getProductModifyRequest() {
+
+        List<Integer> categoryList = new ArrayList<>();
+        categoryList.add(4);
+
+        return ProductModifyRequestDto.builder()
+            .productName("객체지향의 사실과 오해")
+            .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
+            .detailsDescription("상세 설명")
             .stock(1)
             .categoryNoList(categoryList)
             .increasePointPercent(1)
@@ -47,6 +69,35 @@ public class ProductBookRequestDummy {
             .detailsDescription("상세 설명")
             .isSelled(Boolean.TRUE)
             .isForceSoldOut(Boolean.FALSE)
+            .stock(1)
+            .categoryNoList(categoryList)
+            .increasePointPercent(1)
+            .rawPrice(12000L)
+            .fixedPrice(20000L)
+            .discountPercent(10.0)
+            .isbn("testIsbn")
+            .pageCount(10)
+            .bookCreatedAt(LocalDate.now().toString())
+            .isEbook(false)
+            .publisherName("publisher")
+            .authorName("author")
+            .fileThumbnailsUrl("thumbnailsUrl")
+            .fileEbookUrl(null)
+            .isPointApplyingBasedSellingPrice(true)
+            .isPointApplying(true)
+            .isSubscription(false)
+            .build();
+    }
+
+    public static BookModifyRequestDto getBookModifyRequest() {
+
+        List<Integer> categoryList = new ArrayList<>();
+        categoryList.add(4);
+
+        return BookModifyRequestDto.builder()
+            .productName("객체지향의 사실과 오해")
+            .simpleDescription("객체지향이란 무엇인가? 이 책은 이 질문에 대한 답을 찾기 위해 노력하고 있는 모든 개발자를 위한 책이다.")
+            .detailsDescription("상세 설명")
             .stock(1)
             .categoryNoList(categoryList)
             .increasePointPercent(1)

@@ -27,6 +27,7 @@ import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.exception.PaymentStatusNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
@@ -90,6 +91,7 @@ public class RestControllerAdvisor {
         InvalidProductException.class,
         ReviewNotFoundException.class,
         InvalidPaymentException.class,
+        InvalidPaymentCancelException.class,
         PaymentStatusNotFoundException.class,
         NotSellableProductException.class
     })
