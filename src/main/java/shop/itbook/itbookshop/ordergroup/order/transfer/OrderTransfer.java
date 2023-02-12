@@ -27,6 +27,7 @@ public class OrderTransfer {
             .postcode(orderAddRequestDto.getPostcode())
             .roadNameAddress(orderAddRequestDto.getRoadNameAddress())
             .recipientAddressDetails(orderAddRequestDto.getRecipientAddressDetails())
+            .isHidden(false)
             .build();
     }
 }

@@ -213,4 +213,21 @@ class CouponIncreasePointHistoryRepositoryTest {
         assertThat(pointHistoryCouponDetailsDto.getMemberId())
             .isEqualTo(member1.getMemberId());
     }
+
+    @DisplayName("특정 멤버에 대한 쿠폰 포인트 적립에 대한 상세 정보를 잘 불러온다.")
+    @Test
+    void findMyPointHistoryCouponDetailsDto() {
+        PointHistoryCouponDetailsResponseDto pointHistoryCouponDetailsDto =
+            pointHistoryRepository.findMyPointHistoryCouponDetailsDto(
+                dummyPointHistory2.getPointHistoryNo(), member1.getMemberNo());
+
+        assertThat(pointHistoryCouponDetailsDto.getCouponPoint())
+            .isEqualTo(pointDummyCoupon.getPoint());
+        assertThat(pointHistoryCouponDetailsDto.getCouponName())
+            .isEqualTo(pointDummyCoupon.getName());
+        assertThat(pointHistoryCouponDetailsDto.getRemainedPoint())
+            .isEqualTo(dummyPointHistory2.getRemainedPoint());
+        assertThat(pointHistoryCouponDetailsDto.getMemberId())
+            .isEqualTo(member1.getMemberId());
+    }
 }

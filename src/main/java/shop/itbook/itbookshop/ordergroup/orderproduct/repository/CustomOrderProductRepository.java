@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.orderproduct.repository;
 
+import java.util.List;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 
 /**
@@ -11,6 +13,5 @@ import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetRespo
  */
 @NoRepositoryBean
 public interface CustomOrderProductRepository {
-
-    public OrderSheetResponseDto findOrderPaperInfo();
+    List<OrderProductDetailResponseDto> findOrderProductsByOrderNo(Long orderNo);
 }
