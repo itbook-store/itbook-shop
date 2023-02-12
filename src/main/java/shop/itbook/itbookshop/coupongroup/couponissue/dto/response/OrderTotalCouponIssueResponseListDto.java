@@ -16,5 +16,5 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListRes
 public class OrderTotalCouponIssueResponseListDto {
     private Long couponIssueNo;
     private LocalDateTime couponExpiredAt;
-    private OrderCouponListResponseDto orderCouponListResponseDto;
+    private OrderCouponListResponseDto couponListResponseDto;
 }

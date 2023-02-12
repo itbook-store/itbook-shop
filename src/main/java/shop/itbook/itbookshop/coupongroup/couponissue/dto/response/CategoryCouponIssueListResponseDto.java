@@ -17,5 +17,5 @@ public class CategoryCouponIssueListResponseDto {
     private Integer categoryNo;
     private Long couponIssueNo;
     private LocalDateTime couponExpiredAt;
-    private OrderCouponListResponseDto orderCouponListResponseDto;
+    private OrderCouponListResponseDto couponListResponseDto;
 }
