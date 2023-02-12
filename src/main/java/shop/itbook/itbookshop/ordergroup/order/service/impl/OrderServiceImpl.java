@@ -1,17 +1,21 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -35,6 +39,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -59,6 +64,10 @@ public class OrderServiceImpl implements OrderService {
     private final DeliveryService deliveryService;
     private final MemberService memberService;
     private final ProductService productService;
+
+    private final CouponIssueService couponIssueService;
+    private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
+
 
     /**
      * The Origin url.
@@ -189,7 +198,6 @@ public class OrderServiceImpl implements OrderService {
         OrderNonMember orderNonMember =
             new OrderNonMember(order, 12345678L);
         orderNonMemberRepository.save(orderNonMember);
-
     }
 
     @Override
@@ -204,16 +212,51 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Order completeOrderPay(Long orderNo) {
+    public Order completeOrderPay(Long orderNo, HttpSession session) {
 
         Order order = findOrderEntity(orderNo);
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
 
-        // TODO: 2023/02/12 적용된 쿠폰 사용 처리
-        // TODO: 2023/02/12 적용된 포인트 사용 처리
-
+        usingCouponIssue(orderNo, session);
+        savePointHistoryAboutMember(orderNo, session, order);
         return order;
+    }
+
+    private void usingCouponIssue(Long orderNo, HttpSession session) {
+        List<Long> couponIssueNoListWhenOrderPayCompletion =
+            (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
+
+        for (Long couponIssueNo : couponIssueNoListWhenOrderPayCompletion) {
+            couponIssueService.usingCouponIssue(couponIssueNo);
+        }
+    }
+
+    private void savePointHistoryAboutMember(Long orderNo, HttpSession session, Order order) {
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
+        if (!optionalOrderMember.isPresent()) {
+            return;
+        }
+
+        OrderMember orderMember = optionalOrderMember.get();
+        Member member = orderMember.getMember();
+
+        // db 반정규화
+        Long increasePoint =
+            (Long) session.getAttribute("increasePointToUseWhenOrderPayCompletion_" + orderNo);
+        Long decreasePoint =
+            (Long) session.getAttribute("decreasePointToUseWhenOrderPayCompletion_" + orderNo);
+
+        if (!Objects.isNull(decreasePoint)) {
+            orderIncreaseDecreasePointHistoryService.savePointHistoryAboutOrderDecrease(member,
+                order, decreasePoint);
+        }
+
+        if (!Objects.isNull(increasePoint)) {
+            orderIncreaseDecreasePointHistoryService.savePointHistoryAboutOrderIncrease(member,
+                order,
+                increasePoint);
+        }
     }
 
     /**

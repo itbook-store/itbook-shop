@@ -66,7 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
         payment.setPaymentStatus(paymentStatus);
 
-        Order order = orderService.completeOrderPay(orderNo);
+        Order order = orderService.completeOrderPay(orderNo, null);
         payment.setOrder(order);
 
         Payment savePayment = paymentRepository.save(payment);
