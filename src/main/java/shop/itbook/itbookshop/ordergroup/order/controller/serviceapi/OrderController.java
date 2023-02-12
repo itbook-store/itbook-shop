@@ -116,29 +116,6 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
-    /**
-     * 주문 완료
-     *
-     * @param orderNo the order no
-     * @return the response entity
-     * @author 정재원
-     */
-    @PostMapping("/success-payment/{orderNo}")
-    public ResponseEntity<CommonResponseBody<Void>> orderPayCompletion(
-        @PathVariable("orderNo") Long orderNo, HttpSession session) {
-
-        orderService.completeOrderPay(orderNo, session);
-
-        CommonResponseBody<Void> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_PAY_SUCCESS_MESSAGE.getResultMessage()
-                ), null
-            );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
-    }
-
     @GetMapping("/details/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
         @PathVariable("orderNo") Long orderNo) {

@@ -191,7 +191,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    // 페이먼트에서 리다렉트해서 컨트롤러로 가느거아님? 페이먼트에서 어떤거때매 씀?
     public Order completeOrderPay(Long orderNo, HttpSession session) {
 
         Order order = orderRepository.findById(orderNo).orElseThrow();
@@ -202,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
             new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
         orderStatusHistoryRepository.save(orderStatusHistory);
 
-        usingCouponIssue(orderNo, session); // 쿠폰은 회원만 가질수
+        usingCouponIssue(orderNo, session);
         savePointHistoryAboutMember(orderNo, session, order);
         return order;
     }
@@ -212,7 +211,6 @@ public class OrderServiceImpl implements OrderService {
             (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
 
         for (Long couponIssueNo : couponIssueNoListWhenOrderPayCompletion) {
-            // 이api
             couponIssueService.usingCouponIssue(couponIssueNo);
         }
     }
