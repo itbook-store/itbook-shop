@@ -55,8 +55,6 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderProductRepository orderProductRepository;
-    private final OrderStatusHistoryRepository orderStatusHistoryRepository;
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
@@ -219,9 +217,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrderEntity(orderNo);
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
-
-        // TODO: 2023/02/12 적용된 쿠폰 사용 처리
-        // TODO: 2023/02/12 적용된 포인트 사용 처리
 
         usingCouponIssue(orderNo, session);
         savePointHistoryAboutMember(orderNo, session, order);
