@@ -68,7 +68,7 @@ class MemberAdminServiceImplTest {
             new MemberExceptPwdResponseDto(1L, "user1", "white",
                 MemberStatusEnum.NORMAL.getMemberStatus(), "유저1", "홍길동", true,
                 LocalDateTime.of(2000, 1, 1, 0, 0, 0),
-                "010-0000-0000", "user1@test.com", LocalDateTime.now());
+                "010-0000-0000", "user1@test.com", LocalDateTime.now(), false, false);
 
         given(memberRepository.findByMemberNo(1L)).willReturn(Optional.of(memberDto));
 
@@ -83,13 +83,13 @@ class MemberAdminServiceImplTest {
             new MemberExceptPwdResponseDto(1L, "user1", "white",
                 MemberStatusEnum.NORMAL.getMemberStatus(), "유저1", "홍길동", true,
                 LocalDateTime.of(2000, 1, 1, 0, 0, 0),
-                "010-0000-0000", "user1@test.com", LocalDateTime.now());
+                "010-0000-0000", "user1@test.com", LocalDateTime.now(), false, false);
 
         MemberExceptPwdResponseDto member2 =
             new MemberExceptPwdResponseDto(2L, "user2", "white",
                 MemberStatusEnum.NORMAL.getMemberStatus(), "유저2", "유저2", true,
                 LocalDateTime.of(2000, 1, 1, 0, 0, 0),
-                "010-1000-0000", "user2@test.com", LocalDateTime.now());
+                "010-1000-0000", "user2@test.com", LocalDateTime.now(), false, false);
 
         given(memberRepository.findMemberList(any())).willReturn(
             new PageImpl<>(List.of(member1, member2)));

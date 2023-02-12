@@ -23,6 +23,8 @@ public class MemberDummy {
             .phoneNumber("010-9999-9999")
             .email("user1000@test.com")
             .memberCreatedAt(LocalDateTime.now())
+            .isSocial(false)
+            .isWriter(false)
             .build();
     }
 
@@ -37,6 +39,8 @@ public class MemberDummy {
             .phoneNumber("010-1000-0000")
             .email("user2@test.com")
             .memberCreatedAt(LocalDateTime.now())
+            .isSocial(false)
+            .isWriter(false)
             .build();
     }
 }

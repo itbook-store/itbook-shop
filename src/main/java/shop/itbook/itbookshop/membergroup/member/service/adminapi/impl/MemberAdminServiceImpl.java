@@ -52,6 +52,14 @@ public class MemberAdminServiceImpl implements MemberAdminService {
      * {@inheritDoc}
      */
     @Override
+    public Page<MemberExceptPwdResponseDto> findWriterList(Pageable pageable) {
+        return memberRepository.findWriterList(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable) {
 
         return memberRepository.findMemberList(pageable);
@@ -194,5 +202,15 @@ public class MemberAdminServiceImpl implements MemberAdminService {
             memberRepository.memberCountByMembershipGrade("플래티넘"));
 
         return memberCountByMembershipResponseDto;
+    }
+
+    @Override
+    @Transactional
+    public void modifyToWriterAccount(Long memberNo) {
+
+        Member member = memberRepository.findByMemberNoReceiveMember(memberNo)
+            .orElseThrow(MemberNotFoundException::new);
+
+        member.setIsWriter(true);
     }
 }

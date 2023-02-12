@@ -56,7 +56,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt))
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
@@ -74,7 +74,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
-                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial
+                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial,
+                    qmember.isWriter
                 )).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus).where(qmember.memberNo.eq(memberNo))
             .fetchOne());
@@ -90,7 +91,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.memberId,
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.password,
-                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial
+                    qmember.phoneNumber, qmember.email, qmember.memberCreatedAt, qmember.isSocial,
+                    qmember.isWriter
                 )).from(qmember).join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus).where(qmember.memberId.eq(memberId))
             .fetchOne());
@@ -116,6 +118,32 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
      * {@inheritDoc}
      */
     @Override
+    public Page<MemberExceptPwdResponseDto> findWriterList(Pageable pageable) {
+        JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
+                Projections.constructor(MemberExceptPwdResponseDto.class, qmember.memberNo,
+                    qmember.memberId,
+                    qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
+                    qmember.nickname,
+                    qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter))
+            .from(qmember)
+            .join(qmember.membership, qmembership)
+            .join(qmember.memberStatus, qmemberStatus)
+            .where(qmember.isWriter.eq(true));
+
+        List<MemberExceptPwdResponseDto> memberList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(memberList, pageable, jpqlQuery::fetchCount);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Page<MemberExceptPwdResponseDto> findMemberList(Pageable pageable) {
 
         JPQLQuery<MemberExceptPwdResponseDto> jpqlQuery = jpaQueryFactory.select(
@@ -124,7 +152,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt))
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus);
@@ -149,7 +177,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt))
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
@@ -176,7 +204,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt))
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
@@ -203,7 +231,7 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmembership.membershipGrade, qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname,
                     qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt))
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter))
             .from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
@@ -271,7 +299,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
                     qmember.email,
-                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter)).from(qmember)
+            .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.memberId.contains(memberId)));
@@ -296,7 +325,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
                     qmember.email,
-                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter)).from(qmember)
+            .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.nickname.contains(nickname)));
@@ -321,7 +351,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
                     qmember.email,
-                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter)).from(qmember)
+            .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.name.contains(name)));
@@ -345,7 +376,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
                     qmember.email,
-                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter)).from(qmember)
+            .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.phoneNumber.contains(phoneNumber)));
@@ -368,7 +400,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
                     qmember.email,
-                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter)).from(qmember)
+            .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.memberCreatedAt.between(start, end)));
@@ -393,7 +426,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmemberStatus.memberStatusEnum.stringValue(),
                     qmember.nickname, qmember.name, qmember.isMan, qmember.birth, qmember.phoneNumber,
                     qmember.email,
-                    qmember.memberCreatedAt)).from(qmember).join(qmember.membership, qmembership)
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter)).from(qmember)
+            .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
             .where(qmemberStatus.memberStatusEnum.stringValue().eq(memberStatusName)
                 .and(qmember.memberId.contains(searchWord).or(qmember.nickname.contains(searchWord))
@@ -416,7 +450,8 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
                     qmember.memberId, qmembership.membershipGrade,
                     qmemberStatus.memberStatusEnum.stringValue(), qmember.nickname, qmember.name,
                     qmember.isMan, qmember.birth, qmember.phoneNumber, qmember.email,
-                    qmember.memberCreatedAt, qMemberStatusHistory.statusChangedReason,
+                    qmember.memberCreatedAt, qmember.isSocial, qmember.isWriter,
+                    qMemberStatusHistory.statusChangedReason,
                     qMemberStatusHistory.memberStatusHistoryCreatedAt)).from(qmember)
             .join(qmember.membership, qmembership)
             .join(qmember.memberStatus, qmemberStatus)
@@ -465,5 +500,15 @@ public class MemberRepositoryImpl implements CustomMemberRepository {
             .join(qmember.membership, qmembership)
             .where(qmembership.membershipGrade.eq(membershipGrade))
             .fetchOne();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Boolean existsByNameAndFindNameWithMemberId(String memberId, String name) {
+        return jpaQueryFactory.select(qmember.name).from(qmember)
+            .where(qmember.memberId.eq(memberId).and(qmember.name.eq(name)))
+            .fetchOne() != null;
     }
 }
