@@ -1,7 +1,10 @@
 package shop.itbook.itbookshop.book.service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import shop.itbook.itbookshop.book.dto.request.BookAddRequestDto;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.book.dto.response.BookBooleanResponseDto;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
 import shop.itbook.itbookshop.book.entity.Book;
@@ -37,6 +40,7 @@ public interface BookService {
      */
 
     Long addBook(ProductBookRequestDto requestDto, MultipartFile thumbnails, MultipartFile ebook);
+
 
     /**
      * isbn으로 db에 해당 도서가 있는지 확인합니다.
@@ -75,7 +79,8 @@ public interface BookService {
      * @param ebook
      * @author 이하늬
      */
-    void modifyBook(Long productNo, ProductBookRequestDto requestDto, MultipartFile ebook);
+    void modifyBook(Long productNo, BookModifyRequestDto requestDto, MultipartFile thumbnails,
+                    MultipartFile ebook);
 
     /**
      * isbn으로 알라딘에 해당 도서가 있는지 확인합니다.
@@ -94,6 +99,6 @@ public interface BookService {
      * @author 이하늬
      */
 
-    shop.itbook.itbookshop.book.dto.request.BookRequestDto toBookRequestDto(
+    BookAddRequestDto toBookRequestDto(
         ProductBookRequestDto requestDto);
 }

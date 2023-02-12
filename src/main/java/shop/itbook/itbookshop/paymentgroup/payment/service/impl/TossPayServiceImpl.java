@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.request.CancelReason;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentCanceledRequestDto;
@@ -48,15 +50,14 @@ public class TossPayServiceImpl implements PayService {
         HttpEntity<PaymentApproveRequestDto> httpEntity =
             new HttpEntity<>(paymentApproveRequestDto, headers);
 
-        ResponseEntity<PaymentResponseDto.PaymentDataResponseDto> response = null;
+        ResponseEntity<PaymentResponseDto.PaymentDataResponseDto> response;
 
         try {
             response = restTemplate.exchange(TOSS_REQUEST_PAYMENT_URL, HttpMethod.POST, httpEntity,
                 PaymentResponseDto.PaymentDataResponseDto.class);
 
         } catch (HttpClientErrorException e) {
-            log.info(e.getMessage());
-            throw new InvalidPaymentException();
+            throw new InvalidPaymentException(e.getMessage());
         }
         return response.getBody();
 
@@ -64,10 +65,9 @@ public class TossPayServiceImpl implements PayService {
 
     @Override
     public PaymentResponseDto.PaymentDataResponseDto requestCanceledPayment(
-        PaymentCanceledRequestDto paymentCanceledRequestDto, String paymentKey)
-        throws JsonProcessingException {
+        PaymentCanceledRequestDto paymentCanceledRequestDto, String paymentKey) {
 
-        String REQUEST_PAYMENT_CANCELED_URL = UriComponentsBuilder.newInstance()
+        String requestPaymentCanceledUrl = UriComponentsBuilder.newInstance()
             .scheme("https")
             .host("api.tosspayments.com")
             .path("/v1/payments/{paymentKey}/cancel")
@@ -75,23 +75,19 @@ public class TossPayServiceImpl implements PayService {
 
         HttpHeaders headers = getRequestHttpHeaders();
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonCancelReason =
-            mapper.writeValueAsString(paymentCanceledRequestDto.getCancelReason());
+        CancelReason cancelReason = new CancelReason(paymentCanceledRequestDto.getCancelReason());
 
-        HttpEntity<String> httpEntity =
-            new HttpEntity<>(jsonCancelReason, headers);
+        HttpEntity<CancelReason> httpEntity = new HttpEntity<>(cancelReason, headers);
 
-        ResponseEntity<PaymentResponseDto.PaymentDataResponseDto> response = null;
+        ResponseEntity<PaymentResponseDto.PaymentDataResponseDto> response;
 
         try {
             response =
-                restTemplate.exchange(REQUEST_PAYMENT_CANCELED_URL, HttpMethod.POST, httpEntity,
+                restTemplate.exchange(requestPaymentCanceledUrl, HttpMethod.POST, httpEntity,
                     PaymentResponseDto.PaymentDataResponseDto.class);
 
         } catch (HttpClientErrorException e) {
-            log.info(e.getMessage());
-            throw new InvalidPaymentException();
+            throw new InvalidPaymentCancelException(e.getMessage());
         }
         return response.getBody();
     }
