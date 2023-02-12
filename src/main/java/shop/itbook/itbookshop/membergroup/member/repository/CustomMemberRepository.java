@@ -61,6 +61,16 @@ public interface CustomMemberRepository {
      */
     Optional<Member> findByMemberNoReceiveMember(Long memberNo);
 
+
+    /**
+     * 모든 작가 리스트를 가져오는 query dsl 입니다.
+     *
+     * @param pageable 페이징된 데이터를 받습니다.
+     * @return 작가인 회원 리스트를 받아옵니다.
+     * @author 노수연
+     */
+    Page<MemberExceptPwdResponseDto> findWriterList(Pageable pageable);
+
     /**
      * 모든 회원 리스트를 가져오는 메서드입니다.
      *
@@ -244,5 +254,15 @@ public interface CustomMemberRepository {
      * @author 노수연
      */
     Long memberCountByMembershipGrade(String membershipGrade);
+
+    /**
+     * 이름으로 테이블에 해당 이름을 가진 회원이 존재하는지 확인하는 메서드입니다.
+     * 작가등록할 때 입력한 이름이 테이블의 이름과 일치하는지 확인하기 위함입니다.
+     *
+     * @param name 이름으로 테이블에 회원 데이터가 있는지 확인합니다.
+     * @return 존재하면 true 없으면 false를 반환합니다.
+     * @author 노수연
+     */
+    Boolean existsByNameAndFindNameWithMemberId(String memberId, String name);
 
 }

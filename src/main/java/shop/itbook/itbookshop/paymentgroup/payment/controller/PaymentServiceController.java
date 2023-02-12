@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.paymentgroup.payment.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.List;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +38,13 @@ public class PaymentServiceController {
     @PostMapping("api/admin/payment/request-pay/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderResponseDto>> requestPayment(
         @RequestBody PaymentApproveRequestDto paymentApproveRequestDto,
-        @PathVariable Long orderNo) {
+        @PathVariable Long orderNo, HttpSession session) {
 
+        List<Long> couponIssueNoListWhenOrderPayCompletion =
+            (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
         OrderResponseDto responseDto =
-            paymentService.requestPayment(paymentApproveRequestDto, orderNo);
+            paymentService.requestPayment(paymentApproveRequestDto, orderNo,
+                couponIssueNoListWhenOrderPayCompletion);
 
         CommonResponseBody<OrderResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

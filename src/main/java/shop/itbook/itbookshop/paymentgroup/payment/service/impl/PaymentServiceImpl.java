@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.paymentgroup.payment.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public OrderResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
-                                           Long orderNo) {
+                                             Long orderNo, List<Long> couponIssueNoList) {
 
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
@@ -70,8 +71,8 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
             payment.setPaymentStatus(paymentStatus);
 
-            Order order = orderService.completeOrderPay(orderNo);
-            payment.setOrder(order);
+        Order order = orderService.completeOrderPay(orderNo, couponIssueNoList);
+        payment.setOrder(order);
 
             paymentRepository.save(payment);
         } catch (InvalidPaymentException e) {

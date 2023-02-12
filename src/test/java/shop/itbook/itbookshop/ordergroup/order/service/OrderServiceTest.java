@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
@@ -25,9 +26,12 @@ import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
@@ -38,18 +42,18 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 @Import(OrderServiceImpl.class)
 class OrderServiceTest {
 
-
     @Autowired
     OrderService orderService;
 
     @MockBean
+    OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
+
+    @MockBean
+    CouponIssueService couponIssueService;
+    @MockBean
     ProductService productService;
     @MockBean
     OrderRepository orderRepository;
-    @MockBean
-    OrderProductRepository orderProductRepository;
-    @MockBean
-    OrderStatusHistoryRepository orderStatusHistoryRepository;
     @MockBean
     OrderMemberRepository orderMemberRepository;
     @MockBean
@@ -57,6 +61,10 @@ class OrderServiceTest {
     @MockBean
     PaymentRepository paymentRepository;
 
+    @MockBean
+    OrderProductService orderProductService;
+    @MockBean
+    OrderStatusHistoryService orderStatusHistoryService;
     @MockBean
     DeliveryService deliveryService;
     @MockBean

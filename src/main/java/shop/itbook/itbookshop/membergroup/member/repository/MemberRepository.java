@@ -46,4 +46,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CustomMem
      * @author 노수연
      */
     boolean existsByPhoneNumber(String phoneNumber);
+
 }

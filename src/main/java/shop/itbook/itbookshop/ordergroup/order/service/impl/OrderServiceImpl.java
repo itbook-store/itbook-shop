@@ -1,9 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
-import com.querydsl.jpa.JPQLQuery;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -23,6 +23,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
@@ -31,15 +32,12 @@ import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepos
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
-import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
-import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
-import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
-import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
+import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -55,51 +53,46 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final OrderProductRepository orderProductRepository;
-    private final OrderStatusHistoryRepository orderStatusHistoryRepository;
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
 
+    private final OrderProductService orderProductService;
+    private final OrderStatusHistoryService orderStatusHistoryService;
     private final DeliveryService deliveryService;
     private final MemberService memberService;
-    private final OrderStatusService orderStatusService;
     private final ProductService productService;
 
+    private final CouponIssueService couponIssueService;
+    private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
+
+
+    /**
+     * The Origin url.
+     */
     @Value("${payment.origin.url}")
     public String ORIGIN_URL;
 
 
     @Override
     public Order findOrderEntity(Long orderNo) {
-        return orderRepository.findById(orderNo).orElseThrow();
+        return orderRepository.findById(orderNo).orElseThrow(OrderNotFoundException::new);
     }
 
     /**
-     * Add order.
+     * {@inheritDoc}
      */
-    public void addOrder() {
-        // TODO: 2023/02/04 쿠폰 이력 추가
-        // TODO: 2023/02/04 포인트 이력 추가
-
-        // TODO: 2023/02/04 주문 상태 변경
-    }
-
     @Override
     @Transactional
-    public OrderPaymentDto addOrder(OrderAddRequestDto orderAddRequestDto,
-                                    Optional<Long> memberNo) {
+    public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
+                                                 Optional<Long> memberNo) {
 
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
         orderRepository.save(order);
 
         // 주문_상태_이력 테이블 저장
-        OrderStatus orderStatus =
-            orderStatusService.findByOrderStatusEnum(OrderStatusEnum.WAITING_FOR_PAYMENT);
-        OrderStatusHistory orderStatusHistory =
-            new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
-        orderStatusHistoryRepository.save(orderStatusHistory);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAITING_FOR_PAYMENT);
 
 //        // 배송 상태 생성 후 저장
 //        deliveryService.registerDelivery(order);
@@ -108,55 +101,86 @@ public class OrderServiceImpl implements OrderService {
         checkMemberAndSaveOrder(order, memberNo);
 
         // 주문_상품 테이블 저장 및 가격 계산
-        Queue<Integer> productCntQueue = new LinkedList<>(orderAddRequestDto.getProductCntList());
+        return getOrderPaymentDtoForMakingPaymentForm(orderAddRequestDto, order);
+    }
 
-        StringBuilder stringBuilder = new StringBuilder();
-        AtomicReference<Long> amount = new AtomicReference<>(0L);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public OrderPaymentDto reOrder(OrderAddRequestDto orderAddRequestDto,
+                                   Long orderNo) {
 
-        orderAddRequestDto.getProductNoList().stream().forEach(
-            productNo -> {
-                Product product = productService.findProductEntity(productNo);
-                Integer productCnt = productCntQueue.poll();
+        Order order = findOrderEntity(orderNo);
+        return getOrderPaymentDtoForMakingPaymentForm(orderAddRequestDto, order);
+    }
 
-                // TODO: 2023/02/11 쿠폰 적용 로직 추가.
-                Long productPrice =
-                    (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
-
-                amount.set(amount.get() + productPrice * productCnt);
-
-                if (stringBuilder.length() == 0) {
-                    stringBuilder.append(product.getName());
-                }
-
-                // 주문_상품 테이블 저장
-                OrderProduct orderProduct = OrderProduct.builder()
-                    .order(order)
-                    .product(product)
-                    .count(productCnt)
-                    .productPrice(productPrice)
-                    .build();
-                orderProductRepository.save(orderProduct);
-            });
-
-        // 결제를 위한 order ID 생성
-        String orderNoString = String.valueOf(order.getOrderNo());
-        String randomUuidString = UUID.randomUUID().toString();
-        randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
-        String orderId = UUID.fromString(randomUuidString).toString();
-
-        if (orderAddRequestDto.getProductNoList().size() > 1) {
-            stringBuilder.append(" 외 ").append(orderAddRequestDto.getProductNoList().size() - 1)
-                .append("건");
-        }
+    private OrderPaymentDto getOrderPaymentDtoForMakingPaymentForm(
+        OrderAddRequestDto orderAddRequestDto,
+        Order order) {
+//
+//        Queue<Integer> productCntQueue = new LinkedList<>(orderAddRequestDto.get());
+//
+//        StringBuilder stringBuilder = new StringBuilder();
+//        AtomicReference<Long> amount = new AtomicReference<>(0L);
+//
+//        orderAddRequestDto.getProductNoList().forEach(
+//            productNo -> {
+//                Product product = productService.findProductEntity(productNo);
+//                Integer productCnt = productCntQueue.poll();
+//
+//                // TODO: 2023/02/11 쿠폰 가져와서 가격계산 로직 추가.
+//                // TODO: 2023/02/11 포인트 가져와서 가격계산 로직 추가.
+//                Long productPrice =
+//                    (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
+//
+//                amount.set(amount.get() + productPrice * productCnt);
+//
+//                if (stringBuilder.length() == 0) {
+//                    stringBuilder.append(product.getName());
+//                }
+//
+//                // 첫 주문 등록이냐 재 주문이냐에 따라 다른 로직 수행
+//                orderProductService.addOrderProduct(order, product, productCnt, productPrice);
+//            });
+//
+//        if (orderAddRequestDto.getProductDetailsDtoList().size() > 1) {
+//            stringBuilder.append(" 외 ")
+//                .append(orderAddRequestDto.getProductDetailsDtoList().size() - 1)
+//                .append("건");
+//        }
+//
+//        // 결제를 위한 order ID 생성
+        String orderId = createOrderUUID(order);
 
         return OrderPaymentDto.builder()
             .orderNo(order.getOrderNo())
             .orderId(orderId)
-            .orderName(stringBuilder.toString())
-            .amount(amount.get())
+            .orderName("testOrderName")
+            .amount(1000L)
             .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo())
             .build();
+    }
+
+    private static String createOrderUUID(Order order) {
+        String orderNoString = String.valueOf(order.getOrderNo());
+        String randomUuidString = UUID.randomUUID().toString();
+        randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
+        String orderId = UUID.fromString(randomUuidString).toString();
+        return orderId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void cancelOrderBeforePayment(Long orderNo) {
+        Order order = findOrderEntity(orderNo);
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
     }
 
     private void checkMemberAndSaveOrder(Order order,
@@ -173,7 +197,6 @@ public class OrderServiceImpl implements OrderService {
         OrderNonMember orderNonMember =
             new OrderNonMember(order, 12345678L);
         orderNonMemberRepository.save(orderNonMember);
-
     }
 
     @Override
@@ -183,26 +206,72 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.getOrderListOfMemberWithStatus(pageable, memberNo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
-    public Order completeOrderPay(Long orderNo) {
+    public Order completeOrderPay(Long orderNo, List<Long> couponIssueNoList) {
 
-        Order order = orderRepository.findById(orderNo).orElseThrow();
-        OrderStatus orderStatus = orderStatusService.findByOrderStatusEnum(
-            OrderStatusEnum.PAYMENT_COMPLETE);
+        Order order = findOrderEntity(orderNo);
 
-        OrderStatusHistory orderStatusHistory =
-            new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
-        orderStatusHistoryRepository.save(orderStatusHistory);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
 
+        usingCouponIssue(orderNo, couponIssueNoList);
+        savePointHistoryAboutMember(order);
         return order;
     }
 
+    private void usingCouponIssue(Long orderNo, List<Long> couponIssueNoList) {
+//        List<Long> couponIssueNoListWhenOrderPayCompletion =
+//            (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
+
+        if (Objects.nonNull(couponIssueNoList)) {
+            for (Long couponIssueNo : couponIssueNoList) {
+                couponIssueService.usingCouponIssue(couponIssueNo);
+            }
+        }
+    }
+
+    private void savePointHistoryAboutMember(Order order) {
+        Optional<OrderMember> optionalOrderMember =
+            orderMemberRepository.findById(order.getOrderNo());
+        if (!optionalOrderMember.isPresent()) {
+            return;
+        }
+
+        OrderMember orderMember = optionalOrderMember.get();
+        Member member = orderMember.getMember();
+
+        // db 반정규화
+//        Long increasePoint =
+//            (Long) session.getAttribute("increasePointToUseWhenOrderPayCompletion_" + orderNo);
+//        Long decreasePoint =
+//            (Long) session.getAttribute("decreasePointToUseWhenOrderPayCompletion_" + orderNo);
+
+        Long increasePoint = null;
+        Long decreasePoint = null;
+
+        if (!Objects.isNull(decreasePoint)) {
+            orderIncreaseDecreasePointHistoryService.savePointHistoryAboutOrderDecrease(member,
+                order, decreasePoint);
+        }
+
+        if (!Objects.isNull(increasePoint)) {
+            orderIncreaseDecreasePointHistoryService.savePointHistoryAboutOrderIncrease(member,
+                order,
+                increasePoint);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
 
         List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
-            orderProductRepository.findOrderProductsByOrderNo(orderNo);
+            orderProductService.findOrderProductsByOrderNo(orderNo);
         List<OrderDestinationDto> orderDestinationList =
             orderRepository.findOrderDestinationsByOrderNo(orderNo);
         PaymentCardResponseDto paymentCardResponseDto =
