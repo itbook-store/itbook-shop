@@ -33,7 +33,7 @@ public class MemberTransfer {
                 memberRequestDto.getPassword()).phoneNumber(memberRequestDto.getPhoneNumber())
             .email(
                 memberRequestDto.getEmail()).memberCreatedAt(LocalDateTime.now())
-            .isSocial(memberRequestDto.getIsSocial())
+            .isSocial(memberRequestDto.getIsSocial()).isWriter(memberRequestDto.getIsWriter())
             .build();
     }
 
@@ -44,7 +44,7 @@ public class MemberTransfer {
                 memberResponseDto.getPassword()).phoneNumber(memberResponseDto.getPhoneNumber())
             .email(
                 memberResponseDto.getEmail()).memberCreatedAt(LocalDateTime.now())
-            .isSocial(memberResponseDto.getIsSocial())
+            .isSocial(memberResponseDto.getIsSocial()).isWriter(memberResponseDto.getIsWriter())
             .build();
     }
 

@@ -25,8 +25,10 @@ import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -38,7 +40,6 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 @Import(OrderServiceImpl.class)
 class OrderServiceTest {
 
-
     @Autowired
     OrderService orderService;
 
@@ -47,16 +48,16 @@ class OrderServiceTest {
     @MockBean
     OrderRepository orderRepository;
     @MockBean
-    OrderProductRepository orderProductRepository;
-    @MockBean
-    OrderStatusHistoryRepository orderStatusHistoryRepository;
-    @MockBean
     OrderMemberRepository orderMemberRepository;
     @MockBean
     OrderNonMemberRepository orderNonMemberRepository;
     @MockBean
     PaymentRepository paymentRepository;
 
+    @MockBean
+    OrderProductService orderProductService;
+    @MockBean
+    OrderStatusHistoryService orderStatusHistoryService;
     @MockBean
     DeliveryService deliveryService;
     @MockBean

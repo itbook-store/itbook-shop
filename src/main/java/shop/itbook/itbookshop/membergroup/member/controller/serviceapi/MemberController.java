@@ -319,6 +319,25 @@ public class MemberController {
         ));
     }
 
+
+    /**
+     * 프론트 서버에서 어드민이 작가 등록할 때 입력한 이름이 아이디의 이름과 일치하는지 확인하는 API 입니다.
+     *
+     * @param name 유저가 입력한 이름 값을 파라미터로 받습니다.
+     * @return boolean 값으로 중복인지 아닌지 확인할 수 있도록 dto에 담아 반환합니다.
+     * @author 노수연
+     */
+    @GetMapping("/register-check/memberId/{memberId}/name/{name}")
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> nameCheck(
+        @PathVariable("memberId") String memberId,
+        @PathVariable("name") String name) {
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(""),
+            memberService.checkNameDuplicate(memberId, name)
+        ));
+    }
+
+
     /**
      * @param memberNo the member no
      * @return the response entity
@@ -337,6 +356,8 @@ public class MemberController {
     }
 
     /**
+     * Member destination delete response entity.
+     *
      * @param memberDestinationNoResponseDtoList the member destination no response dto list
      * @return the response entity
      * @author
@@ -356,6 +377,8 @@ public class MemberController {
     }
 
     /**
+     * Member destination add response entity.
+     *
      * @param memberDestinationRequestDto the member destination request dto
      * @return the response entity
      * @author
@@ -376,6 +399,8 @@ public class MemberController {
     }
 
     /**
+     * Member destination modify response entity.
+     *
      * @param recipientDestinationNo      the recipient destination no
      * @param memberDestinationRequestDto the member destination request dto
      * @return the response entity
@@ -399,6 +424,8 @@ public class MemberController {
     }
 
     /**
+     * Member destination details response entity.
+     *
      * @param recipientDestinationNo the recipient destination no
      * @return the response entity
      * @author
@@ -419,6 +446,8 @@ public class MemberController {
     }
 
     /**
+     * Member recently point find response entity.
+     *
      * @param memberNo the member no
      * @return the response entity
      * @author
@@ -441,6 +470,8 @@ public class MemberController {
     }
 
     /**
+     * Member gift point response entity.
+     *
      * @param senderMemberNo            the sender member no
      * @param memberPointSendRequestDto the member point send request dto
      * @return the response entity
@@ -450,9 +481,6 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<GiftIncreaseDecreasePointHistoryNoResponseDto>> memberGiftPoint(
         @PathVariable("senderMemberNo") Long senderMemberNo,
         @RequestBody MemberPointSendRequestDto memberPointSendRequestDto) {
-
-        log.info("senderMemberNo = {}", senderMemberNo);
-        log.info("memberPointSendRequestDto = {}", memberPointSendRequestDto);
 
         CommonResponseBody<GiftIncreaseDecreasePointHistoryNoResponseDto> commonResponseBody =
             new CommonResponseBody<>(

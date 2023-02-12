@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
 import java.util.Objects;
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +68,8 @@ public class OrderController {
     /**
      * 비회원 주문 조회 요청을 처리합니다.
      *
-     * @param orderNo 주문 조회할 주문 번호
+     * @param pageable the pageable
+     * @param orderNo  주문 조회할 주문 번호
      * @return 비회원이 주문한 건의 상세 정보 Dto 를 담은 응답 객체
      */
 // TODO: 2023/02/10 비회원 주문조회
@@ -95,8 +95,8 @@ public class OrderController {
      * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
      * @author 정재원
      */
-    @PostMapping()
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAdd(
+    @PostMapping
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAddBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
@@ -109,24 +109,76 @@ public class OrderController {
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrder(orderAddRequestDto, optMemberNo)
+                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
+    /**
+     * 주문의 결제 재진행을 요청을 처리합니다.
+     *
+     * @param orderNo            주문 번호
+     * @param orderAddRequestDto 주문시 작성한 정보를 담은 Dto
+     * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
+     * @author 정재원 *
+     */
+    @PostMapping("/{orderNo}")
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> reOrder(
+        @PathVariable("orderNo") Long orderNo,
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
+
+        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.reOrder(orderAddRequestDto, orderNo)
+            );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    /**
+     * 결제 전 주문 취소 요청을 처리합니다.
+     *
+     * @param orderNo 취소 처리할 주문 번호
+     * @return 성공시 ok 응답 객체
+     * @author 정재원 *
+     */
+    @PostMapping("/cancel/{orderNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
+        @PathVariable("orderNo") Long orderNo) {
+
+        orderService.cancelOrderBeforePayment(orderNo);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
+            ), null
+        );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * Order details response entity.
+     *
+     * @param orderNo the order no
+     * @return the response entity
+     * @author 정재원 *
+     */
     @GetMapping("/details/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
         @PathVariable("orderNo") Long orderNo) {
 
-        CommonResponseBody<Void> commonResponseBody =
+        CommonResponseBody<OrderDetailsResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_PAY_SUCCESS_MESSAGE.getResultMessage()
-                ), null
+                    OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.findOrderDetails(orderNo)
             );
 
-        return null;
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 }
