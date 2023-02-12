@@ -33,5 +33,4 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport implem
                 qOrderProduct.count, qOrderProduct.productPrice))
             .fetch();
     }
-
 }
