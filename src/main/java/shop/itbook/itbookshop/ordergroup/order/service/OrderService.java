@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
+import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -70,7 +70,7 @@ public interface OrderService {
      * @return 결제 완료된 주문 엔티티의 인스턴스
      * @author 정재원 *
      */
-    Order completeOrderPay(Long orderNo, HttpSession session);
+    Order completeOrderPay(Long orderNo, List<Long> couponIssueNoList);
 
 
     /**
