@@ -82,6 +82,13 @@ public class Cart {
         this.productCount = 1;
     }
 
+    public Cart(Member member, Product product, Integer productCount) {
+        this.pk = new Pk(member.getMemberNo(), product.getProductNo());
+        this.member = member;
+        this.product = product;
+        this.productCount = productCount;
+    }
+
     /**
      * 장바구니 상품의 갯수를 수정하는 메서드 입니다.
      *
