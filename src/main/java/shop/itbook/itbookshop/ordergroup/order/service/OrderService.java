@@ -4,6 +4,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -39,9 +40,12 @@ public interface OrderService {
                                                                          Long memberNo);
 
     /**
-     * Complete order pay.
+     * 결제 완료후 로직 처리
      *
      * @param orderNo the order no
      */
     Order completeOrderPay(Long orderNo);
+
+
+    OrderDetailsResponseDto findOrderDetails(Long orderNo);
 }

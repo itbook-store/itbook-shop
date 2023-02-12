@@ -18,14 +18,31 @@ import shop.itbook.itbookshop.membergroup.membership.repository.MembershipReposi
 import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
+import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatus.dummy.OrderStatusDummy;
+import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatus.repository.OrderStatusRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.ReviewIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.PointIncreaseDecreaseContentRepository;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.dummy.PointIncreaseDecreaseContentDummy;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
+import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dummy.ReviewDummy;
+import shop.itbook.itbookshop.productgroup.review.entity.Review;
+import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 
 /**
  * @author 최겸준
@@ -56,6 +73,21 @@ class ReviewIncreasePointHistoryRepositoryTest {
     @Autowired
     PointIncreaseDecreaseContentRepository pointIncreaseDecreaseContentRepository;
 
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    ProductRepository productRepository;
+    @Autowired
+    OrderStatusRepository orderStatusRepository;
+    @Autowired
+    OrderProductRepository orderProductRepository;
+
+    @Autowired
+    OrderStatusHistoryRepository orderStatusHistoryRepository;
+
+    @Autowired
+    ReviewRepository reviewRepository;
+
     Member member1;
     Membership membership1;
     MemberStatus normalMemberStatus1;
@@ -64,6 +96,11 @@ class ReviewIncreasePointHistoryRepositoryTest {
     PointHistory dummyPointHistory2;
     ReviewIncreasePointHistory reviewIncreasePointHistory1;
     ReviewIncreasePointHistory reviewIncreasePointHistory2;
+
+    Review review;
+
+    OrderProduct orderProduct;
+    OrderStatus orderStatus;
 
 
     @BeforeEach
@@ -101,10 +138,28 @@ class ReviewIncreasePointHistoryRepositoryTest {
         pointHistoryRepository.save(dummyPointHistory2);
 
 
+        Order order = orderRepository.save(OrderDummy.getOrder());
+        Product product = productRepository.save(ProductDummy.getProductSuccess());
+        orderProduct = OrderProductDummy.createOrderProduct(order, product);
+        orderProductRepository.save(orderProduct);
+
+        orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
+        orderStatusRepository.save(orderStatus);
+
+
+        review = ReviewDummy.getReview();
+        review.setOrderProduct(orderProduct);
+        review.setProduct(product);
+        review.setMember(member1);
+        review.setOrderProductNo(orderProduct.getOrderProductNo());
+
+        reviewRepository.save(review);
+
         reviewIncreasePointHistory2 = new ReviewIncreasePointHistory(
-            dummyPointHistory2.getPointHistoryNo(), null);
+            dummyPointHistory2.getPointHistoryNo(), review);
 
         reviewIncreasePointHistoryRepository.save(reviewIncreasePointHistory2);
+
 
         entityManager.flush();
         entityManager.clear();
@@ -114,7 +169,7 @@ class ReviewIncreasePointHistoryRepositoryTest {
     @Test
     void save() {
         reviewIncreasePointHistory1 = new ReviewIncreasePointHistory(
-            dummyPointHistory1.getPointHistoryNo(), null);
+            dummyPointHistory1.getPointHistoryNo(), review);
 
         reviewIncreasePointHistoryRepository.save(reviewIncreasePointHistory1);
 
@@ -139,4 +194,40 @@ class ReviewIncreasePointHistoryRepositoryTest {
         assertThat(actual.getPointHistoryNo())
             .isEqualTo(reviewIncreasePointHistory2.getPointHistoryNo());
     }
+
+
+    @DisplayName("리뷰적립 포인트 상세조회가 잘 이루어 진다.")
+    @Test
+    void findPointHistoryReviewDetailsDto() {
+        ReviewResponseDto actual =
+            pointHistoryRepository.findPointHistoryReviewDetailsDto(
+                dummyPointHistory2.getPointHistoryNo());
+
+        assertThat(actual.getImage())
+            .isEqualTo(review.getImage());
+        assertThat(actual.getProductNo())
+            .isEqualTo(review.getProduct().getProductNo());
+        assertThat(actual.getStarPoint())
+            .isEqualTo(review.getStarPoint());
+        assertThat(actual.getContent())
+            .isEqualTo(review.getContent());
+    }
+
+    @DisplayName("특정 멤버의 리뷰적립 포인트 상세조회가 잘 이루어 진다.")
+    @Test
+    void findMyPointHistoryReviewDetailsDto() {
+        ReviewResponseDto actual =
+            pointHistoryRepository.findMyPointHistoryReviewDetailsDto(
+                dummyPointHistory2.getPointHistoryNo(), member1.getMemberNo());
+
+        assertThat(actual.getImage())
+            .isEqualTo(review.getImage());
+        assertThat(actual.getProductNo())
+            .isEqualTo(review.getProduct().getProductNo());
+        assertThat(actual.getStarPoint())
+            .isEqualTo(review.getStarPoint());
+        assertThat(actual.getContent())
+            .isEqualTo(review.getContent());
+    }
+    
 }

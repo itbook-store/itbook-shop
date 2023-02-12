@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.coupongroup.couponissue.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +18,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CouponIssueLi
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
@@ -59,7 +61,7 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             couponIssue = couponIssueRepository.save(couponIssue);
         } catch (DataIntegrityViolationException e) {
             Throwable rootCause = e.getRootCause();
-            String message = rootCause.getMessage();
+            String message = Objects.requireNonNull(rootCause).getMessage();
 
             if (message.contains("coupon_issue.memberNoAndCouponNo")) {
                 throw new AlreadyAddedCouponIssueMemberCouponException();
@@ -106,9 +108,9 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     }
 
     @Override
-    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberId(
-        Pageable pageable, String memberId) {
-        return couponIssueRepository.findCouponIssueListByMemberId(pageable, memberId);
+    public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(
+        Pageable pageable, Long memberNo) {
+        return couponIssueRepository.findCouponIssueListByMemberNo(pageable, memberNo);
     }
 
     @Override
@@ -140,5 +142,33 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(memberNo);
         return new CouponIssueListByGroupResponseDto(orderTotalCouponList, categoryCouponList,
             productCouponList);
+    }
+
+    @Override
+    public CouponIssue findCouponIssueByCouponIssueNo(Long couponIssueNo) {
+        return couponIssueRepository.findById(couponIssueNo).orElseThrow(
+            CouponIssueNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public CouponIssue usingCouponIssue(Long couponIssueNo) {
+
+        CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
+        couponIssue.setUsageStatus(
+            usageStatusService.findUsageStatus(UsageStatusEnum.COMPLETED.getUsageStatus()));
+        couponIssue.setCouponUsageCreatedAt(LocalDateTime.now());
+        return couponIssueRepository.save(couponIssue);
+    }
+
+    @Override
+    @Transactional
+    public CouponIssue cancelCouponIssue(Long couponIssueNo) {
+
+        CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
+        couponIssue.setUsageStatus(
+            usageStatusService.findUsageStatus(UsageStatusEnum.AVAILABLE.getUsageStatus()));
+        couponIssue.setCouponUsageCreatedAt(null);
+        return couponIssueRepository.save(couponIssue);
     }
 }

@@ -4,15 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
@@ -28,8 +25,9 @@ import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderProductHistoryRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
+import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
@@ -51,11 +49,14 @@ class OrderServiceTest {
     @MockBean
     OrderProductRepository orderProductRepository;
     @MockBean
-    OrderProductHistoryRepository orderProductHistoryRepository;
+    OrderStatusHistoryRepository orderStatusHistoryRepository;
     @MockBean
     OrderMemberRepository orderMemberRepository;
     @MockBean
     OrderNonMemberRepository orderNonMemberRepository;
+    @MockBean
+    PaymentRepository paymentRepository;
+
     @MockBean
     DeliveryService deliveryService;
     @MockBean
@@ -97,5 +98,11 @@ class OrderServiceTest {
             orderListMemberViewResponseDto.getRecipientPhoneNumber());
         assertThat(resultDto.getTrackingNo()).isEqualTo(
             orderListMemberViewResponseDto.getTrackingNo());
+    }
+
+    @Test
+    @DisplayName("주문 상세 Dto 조회 성공")
+    void findOrderDetailsSuccessTest() {
+
     }
 }

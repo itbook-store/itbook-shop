@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.category.resultmessageenum.CategoryResultMessageEnum;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.request.CouponIssueNoRequest;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.resultmessageenum.CouponIssueResultMessageEnum;
@@ -33,13 +32,13 @@ public class CouponIssueServiceController {
 
     private final CouponIssueService couponIssueService;
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<PageResponse<UserCouponIssueListResponseDto>>>
     userCouponIssueList(@PageableDefault Pageable pageable,
-                        @PathVariable("memberId") String memberId) {
+                        @PathVariable("memberNo") Long memberNo) {
 
         Page<UserCouponIssueListResponseDto> page =
-            couponIssueService.findCouponIssueListByMemberId(pageable, memberId);
+            couponIssueService.findCouponIssueListByMemberNo(pageable, memberNo);
 
         PageResponse<UserCouponIssueListResponseDto> pageResponse =
             new PageResponse<>(page);

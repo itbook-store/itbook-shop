@@ -58,29 +58,37 @@ public class Order {
     @Column(name = "recipient_address_details", columnDefinition = "varchar(255)", nullable = false)
     private String recipientAddressDetails;
 
+    @Column(name = "is_hidden", nullable = false)
+    private Boolean isHidden;
+
     /**
      * 주문 엔티티의 생성자입니다.
      *
      * @param orderCreatedAt          주문 생성일
      * @param selectedDeliveryDate    지정 배송일
+     * @param orderProducts           the order products
      * @param recipientName           수령인 이름
      * @param recipientPhoneNumber    수령인 핸드폰번호
      * @param postcode                우편번호
      * @param roadNameAddress         도로명주소
      * @param recipientAddressDetails 상세주소
+     * @param isHidden                주문 내역에서 숨김 여부
      * @author 정재원
      */
     @Builder
     public Order(LocalDateTime orderCreatedAt, LocalDate selectedDeliveryDate,
-                 String recipientName,
-                 String recipientPhoneNumber, Integer postcode, String roadNameAddress,
-                 String recipientAddressDetails) {
+                 List<OrderProduct> orderProducts, String recipientName,
+                 String recipientPhoneNumber,
+                 Integer postcode, String roadNameAddress, String recipientAddressDetails,
+                 Boolean isHidden) {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
+        this.orderProducts = orderProducts;
         this.recipientName = recipientName;
         this.recipientPhoneNumber = recipientPhoneNumber;
         this.postcode = postcode;
         this.roadNameAddress = roadNameAddress;
         this.recipientAddressDetails = recipientAddressDetails;
+        this.isHidden = isHidden;
     }
 }

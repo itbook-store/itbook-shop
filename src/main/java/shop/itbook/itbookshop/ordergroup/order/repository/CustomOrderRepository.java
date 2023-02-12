@@ -1,8 +1,11 @@
 package shop.itbook.itbookshop.ordergroup.order.repository;
 
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 
 /**
@@ -16,4 +19,8 @@ public interface CustomOrderRepository {
 
     Page<OrderListMemberViewResponseDto> getOrderListOfMemberWithStatus(Pageable pageable,
                                                                         Long memberNo);
+
+    String findOrderStatusByOrderNo(Long orderNo);
+
+    List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo);
 }

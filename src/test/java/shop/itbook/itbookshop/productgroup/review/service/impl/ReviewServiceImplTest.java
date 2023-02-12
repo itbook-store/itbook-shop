@@ -41,6 +41,8 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.service.ReviewIncreasePointHistoryService;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
@@ -71,6 +73,9 @@ class ReviewServiceImplTest {
 
     @MockBean
     ProductService productService;
+
+    @MockBean
+    ReviewIncreasePointHistoryService reviewIncreasePointHistoryService;
 
     @MockBean
     FileService fileService;

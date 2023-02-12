@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 
 /**
  * 리뷰 서비스 인터페이스 입니다.
@@ -81,4 +82,18 @@ public interface ReviewService {
      */
     Page<ReviewResponseDto> findReviewListByProductNo(Pageable pageable,
                                                       Long productNo);
+
+
+    /**
+     * 멤버 번호로 해당 멤버가 주문한 상품들 중에서 아직 리뷰가 쓰여지지 않은
+     * 주문 상품 리스트를 불러옵니다.
+     *
+     * @param pageable 페이징 처리하여 불러옵니다.
+     * @param memberNo 멤버 번호로 테이블에서 주문 상품 리스트를 찾습니다.
+     * @return 페이징 처리된 dto 리스트를 반환합니다.
+     * @author 노수연
+     */
+    Page<UnwrittenReviewOrderProductResponseDto> findUnwrittenReviewOrderProductList(
+        Pageable pageable,
+        Long memberNo);
 }

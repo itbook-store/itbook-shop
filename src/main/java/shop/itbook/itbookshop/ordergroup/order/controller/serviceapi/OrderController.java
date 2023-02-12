@@ -142,8 +142,6 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
         @PathVariable("orderNo") Long orderNo) {
 
-        orderService.completeOrderPay(orderNo);
-
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
