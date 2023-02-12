@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
@@ -27,6 +28,7 @@ public class OrderProductServiceImpl implements OrderProductService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public void addOrderProduct(Order order, Product product, Integer productCnt,
                                 Long productPrice) {
 
@@ -35,7 +37,6 @@ public class OrderProductServiceImpl implements OrderProductService {
         if (optOrderProduct.isPresent()) {
             OrderProduct orderProduct = optOrderProduct.get();
             orderProduct.setProductPrice(productPrice);
-            orderProductRepository.save(orderProduct);
             return;
         }
 

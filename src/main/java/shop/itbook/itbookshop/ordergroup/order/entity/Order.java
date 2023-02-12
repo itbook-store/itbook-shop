@@ -61,6 +61,9 @@ public class Order {
     @Column(name = "is_hidden", nullable = false)
     private Boolean isHidden;
 
+    private Long increasePoint;
+    private Long decreasePoint;
+
     /**
      * 주문 엔티티의 생성자입니다.
      *
