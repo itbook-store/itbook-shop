@@ -17,6 +17,7 @@ import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductIn
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
+import shop.itbook.itbookshop.productgroup.productinquiry.exception.ProductInquiryNotFoundException;
 import shop.itbook.itbookshop.productgroup.productinquiry.repository.ProductInquiryRepository;
 import shop.itbook.itbookshop.productgroup.productinquiry.service.ProductInquiryService;
 import shop.itbook.itbookshop.productgroup.productinquiry.transfer.ProductInquiryTransfer;
@@ -38,6 +39,15 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
     private final ProductService productService;
 
     private final MemberService memberService;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductInquiry findProductInquiryByProductInquiryNo(Long productInquiryNo) {
+        return productInquiryRepository.findById(productInquiryNo).orElseThrow(
+            ProductInquiryNotFoundException::new);
+    }
 
     /**
      * {@inheritDoc}

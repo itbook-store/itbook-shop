@@ -6,6 +6,7 @@ import shop.itbook.itbookshop.productgroup.productinquiry.dto.request.ProductInq
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
+import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
 
 /**
  * 상품문의 서비스 인터페이스입니다.
@@ -15,6 +16,15 @@ import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductIn
  */
 public interface ProductInquiryService {
 
+
+    /**
+     * 상품문의 번호로 테이블에서 데이터를 찾아 엔티티로 반환합니다.
+     *
+     * @param productInquiryNo 상품 문의 번호입니다.
+     * @return 상품문의 엔티티를 반환합니다.
+     * @author 노수연
+     */
+    ProductInquiry findProductInquiryByProductInquiryNo(Long productInquiryNo);
 
     /**
      * 모든 상품 문의 리스트를 반환합니다.
