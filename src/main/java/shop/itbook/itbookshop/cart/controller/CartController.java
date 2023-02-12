@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.cart.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -88,6 +90,8 @@ public class CartController {
                 productList
             );
 
+        cartService.deleteAllProduct(memberNo);
+
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
@@ -166,5 +170,23 @@ public class CartController {
             );
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @PostMapping("/save-all")
+    public ResponseEntity<CommonResponseBody<Void>> cartSaveAllProduct(
+        @RequestBody List<CartModifyRequestDto> cartRequestDtoList
+    ) {
+
+        cartService.saveAllCartProduct(cartRequestDtoList);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    CartResultMessageEnum.CART_REGISTER_SUCCESS_MESSAGE.getSuccessMessage()
+                ),
+                null
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 }

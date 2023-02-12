@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentgroup.card.service.impl;
+package shop.itbook.itbookshop.paymentgroup.card.service;
 
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;

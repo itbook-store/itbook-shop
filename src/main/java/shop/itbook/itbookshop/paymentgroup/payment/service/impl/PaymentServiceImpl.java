@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.paymentgroup.payment.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,10 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
-import shop.itbook.itbookshop.paymentgroup.card.service.impl.CardService;
+import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentCanceledRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderNoResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
@@ -50,8 +52,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
-                                             Long orderNo) {
-
+                                             Long orderNo, List<Long> couponIssueNoList) {
 
         PaymentResponseDto.PaymentDataResponseDto response =
             payService.requestApprovePayment(paymentApproveRequestDto);
@@ -66,7 +67,7 @@ public class PaymentServiceImpl implements PaymentService {
             paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
         payment.setPaymentStatus(paymentStatus);
 
-        Order order = orderService.completeOrderPay(orderNo);
+        Order order = orderService.completeOrderPay(orderNo, couponIssueNoList);
         payment.setOrder(order);
 
         Payment savePayment = paymentRepository.save(payment);
@@ -101,4 +102,9 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findPaymentByOrder_OrderNo(orderNo)
             .orElseThrow(InvalidPaymentException::new);
     }
+
+    public PaymentCardResponseDto findPaymentCardInfo(Long orderNo) {
+        return paymentRepository.findPaymentCardByOrderNo(orderNo);
+    }
+
 }

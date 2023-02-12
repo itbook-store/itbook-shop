@@ -31,11 +31,13 @@ import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
+import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
+import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
  * @author 강명관

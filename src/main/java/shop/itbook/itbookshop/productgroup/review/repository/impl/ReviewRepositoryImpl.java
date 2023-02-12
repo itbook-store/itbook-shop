@@ -11,8 +11,8 @@ import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.QOrderProductHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
@@ -109,7 +109,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
         QProduct qProduct = QProduct.product;
         QOrder qOrder = QOrder.order;
         QOrderMember qOrderMember = QOrderMember.orderMember;
-        QOrderProductHistory qOrderProductHistory = QOrderProductHistory.orderProductHistory;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
 
         JPQLQuery<UnwrittenReviewOrderProductResponseDto> unwrittenReviewOrderProductListQuery =
@@ -118,10 +118,10 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
                 .on(qOrderProduct.orderProductNo.eq(qReview.orderProductNo))
                 .rightJoin(qOrderMember)
                 .on(qOrderProduct.order.orderNo.eq(qOrderMember.orderNo))
-                .rightJoin(qOrderProductHistory)
-                .on(qOrderProduct.orderProductNo.eq(
-                    qOrderProductHistory.orderProduct.orderProductNo))
-                .innerJoin(qOrderStatus).on(qOrderProductHistory.orderStatus.orderStatusNo.eq(
+                .rightJoin(qOrderStatusHistory)
+                .on(qOrderProduct.order.eq(
+                    qOrderStatusHistory.order))
+                .innerJoin(qOrderStatus).on(qOrderStatusHistory.orderStatus.orderStatusNo.eq(
                     qOrderStatus.orderStatusNo))
                 .innerJoin(qOrder)
                 .on(qOrderProduct.order.orderNo.eq(qOrder.orderNo))

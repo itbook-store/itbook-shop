@@ -220,7 +220,7 @@ public class MemberServiceImpl implements MemberService {
             Member.builder().membership(membership).memberStatus(memberStatus).memberId(email)
                 .nickname(email).name(email).isMan(true).birth(LocalDateTime.now())
                 .password(encodedEmail).phoneNumber(email).email(email)
-                .memberCreatedAt(LocalDateTime.now()).isSocial(true).build();
+                .memberCreatedAt(LocalDateTime.now()).isSocial(true).isWriter(false).build();
 
         Long memberNo = memberRepository.save(member).getMemberNo();
 
@@ -309,6 +309,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber) {
         return new MemberBooleanResponseDto(memberRepository.existsByPhoneNumber(phoneNumber));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MemberBooleanResponseDto checkNameDuplicate(String memberId, String name) {
+
+        return new MemberBooleanResponseDto(
+            memberRepository.existsByNameAndFindNameWithMemberId(memberId, name));
     }
 
     @Override

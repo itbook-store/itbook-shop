@@ -22,6 +22,7 @@ public class OrderPaymentDto {
     private String successUrl;
     private String failUrl;
 
+
     /**
      * 주문 테이블에 값 등록 성공 후 결제를 위한 정보를 반환합니다.
      *

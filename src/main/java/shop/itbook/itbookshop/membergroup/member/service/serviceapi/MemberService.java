@@ -74,6 +74,8 @@ public interface MemberService {
     void withDrawMember(Long memberNo, MemberStatusUpdateAdminRequestDto requestDto);
 
     /**
+     * Check member oauth email exists boolean.
+     *
      * @param email the email
      * @return the boolean
      * @author
@@ -81,6 +83,8 @@ public interface MemberService {
     Boolean checkMemberOauthEmailExists(String email);
 
     /**
+     * Check member oauth info exists boolean.
+     *
      * @param email the email
      * @return the boolean
      * @author
@@ -88,6 +92,8 @@ public interface MemberService {
     Boolean checkMemberOauthInfoExists(String email);
 
     /**
+     * Social member add long.
+     *
      * @param email        the email
      * @param encodedEmail the encoded email
      * @return the long
@@ -96,6 +102,8 @@ public interface MemberService {
     Long socialMemberAdd(String email, String encodedEmail);
 
     /**
+     * Modify social member long.
+     *
      * @param requestDto the request dto
      * @return the long
      * @author
@@ -150,6 +158,17 @@ public interface MemberService {
      * @author 노수연
      */
     MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber);
+
+
+    /**
+     * 파라미터로 넘어온 이름이 테이블에 있는지 판별하여 true/false로 반환하는 메서드입니다.
+     * 어드민 페이지에서 작가 등록할 때 입력한 이름이 아이디의 이름과 일치하는지 확인하기 위함입니다.
+     *
+     * @param name 테이블에 존재하는지 판별할 이름입니다.
+     * @return 테이블에 해당 이름이 존재하면 true, 없으면 false를 반환합니다.
+     * @author 노수연
+     */
+    MemberBooleanResponseDto checkNameDuplicate(String memberId, String name);
 
     /**
      * @param sendNoMemberNo   the send no member no

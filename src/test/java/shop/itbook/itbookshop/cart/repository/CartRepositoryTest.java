@@ -214,5 +214,23 @@ class CartRepositoryTest {
         assertThat(productCartListByMemberNo).isEmpty();
     }
 
-    // 카운트를 수정하는 쿼리를 작성하고, 그렇게하면 쿼리 하나로 다 쓸 수 있고, 그렇게 되면 js 로 input 값 변경 이벤트 달아서 쿼리 나가게
+    @DisplayName("saveAll 테스트")
+    @Test
+    void saveAllTest() {
+
+        // given
+        Cart cart = new Cart(memberDummy, productDummy);
+
+        List<Cart> cartList = List.of(cart);
+
+        // when, then
+        List<Cart> carts = cartRepository.saveAll(cartList);
+
+        assertThat(carts.get(0).getMember().getMemberNo()).isEqualTo(
+            cart.getMember().getMemberNo());
+        assertThat(carts.get(0).getProduct().getProductNo()).isEqualTo(
+            cart.getProduct().getProductNo());
+
+
+    }
 }

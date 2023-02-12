@@ -24,9 +24,7 @@ import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.dummy.OrderProductHistoryDummy;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.entity.OrderProductHistory;
-import shop.itbook.itbookshop.ordergroup.orderproducthistory.repository.OrderProductHistoryRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.dummy.OrderStatusDummy;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.repository.OrderStatusRepository;
@@ -34,7 +32,6 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.dummy.PointHistoryDummy;
-import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.ReviewIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.PointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.repository.PointIncreaseDecreaseContentRepository;
@@ -86,7 +83,7 @@ class ReviewIncreasePointHistoryRepositoryTest {
     OrderProductRepository orderProductRepository;
 
     @Autowired
-    OrderProductHistoryRepository orderProductHistoryRepository;
+    OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     @Autowired
     ReviewRepository reviewRepository;
@@ -215,4 +212,22 @@ class ReviewIncreasePointHistoryRepositoryTest {
         assertThat(actual.getContent())
             .isEqualTo(review.getContent());
     }
+
+    @DisplayName("특정 멤버의 리뷰적립 포인트 상세조회가 잘 이루어 진다.")
+    @Test
+    void findMyPointHistoryReviewDetailsDto() {
+        ReviewResponseDto actual =
+            pointHistoryRepository.findMyPointHistoryReviewDetailsDto(
+                dummyPointHistory2.getPointHistoryNo(), member1.getMemberNo());
+
+        assertThat(actual.getImage())
+            .isEqualTo(review.getImage());
+        assertThat(actual.getProductNo())
+            .isEqualTo(review.getProduct().getProductNo());
+        assertThat(actual.getStarPoint())
+            .isEqualTo(review.getStarPoint());
+        assertThat(actual.getContent())
+            .isEqualTo(review.getContent());
+    }
+    
 }
