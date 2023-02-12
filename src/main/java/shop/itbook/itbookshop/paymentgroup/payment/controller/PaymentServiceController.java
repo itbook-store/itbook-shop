@@ -42,9 +42,10 @@ public class PaymentServiceController {
 
         List<Long> couponIssueNoListWhenOrderPayCompletion =
             (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
+
         OrderResponseDto responseDto =
             paymentService.requestPayment(paymentApproveRequestDto, orderNo,
-                couponIssueNoListWhenOrderPayCompletion);
+                session);
 
         CommonResponseBody<OrderResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

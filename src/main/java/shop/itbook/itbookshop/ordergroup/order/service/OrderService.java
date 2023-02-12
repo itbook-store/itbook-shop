@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
+import co.elastic.clients.elasticsearch.nodes.Http;
 import java.util.List;
 import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -36,7 +38,7 @@ public interface OrderService {
      * @author 정재원 *
      */
     OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                          Optional<Long> memberNo);
+                                          Optional<Long> memberNo, HttpSession session);
 
     /**
      * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.
@@ -46,10 +48,10 @@ public interface OrderService {
      * @return 결제 요청에 사용될 정보를 담은 Dto
      * @author 정재원 *
      */
-    OrderPaymentDto reOrder(OrderAddRequestDto orderAddRequestDto,
-                            Long orderNo);
+    OrderPaymentDto reOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
+                                         Long orderNo, HttpSession session);
 
-    void cancelOrderBeforePayment(Long orderNo);
+    void processAfterOrderCancelPaymentSuccess(Long orderNo);
 
     /**
      * 회원의 주문 리스트를 조회합니다.
@@ -70,7 +72,7 @@ public interface OrderService {
      * @return 결제 완료된 주문 엔티티의 인스턴스
      * @author 정재원 *
      */
-    Order completeOrderPay(Long orderNo, List<Long> couponIssueNoList);
+    Order processAfterOrderPaymentSuccess(Long orderNo, HttpSession session);
 
 
     /**
