@@ -122,4 +122,6 @@ public interface ProductService {
      * @author 정재원 *
      */
     boolean canSellProduct(Long productNo, Integer productCnt);
+
+    void changeDailyHits(Long productNo);
 }

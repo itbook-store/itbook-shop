@@ -79,6 +79,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product product = updateProduct(requestDto, productNo);
+        productRepository.save(product);
 
         if (!Objects.isNull(requestDto.getCategoryNoList())) {
             productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
@@ -104,6 +105,14 @@ public class ProductServiceImpl implements ProductService {
         if (fieldName.equals("isSelled")) {
             product.setIsSelled(!product.getIsSelled());
         }
+        productRepository.save(product);
+    }
+
+    @Override
+    @Transactional
+    public void changeDailyHits(Long productNo) {
+        Product product = this.findProductEntity(productNo);
+        product.setDailyHits(product.getDailyHits() + 1);
         productRepository.save(product);
     }
 
@@ -190,7 +199,7 @@ public class ProductServiceImpl implements ProductService {
      * @param productNo  수정해야 할 상품 번호입니다.
      * @return 수정 완료된 상품을 반환합니다.
      */
-    private Product updateProduct(ProductModifyRequestDto requestDto, Long productNo) {
+    public Product updateProduct(ProductModifyRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 
         product.setName(requestDto.getProductName());
@@ -200,15 +209,12 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplying(requestDto.getIsPointApplying());
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
-        if (!Objects.isNull(requestDto.getFileThumbnailsUrl())) {
-            product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
-        }
+        product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         product.setFixedPrice(requestDto.getFixedPrice());
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
         product.setDiscountPercent(requestDto.getDiscountPercent());
         product.setRawPrice(requestDto.getRawPrice());
         product.setIsSubscription(requestDto.getIsSubscription());
-        productRepository.save(product);
         return product;
     }
 
@@ -220,6 +226,7 @@ public class ProductServiceImpl implements ProductService {
      * @return 수정 완료된 상품을 반환합니다.
      */
     @Override
+    @Transactional
     public Product updateProduct(BookModifyRequestDto requestDto, Long productNo) {
         Product product = this.findProductEntity(productNo);
 

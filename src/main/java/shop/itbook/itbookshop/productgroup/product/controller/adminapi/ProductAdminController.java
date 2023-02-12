@@ -178,7 +178,28 @@ public class ProductAdminController {
         @RequestParam String fieldName,
         @PathVariable Long productNo) {
         productService.changeBooleanField(productNo, fieldName);
-        productSearchService.removeSearchProduct(productNo);
+        if (fieldName.equals("delete")) {
+            productSearchService.removeSearchProduct(productNo);
+        }
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 상품 조회수 필드 수정을 요청하는 메서드입니다.
+     *
+     * @param productNo 조회수를 수정할 상품 번호입니다.
+     * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @PutMapping(value = "/modify-dailyhits/{productNo}")
+    public ResponseEntity<CommonResponseBody<Void>> changeDailyHitsFields(
+        @PathVariable Long productNo) {
+        productService.changeDailyHits(productNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
