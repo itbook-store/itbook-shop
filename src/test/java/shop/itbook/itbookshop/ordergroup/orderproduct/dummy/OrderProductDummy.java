@@ -16,7 +16,7 @@ public class OrderProductDummy {
             .order(order)
             .product(product)
             .count(1)
-            .isHidden(false)
+            .productPrice(30000L)
             .build();
     }
 }

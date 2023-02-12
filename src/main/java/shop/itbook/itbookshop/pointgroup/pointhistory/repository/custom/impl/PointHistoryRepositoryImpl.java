@@ -8,9 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
+import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
-import shop.itbook.itbookshop.membergroup.membership.dto.response.MembershipResponseDto;
 import shop.itbook.itbookshop.membergroup.membership.entity.QMembership;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.QCouponIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
@@ -19,8 +22,12 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom.CustomPo
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.QGiftIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.entity.QGradeIncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.QReviewIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.QPointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
+import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
+import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.entity.QReview;
 
 /**
  * @author 최겸준
@@ -153,6 +160,32 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
         QMember qMainMember = QMember.member;
         QMember qSubMember = new QMember("sub_member");
 
+        return getGiftDetailsJpql(pointHistoryNo, qPointHistory, qGiftIncreaseDecreasePointHistory,
+            qMainMember, qSubMember)
+            .fetchOne();
+    }
+
+    @Override
+    public PointHistoryGiftDetailsResponseDto findMyPointHistoryGiftDetailsResponseDto(
+        Long pointHistoryNo, Long memberNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QGiftIncreaseDecreasePointHistory qGiftIncreaseDecreasePointHistory =
+            QGiftIncreaseDecreasePointHistory.giftIncreaseDecreasePointHistory;
+        QMember qMainMember = QMember.member;
+        QMember qSubMember = new QMember("sub_member");
+
+        return getGiftDetailsJpql(pointHistoryNo, qPointHistory, qGiftIncreaseDecreasePointHistory,
+            qMainMember, qSubMember)
+            .where(qMainMember.memberNo.eq(memberNo))
+            .fetchOne();
+    }
+
+    private JPQLQuery<PointHistoryGiftDetailsResponseDto> getGiftDetailsJpql(Long pointHistoryNo,
+                                                                             QPointHistory qPointHistory,
+                                                                             QGiftIncreaseDecreasePointHistory qGiftIncreaseDecreasePointHistory,
+                                                                             QMember qMainMember,
+                                                                             QMember qSubMember) {
         return from(qPointHistory)
             .innerJoin(qPointHistory.member, qMainMember)
             .innerJoin(qGiftIncreaseDecreasePointHistory)
@@ -167,8 +200,7 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 qPointHistory.remainedPoint,
                 qPointHistory.historyCreatedAt,
                 qPointHistory.isDecrease
-            ))
-            .fetchOne();
+            ));
     }
 
     @Override
@@ -181,26 +213,177 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
         QMembership qMembership = QMembership.membership;
         QMember qMember = QMember.member;
 
-        PointHistoryGradeDetailsResponseDto pointHistoryGradeDetailsResponseDto =
-            from(qPointHistory)
-                .innerJoin(qPointHistory.member, qMember)
-                .innerJoin(qGradeIncreasePointHistory)
-                .on(qPointHistory.pointHistoryNo.eq(qGradeIncreasePointHistory.pointHistoryNo))
-                .innerJoin(qGradeIncreasePointHistory.membership, qMembership)
-                .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
-                .select(Projections.fields(PointHistoryGradeDetailsResponseDto.class,
-                    qMember.memberId,
-                    qMember.name.as("memberName"),
-                    qMembership.membershipNo,
-                    qMembership.membershipGrade,
-                    qMembership.membershipStandardAmount,
-                    qMembership.membershipPoint,
-                    qPointHistory.increaseDecreasePoint.as("point"),
-                    qPointHistory.remainedPoint,
-                    qPointHistory.historyCreatedAt,
-                    qPointHistory.isDecrease
-                ))
-                .fetchOne();
-        return pointHistoryGradeDetailsResponseDto;
+        return getMembershipDetailsJpql(pointHistoryNo, qPointHistory, qGradeIncreasePointHistory,
+            qMembership,
+            qMember)
+            .fetchOne();
+    }
+
+    @Override
+    public PointHistoryGradeDetailsResponseDto findMyMembershipResponseDtoThroughPointHistory(
+        Long pointHistoryNo, Long memberNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QGradeIncreasePointHistory qGradeIncreasePointHistory =
+            QGradeIncreasePointHistory.gradeIncreasePointHistory;
+        QMembership qMembership = QMembership.membership;
+        QMember qMember = QMember.member;
+
+        return getMembershipDetailsJpql(pointHistoryNo, qPointHistory, qGradeIncreasePointHistory,
+            qMembership,
+            qMember)
+            .where(qMember.memberNo.eq(memberNo))
+            .fetchOne();
+    }
+
+    private JPQLQuery<PointHistoryGradeDetailsResponseDto> getMembershipDetailsJpql(
+        Long pointHistoryNo,
+        QPointHistory qPointHistory,
+        QGradeIncreasePointHistory qGradeIncreasePointHistory,
+        QMembership qMembership,
+        QMember qMember) {
+        return from(qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .innerJoin(qGradeIncreasePointHistory)
+            .on(qPointHistory.pointHistoryNo.eq(qGradeIncreasePointHistory.pointHistoryNo))
+            .innerJoin(qGradeIncreasePointHistory.membership, qMembership)
+            .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(Projections.fields(PointHistoryGradeDetailsResponseDto.class,
+                qMember.memberId,
+                qMember.name.as("memberName"),
+                qMembership.membershipNo,
+                qMembership.membershipGrade,
+                qMembership.membershipStandardAmount,
+                qMembership.membershipPoint,
+                qPointHistory.increaseDecreasePoint.as("point"),
+                qPointHistory.remainedPoint,
+                qPointHistory.historyCreatedAt,
+                qPointHistory.isDecrease
+            ));
+    }
+
+    @Override
+    public ReviewResponseDto findPointHistoryReviewDetailsDto(Long pointHistoryNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QReviewIncreasePointHistory qReviewIncreasePointHistory =
+            QReviewIncreasePointHistory.reviewIncreasePointHistory;
+        QReview qReview = QReview.review;
+        QProduct qProduct = QProduct.product;
+        QMember qMember = QMember.member;
+
+        return getReviewDetailsJpql(pointHistoryNo, qPointHistory, qReviewIncreasePointHistory,
+            qReview,
+            qProduct,
+            qMember)
+            .fetchOne();
+    }
+
+    @Override
+    public ReviewResponseDto findMyPointHistoryReviewDetailsDto(Long pointHistoryNo,
+                                                                Long memberNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QReviewIncreasePointHistory qReviewIncreasePointHistory =
+            QReviewIncreasePointHistory.reviewIncreasePointHistory;
+        QReview qReview = QReview.review;
+        QProduct qProduct = QProduct.product;
+        QMember qMember = QMember.member;
+
+        return getReviewDetailsJpql(pointHistoryNo, qPointHistory, qReviewIncreasePointHistory,
+            qReview,
+            qProduct,
+            qMember)
+            .where(qMember.memberNo.eq(memberNo))
+            .fetchOne();
+    }
+
+    private JPQLQuery<ReviewResponseDto> getReviewDetailsJpql(Long pointHistoryNo,
+                                                              QPointHistory qPointHistory,
+                                                              QReviewIncreasePointHistory qReviewIncreasePointHistory,
+                                                              QReview qReview, QProduct qProduct,
+                                                              QMember qMember) {
+        return from(qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .innerJoin(qReviewIncreasePointHistory)
+            .on(qPointHistory.pointHistoryNo.eq(qReviewIncreasePointHistory.pointHistoryNo))
+            .innerJoin(qReviewIncreasePointHistory.review, qReview)
+            .innerJoin(qReview.product, qProduct)
+            .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(Projections.fields(ReviewResponseDto.class,
+                qReview.orderProductNo,
+                qProduct.productNo,
+                qProduct.name.as("productName"),
+                qMember.memberNo,
+                qReview.starPoint,
+                qReview.content,
+                qReview.image
+            ));
+    }
+
+    @Override
+    public PointHistoryCouponDetailsResponseDto findPointHistoryCouponDetailsDto(
+        Long pointHistoryNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QCouponIncreasePointHistory qCouponIncreasePointHistory =
+            QCouponIncreasePointHistory.couponIncreasePointHistory;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QCoupon qCoupon = QCoupon.coupon;
+        QMember qMember = QMember.member;
+
+        return getCouponDetailsJpql(pointHistoryNo, qPointHistory, qCouponIncreasePointHistory,
+            qCouponIssue,
+            qCoupon,
+            qMember)
+            .fetchOne();
+    }
+
+    @Override
+    public PointHistoryCouponDetailsResponseDto findMyPointHistoryCouponDetailsDto(
+        Long pointHistoryNo, Long memberNo) {
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QCouponIncreasePointHistory qCouponIncreasePointHistory =
+            QCouponIncreasePointHistory.couponIncreasePointHistory;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QCoupon qCoupon = QCoupon.coupon;
+        QMember qMember = QMember.member;
+
+        return getCouponDetailsJpql(pointHistoryNo, qPointHistory, qCouponIncreasePointHistory,
+            qCouponIssue,
+            qCoupon,
+            qMember)
+            .where(qMember.memberNo.eq(memberNo))
+            .fetchOne();
+    }
+
+    private JPQLQuery<PointHistoryCouponDetailsResponseDto> getCouponDetailsJpql(
+        Long pointHistoryNo,
+        QPointHistory qPointHistory,
+        QCouponIncreasePointHistory qCouponIncreasePointHistory,
+        QCouponIssue qCouponIssue,
+        QCoupon qCoupon,
+        QMember qMember) {
+        return from(qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .innerJoin(qCouponIncreasePointHistory)
+            .on(qPointHistory.pointHistoryNo.eq(qCouponIncreasePointHistory.pointHistoryNo))
+            .innerJoin(qCouponIncreasePointHistory.couponIssue, qCouponIssue)
+            .innerJoin(qCouponIssue.coupon, qCoupon)
+            .where(qPointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(Projections.fields(PointHistoryCouponDetailsResponseDto.class,
+                qMember.memberId,
+                qMember.name.as("memberName"),
+                qCoupon.name.as("couponName"),
+                qCoupon.couponType.couponTypeEnum.stringValue().as("couponType"),
+                qCoupon.point.as("couponPoint"),
+                qCoupon.code.as("couponCode"),
+                qCoupon.isDuplicateUse.as("isDuplicateUse"),
+                qPointHistory.increaseDecreasePoint.as("point"),
+                qPointHistory.remainedPoint,
+                qPointHistory.historyCreatedAt,
+                qPointHistory.isDecrease
+            ));
     }
 }

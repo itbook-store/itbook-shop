@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 import shop.itbook.itbookshop.membergroup.membership.entity.Membership;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
@@ -29,7 +28,6 @@ import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
  */
 @Getter
 @Setter
-@ToString
 @DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
@@ -77,8 +75,11 @@ public class Member {
     @Column(name = "member_created_at", nullable = false)
     private LocalDateTime memberCreatedAt;
 
-    @Column(name = "is_social")
+    @Column(name = "is_social", nullable = false)
     private Boolean isSocial;
+
+    @Column(name = "is_writer")
+    private Boolean isWriter;
 
     /**
      * 회원 테이블에 대한 엔티티 생성자 입니다.
@@ -102,7 +103,7 @@ public class Member {
                   String nickname,
                   String name, Boolean isMan, LocalDateTime birth, String password,
                   String phoneNumber,
-                  String email, LocalDateTime memberCreatedAt, Boolean isSocial) {
+                  String email, LocalDateTime memberCreatedAt, Boolean isSocial, Boolean isWriter) {
         this.membership = membership;
         this.memberStatus = memberStatus;
         this.memberId = memberId;
@@ -115,6 +116,7 @@ public class Member {
         this.email = email;
         this.memberCreatedAt = memberCreatedAt;
         this.isSocial = isSocial;
+        this.isWriter = isWriter;
     }
 
 }

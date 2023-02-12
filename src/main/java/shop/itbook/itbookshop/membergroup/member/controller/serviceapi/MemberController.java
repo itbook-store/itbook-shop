@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.controller.serviceapi;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,8 +37,8 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberD
 import shop.itbook.itbookshop.membergroup.memberdestination.resultmessageenum.MemberDestinationResultMessageEnum;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.membergroup.memberdestination.transfer.MemberDestinationTransfer;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.GiftIncreaseDecreasePointHistoryNoResponseDto;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 
 /**
  * 사용자 권한을 가진 요청에 응답하는 컨트롤러입니다.
@@ -45,6 +46,7 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.GiftIncreaseD
  * @author 노수연
  * @since 1.0
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
@@ -95,6 +97,26 @@ public class MemberController {
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberService.findMember(memberNo));
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+
+    /**
+     * 프론트 서버에서 요청한 유저의 정보를 멤버 아이디로 테이블에서 찾고 이를 dto에 담아 반환합니다.
+     *
+     * @param memberId 테이블에서 해당 멤버아이디로 멤버를 찾습니다.
+     * @return 찾은 멤버의 필드 정보들을 dto에 담아 반환합니다.
+     * @author 노수연
+     */
+    @GetMapping("/memberId/{memberId}")
+    public ResponseEntity<CommonResponseBody<MemberResponseDto>> memberDetailsByMemberId(
+        @PathVariable("memberId") String memberId) {
+
+        CommonResponseBody<MemberResponseDto> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_FIND_SUCCESS_MESSAGE.getSuccessMessage()),
+                memberService.findMemberByMemberId(memberId));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
@@ -297,6 +319,30 @@ public class MemberController {
         ));
     }
 
+
+    /**
+     * 프론트 서버에서 어드민이 작가 등록할 때 입력한 이름이 아이디의 이름과 일치하는지 확인하는 API 입니다.
+     *
+     * @param name 유저가 입력한 이름 값을 파라미터로 받습니다.
+     * @return boolean 값으로 중복인지 아닌지 확인할 수 있도록 dto에 담아 반환합니다.
+     * @author 노수연
+     */
+    @GetMapping("/register-check/memberId/{memberId}/name/{name}")
+    public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> nameCheck(
+        @PathVariable("memberId") String memberId,
+        @PathVariable("name") String name) {
+        return ResponseEntity.ok().body(new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(""),
+            memberService.checkNameDuplicate(memberId, name)
+        ));
+    }
+
+
+    /**
+     * @param memberNo the member no
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/{memberNo}/member-destinations")
     public ResponseEntity<CommonResponseBody<List<MemberDestinationResponseDto>>> memberDestinationList(
         @PathVariable("memberNo") Long memberNo) {
@@ -309,6 +355,13 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * Member destination delete response entity.
+     *
+     * @param memberDestinationNoResponseDtoList the member destination no response dto list
+     * @return the response entity
+     * @author
+     */
     @DeleteMapping("/memberDestinations/delete")
     public ResponseEntity<CommonResponseBody<Void>> memberDestinationDelete(
         @RequestBody List<MemberDestinationNoResponseDto> memberDestinationNoResponseDtoList) {
@@ -323,6 +376,13 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
     }
 
+    /**
+     * Member destination add response entity.
+     *
+     * @param memberDestinationRequestDto the member destination request dto
+     * @return the response entity
+     * @author
+     */
     @PostMapping("/memberDestinations/add")
     public ResponseEntity<CommonResponseBody<MemberDestinationNoResponseDto>> memberDestinationAdd(
         @RequestBody MemberDestinationRequestDto memberDestinationRequestDto) {
@@ -338,6 +398,14 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * Member destination modify response entity.
+     *
+     * @param recipientDestinationNo      the recipient destination no
+     * @param memberDestinationRequestDto the member destination request dto
+     * @return the response entity
+     * @author
+     */
     @PutMapping("/memberDestinations/{recipientDestinationNo}/modify")
     public ResponseEntity<CommonResponseBody<Void>> memberDestinationModify(
         @PathVariable("recipientDestinationNo") Long recipientDestinationNo,
@@ -355,6 +423,13 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * Member destination details response entity.
+     *
+     * @param recipientDestinationNo the recipient destination no
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/memberDestinations/{recipientDestinationNo}/info")
     public ResponseEntity<CommonResponseBody<MemberDestinationResponseDto>> memberDestinationDetails(
         @PathVariable("recipientDestinationNo") Long recipientDestinationNo) {
@@ -370,6 +445,13 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * Member recently point find response entity.
+     *
+     * @param memberNo the member no
+     * @return the response entity
+     * @author
+     */
     @GetMapping("/{memberNo}/point/find")
     public ResponseEntity<CommonResponseBody<MemberRecentlyPointResponseDto>> memberRecentlyPointFind(
         @PathVariable("memberNo") Long memberNo) {
@@ -387,6 +469,14 @@ public class MemberController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
+    /**
+     * Member gift point response entity.
+     *
+     * @param senderMemberNo            the sender member no
+     * @param memberPointSendRequestDto the member point send request dto
+     * @return the response entity
+     * @author
+     */
     @PostMapping("/{senderMemberNo}/point-gift/send")
     public ResponseEntity<CommonResponseBody<GiftIncreaseDecreasePointHistoryNoResponseDto>> memberGiftPoint(
         @PathVariable("senderMemberNo") Long senderMemberNo,

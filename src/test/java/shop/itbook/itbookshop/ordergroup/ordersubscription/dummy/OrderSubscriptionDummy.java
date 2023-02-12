@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.ordersubscription.dummy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
@@ -12,6 +13,11 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscript
  */
 public class OrderSubscriptionDummy {
     public static OrderSubscription createOrderSubscription(Order order) {
-        return new OrderSubscription(order, 12, 10);
+        return OrderSubscription.builder()
+            .order(order)
+            .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
+            .sequence(1)
+            .subscriptionPeriod(6)
+            .build();
     }
 }

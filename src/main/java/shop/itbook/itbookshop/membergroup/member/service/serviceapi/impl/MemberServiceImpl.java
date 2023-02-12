@@ -47,7 +47,6 @@ import shop.itbook.itbookshop.role.service.RoleService;
  * @author 노수연
  * @since 1.0
  */
-
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -88,6 +87,14 @@ public class MemberServiceImpl implements MemberService {
 
         return memberRepository.findByMemberNoAllInfo(memberNo)
             .orElseThrow(MemberNotFoundException::new);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MemberResponseDto findMemberByMemberId(String memberId) {
+        return memberRepository.findByMemberId(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
     /**
@@ -213,7 +220,7 @@ public class MemberServiceImpl implements MemberService {
             Member.builder().membership(membership).memberStatus(memberStatus).memberId(email)
                 .nickname(email).name(email).isMan(true).birth(LocalDateTime.now())
                 .password(encodedEmail).phoneNumber(email).email(email)
-                .memberCreatedAt(LocalDateTime.now()).isSocial(true).build();
+                .memberCreatedAt(LocalDateTime.now()).isSocial(true).isWriter(false).build();
 
         Long memberNo = memberRepository.save(member).getMemberNo();
 
@@ -302,6 +309,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberBooleanResponseDto checkPhoneNumberDuplicate(String phoneNumber) {
         return new MemberBooleanResponseDto(memberRepository.existsByPhoneNumber(phoneNumber));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public MemberBooleanResponseDto checkNameDuplicate(String memberId, String name) {
+
+        return new MemberBooleanResponseDto(
+            memberRepository.existsByNameAndFindNameWithMemberId(memberId, name));
     }
 
     @Override

@@ -27,5 +27,5 @@ public class MemberResponseDto {
     private String email;
     private LocalDateTime memberCreatedAt;
     private Boolean isSocial;
-
+    private Boolean isWriter;
 }

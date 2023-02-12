@@ -5,7 +5,6 @@ import java.util.Objects;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 
 /**
  * @author 송다혜

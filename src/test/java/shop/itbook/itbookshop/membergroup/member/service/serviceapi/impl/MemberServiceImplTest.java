@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.membergroup.member.service.serviceapi.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -106,7 +105,7 @@ class MemberServiceImplTest {
     void setup() {
         member1 = new MemberResponseDto(1L, "user1000", "white", "정상회원", "딸기", "유저1000", true,
             LocalDateTime.of(2000, 1, 1, 0, 0, 0), "1234", "010-0000-0000", "user1000@test.com",
-            LocalDateTime.now(), false);
+            LocalDateTime.now(), false, false);
 
         membership = MembershipDummy.getMembership();
         membershipRepository.save(membership);

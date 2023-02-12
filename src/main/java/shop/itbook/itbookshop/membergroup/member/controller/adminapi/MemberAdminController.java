@@ -70,8 +70,7 @@ public class MemberAdminController {
      */
     @GetMapping()
     public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> memberList(
-        @PageableDefault
-        Pageable pageable) {
+        @PageableDefault Pageable pageable) {
 
         Page<MemberExceptPwdResponseDto> page = memberAdminService.findMemberList(pageable);
 
@@ -87,6 +86,30 @@ public class MemberAdminController {
 
     }
 
+
+    /**
+     * 어드민 페이지에서 요청하는 작가 회원들의 리스트를 반환합니다.
+     *
+     * @param pageable 멤버 정보 Dto 리스트를 페이징 처리하여 데이터를 보냅니다.
+     * @return 작가 멤버 정보 Dto 리스트를 페이징 처리한 데이터를 반환합니다.
+     * @author 노수연
+     */
+    @GetMapping("/writer/list")
+    public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> writerMemberList(
+        @PageableDefault Pageable pageable) {
+
+        Page<MemberExceptPwdResponseDto> page = memberAdminService.findWriterList(pageable);
+
+        PageResponse<MemberExceptPwdResponseDto> pageResponse = new PageResponse<>(page);
+
+        CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MemberResultMessageEnum.MEMBER_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                pageResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
 
     /**
      * 어드민 페이지에서 요청하는 정상회원 상태를 가진 회원들의 리스트를 반환합니다.
@@ -241,6 +264,13 @@ public class MemberAdminController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    /**
+     * @param memberStatusName       the member status name
+     * @param memberSearchRequestDto the member search request dto
+     * @param pageable               the pageable
+     * @return the response entity
+     * @author
+     */
     @PostMapping("/search/{memberStatusName}")
     public ResponseEntity<CommonResponseBody<PageResponse<MemberExceptPwdResponseDto>>> memberListSearchByDateOfJoining(
         @PathVariable("memberStatusName") String memberStatusName,
@@ -314,6 +344,21 @@ public class MemberAdminController {
                 new CommonResponseBody.CommonHeader(
                     MemberResultMessageEnum.MEMBER_COUNT_SUCCESS_MESSAGE.getSuccessMessage()),
                 memberAdminService.memberCountByMembership());
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @PutMapping("/modify/writer/{memberNo}")
+    public ResponseEntity<CommonResponseBody<Void>> memberWriterModify(
+        @PathVariable("memberNo") Long memberNo
+    ) {
+        memberAdminService.modifyToWriterAccount(memberNo);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                MemberResultMessageEnum.MEMBER_MODIFY_SUCCESS_MESSAGE.getSuccessMessage()),
+            null
+        );
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
