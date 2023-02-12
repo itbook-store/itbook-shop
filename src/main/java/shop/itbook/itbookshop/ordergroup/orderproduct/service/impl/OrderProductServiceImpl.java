@@ -1,9 +1,11 @@
 package shop.itbook.itbookshop.ordergroup.orderproduct.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
@@ -21,9 +23,12 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     private final OrderProductRepository orderProductRepository;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void processOrderProduct(Order order, Product product, Integer productCnt,
-                                    Long productPrice) {
+    public void addOrderProduct(Order order, Product product, Integer productCnt,
+                                Long productPrice) {
 
         Optional<OrderProduct> optOrderProduct = orderProductRepository.findByOrder(order);
 
@@ -41,5 +46,13 @@ public class OrderProductServiceImpl implements OrderProductService {
             .productPrice(productPrice)
             .build();
         orderProductRepository.save(orderProduct);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<OrderProductDetailResponseDto> findOrderProductsByOrderNo(Long orderNo) {
+        return orderProductRepository.findOrderProductsByOrderNo(orderNo);
     }
 }

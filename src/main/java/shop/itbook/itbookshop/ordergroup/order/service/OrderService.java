@@ -29,13 +29,24 @@ public interface OrderService {
     /**
      * 결제 전 주문을 추가합니다.
      *
-     * @param orderAddRequestDto 주문서에서 받아온 주문 등록할 정보 Dto
+     * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
      * @param memberNo           회원 번호. 비회원일 경우 null
      * @return 결제 요청에 사용될 정보를 담은 Dto
      * @author 정재원 *
      */
     OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                           Optional<Long> memberNo);
+
+    /**
+     * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.
+     *
+     * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
+     * @param orderNo            재주문 할 주문 번호 - 결제 대기 상태
+     * @return 결제 요청에 사용될 정보를 담은 Dto
+     * @author 정재원 *
+     */
+    OrderPaymentDto reOrder(OrderAddRequestDto orderAddRequestDto,
+                            Long orderNo);
 
     void cancelOrderBeforePayment(Long orderNo);
 

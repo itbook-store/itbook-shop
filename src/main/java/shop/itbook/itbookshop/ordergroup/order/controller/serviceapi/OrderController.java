@@ -96,7 +96,7 @@ public class OrderController {
      * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
      * @author 정재원 *
      */
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAddBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
@@ -112,6 +112,29 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
+            );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    /**
+     * 주문의 결제 재진행을 요청을 처리합니다.
+     *
+     * @param orderNo            주문 번호
+     * @param orderAddRequestDto 주문시 작성한 정보를 담은 Dto
+     * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
+     * @author 정재원 *
+     */
+    @PostMapping("/{orderNo}")
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> reOrder(
+        @PathVariable("orderNo") Long orderNo,
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
+
+        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.reOrder(orderAddRequestDto, orderNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.orderproduct.service;
 
+import java.util.List;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
@@ -19,6 +21,15 @@ public interface OrderProductService {
      * @param productPrice 상품의 결제할 가격
      * @author 정재원 *
      */
-    void processOrderProduct(Order order, Product product, Integer productCnt,
-                             Long productPrice);
+    void addOrderProduct(Order order, Product product, Integer productCnt,
+                         Long productPrice);
+
+    /**
+     * 주문의 개별 상품 정보 리스트를 반환합니다.
+     *
+     * @param orderNo 주문 번호
+     * @return 주문 상품의 정보를 담은 Dto 리스트
+     * @author 정재원 *
+     */
+    List<OrderProductDetailResponseDto> findOrderProductsByOrderNo(Long orderNo);
 }

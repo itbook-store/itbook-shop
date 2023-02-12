@@ -98,13 +98,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.
-     *
-     * @param orderAddRequestDto the order add request dto
-     * @param orderNo            the order no
-     * @return the order payment dto
-     * @author 정재원 *
+     * {@inheritDoc}
      */
+    @Override
+    @Transactional
     public OrderPaymentDto reOrder(OrderAddRequestDto orderAddRequestDto,
                                    Long orderNo) {
 
@@ -137,8 +134,8 @@ public class OrderServiceImpl implements OrderService {
                     stringBuilder.append(product.getName());
                 }
 
-                // 주문_상품 테이블의 가격 변동 시키기.
-                orderProductService.processOrderProduct(order, product, productCnt, productPrice);
+                // 첫 주문 등록이냐 재 주문이냐에 따라 다른 로직 수행
+                orderProductService.addOrderProduct(order, product, productCnt, productPrice);
             });
 
         if (orderAddRequestDto.getProductNoList().size() > 1) {
@@ -213,6 +210,9 @@ public class OrderServiceImpl implements OrderService {
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
 
+        // TODO: 2023/02/12 적용된 쿠폰 사용 처리
+        // TODO: 2023/02/12 적용된 포인트 사용 처리
+
         return order;
     }
 
@@ -223,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
 
         List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
-            orderProductRepository.findOrderProductsByOrderNo(orderNo);
+            orderProductService.findOrderProductsByOrderNo(orderNo);
         List<OrderDestinationDto> orderDestinationList =
             orderRepository.findOrderDestinationsByOrderNo(orderNo);
         PaymentCardResponseDto paymentCardResponseDto =
