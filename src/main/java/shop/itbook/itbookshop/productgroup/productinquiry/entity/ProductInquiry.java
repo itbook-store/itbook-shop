@@ -14,8 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * 상품 문의에 대한 엔티티 입니다.
@@ -44,10 +44,10 @@ public class ProductInquiry {
     @JoinColumn(name = "product_no", nullable = false)
     private Product product;
 
-    @Column(name = "title", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content", nullable = false, columnDefinition = "text")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "is_public", nullable = false)
