@@ -23,6 +23,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 
 /**
  * 주문과 관련된 요청을 처리하는 컨트롤러 입니다.
@@ -196,13 +197,13 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
         @PathVariable("orderNo") Long orderNo) {
 
-        CommonResponseBody<Void> commonResponseBody =
+        CommonResponseBody<OrderDetailsResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
-                ), null
+                ), orderService.findOrderDetails(orderNo)
             );
 
-        return null;
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 }
