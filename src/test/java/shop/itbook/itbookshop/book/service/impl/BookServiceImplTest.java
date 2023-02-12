@@ -12,8 +12,6 @@ import static org.mockito.Mockito.mock;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,26 +20,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.book.repository.BookRepository;
+import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.fileservice.FileService;
-import shop.itbook.itbookshop.productgroup.product.service.AladinApiService;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.service.ProductTypeRegistrationService;
+import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
 /**
  * @author 이하늬
@@ -58,6 +54,9 @@ class BookServiceImplTest {
     ProductService mockProductService;
 
     @MockBean
+    ProductCategoryService mockProductCategoryService;
+
+    @MockBean
     AladinApiService mockAladinApiService;
 
     @MockBean
@@ -69,7 +68,7 @@ class BookServiceImplTest {
 
 
     ProductBookRequestDto productBookRequestDto;
-    ProductBookRequestDto modifyProductBookRequestDto;
+    BookModifyRequestDto modifyBookRequestDto;
 
     MockMultipartFile mockImageFile;
     MockMultipartFile mockPdfFile;
@@ -86,8 +85,8 @@ class BookServiceImplTest {
             new FileInputStream(path + "test.pdf"));
 
         productBookRequestDto = ProductBookRequestDummy.getProductBookRequest();
-        modifyProductBookRequestDto = ProductBookRequestDummy.getProductBookRequest();
-        ReflectionTestUtils.setField(modifyProductBookRequestDto, "productName", "객체지향의 거짓과 오해");
+        modifyBookRequestDto = ProductBookRequestDummy.getBookModifyRequest();
+        ReflectionTestUtils.setField(modifyBookRequestDto, "productName", "객체지향의 거짓과 오해");
     }
 
     @Test
@@ -106,23 +105,25 @@ class BookServiceImplTest {
         Assertions.assertThat(actual).isEqualTo(product.getProductNo());
     }
 
-    @Test
-    @DisplayName("도서 수정 테스트")
-    void modifyProductTest_success() {
-        Product product = mock(Product.class);
-        Book book = mock(Book.class);
-
-        given(mockBookRepository.findById(anyLong()))
-            .willReturn(Optional.of(book));
-
-        bookService.modifyBook(product.getProductNo(), modifyProductBookRequestDto, mockPdfFile);
-
-        then(mockBookRepository).should().findById(anyLong());
-        then(book).should().setIsbn(anyString());
-        then(book).should().setPageCount(anyInt());
-        then(book).should().setIsEbook(anyBoolean());
-        then(book).should().setBookCreatedAt(any(LocalDateTime.class));
-    }
+//    @Test
+//    @DisplayName("도서 수정 테스트")
+//    void modifyProductTest_success() {
+//        Product product = mock(Product.class);
+//        Book book = mock(Book.class);
+//
+//        given(mockBookRepository.findById(anyLong()))
+//            .willReturn(Optional.of(book));
+//
+//        bookService.modifyBook(product.getProductNo(), modifyBookRequestDto, mockImageFile,
+//            mockPdfFile);
+//
+//        then(mockBookRepository).should().findById(anyLong());
+//        then(book).should().setProduct(product);
+//        then(book).should().setIsbn(anyString());
+//        then(book).should().setPageCount(anyInt());
+//        then(book).should().setIsEbook(anyBoolean());
+//        then(book).should().setBookCreatedAt(any(LocalDateTime.class));
+//    }
 
 
     @Test

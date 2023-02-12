@@ -1,6 +1,9 @@
 package shop.itbook.itbookshop.paymentgroup.paymentcancel.transfer;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.paymentcancel.entity.PaymentCancel;
 
@@ -24,9 +27,13 @@ public class PaymentCancelTransfer {
      */
     public static PaymentCancel dtoToEntity(PaymentResponseDto.PaymentDataResponseDto response) {
 
-        PaymentResponseDto.Cancels cancels = response.getCancels();
-        return new PaymentCancel(LocalDateTime.parse(cancels.getCanceledAt()),
-            cancels.getCancelAmount(), cancels.getCancelReason());
+        PaymentResponseDto.Cancels cancels = response.getCancels()[0];
+
+        LocalDateTime canceledAt = LocalDateTime.from(
+            Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(cancels.getCanceledAt())).atZone(
+                ZoneId.of("Asia/Seoul")));
+
+        return new PaymentCancel(canceledAt, cancels.getCancelAmount(), cancels.getCancelReason());
     }
 
 }

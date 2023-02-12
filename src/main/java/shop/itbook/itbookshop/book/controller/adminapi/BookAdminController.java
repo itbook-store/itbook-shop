@@ -12,15 +12,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.book.dto.response.BookBooleanResponseDto;
+import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.response.BookResponse;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
-import shop.itbook.itbookshop.productgroup.product.service.AladinApiService;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
@@ -129,11 +130,12 @@ public class BookAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
+
     /**
-     * 상품 및 도서 수정을 요청하는 메서드입니다.
+     * 도서 수정을 요청하는 메서드입니다.
      *
-     * @param productNo  수정할 상품 번호입니다.
-     * @param requestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
+     * @param productNo  수정할 도서 번호입니다.
+     * @param requestDto 도서 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @param thumbnails the thumbnails
      * @param ebook      the ebook
      * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
@@ -142,11 +144,11 @@ public class BookAdminController {
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart ProductBookRequestDto requestDto,
-        @RequestPart MultipartFile thumbnails,
+        @RequestPart BookModifyRequestDto requestDto,
+        @RequestPart(required = false) MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 
-        bookService.modifyBook(productNo, requestDto, ebook);
+        bookService.modifyBook(productNo, requestDto, thumbnails, ebook);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
