@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.product.service;
+package shop.itbook.itbookshop.book.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
+import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.BookResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 

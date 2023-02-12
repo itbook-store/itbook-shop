@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.paymentgroup.paymentcancel.entity;
 
 import java.time.LocalDateTime;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -31,7 +32,7 @@ public class PaymentCancel {
     private Long paymentNo;
 
     @MapsId("paymentNo")
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "payment_no", nullable = false)
     private Payment payment;
 

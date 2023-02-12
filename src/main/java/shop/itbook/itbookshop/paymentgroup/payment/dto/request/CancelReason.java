@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.paymentgroup.payment.dto.response;
+package shop.itbook.itbookshop.paymentgroup.payment.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,10 +9,10 @@ import lombok.Setter;
  * @author 이하늬
  * @since 1.0
  */
-@Getter
-@Setter
 @NoArgsConstructor
+@Setter
 @AllArgsConstructor
-public class OrderNoResponseDto {
-    Long orderNo;
+@Getter
+public class CancelReason {
+    private String cancelReason;
 }

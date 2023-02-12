@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
@@ -50,13 +52,12 @@ public class FileService {
      * @return 업로드 된 파일의 url입니다.
      * @author 이하늬
      */
-    public String uploadFile(MultipartFile multipartFile,
-                             String folderPath) {
+    public String uploadFile(MultipartFile multipartFile, String folderPath) {
         Token token = tokenService.requestToken();
-
         String tokenId = token.getId();
 
         String fileName = multipartFile.getOriginalFilename();
+        assert fileName != null;
         String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
         String savedName = UUID.randomUUID() + "." + ext;
 
@@ -70,6 +71,30 @@ public class FileService {
         return multipartFile.getOriginalFilename();
     }
 
+    /**
+     * 파일 삭제 기능을 담당하는 메서드입니다.
+     *
+     * @param containerName the container name
+     * @param objectName    the object name
+     * @param folderPath    업로드할 폴더 경로입니다.
+     * @return 업로드 된 파일의 url입니다.
+     * @author 이하늬
+     */
+    public void deleteFile(String containerName, String objectName, String folderPath) {
+
+        Token token = tokenService.requestToken();
+        String tokenId = token.getId();
+
+        String url = this.getUrl(containerName, folderPath, objectName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Auth-Token", tokenId);
+        HttpEntity<String> requestHttpEntity = new HttpEntity<>(null, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
+    }
+
 
     /**
      * rest template으로 오브젝트 업로드 기능을 담당하는 메서드입니다.
@@ -81,8 +106,8 @@ public class FileService {
      * @return 업로드 된 파일의 url입니다.
      * @author 이하늬
      */
-    private String uploadObject(String tokenId, String containerName, String folderPath, String objectName,
-                               final InputStream inputStream) {
+    private String uploadObject(String tokenId, String containerName, String folderPath,
+                                String objectName, final InputStream inputStream) {
         String url = this.getUrl(containerName, folderPath, objectName);
 
         final RequestCallback requestCallback = request -> {
