@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.cart.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.cart.dto.request.CartModifyRequestDto;
@@ -24,6 +25,7 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
  * @author 강명관
  * @since 1.0
  */
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -111,6 +113,27 @@ public class CartServiceImpl implements CartService {
         ).orElseThrow(CartNotFountException::new);
 
         cartProduct.changeProductCount(cartModifyRequestDto.getProductCount());
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    public void saveAllCartProduct(List<CartModifyRequestDto> cartRequestDtoList) {
+
+        for (CartModifyRequestDto cartDto : cartRequestDtoList) {
+
+            Member member = memberRepository.findById(cartDto.getMemberNo())
+                .orElseThrow(MemberNotFoundException::new);
+
+            Product product = productRepository.findById(cartDto.getProductNo())
+                .orElseThrow(ProductNotFoundException::new);
+
+            Cart cat = new Cart(member, product, cartDto.getProductCount());
+
+            cartRepository.save(cat);
+        }
 
     }
 }
