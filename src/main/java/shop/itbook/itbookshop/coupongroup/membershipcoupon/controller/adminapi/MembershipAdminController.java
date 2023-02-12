@@ -5,12 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.MembershipCouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.service.MembershipCouponService;
@@ -21,7 +19,7 @@ import shop.itbook.itbookshop.coupongroup.membershipcoupon.service.MembershipCou
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/membership-coupon")
+@RequestMapping("/api/admin/membership-coupons")
 public class MembershipAdminController {
 
     private final MembershipCouponService membershipCouponService;
