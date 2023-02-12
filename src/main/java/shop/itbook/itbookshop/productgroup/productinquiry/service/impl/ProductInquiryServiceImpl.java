@@ -14,6 +14,7 @@ import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputExcepti
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.request.ProductInquiryRequestDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
+import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
 import shop.itbook.itbookshop.productgroup.productinquiry.repository.ProductInquiryRepository;
@@ -81,5 +82,25 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
     public ProductInquiryCountResponseDto countProductInquiry() {
 
         return productInquiryRepository.productInquiryCount();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductInquiryOrderProductResponseDto> findProductInquiryOrderProductList(
+        Pageable pageable, Long memberNo) {
+
+        return productInquiryRepository.ProductInquiryListOfPossibleOrderProducts(pageable,
+            memberNo);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductInquiryResponseDto findProductInquiry(Long productInquiryNo) {
+
+        return productInquiryRepository.findProductInquiry(productInquiryNo);
     }
 }

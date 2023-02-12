@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.request.ProductInquiryRequestDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
+import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 
 /**
@@ -42,4 +43,26 @@ public interface ProductInquiryService {
      * @author 노수연
      */
     ProductInquiryCountResponseDto countProductInquiry();
+
+
+    /**
+     * 주문 상품 정보들을 가져오는 메서드입니다.
+     *
+     * @param pageable 페이징 처리하여 불러옵니다.
+     * @param memberNo 멤버 번호로 해당 멤버의 주문 상품 정보들만 불러옵니다.
+     * @return 페이징 처리된 dto 리스트를 반환합니다.
+     * @author 노수연
+     */
+    Page<ProductInquiryOrderProductResponseDto> findProductInquiryOrderProductList(
+        Pageable pageable, Long memberNo);
+
+
+    /**
+     * 상품 문의 정보를 반환하는 메서드입니다.
+     *
+     * @param productInquiryNo 상품 문의 번호로 테이블에서 데이터를 찾습니다.
+     * @return 상품 문의 정보를 담은 dto를 반환합니다.
+     * @author 노수연
+     */
+    ProductInquiryResponseDto findProductInquiry(Long productInquiryNo);
 }

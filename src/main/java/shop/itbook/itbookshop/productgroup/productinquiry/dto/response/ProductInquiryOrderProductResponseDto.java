@@ -1,11 +1,12 @@
 package shop.itbook.itbookshop.productgroup.productinquiry.dto.response;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * 상품 문의 정보를 받아오는 dto 입니다.
+ * 상품문의를 작성할 수 있도록 주문한 상품 목록들을 가져옵니다.
  *
  * @author 노수연
  * @since 1.0
@@ -13,16 +14,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductInquiryResponseDto {
+public class ProductInquiryOrderProductResponseDto {
 
-    private Long productInquiryNo;
-    private Long memberNo;
-    private String memberId;
+    private Long orderProductNo;
+
     private Long productNo;
+
     private String name;
+
     private String thumbnailUrl;
-    private String title;
-    private String content;
-    private Boolean isPublic;
-    private Boolean isReplied;
+
+    private LocalDateTime orderCreatedAt;
 }

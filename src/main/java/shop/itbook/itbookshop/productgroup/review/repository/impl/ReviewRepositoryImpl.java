@@ -141,6 +141,6 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
                 .limit(pageable.getPageSize()).fetch();
 
         return PageableExecutionUtils.getPage(unwrittenReviewOrderProductList, pageable,
-            () -> from(qReview).fetchCount());
+            () -> from(qOrderProduct).fetchCount());
     }
 }

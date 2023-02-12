@@ -44,7 +44,7 @@ public interface CustomReviewRepository {
      * 멤버 no로 해당 멤버가 아직 작성하지 않은 주문 상품들을 불러옵니다.
      *
      * @param pageable 페이지네이션 처리하기 위해 파라미터로 넘깁니다.
-     * @param memberNo 해당 멤버 번호로 작성된 리뷰들을 불러옵니다.
+     * @param memberNo 해당 멤버 번호로 아직 작성하지 않은 주문 상품들을 불러옵니다.
      * @return 페이지네이션 처리된 리스트를 반환합니다.
      * @author 노수연
      */

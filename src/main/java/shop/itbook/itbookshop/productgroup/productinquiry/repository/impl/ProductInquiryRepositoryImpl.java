@@ -12,8 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
+import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
+import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
+import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.QProductInquiry;
@@ -49,7 +55,8 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                 .select(Projections.constructor(ProductInquiryResponseDto.class,
                     qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
                     qProduct.productNo,
-                    qProduct.name, qProductInquiry.title, qProductInquiry.content,
+                    qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                    qProductInquiry.content,
                     qProductInquiry.isPublic,
                     qProductInquiry.isReplied))
                 .orderBy(productAnswerOrNot())
@@ -88,5 +95,66 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                     .when(qProductInquiry.isReplied.eq(true))
                     .then(true).otherwise(false).count()))
             .fetchOne();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductInquiryOrderProductResponseDto> ProductInquiryListOfPossibleOrderProducts(
+        Pageable pageable, Long memberNo) {
+
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QProduct qProduct = QProduct.product;
+        QOrder qOrder = QOrder.order;
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+
+        JPQLQuery<ProductInquiryOrderProductResponseDto> productInquiryOrderProductListQuery =
+            from(qOrderProduct)
+                .innerJoin(qProduct)
+                .on(qOrderProduct.product.productNo.eq(qProduct.productNo))
+                .leftJoin(qOrder)
+                .on(qOrderProduct.order.orderNo.eq(qOrder.orderNo))
+                .leftJoin(qOrderMember)
+                .on(qOrder.orderNo.eq(qOrderMember.orderNo))
+                .leftJoin(qOrderStatusHistory)
+                .on(qOrder.orderNo.eq(qOrderStatusHistory.order.orderNo))
+                .innerJoin(qOrderStatus)
+                .on(qOrderStatusHistory.orderStatus.orderStatusNo.eq(qOrderStatus.orderStatusNo))
+                .select(Projections.constructor(ProductInquiryOrderProductResponseDto.class,
+                    qOrderProduct.orderProductNo, qProduct.productNo, qProduct.name,
+                    qProduct.thumbnailUrl, qOrderProduct.order.orderCreatedAt))
+                .where(qOrderMember.member.memberNo.eq(memberNo)
+                    .and(qOrderStatus.orderStatusEnum.stringValue().eq("결제완료")))
+                .orderBy(qOrderProduct.orderProductNo.desc());
+
+        List<ProductInquiryOrderProductResponseDto> productInquiryOrderProductList =
+            productInquiryOrderProductListQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productInquiryOrderProductList, pageable,
+            () -> from(qOrderProduct).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductInquiryResponseDto findProductInquiry(Long productInquiryNo) {
+        QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
+        QMember qMember = QMember.member;
+        QProduct qProduct = QProduct.product;
+
+        return from(qProductInquiry)
+            .innerJoin(qProductInquiry.product, qProduct)
+            .innerJoin(qProductInquiry.member, qMember)
+            .select(Projections.constructor(ProductInquiryResponseDto.class,
+                qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
+                qProduct.productNo, qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                qProductInquiry.content, qProductInquiry.isPublic, qProductInquiry.isReplied))
+            .where(qProductInquiry.productInquiryNo.eq(productInquiryNo)).fetchOne();
+
     }
 }

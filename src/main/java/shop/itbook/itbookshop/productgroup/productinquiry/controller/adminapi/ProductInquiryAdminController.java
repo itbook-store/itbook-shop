@@ -66,4 +66,6 @@ public class ProductInquiryAdminController {
             ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_COUNT_GET_SUCCESS.getResultMessage()),
             productInquiryService.countProductInquiry()));
     }
+
+
 }
