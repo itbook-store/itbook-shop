@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 public class ProductInquiryCountResponseDto {
 
     private Long productInquiryCount;
-    private Long repliedProductInquiryCount;
+    private Integer repliedProductInquiryCount;
 }

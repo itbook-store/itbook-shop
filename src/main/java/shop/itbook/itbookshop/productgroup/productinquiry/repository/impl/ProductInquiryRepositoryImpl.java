@@ -93,7 +93,7 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                 qProductInquiry.count(),
                 new CaseBuilder()
                     .when(qProductInquiry.isReplied.eq(true))
-                    .then(true).otherwise(false).count()))
+                    .then(new Integer(1)).otherwise(new Integer(0)).sum()))
             .fetchOne();
     }
 
