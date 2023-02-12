@@ -61,7 +61,10 @@ public class Order {
     @Column(name = "is_hidden", nullable = false)
     private Boolean isHidden;
 
+    @Column(name = "increase_point", nullable = false, columnDefinition = "bigint default 0")
     private Long increasePoint;
+
+    @Column(name = "decrease_point", nullable = false, columnDefinition = "bigint default 0")
     private Long decreasePoint;
 
     /**
@@ -83,7 +86,7 @@ public class Order {
                  List<OrderProduct> orderProducts, String recipientName,
                  String recipientPhoneNumber,
                  Integer postcode, String roadNameAddress, String recipientAddressDetails,
-                 Boolean isHidden) {
+                 Boolean isHidden, Long increasePoint, Long decreasePoint) {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
         this.orderProducts = orderProducts;
@@ -93,5 +96,7 @@ public class Order {
         this.roadNameAddress = roadNameAddress;
         this.recipientAddressDetails = recipientAddressDetails;
         this.isHidden = isHidden;
+        this.increasePoint = increasePoint;
+        this.decreasePoint = decreasePoint;
     }
 }

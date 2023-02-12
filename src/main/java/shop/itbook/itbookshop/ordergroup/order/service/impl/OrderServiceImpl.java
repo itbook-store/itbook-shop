@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
+import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,6 +41,8 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResp
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
@@ -66,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
     private final DeliveryService deliveryService;
     private final MemberService memberService;
     private final ProductService productService;
+    private final OrderSubscriptionRepository orderSubscriptionRepository;
 
     private final CouponIssueService couponIssueService;
     private final CouponService couponService;
@@ -116,6 +121,11 @@ public class OrderServiceImpl implements OrderService {
     public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                  Optional<Long> memberNo, HttpSession session) {
 
+        if (Objects.nonNull(orderAddRequestDto.getIsSubscription())) {
+            // 구독 처리
+            return orderSubscription(orderAddRequestDto, memberNo, session);
+        }
+
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
         orderRepository.save(order);
@@ -147,6 +157,40 @@ public class OrderServiceImpl implements OrderService {
         OrderNonMember orderNonMember =
             new OrderNonMember(order, 12345678L);
         orderNonMemberRepository.save(orderNonMember);
+    }
+
+    private OrderPaymentDto orderSubscription(OrderAddRequestDto orderAddRequestDto,
+                                              Optional<Long> memberNo, HttpSession session) {
+
+        int sequence = 1;
+        long orderNo = 0;
+
+        while (sequence <= orderAddRequestDto.getSubscriptionPeriod()) {
+
+            Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
+            order.setSelectedDeliveryDate(LocalDate.now().plusMonths(sequence).withDayOfMonth(1));
+            orderRepository.save(order);
+            orderNo = order.getOrderNo();
+
+            OrderSubscription orderSubscription = OrderSubscription.builder()
+                .order(order)
+                .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
+                .sequence(sequence)
+                .subscriptionPeriod(orderAddRequestDto.getSubscriptionPeriod())
+                .build();
+            orderSubscriptionRepository.save(orderSubscription);
+
+            // 주문_상태_이력 테이블 저장
+            orderStatusHistoryService.addOrderStatusHistory(order,
+                OrderStatusEnum.WAITING_FOR_PAYMENT);
+
+            // 회원, 비회원 구분해서 저장
+            checkMemberAndSaveOrder(order, memberNo);
+        }
+
+        orderNo = orderNo - sequence;
+
+        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo), session);
     }
 
     /**

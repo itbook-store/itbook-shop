@@ -31,6 +31,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductServic
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
@@ -48,10 +49,12 @@ class OrderServiceTest {
 
     @MockBean
     CouponService couponService;
-    
+
     @MockBean
     OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
 
+    @MockBean
+    OrderSubscriptionRepository orderSubscriptionRepository;
     @MockBean
     CouponIssueService couponIssueService;
     @MockBean
