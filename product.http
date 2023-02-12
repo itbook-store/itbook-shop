@@ -20,13 +20,13 @@ Content-Type: application/json
 ###
 
 # 이름 검색
-GET http://localhost:8082/api/products/search?name=오해&size=10
+GET http://localhost:8082/api/products/search?name=test3
 Content-Type: application/json
 
 ###
-POST http://localhost:8082/api/products/search/4468
+POST http://localhost:8082/api/products/search/415
 Content-Type: application/json
 
 ###
-DELETE http://localhost:8082/api/products/search/4468
+DELETE http://localhost:8082/api/products/search/407
 Content-Type: application/json

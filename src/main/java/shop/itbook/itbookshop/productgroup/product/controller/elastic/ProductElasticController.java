@@ -18,6 +18,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductSearchResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
@@ -85,9 +86,10 @@ public class ProductElasticController {
     @PostMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> productAdd(@PathVariable Long productNo) {
 
+        Product product = productService.findProductEntity(productNo);
         ProductNoResponseDto productNoResponseDto =
             new ProductNoResponseDto(productSearchService.addSearchProduct(
-                productService.findProductEntity(productNo)));
+                product));
 
         CommonResponseBody<ProductNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
