@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
 import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -124,9 +125,9 @@ public class OrderController {
      */
     @PostMapping("/success-payment/{orderNo}")
     public ResponseEntity<CommonResponseBody<Void>> orderPayCompletion(
-        @PathVariable("orderNo") Long orderNo) {
+        @PathVariable("orderNo") Long orderNo, HttpSession session) {
 
-        orderService.completeOrderPay(orderNo);
+        orderService.completeOrderPay(orderNo, session);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(

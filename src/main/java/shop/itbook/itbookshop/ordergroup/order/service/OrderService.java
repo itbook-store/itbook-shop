@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
 import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -43,8 +44,9 @@ public interface OrderService {
      * 결제 완료후 로직 처리
      *
      * @param orderNo the order no
+     * @param session
      */
-    Order completeOrderPay(Long orderNo);
+    Order completeOrderPay(Long orderNo, HttpSession session);
 
 
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
