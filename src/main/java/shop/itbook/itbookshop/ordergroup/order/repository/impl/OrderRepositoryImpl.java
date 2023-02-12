@@ -113,9 +113,10 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderStatusHistory.orderStatusHistoryNo.lt(
                     qOrderStatusHistory2.orderStatusHistoryNo)))
             .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
-            .where(qOrderStatusHistory.order.orderNo.eq(orderNo))
-            .select(qOrderStatus)
-            .fetchOne().getOrderStatusEnum().getOrderStatus();
+            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                .and(qOrderStatusHistory.order.orderNo.eq(orderNo)))
+            .select(qOrderStatus.orderStatusEnum.stringValue())
+            .fetchOne();
     }
 
     @Override

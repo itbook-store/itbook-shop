@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 /**
  * 주문 등록을 위한 Dto 입니다.
  * 주문서 작성이 완료됐을 경우 해당 정보를 등록합니다.
@@ -25,4 +26,5 @@ public class OrderAddRequestDto {
     private Integer postcode;
     private String roadNameAddress;
     private String recipientAddressDetails;
+    private Long deliveryFee;
 }
