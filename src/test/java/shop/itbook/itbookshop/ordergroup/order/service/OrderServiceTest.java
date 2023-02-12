@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -45,6 +46,9 @@ class OrderServiceTest {
     @Autowired
     OrderService orderService;
 
+    @MockBean
+    CouponService couponService;
+    
     @MockBean
     OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
 
