@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -35,6 +37,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -59,6 +62,10 @@ public class OrderServiceImpl implements OrderService {
     private final DeliveryService deliveryService;
     private final MemberService memberService;
     private final ProductService productService;
+
+    private final CouponIssueService couponIssueService;
+    private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
+
 
     /**
      * The Origin url.
@@ -94,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
         checkMemberAndSaveOrder(order, memberNo);
 
         // 주문_상품 테이블 저장 및 가격 계산
-        return createOrderPaymentDto(orderAddRequestDto, order);
+        return getOrderPaymentDtoForMakingPaymentForm(orderAddRequestDto, order);
     }
 
     /**
@@ -106,51 +113,52 @@ public class OrderServiceImpl implements OrderService {
                                    Long orderNo) {
 
         Order order = findOrderEntity(orderNo);
-
-        return createOrderPaymentDto(orderAddRequestDto, order);
+        return getOrderPaymentDtoForMakingPaymentForm(orderAddRequestDto, order);
     }
 
-    private OrderPaymentDto createOrderPaymentDto(OrderAddRequestDto orderAddRequestDto,
-                                                  Order order) {
-
-        Queue<Integer> productCntQueue = new LinkedList<>(orderAddRequestDto.getProductCntList());
-
-        StringBuilder stringBuilder = new StringBuilder();
-        AtomicReference<Long> amount = new AtomicReference<>(0L);
-
-        orderAddRequestDto.getProductNoList().forEach(
-            productNo -> {
-                Product product = productService.findProductEntity(productNo);
-                Integer productCnt = productCntQueue.poll();
-
-                // TODO: 2023/02/11 쿠폰 가져와서 가격계산 로직 추가.
-                // TODO: 2023/02/11 포인트 가져와서 가격계산 로직 추가.
-                Long productPrice =
-                    (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
-
-                amount.set(amount.get() + productPrice * productCnt);
-
-                if (stringBuilder.length() == 0) {
-                    stringBuilder.append(product.getName());
-                }
-
-                // 첫 주문 등록이냐 재 주문이냐에 따라 다른 로직 수행
-                orderProductService.addOrderProduct(order, product, productCnt, productPrice);
-            });
-
-        if (orderAddRequestDto.getProductNoList().size() > 1) {
-            stringBuilder.append(" 외 ").append(orderAddRequestDto.getProductNoList().size() - 1)
-                .append("건");
-        }
-
-        // 결제를 위한 order ID 생성
+    private OrderPaymentDto getOrderPaymentDtoForMakingPaymentForm(
+        OrderAddRequestDto orderAddRequestDto,
+        Order order) {
+//
+//        Queue<Integer> productCntQueue = new LinkedList<>(orderAddRequestDto.get());
+//
+//        StringBuilder stringBuilder = new StringBuilder();
+//        AtomicReference<Long> amount = new AtomicReference<>(0L);
+//
+//        orderAddRequestDto.getProductNoList().forEach(
+//            productNo -> {
+//                Product product = productService.findProductEntity(productNo);
+//                Integer productCnt = productCntQueue.poll();
+//
+//                // TODO: 2023/02/11 쿠폰 가져와서 가격계산 로직 추가.
+//                // TODO: 2023/02/11 포인트 가져와서 가격계산 로직 추가.
+//                Long productPrice =
+//                    (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
+//
+//                amount.set(amount.get() + productPrice * productCnt);
+//
+//                if (stringBuilder.length() == 0) {
+//                    stringBuilder.append(product.getName());
+//                }
+//
+//                // 첫 주문 등록이냐 재 주문이냐에 따라 다른 로직 수행
+//                orderProductService.addOrderProduct(order, product, productCnt, productPrice);
+//            });
+//
+//        if (orderAddRequestDto.getProductDetailsDtoList().size() > 1) {
+//            stringBuilder.append(" 외 ")
+//                .append(orderAddRequestDto.getProductDetailsDtoList().size() - 1)
+//                .append("건");
+//        }
+//
+//        // 결제를 위한 order ID 생성
         String orderId = createOrderUUID(order);
 
         return OrderPaymentDto.builder()
             .orderNo(order.getOrderNo())
             .orderId(orderId)
-            .orderName(stringBuilder.toString())
-            .amount(amount.get())
+            .orderName("testOrderName")
+            .amount(1000L)
             .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo())
             .build();
@@ -189,7 +197,6 @@ public class OrderServiceImpl implements OrderService {
         OrderNonMember orderNonMember =
             new OrderNonMember(order, 12345678L);
         orderNonMemberRepository.save(orderNonMember);
-
     }
 
     @Override
@@ -204,16 +211,57 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Order completeOrderPay(Long orderNo) {
+    public Order completeOrderPay(Long orderNo, List<Long> couponIssueNoList) {
 
         Order order = findOrderEntity(orderNo);
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
 
-        // TODO: 2023/02/12 적용된 쿠폰 사용 처리
-        // TODO: 2023/02/12 적용된 포인트 사용 처리
-
+        usingCouponIssue(orderNo, couponIssueNoList);
+        savePointHistoryAboutMember(order);
         return order;
+    }
+
+    private void usingCouponIssue(Long orderNo, List<Long> couponIssueNoList) {
+//        List<Long> couponIssueNoListWhenOrderPayCompletion =
+//            (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
+
+        if (Objects.nonNull(couponIssueNoList)) {
+            for (Long couponIssueNo : couponIssueNoList) {
+                couponIssueService.usingCouponIssue(couponIssueNo);
+            }
+        }
+    }
+
+    private void savePointHistoryAboutMember(Order order) {
+        Optional<OrderMember> optionalOrderMember =
+            orderMemberRepository.findById(order.getOrderNo());
+        if (!optionalOrderMember.isPresent()) {
+            return;
+        }
+
+        OrderMember orderMember = optionalOrderMember.get();
+        Member member = orderMember.getMember();
+
+        // db 반정규화
+//        Long increasePoint =
+//            (Long) session.getAttribute("increasePointToUseWhenOrderPayCompletion_" + orderNo);
+//        Long decreasePoint =
+//            (Long) session.getAttribute("decreasePointToUseWhenOrderPayCompletion_" + orderNo);
+
+        Long increasePoint = null;
+        Long decreasePoint = null;
+
+        if (!Objects.isNull(decreasePoint)) {
+            orderIncreaseDecreasePointHistoryService.savePointHistoryAboutOrderDecrease(member,
+                order, decreasePoint);
+        }
+
+        if (!Objects.isNull(increasePoint)) {
+            orderIncreaseDecreasePointHistoryService.savePointHistoryAboutOrderIncrease(member,
+                order,
+                increasePoint);
+        }
     }
 
     /**
