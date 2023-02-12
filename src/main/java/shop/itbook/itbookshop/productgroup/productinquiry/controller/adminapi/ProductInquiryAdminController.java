@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
+import shop.itbook.itbookshop.productgroup.productinquiry.repository.ProductInquiryRepository;
 import shop.itbook.itbookshop.productgroup.productinquiry.resultmessageenum.ProductInquiryResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.productinquiry.service.ProductInquiryService;
 
@@ -26,6 +28,7 @@ import shop.itbook.itbookshop.productgroup.productinquiry.service.ProductInquiry
 @RequestMapping("/api/admin/product-inquiries")
 @RequiredArgsConstructor
 public class ProductInquiryAdminController {
+    private final ProductInquiryRepository productInquiryRepository;
 
     private final ProductInquiryService productInquiryService;
 
@@ -47,5 +50,20 @@ public class ProductInquiryAdminController {
         return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
             ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_LIST_GET_SUCCESS.getResultMessage()),
             new PageResponse<>(productInquiryList)));
+    }
+
+
+    /**
+     * 전체 상품문의 카운트 수와 답변된 상품문의 카운트 수를 dto로 반환하는 api 입니다.
+     *
+     * @return dto를 commonResponseBody에 담아 보냅니다.
+     * @author 노수연
+     */
+    @GetMapping("/count")
+    public ResponseEntity<CommonResponseBody<ProductInquiryCountResponseDto>> productInquiryCount() {
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_COUNT_GET_SUCCESS.getResultMessage()),
+            productInquiryService.countProductInquiry()));
     }
 }

@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum ProductInquiryResultMessageEnum {
 
     PRODUCT_INQUIRY_LIST_GET_SUCCESS("상품 문의 리스트 반환에 성공하였습니다."),
-    PRODUCT_INQUIRY_ADD_SUCCESS("상품 문의 생성에 성공하였습니다.");
+    PRODUCT_INQUIRY_ADD_SUCCESS("상품 문의 생성에 성공하였습니다."),
+    PRODUCT_INQUIRY_COUNT_GET_SUCCESS("상품 문의 갯수 반환에 성공하였습니다.");
 
     private String resultMessage;
 

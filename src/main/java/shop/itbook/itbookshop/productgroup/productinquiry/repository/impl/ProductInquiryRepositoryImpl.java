@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
+import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.QProductInquiry;
@@ -71,5 +72,21 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
             .then(1)
             .otherwise(2);
         return new OrderSpecifier<>(Order.ASC, cases);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProductInquiryCountResponseDto productInquiryCount() {
+        QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
+
+        return from(qProductInquiry)
+            .select(Projections.constructor(ProductInquiryCountResponseDto.class,
+                qProductInquiry.count(),
+                new CaseBuilder()
+                    .when(qProductInquiry.isReplied.eq(true))
+                    .then(true).otherwise(false).count()))
+            .fetchOne();
     }
 }

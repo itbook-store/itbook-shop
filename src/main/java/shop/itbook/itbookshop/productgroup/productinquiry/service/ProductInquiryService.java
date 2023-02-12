@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.productgroup.productinquiry.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.request.ProductInquiryRequestDto;
+import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 
 /**
@@ -32,4 +33,13 @@ public interface ProductInquiryService {
      * @author 노수연
      */
     Long addProductInquiry(ProductInquiryRequestDto requestDto);
+
+
+    /**
+     * 전체 상품 문의 카운트 수와 답변된 상품문의 카운트 수를 구하는 메서드입니다.
+     *
+     * @return 구한 카운트 수들을 dto로 반환합니다.
+     * @author 노수연
+     */
+    ProductInquiryCountResponseDto countProductInquiry();
 }
