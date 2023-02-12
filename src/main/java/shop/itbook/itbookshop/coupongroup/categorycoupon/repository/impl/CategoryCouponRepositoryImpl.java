@@ -43,6 +43,7 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
                 qCoupon.totalQuantity, qCoupon.issuedQuantity,
                 qCoupon.isDuplicateUse,
                 qCategory.categoryNo, qCategory.categoryName,
+                qCategory.parentCategory.categoryName.as("parentCategoryName"),
                 qCouponType.couponTypeEnum.stringValue().as("couponType")))
             .innerJoin(qCategoryCoupon.coupon, qCoupon)
             .innerJoin(qCategoryCoupon.category, qCategory)

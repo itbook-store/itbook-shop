@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
@@ -142,6 +143,11 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(memberNo);
         return new CouponIssueListByGroupResponseDto(orderTotalCouponList, categoryCouponList,
             productCouponList);
+    }
+
+    @Override
+    public Page<AdminCouponIssueListResponseDto> findAllCouponIssue(Pageable pageable) {
+        return couponIssueRepository.findAllCouponIssue(pageable);
     }
 
     @Override

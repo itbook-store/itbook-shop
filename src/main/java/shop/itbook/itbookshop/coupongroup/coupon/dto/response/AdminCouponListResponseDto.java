@@ -27,6 +27,7 @@ public class AdminCouponListResponseDto {
     private Boolean isDuplicateUse;
     private Integer categoryNo;
     private String categoryName;
+    private String parentCategoryName;
     private Long productNo;
     private String productName;
 }

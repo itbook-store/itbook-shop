@@ -29,3 +29,8 @@ Content-Type: application/json
 PUT /api/coupon-issues/9/point-coupon-use
 Host: localhost:8082
 Content-Type: application/json
+
+###
+GET /api/admin/coupon-issues/list
+Host: localhost:8082
+Content-Type: application/json

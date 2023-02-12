@@ -42,6 +42,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QCategory qParentCategory = new QCategory("parentCategory");
 
         JPQLQuery<Long> jpqlQuery = from(qCoupon)
             .select(qCoupon.count());
@@ -61,12 +62,15 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.isDuplicateUse,
                 qCategory.categoryNo,
                 qCategory.categoryName,
+                qParentCategory.categoryName.as("parentCategoryName"),
                 qProduct.productNo,
                 qProduct.name.as("productName"),
                 qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE)))
             .join(qCoupon.couponType, qCouponType)
             .leftJoin(qCategoryCoupon).on(qCoupon.couponNo.eq(qCategoryCoupon.couponNo))
             .leftJoin(qCategory).on(qCategoryCoupon.category.categoryNo.eq(qCategory.categoryNo))
+            .leftJoin(qParentCategory).on(qCategory.parentCategory.categoryNo.eq(
+                qParentCategory.categoryNo))
             .leftJoin(qProductCoupon).on(qCoupon.couponNo.eq(qProductCoupon.couponNo))
             .leftJoin(qProduct).on(qProductCoupon.product.productNo.eq(qProduct.productNo))
             .orderBy(qCoupon.couponNo.desc())
@@ -101,6 +105,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QCategory qParentCategory = new QCategory("parentCategory");
 
 
         return from(qCoupon)
@@ -118,12 +123,15 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.isDuplicateUse,
                 qCategory.categoryNo,
                 qCategory.categoryName,
+                qParentCategory.categoryName.as("parentCategoryName"),
                 qProduct.productNo,
                 qProduct.name.as("productName"),
                 qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE)))
             .join(qCoupon.couponType, qCouponType)
             .leftJoin(qCategoryCoupon).on(qCoupon.couponNo.eq(qCategoryCoupon.couponNo))
             .leftJoin(qCategory).on(qCategoryCoupon.category.categoryNo.eq(qCategory.categoryNo))
+            .leftJoin(qParentCategory).on(qCategory.parentCategory.categoryNo.eq(
+                qParentCategory.categoryNo))
             .leftJoin(qProductCoupon).on(qCoupon.couponNo.eq(qProductCoupon.couponNo))
             .leftJoin(qProduct).on(qProductCoupon.product.productNo.eq(qProduct.productNo))
             .where(qCoupon.couponType.couponTypeEnum.eq(couponTypeEnum))
@@ -147,6 +155,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QCategory qParentCategory = new QCategory("parentCategory");
 
         JPQLQuery<Long> jpqlQuery = from(qCoupon)
             .select(qCoupon.count())
@@ -167,12 +176,15 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.isDuplicateUse,
                 qCategory.categoryNo,
                 qCategory.categoryName,
+                qParentCategory.categoryName.as("parentCategoryName"),
                 qProduct.productNo,
                 qProduct.name.as("productName"),
                 qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE)))
             .join(qCoupon.couponType, qCouponType)
             .leftJoin(qCategoryCoupon).on(qCoupon.couponNo.eq(qCategoryCoupon.couponNo))
             .leftJoin(qCategory).on(qCategoryCoupon.category.categoryNo.eq(qCategory.categoryNo))
+            .leftJoin(qParentCategory).on(qCategory.parentCategory.categoryNo.eq(
+                qParentCategory.categoryNo))
             .leftJoin(qProductCoupon).on(qCoupon.couponNo.eq(qProductCoupon.couponNo))
             .leftJoin(qProduct).on(qProductCoupon.product.productNo.eq(qProduct.productNo))
             .where(qCouponType.couponTypeEnum.eq(couponTypeEnum))
