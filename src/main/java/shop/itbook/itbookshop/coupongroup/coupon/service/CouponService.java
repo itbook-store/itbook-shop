@@ -4,7 +4,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 
@@ -20,9 +21,9 @@ public interface CouponService {
 
     CouponResponseDto findByCouponResponseDto(String code);
 
-    Page<CouponListResponseDto> findByCouponList(Pageable pageable);
+    Page<AdminCouponListResponseDto> findByCouponList(Pageable pageable);
 
-    Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable, String couponType);
+    Page<AdminCouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable, String couponType);
 
     Coupon findByCouponEntity(Long couponNo);
 
@@ -30,5 +31,5 @@ public interface CouponService {
 
     List<Coupon> findByAvailableCouponByCouponType(String couponType);
 
-    List<CouponListResponseDto> findByAvailableCouponDtoByCouponType(String couponType);
+    List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(String couponType);
 }

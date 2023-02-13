@@ -8,7 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -59,13 +60,13 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public Page<CouponListResponseDto> findByCouponList(Pageable pageable) {
+    public Page<AdminCouponListResponseDto> findByCouponList(Pageable pageable) {
         return couponRepository.findCouponList(pageable);
     }
 
     @Override
-    public Page<CouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
-                                                                    String couponType) {
+    public Page<AdminCouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
+                                                                         String couponType) {
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
 
         return couponRepository.findByCouponAtCouponTypeList(pageable, couponTypeEnum);
@@ -90,7 +91,7 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<CouponListResponseDto> findByAvailableCouponDtoByCouponType(String couponType) {
+    public List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(String couponType) {
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
         return couponRepository.findByAvailableCouponDtoByCouponType(couponTypeEnum);
     }

@@ -11,7 +11,8 @@ import shop.itbook.itbookshop.category.entity.QCategory;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CustomCategoryCouponRepository;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 
@@ -26,7 +27,7 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
     }
 
     @Override
-    public Page<CouponListResponseDto> findCategoryCouponList(Pageable pageable) {
+    public Page<AdminCouponListResponseDto> findCategoryCouponList(Pageable pageable) {
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCoupon qCoupon = QCoupon.coupon;
         QCategory qCategory = QCategory.category;
@@ -34,21 +35,23 @@ public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport impl
 
         JPQLQuery<CategoryCoupon> jpqlQuery = from(qCategoryCoupon);
 
-        JPQLQuery<CouponListResponseDto> jpqlQuery1 = from(qCategoryCoupon)
-            .select(Projections.fields(CouponListResponseDto.class,
-                qCoupon.couponNo,
+        List<AdminCouponListResponseDto> categoryCouponList = from(qCategoryCoupon)
+            .select(Projections.fields(AdminCouponListResponseDto.class,
+                qCoupon.couponNo, qCoupon.name, qCoupon.code,
                 qCoupon.amount, qCoupon.point, qCoupon.percent,
-                qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
+                qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
+                qCoupon.totalQuantity, qCoupon.issuedQuantity,
+                qCoupon.isDuplicateUse,
                 qCategory.categoryNo, qCategory.categoryName,
+                qCategory.parentCategory.categoryName.as("parentCategoryName"),
                 qCouponType.couponTypeEnum.stringValue().as("couponType")))
             .innerJoin(qCategoryCoupon.coupon, qCoupon)
             .innerJoin(qCategoryCoupon.category, qCategory)
             .join(qCouponType).on(qCategoryCoupon.coupon.couponType.couponTypeEnum.eq(
                 qCouponType.couponTypeEnum))
+            .orderBy(qCoupon.couponNo.desc())
             .offset(pageable.getOffset())
-            .limit(pageable.getPageSize());
-
-        List<CouponListResponseDto> categoryCouponList = jpqlQuery1
+            .limit(pageable.getPageSize())
             .fetch();
 
         return PageableExecutionUtils.getPage(categoryCouponList, pageable, jpqlQuery::fetchCount);

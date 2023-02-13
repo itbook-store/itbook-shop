@@ -3,7 +3,8 @@ package shop.itbook.itbookshop.coupongroup.categorycoupon.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.dto.request.CategoryCouponRequestDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 
 /**
  * @author 송다혜
@@ -14,5 +15,5 @@ public interface CategoryCouponService {
 
     void deleteCategoryCoupon(Long couponNo);
 
-    Page<CouponListResponseDto> findCategoryCouponList(Pageable pageable);
+    Page<AdminCouponListResponseDto> findCategoryCouponList(Pageable pageable);
 }
