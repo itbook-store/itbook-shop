@@ -24,6 +24,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -467,4 +468,11 @@ public class OrderServiceImpl implements OrderService {
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
     }
 
+    @Override
+    public Page<OrderListAdminViewResponseDto> findOrderListAdmin() {
+
+        // todo won : 레포지토리 로직 추가.
+
+        return null;
+    }
 }
