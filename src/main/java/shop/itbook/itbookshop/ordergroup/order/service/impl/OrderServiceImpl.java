@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,10 +13,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
+import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
+import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
+import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -28,6 +33,9 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
@@ -48,6 +56,8 @@ import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
+import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
+import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 
 /**
  * OrderAdminService 인터페이스의 기본 구현체 입니다.
@@ -75,6 +85,11 @@ public class OrderServiceImpl implements OrderService {
     private final CouponIssueService couponIssueService;
     private final CouponService couponService;
     private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
+    private final CategoryCouponRepository categoryCouponRepository;
+    private final ProductCouponRepository productCouponRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+
+    private final OrderTotalCouponRepository orderTotalCouponRepository;
 
 
     /**
@@ -190,7 +205,8 @@ public class OrderServiceImpl implements OrderService {
 
         orderNo = orderNo - sequence;
 
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo), session);
+        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo),
+            session);
     }
 
     /**
@@ -211,9 +227,6 @@ public class OrderServiceImpl implements OrderService {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        // TODO jun : 카테고리쿠폰의 상품번호와 실제 상품번호가 맞는지 확인
-        // TODO jun : 상품쿠폰의 상품번호와 실제 상품번호가 맞는지 확인
-        // TODO jun : 주문총액쿠폰이랍시고 넘어온놈이 진짜 주문총액쿠폰종류인지 확인
         long amount = 0L;
         List<ProductDetailsDto> productDetailsDtoList =
             orderAddRequestDto.getProductDetailsDtoList();
@@ -264,6 +277,8 @@ public class OrderServiceImpl implements OrderService {
                 continue;
             }
 
+            checkMismatchAboutRequestedProductAndCoupon(product, coupon);
+
             couponIssueNoList.add(productDetailsDto.getCouponIssueNo());
             Long totalPriceOfSameProductsWithCouponApplied =
                 AmountCalculationBeforePaymentUtil.getTotalPriceWithCouponApplied(coupon,
@@ -288,6 +303,33 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return amount;
+    }
+
+    private void checkMismatchAboutRequestedProductAndCoupon(Product product, Coupon coupon) {
+
+        Optional<CategoryCoupon> optionalCategoryCoupon =
+            categoryCouponRepository.findById(coupon.getCouponNo());
+
+        if (optionalCategoryCoupon.isPresent()) {
+            Integer categoryNoAboutCoupon =
+                optionalCategoryCoupon.get().getCategory().getCategoryNo();
+            Optional<ProductCategory> optionalProductCategory =
+                productCategoryRepository.findById(
+                    new ProductCategory.Pk(product.getProductNo(), categoryNoAboutCoupon));
+            if (optionalProductCategory.isEmpty()) {
+                throw new MismatchCategoryNoWhenCouponApplyException();
+            }
+        } else {
+            Optional<ProductCoupon> optionalProductCoupon =
+                productCouponRepository.findById(coupon.getCouponNo());
+            if (optionalProductCoupon.isPresent()) {
+                Long productNoAboutCoupon =
+                    optionalProductCoupon.get().getProduct().getProductNo();
+                if (!Objects.equals(product.getProductNo(), productNoAboutCoupon)) {
+                    throw new MismatchProductNoWhenCouponApplyException();
+                }
+            }
+        }
     }
 
     private void increasePointPerOrderProduct(Order order, Product product, long productPrice) {
@@ -323,11 +365,21 @@ public class OrderServiceImpl implements OrderService {
                                                             long amount) {
         Coupon coupon =
             this.getAvailableCoupon(orderAddRequestDto.getOrderTotalCouponNo(), amount);
-        if (!AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
-            amount = AmountCalculationBeforePaymentUtil.getTotalPriceWithCouponApplied(coupon,
-                amount, amount);
+        if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
+            return amount;
         }
-        return amount;
+
+        checkMismatchAboutTypeOfOrderTotalCoupon(coupon);
+        return AmountCalculationBeforePaymentUtil.getTotalPriceWithCouponApplied(coupon,
+            amount, amount);
+    }
+
+    private void checkMismatchAboutTypeOfOrderTotalCoupon(Coupon coupon) {
+        Optional<OrderTotalCoupon> optionalOrderTotalCoupon = orderTotalCouponRepository.findById(
+            coupon.getCouponNo());
+        if (optionalOrderTotalCoupon.isEmpty()) {
+            throw new NotOrderTotalCouponException();
+        }
     }
 
     private long calculateAmountAboutPoint(long amount, long pointToBeDiscounted) {
