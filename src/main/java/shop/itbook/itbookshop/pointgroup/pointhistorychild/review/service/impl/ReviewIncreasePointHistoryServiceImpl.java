@@ -21,7 +21,7 @@ import shop.itbook.itbookshop.productgroup.review.entity.Review;
 @Transactional(readOnly = true)
 public class ReviewIncreasePointHistoryServiceImpl
     implements ReviewIncreasePointHistoryService {
-
+    // TODO jun : 리뷰 삭제시 리뷰차감 포인트내역 추가 코드 만들기
     private final PointHistoryService pointHistoryService;
     private final ReviewIncreasePointHistoryRepository
         reviewIncreasePointHistoryRepository;

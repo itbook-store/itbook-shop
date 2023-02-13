@@ -28,6 +28,8 @@ public class OrderTransfer {
             .roadNameAddress(orderAddRequestDto.getRoadNameAddress())
             .recipientAddressDetails(orderAddRequestDto.getRecipientAddressDetails())
             .isHidden(false)
+            .decreasePoint(orderAddRequestDto.getDecreasePoint())
+            .increasePoint(0L)
             .build();
     }
 }

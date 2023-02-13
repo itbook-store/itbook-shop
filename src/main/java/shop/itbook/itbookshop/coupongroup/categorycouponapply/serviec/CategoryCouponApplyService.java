@@ -11,7 +11,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 public interface CategoryCouponApplyService {
 
     void saveCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo,
-                                                    List<OrderProduct> orderProducts);
+                                                    OrderProduct orderProduct);
 
     void cancelCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo);
 }
