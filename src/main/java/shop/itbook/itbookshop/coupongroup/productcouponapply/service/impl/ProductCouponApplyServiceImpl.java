@@ -21,22 +21,19 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 public class ProductCouponApplyServiceImpl implements ProductCouponApplyService {
 
     private final ProductCouponApplyRepository productCouponApplyRepository;
-    private final CouponIssueService couponIssueService;
 
     @Override
     @Transactional
     public void saveProductCouponApplyAndChangeCouponIssue(Long couponIssueNo,
                                                            OrderProduct orderProduct) {
-        CouponIssue usedCouponIssue = couponIssueService.usingCouponIssue(couponIssueNo);
         productCouponApplyRepository.save(
-            new ProductCouponApply(usedCouponIssue.getCouponIssueNo(), orderProduct));
+            new ProductCouponApply(couponIssueNo, orderProduct));
     }
 
     @Override
     @Transactional
     public void cancelProductCouponApplyAndChangeCouponIssue(Long couponIssueNo) {
-        CouponIssue canceledCouponIssue = couponIssueService.cancelCouponIssue(couponIssueNo);
-        productCouponApplyRepository.deleteById(canceledCouponIssue.getCouponIssueNo());
+        productCouponApplyRepository.deleteById(couponIssueNo);
     }
 
 }

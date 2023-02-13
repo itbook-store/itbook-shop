@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 
 /**
  * @author 송다혜
@@ -13,4 +14,6 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListRes
 @NoRepositoryBean
 public interface CustomProductCouponRepository {
     Page<AdminCouponListResponseDto> findProductCouponPageList(Pageable pageable);
+
+    ProductCoupon findByProductCouponByCouponNo(Long couponNo);
 }

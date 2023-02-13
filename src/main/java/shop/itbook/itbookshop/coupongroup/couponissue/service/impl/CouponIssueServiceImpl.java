@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec.CategoryCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponSimpleListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
@@ -27,11 +28,15 @@ import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepo
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
+import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponService;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.service.ProductCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
 
 /**
@@ -198,5 +203,25 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             usageStatusService.findUsageStatus(UsageStatusEnum.AVAILABLE.getUsageStatus()));
         couponIssue.setCouponUsageCreatedAt(null);
         return couponIssueRepository.save(couponIssue);
+    }
+
+    private final CategoryCouponApplyService categoryCouponApplyService;
+    private final ProductCouponService productCouponService;
+    private final ProductCouponApplyService productCouponApplyService;
+    private final OrderProductRepository orderProductRepository;
+
+    @Override
+    @Transactional
+    public void saveCouponApplyAboutCategoryAndProduct(Long couponIssueNo, Long orderProductNo) {
+        CouponIssue couponIssue = couponIssueRepository.findByIdFetchJoin(couponIssueNo);
+        usingCouponIssue(couponIssueNo);
+        OrderProduct orderProduct = orderProductRepository.findById(orderProductNo).get();
+        if (productCouponService.findByProductCoupon(couponIssue.getCoupon().getCouponNo()) !=
+            null) {
+            productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo,
+                orderProduct);
+        } else {
+            categoryCouponApplyService.saveCategoryCouponApplyAndChangeCouponIssues(couponIssueNo, orderProduct);
+        }
     }
 }
