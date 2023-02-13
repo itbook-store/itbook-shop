@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,8 +17,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.repository.CategoryCouponApplyRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
@@ -24,6 +28,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepo
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.OrderTotalCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
@@ -105,6 +110,14 @@ class OrderServiceTest {
     OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
     @MockBean
     CouponIssueRepository couponIssueRepository;
+    @MockBean
+    OrderTotalCouponApplyService orderTotalCouponApplyService;
+
+    @MockBean
+    RedisTemplate redisTemplate;
+
+    @MockBean
+    ObjectMapper objectMapper;
 
 
     @Test

@@ -44,7 +44,7 @@ public class AmountCalculationBeforePaymentUtil {
         Long couponAmount = coupon.getAmount();
         Integer couponPercent = coupon.getPercent();
 
-        if (Objects.equals(couponPercent, 0L)) {
+        if (Objects.equals(couponPercent, 0)) {
             priceToApplyCoupon -= couponAmount;
         } else {
             long discountPrice = (long) (basePriceToCalcDiscountPercent * couponPercent * 0.01);
