@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
@@ -40,13 +41,20 @@ public class AladinApiService {
         headers.add("Accept", "application/json");
         headers.add("Content-Length", "5000");
 
-        ResponseEntity<BookResponse> response = restTemplate.exchange(requestUrl, HttpMethod.GET,
-            new HttpEntity<>(headers), BookResponse.class);
+        BookResponse bookResponse;
 
-        BookResponse bookResponse = Optional.ofNullable(response.getBody())
-            .orElseThrow(BookNotFoundException::new);
+        try {
+            ResponseEntity<BookResponse> response =
+                restTemplate.exchange(requestUrl, HttpMethod.GET,
+                    new HttpEntity<>(headers), BookResponse.class);
 
-        if (bookResponse.getItem().isEmpty()) {
+            bookResponse = Optional.ofNullable(response.getBody())
+                .orElseThrow(BookNotFoundException::new);
+
+            if (bookResponse.getItem().isEmpty()) {
+                throw new BookNotFoundException();
+            }
+        } catch (HttpClientErrorException e) {
             throw new BookNotFoundException();
         }
 

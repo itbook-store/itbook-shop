@@ -17,8 +17,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.repository.CategoryCouponApplyRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
+import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
+import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
@@ -34,7 +41,9 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
+import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 
 /**
  * @author 정재원
@@ -78,6 +87,25 @@ class OrderServiceTest {
     MemberService memberService;
     @MockBean
     OrderStatusService orderStatusService;
+    @MockBean
+    CategoryCouponRepository categoryCouponRepository;
+    @MockBean
+    ProductCouponRepository productCouponRepository;
+    @MockBean
+    ProductCategoryRepository productCategoryRepository;
+    @MockBean
+    OrderTotalCouponRepository orderTotalCouponRepository;
+    @MockBean
+    CategoryCouponApplyRepository categoryCouponApplyRepository;
+    @MockBean
+    ProductCouponApplyRepository productCouponApplyRepository;
+    @MockBean
+    OrderTotalCouponApplyRepositoy orderTotalCouponApplyRepositoy;
+    @MockBean
+    OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
+    @MockBean
+    CouponIssueRepository couponIssueRepository;
+
 
     @Test
     @DisplayName("사용자의 주문 목록을 여러 정보와 함께 조회 성공")

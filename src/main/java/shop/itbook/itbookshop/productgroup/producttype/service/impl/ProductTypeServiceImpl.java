@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.productgroup.producttype.service.impl;
 import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -117,7 +118,9 @@ public class ProductTypeServiceImpl implements ProductTypeService {
 
     public Page<ProductDetailsResponseDto> findBestSellerBookList(Pageable pageable/*,
                                                                   boolean isAdmin*/) {
-        return productTypeRepository.findBestSellerBookListUser(pageable);
+        Page<ProductDetailsResponseDto> bestSellerBookListUser =
+            productTypeRepository.findBestSellerBookListUser(pageable);
+        return bestSellerBookListUser;
     }
 
     public Page<ProductDetailsResponseDto> findPopularityBookList(Pageable pageable) {
@@ -125,30 +128,47 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     }
 
     public List<Long> findRecommendationBookList(Long memberNo) {
+
         Long basedProductNo;
+        List<Long> purchasedTogetherProductList;
 
-        if (Optional.ofNullable(memberNo).isEmpty()) {
-            basedProductNo = productTypeRepository.findBestSellingBook();
-            return
-                productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
-        }
+        if (Objects.nonNull(memberNo)) {
 
-        // 1순위 : 최근 구매한 상품 기준으로 함께구매한 상품 추천
-        basedProductNo =
-            productTypeRepository.findRecentlyPurchaseProduct(memberNo);
+            // 1순위 : 최근 구매한 상품 기준으로 함께구매한 상품 추천
+            basedProductNo =
+                productTypeRepository.findRecentlyPurchaseProduct(memberNo);
 
-        // 2순위 : 최근 본 상품 기준으로 함께구매한 상품 추천
-        if (Optional.ofNullable(basedProductNo).isEmpty()) {
+            purchasedTogetherProductList = findPurchasedTogetherProductList(basedProductNo);
+            if (purchasedTogetherProductList != null) {
+                return purchasedTogetherProductList;
+            }
+
             basedProductNo = productTypeRepository.findRecentlyViewedProduct(memberNo);
+
+            // 2순위 : 최근 본 상품 기준으로 함께구매한 상품 추천
+            purchasedTogetherProductList = findPurchasedTogetherProductList(basedProductNo);
+            if (purchasedTogetherProductList != null) {
+                return purchasedTogetherProductList;
+            }
         }
 
-        // 3순위: 가장 많이 팔린 서적 기준으로 함께구매한 상품 추천
-        if (Optional.ofNullable(basedProductNo).isEmpty()) {
-            basedProductNo = productTypeRepository.findBestSellingBook();
-        }
-
-        return
+        // 3순위: 가장 많이 팔린 서적 기준으로 함께구매한 상품 추천 - 비회원은 바로 3순위
+        basedProductNo = productTypeRepository.findBestSellingBook();
+        purchasedTogetherProductList =
             productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
+        return purchasedTogetherProductList;
+    }
+
+    private List<Long> findPurchasedTogetherProductList(Long basedProductNo) {
+        List<Long> purchasedTogetherProductList;
+        if (Objects.nonNull(basedProductNo)) {
+            purchasedTogetherProductList =
+                productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
+            if (Objects.nonNull(purchasedTogetherProductList)) {
+                return purchasedTogetherProductList;
+            }
+        }
+        return null;
     }
 
 

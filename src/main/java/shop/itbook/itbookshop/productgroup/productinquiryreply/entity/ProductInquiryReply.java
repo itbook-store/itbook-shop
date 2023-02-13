@@ -45,10 +45,10 @@ public class ProductInquiryReply {
     @JoinColumn(name = "member_no", nullable = false)
     private Member member;
 
-    @Column(name = "product_inquiry_reply_title", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "product_inquiry_reply_title", nullable = false)
     private String productInquiryReplyTitle;
 
-    @Column(name = "product_inquiry_reply_content", nullable = false, columnDefinition = "text")
+    @Column(name = "product_inquiry_reply_content", nullable = false)
     private String productInquiryReplyContent;
 
 

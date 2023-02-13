@@ -194,6 +194,8 @@ public interface CustomMemberRepository {
                                                                  Pageable pageable);
 
     /**
+     * Find member list by date of joining page.
+     *
      * @param start            the start
      * @param end              the end
      * @param memberStatusName the member status name
@@ -259,7 +261,8 @@ public interface CustomMemberRepository {
      * 이름으로 테이블에 해당 이름을 가진 회원이 존재하는지 확인하는 메서드입니다.
      * 작가등록할 때 입력한 이름이 테이블의 이름과 일치하는지 확인하기 위함입니다.
      *
-     * @param name 이름으로 테이블에 회원 데이터가 있는지 확인합니다.
+     * @param memberId the member id
+     * @param name     이름으로 테이블에 회원 데이터가 있는지 확인합니다.
      * @return 존재하면 true 없으면 false를 반환합니다.
      * @author 노수연
      */

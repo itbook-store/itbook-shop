@@ -7,6 +7,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.entity.OrderIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.entity.OrderCancelIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.repository.OrderCancelIncreasePointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
@@ -33,6 +34,23 @@ public class OrderCancelIncreasePointHistoryServiceImpl
                                                                                     Long pointToApply) {
         PointHistory savedPointHistory =
             pointHistoryService.getSavedIncreasePointHistory(member, pointToApply,
+                PointIncreaseDecreaseContentEnum.ORDER_CANCEL);
+
+        OrderCancelIncreasePointHistory orderCancelIncreasePointHistory =
+            new OrderCancelIncreasePointHistory(savedPointHistory.getPointHistoryNo(), order);
+
+        return orderCancelIncreasePointHistoryRepository.save(orderCancelIncreasePointHistory);
+    }
+
+    // TODO jun : OrderCancelIncreaseDecreasePointHistory 로 prod, dev, java 이름 변경하기
+    @Override
+    @Transactional
+    public OrderCancelIncreasePointHistory savePointHistoryAboutOrderCancelDecrease(Member member,
+                                                                                    Order order,
+                                                                                    Long pointToApply) {
+
+        PointHistory savedPointHistory =
+            pointHistoryService.getSavedDecreasePointHistory(member, pointToApply,
                 PointIncreaseDecreaseContentEnum.ORDER_CANCEL);
 
         OrderCancelIncreasePointHistory orderCancelIncreasePointHistory =
