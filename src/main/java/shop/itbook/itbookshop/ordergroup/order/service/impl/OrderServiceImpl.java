@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -44,6 +43,9 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -121,10 +123,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                  Optional<Long> memberNo, HttpSession session) {
 
-        if (Objects.nonNull(orderAddRequestDto.getIsSubscription())) {
-            // 구독 처리
-            return orderSubscription(orderAddRequestDto, memberNo, session);
-        }
 
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
@@ -143,24 +141,18 @@ public class OrderServiceImpl implements OrderService {
         return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, session);
     }
 
-    private void checkMemberAndSaveOrder(Order order,
-                                         Optional<Long> memberNo) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public OrderPaymentDto addOrderSubscriptionBeforePayment(OrderAddRequestDto orderAddRequestDto,
+                                                             Optional<Long> memberNo,
+                                                             HttpSession session) {
 
-        if (memberNo.isPresent()) {
-            Member member = memberService.findMemberByMemberNo(memberNo.get());
-            OrderMember orderMember = new OrderMember(order, member);
-            orderMemberRepository.save(orderMember);
-
-            return;
+        if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
+            throw new InvalidOrderException();
         }
-
-        OrderNonMember orderNonMember =
-            new OrderNonMember(order, 12345678L);
-        orderNonMemberRepository.save(orderNonMember);
-    }
-
-    private OrderPaymentDto orderSubscription(OrderAddRequestDto orderAddRequestDto,
-                                              Optional<Long> memberNo, HttpSession session) {
 
         int sequence = 1;
         long orderNo = 0;
@@ -169,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
 
             Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
             order.setSelectedDeliveryDate(LocalDate.now().plusMonths(sequence).withDayOfMonth(1));
-            orderRepository.save(order);
+            order = orderRepository.save(order);
             orderNo = order.getOrderNo();
 
             OrderSubscription orderSubscription = OrderSubscription.builder()
@@ -186,11 +178,76 @@ public class OrderServiceImpl implements OrderService {
 
             // 회원, 비회원 구분해서 저장
             checkMemberAndSaveOrder(order, memberNo);
+
+            sequence++;
         }
 
-        orderNo = orderNo - sequence;
+        orderNo = orderNo - sequence + 2;
 
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo), session);
+        Order orderEntity = findOrderEntity(orderNo);
+
+        OrderPaymentDto orderPaymentDtoForMakingPayment =
+            getOrderPaymentDtoForMakingPayment(orderAddRequestDto, orderEntity,
+                session);
+
+        return orderPaymentDtoForMakingPayment;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void addOrderSubscriptionAfterPayment(Long orderNo) {
+
+        OrderSubscription orderSubscription =
+            orderSubscriptionRepository.findByOrder_OrderNo(orderNo)
+                .orElseThrow(InvalidPaymentException::new);
+
+        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
+
+        Payment payment = paymentRepository.findPaymentByOrder_OrderNo(orderNo)
+            .orElseThrow(InvalidPaymentException::new);
+
+        while (subscriptionPeriod > 1) {
+            subscriptionPeriod--;
+            orderNo++;
+
+            Order order = findOrderEntity(orderNo);
+
+            Payment tempPayment = Payment.builder()
+                .paymentStatus(payment.getPaymentStatus())
+                .order(order)
+                .card(payment.getCard())
+                .totalAmount(payment.getTotalAmount())
+                .paymentKey(payment.getPaymentKey())
+                .orderId(payment.getOrderId())
+                .orderName(payment.getOrderName())
+                .receiptUrl(payment.getReceiptUrl())
+                .requestedAt(payment.getRequestedAt())
+                .approvedAt(payment.getApprovedAt())
+                .country(payment.getCountry())
+                .checkoutUrl(payment.getCheckoutUrl())
+                .vat(payment.getVat())
+                .build();
+            paymentRepository.save(tempPayment);
+        }
+    }
+
+    private void checkMemberAndSaveOrder(Order order,
+                                         Optional<Long> memberNo) {
+
+        if (memberNo.isPresent()) {
+            Member member = memberService.findMemberByMemberNo(memberNo.get());
+            OrderMember orderMember = new OrderMember(order, member);
+            orderMemberRepository.save(orderMember);
+
+            return;
+        }
+
+        OrderNonMember orderNonMember =
+            new OrderNonMember(order, 12345678L);
+        orderNonMemberRepository.save(orderNonMember);
     }
 
     /**
@@ -220,7 +277,9 @@ public class OrderServiceImpl implements OrderService {
 
         amount = this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
             productDetailsDtoList, session);
-        amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto, amount);
+        if (Objects.nonNull(orderAddRequestDto.getOrderTotalCouponNo())) {
+            amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto, amount);
+        }
         Long decreasePoint = orderAddRequestDto.getDecreasePoint();
         amount = this.calculateAmountAboutPoint(amount, decreasePoint);
         order.setDecreasePoint(decreasePoint);

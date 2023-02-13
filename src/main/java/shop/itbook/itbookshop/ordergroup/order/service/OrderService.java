@@ -1,11 +1,10 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
-import co.elastic.clients.elasticsearch.nodes.Http;
-import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
@@ -25,7 +24,7 @@ public interface OrderService {
      *
      * @param orderNo 조회할 주문 번호
      * @return 조회에 성공한 주문 엔티티 인스턴스
-     * @author 정재원 *
+     * @author 정재원
      */
     Order findOrderEntity(Long orderNo);
 
@@ -34,23 +33,48 @@ public interface OrderService {
      *
      * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
      * @param memberNo           회원 번호. 비회원일 경우 null
+     * @param session            세션
      * @return 결제 요청에 사용될 정보를 담은 Dto
-     * @author 정재원 *
+     * @author 정재원
      */
     OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                           Optional<Long> memberNo, HttpSession session);
+
+    /**
+     * 결제 전 구독 주문을 추가합니다.
+     *
+     * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
+     * @param memberNo           회원 번호. 비회원일 경우 null
+     * @param session            세션
+     * @return 결제 요청에 사용될 정보를 담은 Dto
+     */
+    OrderPaymentDto addOrderSubscriptionBeforePayment(OrderAddRequestDto orderAddRequestDto,
+                                                      Optional<Long> memberNo, HttpSession session);
+
+    /**
+     * 결제 완료 후 구독 주문의 결제 정보를 등록합니다.
+     *
+     * @param orderNo 구독 시작 번호
+     */
+    void addOrderSubscriptionAfterPayment(Long orderNo);
 
     /**
      * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.
      *
      * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
      * @param orderNo            재주문 할 주문 번호 - 결제 대기 상태
+     * @param session            the session
      * @return 결제 요청에 사용될 정보를 담은 Dto
-     * @author 정재원 *
+     * @author 정재원
      */
     OrderPaymentDto reOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                          Long orderNo, HttpSession session);
 
+    /**
+     * Process after order cancel payment success.
+     *
+     * @param orderNo the order no
+     */
     void processAfterOrderCancelPaymentSuccess(Long orderNo);
 
     /**
@@ -60,7 +84,7 @@ public interface OrderService {
      * @param pageable 페이징을 위한 객체
      * @param memberNo 조회할 회원의 번호
      * @return 회원의 주문 리스트 페이지 객체
-     * @author 정재원 *
+     * @author 정재원
      */
     Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
                                                                          Long memberNo);
@@ -69,8 +93,9 @@ public interface OrderService {
      * 결제 완료후 로직 처리를 진행합니다.
      *
      * @param orderNo 결제 완료 처리할 주문 번호
+     * @param session the session
      * @return 결제 완료된 주문 엔티티의 인스턴스
-     * @author 정재원 *
+     * @author 정재원
      */
     Order processAfterOrderPaymentSuccess(Long orderNo, HttpSession session);
 
@@ -80,7 +105,7 @@ public interface OrderService {
      *
      * @param orderNo 조회할 주문 번호
      * @return 주문 상세보기에 필요한 정보를 담은 Dto
-     * @author 정재원 *
+     * @author 정재원
      */
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
 }
