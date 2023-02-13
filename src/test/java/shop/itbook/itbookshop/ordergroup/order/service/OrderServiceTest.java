@@ -20,6 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.repository.CategoryCouponApplyRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
@@ -102,6 +103,8 @@ class OrderServiceTest {
     OrderTotalCouponApplyRepositoy orderTotalCouponApplyRepositoy;
     @MockBean
     OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
+    @MockBean
+    CouponIssueRepository couponIssueRepository;
 
 
     @Test
