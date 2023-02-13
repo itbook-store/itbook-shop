@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -76,6 +77,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @author 정재원
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -133,6 +135,15 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(orderNo).orElseThrow(OrderNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isSubscription(Long orderNo) {
+
+        return orderSubscriptionRepository.findByOrder_OrderNo(orderNo).isPresent();
+    }
+
     @Override
     public Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
                                                                                 Long memberNo) {
@@ -181,48 +192,6 @@ public class OrderServiceImpl implements OrderService {
         orderNonMemberRepository.save(orderNonMember);
     }
 
-    private OrderPaymentDto orderSubscription(OrderAddRequestDto orderAddRequestDto,
-                                              Optional<Long> memberNo,
-                                              HttpSession session) {
-
-        if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
-            throw new InvalidOrderException();
-        }
-
-        int sequence = 1;
-        long orderNo = 0;
-
-        while (sequence <= orderAddRequestDto.getSubscriptionPeriod()) {
-
-            Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
-            order.setSelectedDeliveryDate(LocalDate.now().plusMonths(sequence).withDayOfMonth(1));
-            orderRepository.save(order);
-            orderNo = order.getOrderNo();
-
-            OrderSubscription orderSubscription = OrderSubscription.builder()
-                .order(order)
-                .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
-                .sequence(sequence)
-                .subscriptionPeriod(orderAddRequestDto.getSubscriptionPeriod())
-                .build();
-            orderSubscriptionRepository.save(orderSubscription);
-
-            // 주문_상태_이력 테이블 저장
-            orderStatusHistoryService.addOrderStatusHistory(order,
-                OrderStatusEnum.WAITING_FOR_PAYMENT);
-
-            // 회원, 비회원 구분해서 저장
-            checkMemberAndSaveOrder(order, memberNo);
-
-            sequence++;
-        }
-
-        orderNo = orderNo - sequence + 2;
-
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo),
-            session, memberNo);
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -237,14 +206,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         int sequence = 1;
-        long orderNo = 0;
+
+        OrderPaymentDto orderPaymentDto = null;
 
         while (sequence <= orderAddRequestDto.getSubscriptionPeriod()) {
 
             Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
             order.setSelectedDeliveryDate(LocalDate.now().plusMonths(sequence).withDayOfMonth(1));
-            order = orderRepository.save(order);
-            orderNo = order.getOrderNo();
+            orderRepository.save(order);
 
             OrderSubscription orderSubscription = OrderSubscription.builder()
                 .order(order)
@@ -262,17 +231,21 @@ public class OrderServiceImpl implements OrderService {
             checkMemberAndSaveOrder(order, memberNo);
 
             sequence++;
+
+            OrderPaymentDto temp =
+                getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order,
+                    session, memberNo);
+
+            if (Objects.isNull(orderPaymentDto)) {
+                orderPaymentDto = temp;
+            }
         }
 
-        orderNo = orderNo - sequence + 2;
+        if (Objects.isNull(orderPaymentDto)) {
+            throw new InvalidOrderException();
+        }
 
-        Order orderEntity = findOrderEntity(orderNo);
-
-        OrderPaymentDto orderPaymentDtoForMakingPayment =
-            getOrderPaymentDtoForMakingPayment(orderAddRequestDto, orderEntity,
-                session, memberNo);
-
-        return orderPaymentDtoForMakingPayment;
+        return orderPaymentDto;
     }
 
     /**
@@ -280,7 +253,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public void addOrderSubscriptionAfterPayment(Long orderNo) {
+    public void addOrderSubscriptionAfterPayment(Long orderNo, HttpSession session) {
+
+        log.info("물이다!!! 물이야!!!!");
 
         OrderSubscription orderSubscription =
             orderSubscriptionRepository.findByOrder_OrderNo(orderNo)
@@ -313,7 +288,18 @@ public class OrderServiceImpl implements OrderService {
                 .vat(payment.getVat())
                 .build();
             paymentRepository.save(tempPayment);
-        }
+
+            // 완료 처리.
+            // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
+            orderStatusHistoryService.addOrderStatusHistory(order,
+                OrderStatusEnum.PAYMENT_COMPLETE);
+
+            List<Long> couponIssueNoList =
+                (List<Long>) session.getAttribute("couponIssueNoList_" + orderNo);
+
+            usingCouponIssue(couponIssueNoList);
+            savePointHistoryAboutMember(order);
+        } //end while
     }
 
     /**
@@ -341,8 +327,6 @@ public class OrderServiceImpl implements OrderService {
         OrderAddRequestDto orderAddRequestDto,
         Order order, HttpSession session, Optional<Long> optionalMemberNo) {
 
-        ProductDetailsDto productDetailsDto = new ProductDetailsDto(415L, 1, null);
-        orderAddRequestDto.setProductDetailsDtoList(List.of(productDetailsDto));
         StringBuilder stringBuilder = new StringBuilder();
 
         long amount = 0L;
@@ -429,7 +413,6 @@ public class OrderServiceImpl implements OrderService {
         if (!couponIssueNoList.isEmpty()) {
             session.setAttribute("couponIssueNoList_" + order.getOrderNo(), couponIssueNoList);
         }
-
 
         if (productDetailsDtoList.size() > 1) {
             stringBuilder.append(" 외 ")
@@ -540,7 +523,6 @@ public class OrderServiceImpl implements OrderService {
         String orderId = UUID.fromString(randomUuidString).toString();
         return orderId;
     }
-
 
     /**
      * {@inheritDoc}

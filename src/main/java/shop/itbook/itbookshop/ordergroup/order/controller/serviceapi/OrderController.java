@@ -151,7 +151,7 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionBeforePayment(
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionAfterPayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
 
@@ -180,10 +180,11 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription/completion")
-    public ResponseEntity<CommonResponseBody<Void>> orderSubscriptionBeforePayment(
-        @RequestParam("orderNo") Long orderNo) {
+    public ResponseEntity<CommonResponseBody<Void>> orderSubscriptionAfterPayment(
+        @RequestParam("orderNo") Long orderNo,
+        HttpSession session) {
 
-        orderService.addOrderSubscriptionAfterPayment(orderNo);
+        orderService.addOrderSubscriptionAfterPayment(orderNo, session);
 
         return ResponseEntity.ok().build();
     }

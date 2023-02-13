@@ -29,6 +29,14 @@ public interface OrderService {
      */
     Order findOrderEntity(Long orderNo);
 
+
+    /**
+     * 구독 주문 인지 검사합니다.
+     *
+     * @return 구독이면 true 아니면 false
+     */
+    boolean isSubscription(Long orderNo);
+
     /**
      * 결제 전 주문을 추가합니다.
      *
@@ -56,8 +64,9 @@ public interface OrderService {
      * 결제 완료 후 구독 주문의 결제 정보를 등록합니다.
      *
      * @param orderNo 구독 시작 번호
+     * @param session the session
      */
-    void addOrderSubscriptionAfterPayment(Long orderNo);
+    void addOrderSubscriptionAfterPayment(Long orderNo, HttpSession session);
 
     /**
      * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.

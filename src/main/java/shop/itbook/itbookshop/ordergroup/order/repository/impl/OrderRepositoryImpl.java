@@ -174,6 +174,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         Queue<Delivery> deliveryQueue = new LinkedList<>(deliveryList);
 
         if (!deliveryQueue.isEmpty()) {
+            
             orderListAdminViewResponseDtoList.forEach(
                 orderListAdminViewResponseDto -> {
                     if (Objects.equals(orderListAdminViewResponseDto.getOrderNo(),

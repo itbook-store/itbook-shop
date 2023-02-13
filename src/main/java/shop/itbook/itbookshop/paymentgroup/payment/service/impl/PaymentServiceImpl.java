@@ -54,7 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public OrderResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
-                                             Long orderNo, HttpSession session) {
+                                           Long orderNo, HttpSession session) {
 
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
@@ -72,10 +72,14 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
             payment.setPaymentStatus(paymentStatus);
 
-        Order order = orderService.processAfterOrderPaymentSuccess(orderNo, session);
-        payment.setOrder(order);
+            Order order = orderService.processAfterOrderPaymentSuccess(orderNo, session);
+            payment.setOrder(order);
 
             paymentRepository.save(payment);
+
+            if (orderService.isSubscription(orderNo)) {
+                orderService.addOrderSubscriptionAfterPayment(orderNo, session);
+            }
         } catch (InvalidPaymentException e) {
             throw new InvalidPaymentException(e.getMessage());
         }
