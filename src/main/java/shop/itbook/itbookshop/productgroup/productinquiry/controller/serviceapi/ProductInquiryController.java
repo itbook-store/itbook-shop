@@ -90,4 +90,16 @@ public class ProductInquiryController {
             new PageResponse<>(productInquiryList)));
     }
 
+    @GetMapping("/product/list/{productNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductInquiryResponseDto>>> productInquiryListByProductNo(
+        @PageableDefault Pageable pageable, @PathVariable("productNo") Long productNo) {
+
+        Page<ProductInquiryResponseDto> productInquiryList =
+            productInquiryService.findProductInquiryListByProductNo(pageable, productNo);
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_LIST_GET_SUCCESS.getResultMessage()),
+            new PageResponse<>(productInquiryList)));
+    }
+
 }

@@ -38,7 +38,7 @@ public class ProductInquiryReplyRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(qProductInquiryReply.member, qMember)
             .select(Projections.constructor(ProductInquiryReplyResponseDto.class,
                 qProductInquiryReply.productInquiryReplyNo, qProductInquiry.productInquiryNo,
-                qMember.memberNo, qProductInquiryReply.productInquiryReplyTitle,
+                qMember.memberNo, qMember.name, qProductInquiryReply.productInquiryReplyTitle,
                 qProductInquiryReply.productInquiryReplyContent))
             .where(qProductInquiryReply.productInquiry.productInquiryNo.eq(productInquiryNo))
             .fetch();

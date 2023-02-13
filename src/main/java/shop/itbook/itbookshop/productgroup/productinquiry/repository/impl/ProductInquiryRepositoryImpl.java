@@ -159,21 +159,33 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
     }
 
     @Override
-    public Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Long productNo) {
+    public Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Pageable pageable,
+                                                                             Long productNo) {
 
         QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
-        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
         QProduct qProduct = QProduct.product;
-        QOrder qOrder = QOrder.order;
-        QOrderMember qOrderMember = QOrderMember.orderMember;
-        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
-        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+        QMember qMember = QMember.member;
 
-        /*JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
+        JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
             from(qProductInquiry)
-                .*/
+                .innerJoin(qProductInquiry.product, qProduct)
+                .innerJoin(qProductInquiry.member, qMember)
+                .select(Projections.constructor(ProductInquiryResponseDto.class,
+                    qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
+                    qProduct.productNo,
+                    qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                    qProductInquiry.content,
+                    qProductInquiry.isPublic,
+                    qProductInquiry.isReplied))
+                .orderBy(qProductInquiry.productInquiryNo.desc())
+                .where(qProduct.productNo.eq(productNo));
 
-        return null;
+        List<ProductInquiryResponseDto> productInquiryList =
+            productInquiryListQuery.offset(pageable.getOffset())
+                .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productInquiryList, pageable,
+            () -> from(qProductInquiry).fetchCount());
     }
 
     @Override

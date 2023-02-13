@@ -21,6 +21,8 @@ public class ProductInquiryReplyResponseDto {
 
     private Long memberNo;
 
+    private String name;
+
     private String productInquiryReplyTitle;
 
     private String productInquiryReplyContent;

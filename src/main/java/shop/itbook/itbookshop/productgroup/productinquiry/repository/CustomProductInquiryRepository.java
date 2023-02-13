@@ -55,7 +55,16 @@ public interface CustomProductInquiryRepository {
      */
     ProductInquiryResponseDto findProductInquiry(Long productInquiryNo);
 
-    Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Long productNo);
+
+    /**
+     * 상품 번호에 따른 상품 문의 정보들을 dto에 담고 페이지네이션 처리하여 반환합니다.
+     *
+     * @param productNo 상품 번호로 상품 문의 정보들을 찾습니다.
+     * @return 페이지네이션 처리된 리스트를 반환합니다.
+     * @author 노수연
+     */
+    Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Pageable pageable,
+                                                                      Long productNo);
 
     /**
      * 해당 회원의 모든 상품 문의 리스트를 불러옵니다.
