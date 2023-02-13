@@ -132,7 +132,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.thumbnailUrl,
                     qOrder.orderCreatedAt))
                 .where(qOrderMember.member.memberNo.eq(memberNo)
-                    .and(qOrderStatus.orderStatusEnum.stringValue().eq("결제완료"))
+                    .and(qOrderStatus.orderStatusEnum.stringValue().eq("구매확정"))
                     .and(qReview.orderProductNo.isNull()))
                 .orderBy(qOrderProduct.orderProductNo.desc());
 

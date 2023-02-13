@@ -127,7 +127,7 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                     qOrderProduct.orderProductNo, qProduct.productNo, qProduct.name,
                     qProduct.thumbnailUrl, qOrderProduct.order.orderCreatedAt))
                 .where(qOrderMember.member.memberNo.eq(memberNo)
-                    .and(qOrderStatus.orderStatusEnum.stringValue().eq("결제완료")))
+                    .and(qOrderStatus.orderStatusEnum.stringValue().eq("구매확정")))
                 .orderBy(qOrderProduct.orderProductNo.desc());
 
         List<ProductInquiryOrderProductResponseDto> productInquiryOrderProductList =
@@ -169,8 +169,41 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
         QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
 
+        /*JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
+            from(qProductInquiry)
+                .*/
+
+        return null;
+    }
+
+    @Override
+    public Page<ProductInquiryResponseDto> findProductInquiryListByMemberNo(Pageable pageable,
+                                                                            Long memberNo) {
+
+        QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
+        QProduct qProduct = QProduct.product;
+        QMember qMember = QMember.member;
+
         JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
             from(qProductInquiry)
-                .
+                .innerJoin(qProductInquiry.product, qProduct)
+                .innerJoin(qProductInquiry.member, qMember)
+                .select(Projections.constructor(ProductInquiryResponseDto.class,
+                    qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
+                    qProduct.productNo,
+                    qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                    qProductInquiry.content,
+                    qProductInquiry.isPublic,
+                    qProductInquiry.isReplied))
+                .orderBy(productAnswerOrNot())
+                .orderBy(qProductInquiry.productInquiryNo.desc())
+                .where(qMember.memberNo.eq(memberNo));
+
+        List<ProductInquiryResponseDto> productInquiryList = productInquiryListQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productInquiryList, pageable,
+            () -> from(qProductInquiry).fetchCount());
     }
 }

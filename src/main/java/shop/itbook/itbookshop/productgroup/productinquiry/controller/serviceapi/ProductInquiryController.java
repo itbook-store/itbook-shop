@@ -78,4 +78,16 @@ public class ProductInquiryController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    @GetMapping("/list/{memberNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductInquiryResponseDto>>> productInquiryListByMemberNo(
+        @PageableDefault Pageable pageable, @PathVariable("memberNo") Long memberNo) {
+
+        Page<ProductInquiryResponseDto> productInquiryList =
+            productInquiryService.findProductInquiryListByMemberNo(pageable, memberNo);
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_LIST_GET_SUCCESS.getResultMessage()),
+            new PageResponse<>(productInquiryList)));
+    }
+
 }

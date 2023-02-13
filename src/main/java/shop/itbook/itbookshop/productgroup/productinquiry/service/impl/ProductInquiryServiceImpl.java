@@ -113,4 +113,14 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 
         return productInquiryRepository.findProductInquiry(productInquiryNo);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductInquiryResponseDto> findProductInquiryListByMemberNo(Pageable pageable,
+                                                                            Long memberNo) {
+
+        return productInquiryRepository.findProductInquiryListByMemberNo(pageable, memberNo);
+    }
 }

@@ -8,7 +8,7 @@ import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductIn
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 
 /**
- * 커스텀 상품문의 레포지토리입니다.
+ * 커스텀 상품문의글 답글 레포지토리입니다.
  *
  * @author 노수연
  * @since 1.0
@@ -56,5 +56,16 @@ public interface CustomProductInquiryRepository {
     ProductInquiryResponseDto findProductInquiry(Long productInquiryNo);
 
     Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Long productNo);
+
+    /**
+     * 해당 회원의 모든 상품 문의 리스트를 불러옵니다.
+     *
+     * @param pageable 페이지네이션 처리하기 위해 파라미터로 넘깁니다.
+     * @param memberNo 해당 멤버의 상품문의들을 찾습니다.
+     * @return 페이지네이션 처리된 리스트를 반환합니다.
+     * @author 노수연
+     */
+    Page<ProductInquiryResponseDto> findProductInquiryListByMemberNo(Pageable pageable,
+                                                                     Long memberNo);
 
 }

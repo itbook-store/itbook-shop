@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.productinquiryreply.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputExcepti
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
 import shop.itbook.itbookshop.productgroup.productinquiry.service.ProductInquiryService;
 import shop.itbook.itbookshop.productgroup.productinquiryreply.dto.request.ProductInquiryReplyRequestDto;
+import shop.itbook.itbookshop.productgroup.productinquiryreply.dto.response.ProductInquiryReplyResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiryreply.entity.ProductInquiryReply;
 import shop.itbook.itbookshop.productgroup.productinquiryreply.repository.ProductInquiryReplyRepository;
 import shop.itbook.itbookshop.productgroup.productinquiryreply.service.ProductInquiryReplyService;
@@ -61,5 +63,14 @@ public class ProductInquiryReplyServiceImpl implements ProductInquiryReplyServic
         }
 
         return productInquiryReplyNo;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ProductInquiryReplyResponseDto> findProductInquiryReply(Long productInquiryNo) {
+        
+        return productInquiryReplyRepository.findProductInquiryReply(productInquiryNo);
     }
 }

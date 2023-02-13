@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.productgroup.productinquiryreply.service;
 
+import java.util.List;
 import shop.itbook.itbookshop.productgroup.productinquiryreply.dto.request.ProductInquiryReplyRequestDto;
+import shop.itbook.itbookshop.productgroup.productinquiryreply.dto.response.ProductInquiryReplyResponseDto;
 
 /**
  * 상품 문의 답글 서비스입니다.
@@ -19,4 +21,14 @@ public interface ProductInquiryReplyService {
      * @author 노수연
      */
     Integer addProductInquiryReply(ProductInquiryReplyRequestDto requestDto);
+
+
+    /**
+     * 상품문의 답글 번호로 상품문의 답글을 불러오는 메서드입니다.
+     *
+     * @param productInquiryNo 상품문의 번호로 상품문의 답글을 찾습니다.
+     * @return querydsl로 받아온 정보들을 저장한 dto를 반환합니다.
+     * @author 노수연
+     */
+    List<ProductInquiryReplyResponseDto> findProductInquiryReply(Long productInquiryNo);
 }

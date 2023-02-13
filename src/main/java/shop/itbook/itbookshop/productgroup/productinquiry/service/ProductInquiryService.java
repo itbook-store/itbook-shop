@@ -75,4 +75,15 @@ public interface ProductInquiryService {
      * @author 노수연
      */
     ProductInquiryResponseDto findProductInquiry(Long productInquiryNo);
+
+    /**
+     * 해당 회원의 모든 상품 문의 리스트를 반환합니다.
+     *
+     * @param pageable 페이징 처리하여 불러옵니다.
+     * @param memberNo 회원번호로 해당 회원의 상품문의들을 찾습니다.
+     * @return 페이징 처리된 dto 리스트를 반환합니다.
+     * @author 노수연
+     */
+    Page<ProductInquiryResponseDto> findProductInquiryListByMemberNo(Pageable pageable,
+                                                                     Long memberNo);
 }

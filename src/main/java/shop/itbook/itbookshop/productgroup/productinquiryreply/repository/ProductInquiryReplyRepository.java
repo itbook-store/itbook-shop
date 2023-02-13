@@ -9,5 +9,6 @@ import shop.itbook.itbookshop.productgroup.productinquiryreply.entity.ProductInq
  * @author 노수연
  * @since 1.0
  */
-public interface ProductInquiryReplyRepository extends JpaRepository<ProductInquiryReply, Integer> {
+public interface ProductInquiryReplyRepository
+    extends JpaRepository<ProductInquiryReply, Integer>, CustomProductInquiryReplyRepository {
 }

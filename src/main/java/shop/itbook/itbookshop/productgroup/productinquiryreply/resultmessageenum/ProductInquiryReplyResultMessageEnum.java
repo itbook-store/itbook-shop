@@ -11,7 +11,8 @@ import lombok.Getter;
 @Getter
 public enum ProductInquiryReplyResultMessageEnum {
 
-    PRODUCT_INQUIRY_REPLY_ADD_SUCCESS("상품문의 답글 생성에 성공하였습니다.");
+    PRODUCT_INQUIRY_REPLY_ADD_SUCCESS("상품문의 답글 생성에 성공하였습니다."),
+    PROCUCT_INQUIRY_LIST_GET_SUCCESS("상품문의 답글 리스트 반환에 성공하였습니다.");
 
     private String resultMessage;
 
