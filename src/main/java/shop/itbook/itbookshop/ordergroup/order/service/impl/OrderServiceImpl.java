@@ -87,13 +87,10 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
-    private final DeliveryService deliveryService;
     private final MemberService memberService;
     private final ProductService productService;
     private final OrderSubscriptionRepository orderSubscriptionRepository;
-
     private final CouponIssueService couponIssueService;
-    private final CouponService couponService;
     private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
     private final CategoryCouponRepository categoryCouponRepository;
     private final ProductCouponRepository productCouponRepository;
