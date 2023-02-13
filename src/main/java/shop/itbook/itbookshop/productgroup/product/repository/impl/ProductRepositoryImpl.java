@@ -1,6 +1,10 @@
 package shop.itbook.itbookshop.productgroup.product.repository.impl;
 
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import java.util.Optional;
@@ -192,7 +196,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
                 .select(
                     Projections.constructor(ProductSalesRankResponseDto.class, qProduct.productNo,
-                        qProduct.name, qOrderProduct.count.sum()))
+                        qProduct.name, qOrderProduct.count.sum(),
+                        qOrderProduct.productPrice.sum()))
                 .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
                 .groupBy(qOrderProduct.product)
                 .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.product.productNo.desc());
@@ -221,7 +226,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .innerJoin(qOrderProduct.product, qProduct)
                 .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
                 .select(Projections.constructor(ProductSalesRankResponseDto.class,
-                    qProduct.productNo, qProduct.name, qOrderProduct.count.sum()))
+                    qProduct.productNo, qProduct.name, qOrderProduct.count.sum(),
+                    qOrderProduct.productPrice.sum()))
                 .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.REFUND_COMPLETED)
                     .or(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.CANCELED)))
                 .groupBy(qOrderProduct.product)
@@ -239,15 +245,72 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findSelledPriceRankProducts(Pageable pageable) {
-        return null;
+    public Page<ProductSalesRankResponseDto> findSelledPriceRankProducts(Pageable pageable) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+        QProduct qProduct = QProduct.product;
+
+        NumberPath<Long> oneHundred = Expressions.numberPath(Long.class, "100");
+        NumberPath<Double> decimal = Expressions.numberPath(Double.class, "0.01");
+
+        NumberExpression<Long> sellingPrice = qProduct.fixedPrice.multiply(
+            ((oneHundred.subtract(qProduct.discountPercent)).multiply(decimal))
+                .longValue());
+
+
+        JPQLQuery<ProductSalesRankResponseDto> productSalesRankQuery =
+            from(qOrderProduct)
+                .innerJoin(qOrderProduct.product, qProduct)
+                .innerJoin(qOrderStatusHistory)
+                .on(qOrderStatusHistory.order.eq(qOrderProduct.order))
+                .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
+                .select(Projections.constructor(ProductSalesRankResponseDto.class,
+                    qOrderProduct.product.productNo, qOrderProduct.product.name,
+                    qOrderProduct.count.sum(),
+                    sellingPrice.multiply(qOrderProduct.count.sum())))
+                .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
+                .groupBy(qOrderProduct.product)
+                .orderBy((sellingPrice.multiply(qOrderProduct.count.sum())).desc(),
+                    qOrderProduct.product.productNo.desc());
+
+        List<ProductSalesRankResponseDto> productList = productSalesRankQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qOrderProduct).fetchCount());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findTotalSalesRankProducts(Pageable pageable) {
-        return null;
+    public Page<ProductSalesRankResponseDto> findTotalSalesRankProducts(Pageable pageable) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+
+        JPQLQuery<ProductSalesRankResponseDto> productSalesRankQuery =
+            from(qOrderProduct)
+                .innerJoin(qOrderStatusHistory)
+                .on(qOrderStatusHistory.order.eq(qOrderProduct.order))
+                .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
+                .select(Projections.constructor(ProductSalesRankResponseDto.class,
+                    qOrderProduct.product.productNo, qOrderProduct.product.name,
+                    qOrderProduct.count.sum(), qOrderProduct.productPrice.sum()))
+                .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
+                .groupBy(qOrderProduct.product)
+                .orderBy(qOrderProduct.productPrice.sum().desc(),
+                    qOrderProduct.product.productNo.desc());
+
+        List<ProductSalesRankResponseDto> productList = productSalesRankQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qOrderProduct).fetchCount());
     }
 }

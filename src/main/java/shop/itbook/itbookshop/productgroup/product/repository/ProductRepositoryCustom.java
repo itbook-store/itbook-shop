@@ -85,7 +85,7 @@ public interface ProductRepositoryCustom {
      * @return 판매금액 순으로 상품 리스트를 반환합니다.
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findSelledPriceRankProducts(Pageable pageable);
+    Page<ProductSalesRankResponseDto> findSelledPriceRankProducts(Pageable pageable);
 
     /**
      * 매출합계 순으로 상품 리스트를 반환하는 기능을 담당합니다.
@@ -93,5 +93,5 @@ public interface ProductRepositoryCustom {
      * @return 매출합계 순으로 상품 리스트를 반환합니다.
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findTotalSalesRankProducts(Pageable pageable);
+    Page<ProductSalesRankResponseDto> findTotalSalesRankProducts(Pageable pageable);
 }

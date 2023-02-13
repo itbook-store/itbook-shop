@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.productgroup.producttype.service.impl;
 import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -127,7 +128,7 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     public List<Long> findRecommendationBookList(Long memberNo) {
         Long basedProductNo;
 
-        if (Optional.ofNullable(memberNo).isEmpty()) {
+        if (Objects.nonNull(memberNo)) {
             basedProductNo = productTypeRepository.findBestSellingBook();
             return
                 productTypeRepository.findPurchasedTogetherProductList(basedProductNo);
