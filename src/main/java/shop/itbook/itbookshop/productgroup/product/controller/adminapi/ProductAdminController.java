@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,12 +18,15 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.category.dto.response.CategoryDetailsResponseDto;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSalesRankResponseDto;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductCategoryResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
+import shop.itbook.itbookshop.productgroup.product.service.salesstatus.ProductSalesStatusService;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
@@ -40,6 +42,7 @@ import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearch
 public class ProductAdminController {
 
     private final ProductService productService;
+    private final ProductSalesStatusService productSalesStatusService;
     private final ProductCategoryService productCategoryService;
     private final ProductSearchService productSearchService;
 
@@ -124,7 +127,7 @@ public class ProductAdminController {
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> productAdd(
-        @RequestPart ProductRequestDto requestDto,
+        @RequestPart ProductAddRequestDto requestDto,
         @RequestPart MultipartFile thumbnails) {
 
         ProductNoResponseDto productPk =
@@ -141,21 +144,19 @@ public class ProductAdminController {
     }
 
     /**
-     * 상품 및 도서 수정을 요청하는 메서드입니다.
+     * 상품 수정을 요청하는 메서드입니다.
      *
      * @param productNo  수정할 상품 번호입니다.
      * @param requestDto 상품 수정을 위한 정보를 바인딩 받는 dto 객체입니다.
      * @param thumbnails the thumbnails
-     * @param ebook      the ebook
      * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart ProductRequestDto requestDto,
-        @RequestPart MultipartFile thumbnails,
-        @RequestPart(required = false) MultipartFile ebook) {
+        @RequestPart ProductModifyRequestDto requestDto,
+        @RequestPart(required = false) MultipartFile thumbnails) {
 
         productService.modifyProduct(productNo, requestDto, thumbnails);
 
@@ -169,20 +170,43 @@ public class ProductAdminController {
     }
 
     /**
-     * 상품 삭제를 요청하는 메서드입니다.
+     * 상품 boolean 필드 수정을 요청하는 메서드입니다.
      *
-     * @param productNo 삭제할 상품 번호입니다.
+     * @param productNo 수정할 상품 번호입니다.
      * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
-    @DeleteMapping("/{productNo}")
-    public ResponseEntity<CommonResponseBody<Void>> productRemove(@PathVariable Long productNo) {
-        productService.removeProduct(productNo);
-        productSearchService.removeSearchProduct(productNo);
+    @PutMapping(value = "/modify/{productNo}", params = "fieldName")
+    public ResponseEntity<CommonResponseBody<Void>> changeBooleanFields(
+        @RequestParam String fieldName,
+        @PathVariable Long productNo) {
+        productService.changeBooleanField(productNo, fieldName);
+        if (fieldName.equals("delete")) {
+            productSearchService.removeSearchProduct(productNo);
+        }
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
-                ProductResultMessageEnum.DELETE_SUCCESS.getMessage()), null);
+                ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 상품 조회수 필드 수정을 요청하는 메서드입니다.
+     *
+     * @param productNo 조회수를 수정할 상품 번호입니다.
+     * @return 성공 시 성공 메세지를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @PutMapping(value = "/modify-dailyhits/{productNo}")
+    public ResponseEntity<CommonResponseBody<Void>> changeDailyHitsFields(
+        @PathVariable Long productNo) {
+        productService.changeDailyHits(productNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
@@ -204,6 +228,29 @@ public class ProductAdminController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductResultMessageEnum.GET_SUCCESS.getMessage()), product);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    /**
+     * 판매량을 합산하여 상품판매순위 집계를 제공하는 메서드입니다.
+     *
+     * @param sortingCriteria 조회할 정렬 기준입니다.
+     * @return 상품 번호에 해당하는 상품의 카테고리 리스트를 response entity에 담아 반환합니다.
+     * @author 이하늬
+     */
+    @GetMapping("/sales-rank")
+    public ResponseEntity<CommonResponseBody<PageResponse<ProductSalesRankResponseDto>>> productListRankedBySalesCounts(
+        @PageableDefault Pageable pageable, @RequestParam String sortingCriteria) {
+
+        Page<ProductSalesRankResponseDto> productList =
+            productSalesStatusService.findSortingList(sortingCriteria, pageable);
+
+        CommonResponseBody<PageResponse<ProductSalesRankResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                new PageResponse<>(productList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

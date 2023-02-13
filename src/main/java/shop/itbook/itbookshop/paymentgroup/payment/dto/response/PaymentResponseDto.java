@@ -37,7 +37,7 @@ public class PaymentResponseDto {
         private CardResponseDto card;
         private Receipt receipt;
         private Checkout checkout;
-        private Cancels cancels;
+        private Cancels[] cancels;
         private String country;
         private Failure failure;
         private Long vat;

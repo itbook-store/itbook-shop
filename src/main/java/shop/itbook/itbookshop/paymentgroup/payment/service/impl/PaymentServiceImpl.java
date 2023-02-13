@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.paymentgroup.payment.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import java.util.Objects;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +13,12 @@ import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentCanceledRequestDto;
-import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderNoResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.service.PayService;
@@ -51,51 +53,62 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public OrderNoResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
-                                             Long orderNo, List<Long> couponIssueNoList) {
+    public OrderResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
+                                             Long orderNo, HttpSession session) {
 
-        PaymentResponseDto.PaymentDataResponseDto response =
-            payService.requestApprovePayment(paymentApproveRequestDto);
+        PaymentResponseDto.PaymentDataResponseDto response;
+        Payment payment;
 
-        Payment payment = PaymentTransfer.dtoToEntity(response);
-        if (!Objects.isNull(response.getCard())) {
-            Card card = cardService.addCard(response);
-            payment.setCard(card);
-        }
+        try {
+            response = payService.requestApprovePayment(paymentApproveRequestDto);
 
-        PaymentStatus paymentStatus =
-            paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
-        payment.setPaymentStatus(paymentStatus);
+            payment = PaymentTransfer.dtoToEntity(response);
+            if (!Objects.isNull(response.getCard())) {
+                Card card = cardService.addCard(response);
+                payment.setCard(card);
+            }
 
-        Order order = orderService.completeOrderPay(orderNo, couponIssueNoList);
+            PaymentStatus paymentStatus =
+                paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
+            payment.setPaymentStatus(paymentStatus);
+
+        Order order = orderService.processAfterOrderPaymentSuccess(orderNo, session);
         payment.setOrder(order);
 
-        Payment savePayment = paymentRepository.save(payment);
-
-        return new OrderNoResponseDto(savePayment.getOrder().getOrderNo());
+            paymentRepository.save(payment);
+        } catch (InvalidPaymentException e) {
+            throw new InvalidPaymentException(e.getMessage());
+        }
+        return new OrderResponseDto(payment.getOrder().getOrderNo(), payment.getTotalAmount());
     }
 
     @Override
     @Transactional
-    public OrderNoResponseDto cancelPayment(PaymentCanceledRequestDto paymentCanceledRequestDto)
+    public OrderResponseDto cancelPayment(PaymentCanceledRequestDto paymentCanceledRequestDto)
         throws JsonProcessingException {
 
         String paymentKey = this.findPaymentKey(paymentCanceledRequestDto.getOrderNo());
 
-        PaymentResponseDto.PaymentDataResponseDto response =
-            payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
+        PaymentResponseDto.PaymentDataResponseDto response;
+        Payment payment;
+        try {
+            response = payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
 
-        // 결제 상태를 결제 취소로 수정
-        Payment payment = findPaymentByOrderNo(paymentCanceledRequestDto.getOrderNo());
-        PaymentStatus paymentStatusEntity =
-            paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.CANCELED);
-        payment.setPaymentStatus(paymentStatusEntity);
-        Payment savePayment = paymentRepository.save(payment);
+            // 결제 상태를 결제 취소로 수정
+            payment = findPaymentByOrderNo(paymentCanceledRequestDto.getOrderNo());
+            PaymentStatus paymentStatusEntity =
+                paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.CANCELED);
+            payment.setPaymentStatus(paymentStatusEntity);
+            paymentRepository.save(payment);
 
-        // 결제 취소 테이블에 취소 데이터 등록
-        paymentCancelService.addPaymentCancel(payment, response);
+            // 결제 취소 테이블에 취소 데이터 등록
+            paymentCancelService.addPaymentCancel(payment, response);
 
-        return new OrderNoResponseDto(savePayment.getOrder().getOrderNo());
+        } catch (InvalidPaymentCancelException e) {
+            throw new InvalidPaymentException(e.getMessage());
+        }
+        return new OrderResponseDto(payment.getOrder().getOrderNo(),
+            payment.getTotalAmount());
     }
 
     private Payment findPaymentByOrderNo(Long orderNo) {

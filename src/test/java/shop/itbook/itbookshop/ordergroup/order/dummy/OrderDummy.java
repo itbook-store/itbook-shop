@@ -22,6 +22,8 @@ public class OrderDummy {
             .roadNameAddress("테스트 도로명주소")
             .recipientAddressDetails("테스트 상세주소")
             .isHidden(false)
+            .increasePoint(0L)
+            .decreasePoint(0L)
             .build();
     }
 }
