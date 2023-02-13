@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
 import java.util.Objects;
 import java.util.Optional;
+import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -98,7 +99,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAddBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
 
         Optional<Long> optMemberNo = Optional.empty();
 
@@ -110,7 +111,7 @@ public class OrderController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
+                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo, session)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -127,13 +128,13 @@ public class OrderController {
     @PostMapping("/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> reOrder(
         @PathVariable("orderNo") Long orderNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.reOrder(orderAddRequestDto, orderNo)
+                ), orderService.reOrderBeforePayment(orderAddRequestDto, orderNo, session)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -150,7 +151,7 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
         @PathVariable("orderNo") Long orderNo) {
 
-        orderService.cancelOrderBeforePayment(orderNo);
+        orderService.processAfterOrderCancelPaymentSuccess(orderNo);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
