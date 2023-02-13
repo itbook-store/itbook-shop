@@ -102,7 +102,9 @@ public class OrderController {
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
 
         Optional<Long> optMemberNo = Optional.empty();
+        // TODO delete jun : 테스트를위해 잠시 나둠 지워야함
 
+        orderAddRequestDto.setDecreasePoint(0L);
         if (Objects.nonNull(memberNo)) {
             optMemberNo = Optional.of(memberNo);
         }

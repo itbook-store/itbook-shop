@@ -1,4 +1,10 @@
-GET /api/coupons/category-coupon
+GET /api/admin/coupons/category-coupon
+Host: localhost:8082
+Content-Type: application/json
+
+###
+
+GET /api/admin/coupons
 Host: localhost:8082
 Content-Type: application/json
 
@@ -21,5 +27,20 @@ Content-Type: application/json
 
 ###
 PUT /api/coupon-issues/9/point-coupon-use
+Host: localhost:8082
+Content-Type: application/json
+
+###
+GET /api/admin/coupon-issues/list
+Host: localhost:8082
+Content-Type: application/json
+
+###
+GET /api/coupon-issues/2941/order/2283
+Host: localhost:8082
+Content-Type: application/json
+
+###
+GET /api/coupon-issues/2941/order/total
 Host: localhost:8082
 Content-Type: application/json

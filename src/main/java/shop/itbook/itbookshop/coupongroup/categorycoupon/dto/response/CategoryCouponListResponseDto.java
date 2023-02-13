@@ -3,7 +3,7 @@ package shop.itbook.itbookshop.coupongroup.categorycoupon.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 
 /**
  * @author 송다혜
@@ -14,5 +14,5 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponse
 @NoArgsConstructor
 public class CategoryCouponListResponseDto {
     private Integer categoryNo;
-    private CouponListResponseDto couponListResponseDto;
+    private OrderCouponListResponseDto orderCouponListResponseDto;
 }

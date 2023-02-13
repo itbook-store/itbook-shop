@@ -7,7 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
@@ -27,7 +28,7 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public Page<CouponListResponseDto> findProductCouponPageList(Pageable pageable) {
+    public Page<AdminCouponListResponseDto> findProductCouponPageList(Pageable pageable) {
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
         QCoupon qCoupon = QCoupon.coupon;
         QProduct qProduct = QProduct.product;
@@ -35,14 +36,18 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
 
         JPQLQuery<ProductCoupon> jpqlQuery = from(qProductCoupon);
 
-        List<CouponListResponseDto> productCouponList = jpqlQuery
-            .select(Projections.fields(CouponListResponseDto.class,
-                qCoupon.couponNo,
+        List<AdminCouponListResponseDto> productCouponList = jpqlQuery
+            .select(Projections.fields(AdminCouponListResponseDto.class,
+                qCoupon.couponNo, qCoupon.name, qCoupon.code,
                 qCoupon.amount, qCoupon.point, qCoupon.percent,
-                qCoupon.name, qCoupon.code, qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
-                qProduct.productNo, qProduct.name,
+                qCoupon.couponCreatedAt, qCoupon.couponExpiredAt,
+                qCoupon.totalQuantity,
+                qCoupon.issuedQuantity,
+                qCoupon.isDuplicateUse,
+                qProduct.productNo, qProduct.name.as("productName"),
                 qCouponType.couponTypeEnum.stringValue().as("couponType")))
-            .join(qCoupon.couponType, qCouponType)
+            .join(qCouponType).on(qProductCoupon.coupon.couponType.couponTypeEnum.eq(
+                qCouponType.couponTypeEnum))
             .innerJoin(qProductCoupon.coupon, qCoupon)
             .innerJoin(qProductCoupon.product, qProduct)
             .offset(pageable.getOffset())

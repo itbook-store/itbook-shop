@@ -47,7 +47,6 @@ public class SearchProduct {
     @Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
     private LocalDateTime productCreatedAt;
 
-
     @Column
     private Boolean isDeleted;
     @Column

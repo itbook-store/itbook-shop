@@ -9,7 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSalesRankResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepositoryCustom;
@@ -168,5 +173,81 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
                 qProduct.dailyHits))
             .where(qProduct.productNo.in(productNoList));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductSalesRankResponseDto> findCompleteRankProducts(Pageable pageable) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+        QProduct qProduct = QProduct.product;
+
+        JPQLQuery<ProductSalesRankResponseDto> productSalesRankQuery =
+            from(qOrderStatusHistory)
+                .innerJoin(qOrderProduct).on(qOrderStatusHistory.order.eq(qOrderProduct.order))
+                .innerJoin(qOrderProduct.product, qProduct)
+                .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
+                .select(
+                    Projections.constructor(ProductSalesRankResponseDto.class, qProduct.productNo,
+                        qProduct.name, qOrderProduct.count.sum()))
+                .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
+                .groupBy(qOrderProduct.product)
+                .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.product.productNo.desc());
+
+        List<ProductSalesRankResponseDto> productList = productSalesRankQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductSalesRankResponseDto> findCanceledRankProducts(Pageable pageable) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+        QProduct qProduct = QProduct.product;
+
+        JPQLQuery<ProductSalesRankResponseDto> productSalesRankQuery =
+            from(qOrderStatusHistory)
+                .innerJoin(qOrderProduct).on(qOrderStatusHistory.order.eq(qOrderProduct.order))
+                .innerJoin(qOrderProduct.product, qProduct)
+                .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
+                .select(Projections.constructor(ProductSalesRankResponseDto.class,
+                    qProduct.productNo, qProduct.name, qOrderProduct.count.sum()))
+                .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.REFUND_COMPLETED)
+                    .or(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.CANCELED)))
+                .groupBy(qOrderProduct.product)
+                .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.product.productNo.desc());
+
+        List<ProductSalesRankResponseDto> productList = productSalesRankQuery
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize()).fetch();
+
+        return PageableExecutionUtils.getPage(productList, pageable,
+            () -> from(qProduct).fetchCount());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findSelledPriceRankProducts(Pageable pageable) {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findTotalSalesRankProducts(Pageable pageable) {
+        return null;
     }
 }

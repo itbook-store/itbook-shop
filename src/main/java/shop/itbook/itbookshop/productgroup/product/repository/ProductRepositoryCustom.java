@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSalesRankResponseDto;
 
 /**
  * 쿼리 dsl을 사용하기 위한 ProductRepository 인터페이스입니다.
@@ -61,4 +62,36 @@ public interface ProductRepositoryCustom {
      */
     Page<ProductDetailsResponseDto> findProductListByProductNoListForAdmin(Pageable pageable,
                                                                            List<Long> productNoList);
+
+    /**
+     * 판매가 완료된 상품들을 완료건 수 순으로 리스트로 반환하는 기능을 담당합니다.
+     *
+     * @return 판매가 완료된 상품들을 리스트로 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductSalesRankResponseDto> findCompleteRankProducts(Pageable pageable);
+
+    /**
+     * 판매가 취소된 상품들을 취소건 수 순으로 리스트로 반환하는 기능을 담당합니다.
+     *
+     * @return 판매가 취소된 상품들을 리스트로 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductSalesRankResponseDto> findCanceledRankProducts(Pageable pageable);
+
+    /**
+     * 판매금액 순으로 상품 리스트를 반환하는 기능을 담당합니다.
+     *
+     * @return 판매금액 순으로 상품 리스트를 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductDetailsResponseDto> findSelledPriceRankProducts(Pageable pageable);
+
+    /**
+     * 매출합계 순으로 상품 리스트를 반환하는 기능을 담당합니다.
+     *
+     * @return 매출합계 순으로 상품 리스트를 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductDetailsResponseDto> findTotalSalesRankProducts(Pageable pageable);
 }
