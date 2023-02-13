@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponSimpleListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIssueListResponseDto;
@@ -29,6 +30,15 @@ public interface CustomCouponIssueRepository {
         Long memberNo);
 
     List<ProductCouponIssueListResponseDto> findAvailableProductCouponIssueByMemberNo(
+        Long memberNo);
+
+    List<OrderCouponSimpleListResponseDto> findAvailableProductCouponByMemberNoAndProductNo(
+        Long memberNo, Long productNo);
+
+    List<OrderCouponSimpleListResponseDto> findAvailableCategoryCouponByMemberNoAndProductNo(
+        Long memberNo, Long productNo);
+
+    List<OrderCouponSimpleListResponseDto> findAvailableTotalCouponByMemberNo(
         Long memberNo);
 
     Page<AdminCouponIssueListResponseDto> findAllCouponIssue(Pageable pageable);

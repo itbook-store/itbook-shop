@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.category.entity.QCategory;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponSimpleListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
@@ -27,6 +28,7 @@ import shop.itbook.itbookshop.coupongroup.usagestatus.entity.QUsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatusEnum;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
+import shop.itbook.itbookshop.productgroup.productcategory.entity.QProductCategory;
 
 /**
  * @author 송다혜
@@ -204,7 +206,96 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
             .where(qCouponIssue.couponUsageCreatedAt.isNull())
             .fetch();
+    }
 
+    @Override
+    public List<OrderCouponSimpleListResponseDto> findAvailableProductCouponByMemberNoAndProductNo(
+        Long memberNo, Long productNo) {
+
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProductCategory qProductCategory = QProductCategory.productCategory;
+
+        return from(qCouponIssue)
+            .select(Projections.fields(OrderCouponSimpleListResponseDto.class,
+                qCouponIssue.couponIssueNo,
+                qCoupon.couponNo, qCoupon.name,
+                qCoupon.code, qCoupon.amount,
+                qCoupon.percent))
+            .join(qCouponIssue.coupon, qCoupon)
+            .join(qCouponIssue.usageStatus, qUsageStatus)
+            .join(qCouponIssue.member, qMember)
+            .join(qProductCoupon).on(qCouponIssue.coupon.couponNo.eq(
+                qProductCoupon.couponNo))
+            .where(qMember.memberNo.eq(memberNo))
+            .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
+            .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
+            .where(qCouponIssue.couponUsageCreatedAt.isNull())
+            .where(qProductCoupon.product.productNo.eq(productNo))
+            .fetch();
+    }
+
+    @Override
+    public List<OrderCouponSimpleListResponseDto> findAvailableCategoryCouponByMemberNoAndProductNo(
+        Long memberNo, Long productNo) {
+
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QProductCategory qProductCategory = QProductCategory.productCategory;
+
+        return from(qCouponIssue)
+            .select(Projections.fields(OrderCouponSimpleListResponseDto.class,
+                qCouponIssue.couponIssueNo,
+                qCoupon.couponNo, qCoupon.name,
+                qCoupon.code, qCoupon.amount,
+                qCoupon.percent))
+            .join(qCouponIssue.coupon, qCoupon)
+            .join(qCouponIssue.usageStatus, qUsageStatus)
+            .join(qCouponIssue.member, qMember)
+            .join(qCategoryCoupon).on(qCouponIssue.coupon.couponNo.eq(
+                qCategoryCoupon.couponNo))
+            .leftJoin(qProductCategory).on(qCategoryCoupon.category.categoryNo.eq(qProductCategory.category.categoryNo))
+            .where(qMember.memberNo.eq(memberNo))
+            .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
+            .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
+            .where(qCouponIssue.couponUsageCreatedAt.isNull())
+            .where(qProductCategory.product.productNo.eq(productNo))
+            .fetch();
+    }
+
+    @Override
+    public List<OrderCouponSimpleListResponseDto> findAvailableTotalCouponByMemberNo(
+        Long memberNo) {
+
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QOrderTotalCoupon qOrderTotalCoupon = QOrderTotalCoupon.orderTotalCoupon;
+
+        return from(qCouponIssue)
+            .select(Projections.fields(OrderCouponSimpleListResponseDto.class,
+                qCouponIssue.couponIssueNo,
+                qCoupon.couponNo, qCoupon.name,
+                qCoupon.code, qCoupon.amount,
+                qCoupon.percent))
+            .join(qCouponIssue.coupon, qCoupon)
+            .join(qCouponIssue.usageStatus, qUsageStatus)
+            .join(qCouponIssue.member, qMember)
+            .join(qOrderTotalCoupon).on(qCouponIssue.coupon.couponNo.eq(
+                qOrderTotalCoupon.couponNo))
+            .where(qMember.memberNo.eq(memberNo))
+            .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
+            .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
+            .where(qCouponIssue.couponUsageCreatedAt.isNull())
+            .fetch();
     }
 
     @Override
