@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
@@ -55,5 +54,20 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
             .fetch();
 
         return PageableExecutionUtils.getPage(productCouponList, pageable, jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public ProductCoupon findByProductCouponByCouponNo(Long couponNo) {
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QCoupon qCoupon = QCoupon.coupon;
+        QProduct qProduct = QProduct.product;
+
+        return from(qProductCoupon)
+            .select(qProductCoupon)
+            .join(qProductCoupon.coupon, qCoupon)
+            .join(qProductCoupon.product, qProduct)
+            .where(qProductCoupon.couponNo.eq(couponNo))
+            .fetchOne();
+
     }
 }

@@ -24,13 +24,10 @@ public class CategoryCouponApplyServiceImpl implements CategoryCouponApplyServic
 
     private final CategoryCouponApplyRepository categoryCouponApplyRepository;
 
-    private final CouponIssueService couponIssueService;
-
     @Override
     @Transactional
     public void saveCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo,
                                                              OrderProduct orderProduct) {
-        couponIssueService.usingCouponIssue(couponIssueNo);
 
         categoryCouponApplyRepository.save(new CategoryCouponApply(couponIssueNo, orderProduct));
     }
@@ -38,7 +35,6 @@ public class CategoryCouponApplyServiceImpl implements CategoryCouponApplyServic
     @Override
     @Transactional
     public void cancelCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo) {
-        CouponIssue canceledCouponIssue = couponIssueService.cancelCouponIssue(couponIssueNo);
-        categoryCouponApplyRepository.deleteById(canceledCouponIssue.getCouponIssueNo());
+        categoryCouponApplyRepository.deleteById(couponIssueNo);
     }
 }

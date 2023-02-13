@@ -44,19 +44,12 @@ public class SearchProduct {
     private Integer stock;
 
     @Column
-    @Field(type = FieldType.Date, pattern = "uuuu-MM-dd'T'HH:mm:ss.SSSSSS")
-    private LocalDateTime productCreatedAt;
-
-    @Column
-    private Boolean isDeleted;
+    private Boolean isForceSoldOut;
     @Column
     private Boolean isSelled;
 
     @Column
     private String thumbnailUrl;
-
-    @Column
-    private Long dailyHits;
 
     @Column
     private Long fixedPrice;
@@ -77,11 +70,9 @@ public class SearchProduct {
      * @param simpleDescription    상품 간단 설명입니다.
      * @param detailsDescription   상품 상세 설명입니다.
      * @param stock                상품 재고입니다.
-     * @param productCreatedAt     상품 등록 일자입니다.
      * @param isForceSoldOut       상품 판매 여부입니다.
      * @param isDeleted            상품 삭제 여부입니다.
      * @param thumbnailUrl         상품 썸네일 url 입니다.
-     * @param dailyHits            상품 조회수입니다.
      * @param fixedPrice           상품 정가입니다.
      * @param increasePointPercent 상품 포인트 적립율입니다.
      * @param discountPercent      상품 할인율입니다.
@@ -91,20 +82,17 @@ public class SearchProduct {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public SearchProduct(Long productNo, String name, String simpleDescription,
-                         String detailsDescription, Integer stock,
-                         LocalDateTime productCreatedAt, Boolean isSelled, Boolean isDeleted,
-                         String thumbnailUrl, Long dailyHits, Long fixedPrice,
+                         String detailsDescription, Integer stock, Boolean isSelled, Boolean isForceSoldOut,
+                         String thumbnailUrl, Long fixedPrice,
                          Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.productNo = productNo;
         this.name = name;
         this.simpleDescription = simpleDescription;
         this.detailsDescription = detailsDescription;
         this.stock = stock;
-        this.productCreatedAt = productCreatedAt;
         this.isSelled = isSelled;
-        this.isDeleted = isDeleted;
+        this.isForceSoldOut = isForceSoldOut;
         this.thumbnailUrl = thumbnailUrl;
-        this.dailyHits = dailyHits;
         this.fixedPrice = fixedPrice;
         this.increasePointPercent = increasePointPercent;
         this.discountPercent = discountPercent;

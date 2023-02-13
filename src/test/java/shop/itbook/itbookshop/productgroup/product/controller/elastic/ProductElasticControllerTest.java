@@ -83,7 +83,7 @@ class ProductElasticControllerTest {
                 jsonPath("$.result.content[0].discountPercent", equalTo(responseDto.getDiscountPercent())))
             .andExpect(
                 jsonPath("$.result.content[0].rawPrice", equalTo(responseDto.getRawPrice().intValue())))
-            .andExpect(jsonPath("$.result.content[0].deleted", equalTo(responseDto.isDeleted())));
+            .andExpect(jsonPath("$.result.content[0].forceSoldOut", equalTo(responseDto.isForceSoldOut())));
 
     }
 
