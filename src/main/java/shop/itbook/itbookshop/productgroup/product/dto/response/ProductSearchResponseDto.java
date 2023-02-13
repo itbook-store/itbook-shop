@@ -23,7 +23,7 @@ public class ProductSearchResponseDto {
     private String detailsDescription;
     private Integer stock;
     private boolean isForceSoldOut;
-    private boolean isDeleted;
+    private boolean isSelled;
     private String thumbnailUrl;
     private Long fixedPrice;
     private Integer increasePointPercent;
