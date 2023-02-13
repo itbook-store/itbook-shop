@@ -17,4 +17,5 @@ public class ProductSalesRankResponseDto {
     Long productNo;
     String productName;
     Integer count;
+    Long price;
 }

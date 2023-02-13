@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.productgroup.product.repository.impl;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,7 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
  * @since 1.0
  */
 @DataJpaTest
+@Slf4j
 class ProductSalesStatusRepositoryImplTest {
     @Autowired
     ProductRepository productRepository;
@@ -68,6 +70,12 @@ class ProductSalesStatusRepositoryImplTest {
     OrderStatus dummyOrderStatusCanceled;
     OrderStatus dummyOrderStatusPurchaseCompleted;
     OrderStatus dummyOrderStatusRefundCompleted;
+    OrderProduct dummyOrderProduct3;
+    OrderProduct dummyOrderProduct4;
+    OrderProduct dummyOrderProduct5;
+    OrderProduct dummyOrderProduct6;
+    OrderProduct dummyOrderProduct7;
+
 
     @BeforeEach
     void setUp() {
@@ -93,25 +101,25 @@ class ProductSalesStatusRepositoryImplTest {
             OrderProductDummy.createOrderProduct(savedDummyOrder1, savedDummyProduct1);
         OrderProduct dummyOrderProduct2 =
             OrderProductDummy.createOrderProduct(savedDummyOrder1, savedDummyProduct3);
-        OrderProduct dummyOrderProduct3 =
+        dummyOrderProduct3 =
             OrderProductDummy.createOrderProduct(savedDummyOrder2, savedDummyProduct1);
         dummyOrderProduct3.setCount(4);
-        OrderProduct dummyOrderProduct4 =
+        dummyOrderProduct4 =
             OrderProductDummy.createOrderProduct(savedDummyOrder2, savedDummyProduct2);
-        OrderProduct dummyOrderProduct5 =
+        dummyOrderProduct5 =
             OrderProductDummy.createOrderProduct(savedDummyOrder3, savedDummyProduct1);
-        OrderProduct dummyOrderProduct6 =
+        dummyOrderProduct6 =
             OrderProductDummy.createOrderProduct(savedDummyOrder3, savedDummyProduct2);
-        OrderProduct dummyOrderProduct7 =
+        dummyOrderProduct7 =
             OrderProductDummy.createOrderProduct(savedDummyOrder3, savedDummyProduct3);
 
-        OrderProduct savedDummyOrderProduct1 = orderProductRepository.save(dummyOrderProduct1);
-        OrderProduct savedDummyOrderProduct2 = orderProductRepository.save(dummyOrderProduct2);
-        OrderProduct savedDummyOrderProduct3 = orderProductRepository.save(dummyOrderProduct3);
-        OrderProduct savedDummyOrderProduct4 = orderProductRepository.save(dummyOrderProduct4);
-        OrderProduct savedDummyOrderProduct5 = orderProductRepository.save(dummyOrderProduct5);
-        OrderProduct savedDummyOrderProduct6 = orderProductRepository.save(dummyOrderProduct6);
-        OrderProduct savedDummyOrderProduct7 = orderProductRepository.save(dummyOrderProduct7);
+        orderProductRepository.save(dummyOrderProduct1);
+        orderProductRepository.save(dummyOrderProduct2);
+        orderProductRepository.save(dummyOrderProduct3);
+        orderProductRepository.save(dummyOrderProduct4);
+        orderProductRepository.save(dummyOrderProduct5);
+        orderProductRepository.save(dummyOrderProduct6);
+        orderProductRepository.save(dummyOrderProduct7);
 
         dummyOrderStatusCanceled = OrderStatusDummy.createByEnum(OrderStatusEnum.CANCELED);
         dummyOrderStatusPurchaseCompleted =
@@ -189,5 +197,90 @@ class ProductSalesStatusRepositoryImplTest {
         Assertions.assertThat(productList.get(2).getProductNo())
             .isEqualTo(dummyProduct2.getProductNo());
         Assertions.assertThat(productList.get(2).getCount()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("매출합계 순으로 조회 테스트")
+    void Find_productList_orderByTotalAmount() {
+
+        OrderStatusHistory dummyOrderStatusHistory1 =
+            OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder1, savedCanceledStatus);
+        OrderStatusHistory dummyOrderStatusHistory2 =
+            OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder2,
+                savedPurchaseCompletedStatus);
+        OrderStatusHistory dummyOrderStatusHistory3 =
+            OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder3,
+                savedPurchaseCompletedStatus);
+
+        orderStatusHistoryRepository.save(dummyOrderStatusHistory1);
+        orderStatusHistoryRepository.save(dummyOrderStatusHistory2);
+        orderStatusHistoryRepository.save(dummyOrderStatusHistory3);
+
+        List<ProductSalesRankResponseDto> productList =
+            productRepository.findTotalSalesRankProducts(pageable).getContent();
+
+        Assertions.assertThat(productList).hasSize(3);
+
+        Assertions.assertThat(productList.get(0).getProductNo())
+            .isEqualTo(dummyProduct2.getProductNo());
+        Assertions.assertThat(productList.get(0).getPrice())
+            .isEqualTo(dummyOrderProduct4.getProductPrice() + dummyOrderProduct6.getProductPrice());
+
+        Assertions.assertThat(productList.get(1).getProductNo())
+            .isEqualTo(dummyProduct1.getProductNo());
+        Assertions.assertThat(productList.get(1).getPrice())
+            .isEqualTo(dummyOrderProduct3.getProductPrice() + dummyOrderProduct5.getProductPrice());
+
+        Assertions.assertThat(productList.get(2).getProductNo())
+            .isEqualTo(dummyProduct3.getProductNo());
+        Assertions.assertThat(productList.get(2).getPrice())
+            .isEqualTo(dummyOrderProduct7.getProductPrice());
+    }
+
+    @Test
+    @DisplayName("판매금액 순으로 조회 테스트")
+    void Find_productList_orderBySalesPrice() {
+
+        OrderStatusHistory dummyOrderStatusHistory1 =
+            OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder1, savedCanceledStatus);
+        OrderStatusHistory dummyOrderStatusHistory2 =
+            OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder2,
+                savedPurchaseCompletedStatus);
+        OrderStatusHistory dummyOrderStatusHistory3 =
+            OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder3,
+                savedPurchaseCompletedStatus);
+
+        orderStatusHistoryRepository.save(dummyOrderStatusHistory1);
+        orderStatusHistoryRepository.save(dummyOrderStatusHistory2);
+        orderStatusHistoryRepository.save(dummyOrderStatusHistory3);
+
+        List<ProductSalesRankResponseDto> productList =
+            productRepository.findSelledPriceRankProducts(pageable).getContent();
+
+        Assertions.assertThat(productList).hasSize(3);
+
+        Assertions.assertThat(productList.get(0).getProductNo())
+            .isEqualTo(dummyProduct1.getProductNo());
+        Assertions.assertThat(productList.get(0).getPrice())
+            .isEqualTo(
+                Double.valueOf(dummyProduct1.getFixedPrice() *
+                    ((100 - dummyProduct1.getDiscountPercent()) * 0.01)
+                    * productList.get(0).getCount()).longValue());
+
+        Assertions.assertThat(productList.get(1).getProductNo())
+            .isEqualTo(dummyProduct2.getProductNo());
+        Assertions.assertThat(productList.get(1).getPrice())
+            .isEqualTo(
+                Double.valueOf(dummyProduct2.getFixedPrice() *
+                    ((100 - dummyProduct2.getDiscountPercent()) * 0.01)
+                    * productList.get(1).getCount()).longValue());
+
+        Assertions.assertThat(productList.get(2).getProductNo())
+            .isEqualTo(dummyProduct3.getProductNo());
+        Assertions.assertThat(productList.get(2).getPrice())
+            .isEqualTo(
+                Double.valueOf(dummyProduct3.getFixedPrice() *
+                    ((100 - dummyProduct3.getDiscountPercent()) * 0.01)
+                    * productList.get(2).getCount()).longValue());
     }
 }

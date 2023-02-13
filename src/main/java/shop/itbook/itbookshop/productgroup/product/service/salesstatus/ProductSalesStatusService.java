@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSalesRankResponseDto;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 
@@ -32,12 +31,16 @@ public class ProductSalesStatusService {
     public Page<ProductSalesRankResponseDto> findSortingList(String sortingCriteria,
                                                              Pageable pageable) {
         ProductSortingCriteriaEnum productSortingCriteriaEnum =
-            ProductSortingCriteriaEnum.valueOf(sortingCriteria);
+            ProductSortingCriteriaEnum.fromString(sortingCriteria);
         switch (productSortingCriteriaEnum) {
             case CANCELED:
                 return this.findCanceledRankList(pageable);
             case COMPLETED:
                 return this.findCompletedRankList(pageable);
+            case TOTAL_SALES:
+                return this.findTotalAmountRankList(pageable);
+            case SALES_AMOUNT:
+                return this.findSelledPriceRankList(pageable);
             default:
                 return null;
         }
@@ -62,6 +65,30 @@ public class ProductSalesStatusService {
      * @author 이하늬
      */
     public Page<ProductSalesRankResponseDto> findCanceledRankList(Pageable pageable) {
-        return productRepository.findCompleteRankProducts(pageable);
+        return productRepository.findCanceledRankProducts(pageable);
+    }
+
+    /**
+     * 구매확정된 주문 상품 별로 판매금액을 합산하여 판매금액이 높은 순으로 상품 리스트를 반환합니다.
+     * 정가에서 할인이 들어간 가격을 합산합니다.
+     *
+     * @param pageable the pageable
+     * @return the page
+     * @author 이하늬
+     */
+    public Page<ProductSalesRankResponseDto> findSelledPriceRankList(Pageable pageable) {
+        return productRepository.findSelledPriceRankProducts(pageable);
+    }
+
+    /**
+     * 구매확정된 주문 상품 별로 매출금액을 합산하여 판매금액이 높은 순으로 상품 리스트를 반환합니다.
+     * 포인트와 쿠폰을 적용한 가격을 합산합니다.
+     *
+     * @param pageable the pageable
+     * @return the page
+     * @author 이하늬
+     */
+    public Page<ProductSalesRankResponseDto> findTotalAmountRankList(Pageable pageable) {
+        return productRepository.findTotalSalesRankProducts(pageable);
     }
 }

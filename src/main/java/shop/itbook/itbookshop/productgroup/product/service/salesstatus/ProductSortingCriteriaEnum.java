@@ -16,4 +16,18 @@ public enum ProductSortingCriteriaEnum {
     ProductSortingCriteriaEnum(String message) {
         this.message = message;
     }
+
+    public static ProductSortingCriteriaEnum fromString(String string) {
+        switch (string) {
+            case "완료건":
+                return COMPLETED;
+            case "취소건":
+                return CANCELED;
+            case "매출합계":
+                return TOTAL_SALES;
+            case "판매금액":
+                return SALES_AMOUNT;
+        }
+        return null;
+    }
 }
