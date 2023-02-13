@@ -21,6 +21,7 @@ public class ProductInquiryResponseDto {
     private Long productNo;
     private String name;
     private String thumbnailUrl;
+    private String authorName;
     private String title;
     private String content;
     private Boolean isPublic;

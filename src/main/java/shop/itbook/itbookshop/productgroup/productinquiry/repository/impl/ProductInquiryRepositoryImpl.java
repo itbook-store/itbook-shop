@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.book.entity.QBook;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -47,15 +48,18 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
         QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
         QProduct qProduct = QProduct.product;
         QMember qMember = QMember.member;
+        QBook qBook = QBook.book;
 
         JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
             from(qProductInquiry)
                 .innerJoin(qProductInquiry.product, qProduct)
                 .innerJoin(qProductInquiry.member, qMember)
+                .leftJoin(qBook)
+                .on(qProductInquiry.product.productNo.eq(qBook.productNo))
                 .select(Projections.constructor(ProductInquiryResponseDto.class,
                     qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
                     qProduct.productNo,
-                    qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                    qProduct.name, qProduct.thumbnailUrl, qBook.authorName, qProductInquiry.title,
                     qProductInquiry.content,
                     qProductInquiry.isPublic,
                     qProductInquiry.isReplied))
@@ -146,13 +150,17 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
         QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
         QMember qMember = QMember.member;
         QProduct qProduct = QProduct.product;
+        QBook qBook = QBook.book;
 
         return from(qProductInquiry)
             .innerJoin(qProductInquiry.product, qProduct)
             .innerJoin(qProductInquiry.member, qMember)
+            .leftJoin(qBook)
+            .on(qProductInquiry.product.productNo.eq(qBook.productNo))
             .select(Projections.constructor(ProductInquiryResponseDto.class,
                 qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
-                qProduct.productNo, qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                qProduct.productNo, qProduct.name, qProduct.thumbnailUrl, qBook.authorName,
+                qProductInquiry.title,
                 qProductInquiry.content, qProductInquiry.isPublic, qProductInquiry.isReplied))
             .where(qProductInquiry.productInquiryNo.eq(productInquiryNo)).fetchOne();
 
@@ -165,15 +173,18 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
         QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
         QProduct qProduct = QProduct.product;
         QMember qMember = QMember.member;
+        QBook qBook = QBook.book;
 
         JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
             from(qProductInquiry)
                 .innerJoin(qProductInquiry.product, qProduct)
                 .innerJoin(qProductInquiry.member, qMember)
+                .leftJoin(qBook)
+                .on(qProductInquiry.product.productNo.eq(qBook.productNo))
                 .select(Projections.constructor(ProductInquiryResponseDto.class,
                     qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
                     qProduct.productNo,
-                    qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                    qProduct.name, qProduct.thumbnailUrl, qBook.authorName, qProductInquiry.title,
                     qProductInquiry.content,
                     qProductInquiry.isPublic,
                     qProductInquiry.isReplied))
@@ -195,15 +206,18 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
         QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
         QProduct qProduct = QProduct.product;
         QMember qMember = QMember.member;
+        QBook qBook = QBook.book;
 
         JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
             from(qProductInquiry)
                 .innerJoin(qProductInquiry.product, qProduct)
                 .innerJoin(qProductInquiry.member, qMember)
+                .leftJoin(qBook)
+                .on(qProductInquiry.product.productNo.eq(qBook.productNo))
                 .select(Projections.constructor(ProductInquiryResponseDto.class,
                     qProductInquiry.productInquiryNo, qMember.memberNo, qMember.memberId,
                     qProduct.productNo,
-                    qProduct.name, qProduct.thumbnailUrl, qProductInquiry.title,
+                    qProduct.name, qProduct.thumbnailUrl, qBook.authorName, qProductInquiry.title,
                     qProductInquiry.content,
                     qProductInquiry.isPublic,
                     qProductInquiry.isReplied))
