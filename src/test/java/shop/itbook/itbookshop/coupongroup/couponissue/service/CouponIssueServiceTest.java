@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec.CategoryCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CouponIssueListByGroupResponseDto;
@@ -19,8 +20,11 @@ import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCou
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.impl.CouponIssueServiceImpl;
+import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponService;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.service.ProductCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
 
 /**
@@ -49,6 +53,14 @@ class CouponIssueServiceTest {
     @MockBean
     CouponIncreasePointHistoryService couponIncreasePointHistoryService;
 
+    @MockBean
+    CategoryCouponApplyService categoryCouponApplyService;
+    @MockBean
+    ProductCouponService productCouponService;
+    @MockBean
+    ProductCouponApplyService productCouponApplyService;
+    @MockBean
+    OrderProductRepository orderProductRepository;
 
     @Test
     @DisplayName("유저가 사용 가능한 모든 쿠폰을 불러오는지 테스트")
