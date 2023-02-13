@@ -157,4 +157,20 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
             .where(qProductInquiry.productInquiryNo.eq(productInquiryNo)).fetchOne();
 
     }
+
+    @Override
+    public Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Long productNo) {
+
+        QProductInquiry qProductInquiry = QProductInquiry.productInquiry;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QProduct qProduct = QProduct.product;
+        QOrder qOrder = QOrder.order;
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+
+        JPQLQuery<ProductInquiryResponseDto> productInquiryListQuery =
+            from(qProductInquiry)
+                .
+    }
 }

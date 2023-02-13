@@ -54,4 +54,7 @@ public interface CustomProductInquiryRepository {
      * @author 노수연
      */
     ProductInquiryResponseDto findProductInquiry(Long productInquiryNo);
+
+    Page<ProductInquiryResponseDto> findProductInquiryListByProductNo(Long productNo);
+
 }
