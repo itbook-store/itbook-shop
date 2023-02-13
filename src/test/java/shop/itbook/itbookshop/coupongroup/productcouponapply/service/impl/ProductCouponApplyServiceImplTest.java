@@ -34,12 +34,8 @@ class ProductCouponApplyServiceImplTest {
 
     @Autowired
     ProductCouponApplyService productCouponApplyService;
-
     @MockBean
     ProductCouponApplyRepository productCouponApplyRepository;
-    @MockBean
-    CouponIssueService couponIssueService;
-
     OrderProduct orderProduct;
     Product product;
     Order order;
@@ -55,7 +51,6 @@ class ProductCouponApplyServiceImplTest {
     void saveProductCouponApplyAndChangeCouponIssue() {
         //given
         Long couponIssueNo = 1L;
-        given(couponIssueService.usingCouponIssue(anyLong())).willReturn(CouponIssueDummy.getCouponIssue());
         //when
         productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo, orderProduct);
         //then
@@ -66,7 +61,6 @@ class ProductCouponApplyServiceImplTest {
     void cancelProductCouponApplyAndChangeCouponIssue() {
         //given
         Long couponIssueNo = 1L;
-        given(couponIssueService.cancelCouponIssue(anyLong())).willReturn(CouponIssueDummy.getCouponIssue());
         //when
         productCouponApplyService.cancelProductCouponApplyAndChangeCouponIssue(couponIssueNo);
         //then

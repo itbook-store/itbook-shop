@@ -72,13 +72,13 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
             payment.setPaymentStatus(paymentStatus);
 
-            Order order = orderService.processAfterOrderPaymentSuccess(orderNo, session);
+            Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
             payment.setOrder(order);
 
             paymentRepository.save(payment);
 
             if (orderService.isSubscription(orderNo)) {
-                orderService.addOrderSubscriptionAfterPayment(orderNo, session);
+                orderService.addOrderSubscriptionAfterPayment(orderNo);
             }
         } catch (InvalidPaymentException e) {
             throw new InvalidPaymentException(e.getMessage());

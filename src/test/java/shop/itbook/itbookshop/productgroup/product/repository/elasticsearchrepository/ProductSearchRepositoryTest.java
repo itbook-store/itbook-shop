@@ -42,14 +42,12 @@ class ProductSearchRepositoryTest {
             .detailsDescription("상세 설명")
             .stock(1)
             .isSelled(true)
-            .isDeleted(false)
+            .isForceSoldOut(false)
             .thumbnailUrl("testUrl")
             .fixedPrice(20000L)
             .increasePointPercent(1)
             .discountPercent(10.0)
             .rawPrice(12000L)
-            .dailyHits(0L)
-            .productCreatedAt(LocalDateTime.now())
             .build();
     }
 

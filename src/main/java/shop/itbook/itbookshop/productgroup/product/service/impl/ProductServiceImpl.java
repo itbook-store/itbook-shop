@@ -209,7 +209,9 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplying(requestDto.getIsPointApplying());
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
-        product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
+        if (Objects.nonNull(requestDto.getFileThumbnailsUrl())) {
+            product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
+        }
         product.setFixedPrice(requestDto.getFixedPrice());
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
         product.setDiscountPercent(requestDto.getDiscountPercent());
@@ -237,7 +239,9 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplying(requestDto.getIsPointApplying());
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
-        product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
+        if (Objects.nonNull(requestDto.getFileThumbnailsUrl())) {
+            product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
+        }
         product.setFixedPrice(requestDto.getFixedPrice());
         product.setIncreasePointPercent(requestDto.getIncreasePointPercent());
         product.setDiscountPercent(requestDto.getDiscountPercent());

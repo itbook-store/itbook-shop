@@ -44,3 +44,8 @@ Content-Type: application/json
 GET /api/coupon-issues/2941/order/total
 Host: localhost:8082
 Content-Type: application/json
+
+###
+GET /api/membership-coupons/list
+Host: localhost:8082
+Content-Type: application/json

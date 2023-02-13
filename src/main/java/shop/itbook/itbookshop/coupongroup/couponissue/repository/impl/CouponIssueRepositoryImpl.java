@@ -48,12 +48,18 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
         QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
         QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProduct qProduct = QProduct.product;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
 
         JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
             .select(qCouponIssue.count())
-            .join(qCouponIssue.member, qMember);
+            .join(qCouponIssue.member, qMember)
+            .where(qCouponIssue.member.memberNo.eq(memberNo));
 
-        List<UserCouponIssueListResponseDto> couponList = jpqlQuery
+        List<UserCouponIssueListResponseDto> couponList = from(qCouponIssue)
             .select(Projections.fields(UserCouponIssueListResponseDto.class,
                 qCouponIssue.couponIssueNo,
                 qCoupon.name,
@@ -61,6 +67,9 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
+                qProduct.productNo, qProduct.name.as("productName"),
+                qCategory.categoryNo, qCategory.categoryName,
+                qParentCategory.categoryName.as("parentCategoryName"),
                 qCouponType.couponTypeEnum.stringValue().as("couponType"),
                 qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
                 qCouponIssue.couponIssueCreatedAt,
@@ -70,7 +79,13 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
             .join(qCouponIssue.member, qMember)
-            .where(qMember.memberNo.eq(memberNo))
+            .leftJoin(qProductCoupon).on(qCouponIssue.coupon.couponNo.eq(qProductCoupon.couponNo))
+            .leftJoin(qProduct).on(qProductCoupon.product.productNo.eq(qProduct.productNo))
+            .leftJoin(qCategoryCoupon).on(qCouponIssue.coupon.couponNo.eq(qCategoryCoupon.couponNo))
+            .leftJoin(qCategory).on(qCategoryCoupon.category.categoryNo.eq(qCategory.categoryNo))
+            .leftJoin(qParentCategory)
+            .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
+            .where(qCouponIssue.member.memberNo.eq(memberNo))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();

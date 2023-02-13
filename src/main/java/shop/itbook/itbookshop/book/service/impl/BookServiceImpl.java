@@ -136,10 +136,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookBooleanResponseDto isExistsInAladinByIsbn(String isbn) {
 
-        if (!Objects.isNull(aladinApiService.getBookDetails(isbn))) {
+        try {
+            aladinApiService.getBookDetails(isbn);
             return new BookBooleanResponseDto(Boolean.TRUE);
+        } catch (BookNotFoundException e) {
+            return new BookBooleanResponseDto(Boolean.FALSE);
         }
-        return new BookBooleanResponseDto(Boolean.FALSE);
     }
 
     /**

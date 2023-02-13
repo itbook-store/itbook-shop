@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 
 /**
  * @author 송다혜
@@ -14,4 +15,6 @@ public interface ProductCouponService {
     Long addProductCoupon(ProductCouponRequestDto productCouponRequestDto);
 
     Page<AdminCouponListResponseDto> findProductCouponPageList(Pageable pageable);
+
+    ProductCoupon findByProductCoupon(Long couponNo);
 }
