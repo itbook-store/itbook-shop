@@ -18,8 +18,8 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCoup
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.CategoryCouponApply;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.repository.CategoryCouponApplyRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
+import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
@@ -29,7 +29,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
-import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -59,8 +58,6 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscript
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
-import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
-import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
@@ -100,6 +97,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductCouponApplyRepository productCouponApplyRepository;
     private final OrderTotalCouponApplyRepositoy orderTotalCouponApplyRepositoy;
     private final OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
+    private final CouponIssueRepository couponIssueRepository;
 
 
     /**
@@ -175,7 +173,6 @@ public class OrderServiceImpl implements OrderService {
             Member member = memberService.findMemberByMemberNo(memberNo.get());
             OrderMember orderMember = new OrderMember(order, member);
             orderMemberRepository.save(orderMember);
-
             return;
         }
 
@@ -244,6 +241,8 @@ public class OrderServiceImpl implements OrderService {
         OrderAddRequestDto orderAddRequestDto,
         Order order, HttpSession session, Optional<Long> optionalMemberNo) {
 
+        ProductDetailsDto productDetailsDto = new ProductDetailsDto(415L, 1, null);
+        orderAddRequestDto.setProductDetailsDtoList(List.of(productDetailsDto));
         StringBuilder stringBuilder = new StringBuilder();
 
         long amount = 0L;
@@ -306,6 +305,7 @@ public class OrderServiceImpl implements OrderService {
             if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
                 orderProductService.addOrderProduct(order, product, productCnt,
                     totalPriceOfSameProducts);
+                this.increasePointPerOrderProduct(order, product, productPrice, productCnt);
                 continue;
             }
 
@@ -323,10 +323,13 @@ public class OrderServiceImpl implements OrderService {
             orderProductService.addOrderProduct(order, product, productCnt,
                 totalPriceOfSameProductsWithCouponApplied);
 
-            this.increasePointPerOrderProduct(order, product, productPrice);
+            this.increasePointPerOrderProduct(order, product, productPrice, productCnt);
         }
 
-        session.setAttribute("couponIssueNoList_" + order.getOrderNo(), couponIssueNoList);
+        if (!couponIssueNoList.isEmpty()) {
+            session.setAttribute("couponIssueNoList_" + order.getOrderNo(), couponIssueNoList);
+        }
+
 
         if (productDetailsDtoList.size() > 1) {
             stringBuilder.append(" 외 ")
@@ -364,17 +367,19 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private void increasePointPerOrderProduct(Order order, Product product, long productPrice) {
+    private void increasePointPerOrderProduct(Order order, Product product, long productPrice,
+                                              Integer productCnt) {
 
         if (product.getIsPointApplying()) {
             int increasePointPercent = product.getIncreasePointPercent() / 100;
             Long increasePoint = 0L;
-            if (Objects.nonNull(increasePoint)) {
+            if (Objects.nonNull(order.getIncreasePoint())) {
                 increasePoint = order.getIncreasePoint();
             }
 
             if (product.getIsPointApplyingBasedSellingPrice()) {
-                order.setIncreasePoint(increasePoint + (productPrice * increasePointPercent));
+                order.setIncreasePoint(
+                    increasePoint + ((productPrice * increasePointPercent)) * productCnt);
             } else {
                 order.setIncreasePoint(
                     increasePoint + (product.getFixedPrice() * increasePointPercent));
@@ -385,10 +390,18 @@ public class OrderServiceImpl implements OrderService {
     private Coupon getAvailableCoupon(Long couponIssueNo,
                                       Long basePriceToCompareAboutStandardAmount) {
 
-        CouponIssue couponIssue =
-            couponIssueService.findCouponIssueByCouponIssueNo(
-                couponIssueNo);
 
+        if (Objects.isNull(couponIssueNo)) {
+            return null;
+        }
+
+        Optional<CouponIssue> optionalCouponIssue = couponIssueRepository.findById(couponIssueNo);
+
+        if (optionalCouponIssue.isEmpty()) {
+            return null;
+        }
+
+        CouponIssue couponIssue = optionalCouponIssue.get();
         return AmountCalculationBeforePaymentUtil.getAvailableCoupon(couponIssue,
             basePriceToCompareAboutStandardAmount);
     }
