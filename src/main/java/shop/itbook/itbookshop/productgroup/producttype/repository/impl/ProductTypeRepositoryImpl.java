@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
-import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.membergroup.memberrecentlyviewedproduct.entity.QMemberRecentlyViewedProduct;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -163,7 +162,6 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             () -> from(qBook).fetchCount());
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -242,9 +240,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             .fetchFirst().getProductNo();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public Long findRecentlyPurchaseProduct(Long memberNo) {
         QOrderMember qOrderMember = QOrderMember.orderMember;
@@ -297,8 +293,6 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             .groupBy(qOrderProduct.product)
             .fetch();
     }
-
-    // duplication code
 
     /**
      * {@inheritDoc}

@@ -88,7 +88,7 @@ public class ReviewServiceImpl implements ReviewService {
             review.setImage(uploadAndSetFile(images));
             reviewNo = reviewRepository.save(review).getOrderProductNo();
 
-            // TODO 메타 데이터의 포인트 값 가져오기
+            // TODO jun : 메타 데이터의 포인트 값 가져오기
             reviewIncreasePointHistoryService.savePointHistoryAboutReviewIncrease(member, review,
                 100L);
 
