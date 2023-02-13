@@ -163,7 +163,6 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             () -> from(qBook).fetchCount());
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -242,9 +241,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             .fetchFirst().getProductNo();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+
     @Override
     public Long findRecentlyPurchaseProduct(Long memberNo) {
         QOrderMember qOrderMember = QOrderMember.orderMember;
@@ -297,8 +294,6 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
             .groupBy(qOrderProduct.product)
             .fetch();
     }
-
-    // duplication code
 
     /**
      * {@inheritDoc}
