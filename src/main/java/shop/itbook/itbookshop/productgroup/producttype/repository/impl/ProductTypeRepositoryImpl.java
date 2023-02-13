@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.book.entity.QBook;
-import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.membergroup.memberrecentlyviewedproduct.entity.QMemberRecentlyViewedProduct;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
