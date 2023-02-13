@@ -38,7 +38,7 @@ public interface OrderService {
      * @author 정재원 *
      */
     OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                          Optional<Long> memberNo, HttpSession session);
+                                          Optional<Long> memberNo);
 
     /**
      * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.
@@ -49,7 +49,7 @@ public interface OrderService {
      * @author 정재원 *
      */
     OrderPaymentDto reOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                         Long orderNo, HttpSession session);
+                                         Long orderNo);
 
     void processAfterOrderCancelPaymentSuccess(Long orderNo);
 
@@ -72,7 +72,7 @@ public interface OrderService {
      * @return 결제 완료된 주문 엔티티의 인스턴스
      * @author 정재원 *
      */
-    Order processAfterOrderPaymentSuccess(Long orderNo, HttpSession session);
+    Order processAfterOrderPaymentSuccess(Long orderNo);
 
 
     /**
