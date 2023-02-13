@@ -15,14 +15,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.CategoryCouponApply;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.repository.CategoryCouponApplyRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.OrderTotalCouponApply;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -53,7 +59,11 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscript
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
+import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
@@ -88,8 +98,11 @@ public class OrderServiceImpl implements OrderService {
     private final CategoryCouponRepository categoryCouponRepository;
     private final ProductCouponRepository productCouponRepository;
     private final ProductCategoryRepository productCategoryRepository;
-
     private final OrderTotalCouponRepository orderTotalCouponRepository;
+    private final CategoryCouponApplyRepository categoryCouponApplyRepository;
+    private final ProductCouponApplyRepository productCouponApplyRepository;
+    private final OrderTotalCouponApplyRepositoy orderTotalCouponApplyRepositoy;
+    private final OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
 
 
     /**
@@ -155,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
         checkMemberAndSaveOrder(order, memberNo);
 
         // 주문_상품 테이블 저장 및 가격 계산
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, session);
+        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, session, memberNo);
     }
 
     private void checkMemberAndSaveOrder(Order order,
@@ -206,7 +219,7 @@ public class OrderServiceImpl implements OrderService {
         orderNo = orderNo - sequence;
 
         return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo),
-            session);
+            session, memberNo);
     }
 
     /**
@@ -218,12 +231,21 @@ public class OrderServiceImpl implements OrderService {
                                                 Long orderNo, HttpSession session) {
 
         Order order = findOrderEntity(orderNo);
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, session);
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
+
+        Optional<Long> optionalMemberNo = Optional.empty();
+        if (optionalOrderMember.isPresent()) {
+            optionalMemberNo =
+                Optional.ofNullable(optionalOrderMember.get().getMember().getMemberNo());
+        }
+
+        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, session,
+            optionalMemberNo);
     }
 
     private OrderPaymentDto getOrderPaymentDtoForMakingPayment(
         OrderAddRequestDto orderAddRequestDto,
-        Order order, HttpSession session) {
+        Order order, HttpSession session, Optional<Long> optionalMemberNo) {
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -234,9 +256,10 @@ public class OrderServiceImpl implements OrderService {
         amount = this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
             productDetailsDtoList, session);
         amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto, amount);
-        Long decreasePoint = orderAddRequestDto.getDecreasePoint();
-        amount = this.calculateAmountAboutPoint(amount, decreasePoint);
-        order.setDecreasePoint(decreasePoint);
+
+        if (optionalMemberNo.isPresent()) {
+            amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
+        }
 
         return OrderPaymentDto.builder()
             .orderNo(order.getOrderNo())
@@ -246,6 +269,18 @@ public class OrderServiceImpl implements OrderService {
             .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo())
             .build();
+    }
+
+    private long doProcessPointDecreaseAndGetAmount(OrderAddRequestDto orderAddRequestDto,
+                                                    Order order, long amount) {
+        Long decreasePoint = orderAddRequestDto.getDecreasePoint();
+        if (amount < decreasePoint) {
+            decreasePoint = amount;
+        }
+
+        amount = this.calculateAmountAboutPoint(amount, decreasePoint);
+        order.setDecreasePoint(decreasePoint);
+        return amount;
     }
 
     private long calculateAmountAboutOrderProductCoupon(Order order, StringBuilder stringBuilder,
@@ -383,6 +418,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private long calculateAmountAboutPoint(long amount, long pointToBeDiscounted) {
+
         return AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(amount,
             pointToBeDiscounted);
     }
@@ -424,6 +460,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void savePointHistoryAboutMember(Order order) {
+
         Optional<OrderMember> optionalOrderMember =
             orderMemberRepository.findById(order.getOrderNo());
         if (!optionalOrderMember.isPresent()) {
@@ -432,7 +469,6 @@ public class OrderServiceImpl implements OrderService {
 
         OrderMember orderMember = optionalOrderMember.get();
         Member member = orderMember.getMember();
-
 
         Long increasePoint = order.getIncreasePoint();
         Long decreasePoint = order.getDecreasePoint();
@@ -455,9 +491,89 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void processAfterOrderCancelPaymentSuccess(Long orderNo) {
-        // TODO jun : 주문취소시에 쿠폰들 다시 넣어주고 포인트 되돌리는거 추가
+
         Order order = findOrderEntity(orderNo);
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
+
+        // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
+        this.changeCategoryAndProductCouponStatusByCancel(orderNo);
+
+        // 주문번호로 주문총액상품쿠폰 있는지 확인하고 있으면 사용전상태로 변경
+        this.changeOrderTotalAmountCouponStatusByCancel(orderNo);
+
+        // 포인트 차감금액 있는지 확인해서 금액만큼 주문취소적립
+        this.addOrderCancelIncreaseDecreasePointHistory(order,
+            PointHistoryServiceImpl.INCREASE_POINT_HISTORY);
+
+        // 먼저 주문취소차감 api 만들기 -> 포인트 적립금액 있는지 확인해서 주문취소차감
+        this.addOrderCancelIncreaseDecreasePointHistory(order,
+            PointHistoryServiceImpl.DECREASE_POINT_HISTORY);
     }
 
+    private void changeCategoryAndProductCouponStatusByCancel(Long orderNo) {
+        List<OrderProductDetailResponseDto> OrderProductDetailResponseDtoList =
+            orderProductService.findOrderProductsByOrderNo(orderNo);
+
+        for (OrderProductDetailResponseDto orderProductDetailResponseDto : OrderProductDetailResponseDtoList) {
+
+            Optional<CategoryCouponApply> optionalCategoryCouponApply =
+                categoryCouponApplyRepository.findById(
+                    orderProductDetailResponseDto.getOrderProductNo());
+
+            if (optionalCategoryCouponApply.isPresent()) {
+                CategoryCouponApply categoryCouponApply = optionalCategoryCouponApply.get();
+                couponIssueService.cancelCouponIssue(
+                    categoryCouponApply.getCouponIssue().getCouponIssueNo());
+            } else {
+                Optional<ProductCouponApply> optionalProductCouponApply =
+                    productCouponApplyRepository.findById(
+                        orderProductDetailResponseDto.getOrderProductNo());
+
+                if (optionalProductCouponApply.isPresent()) {
+                    ProductCouponApply productCouponApply = optionalProductCouponApply.get();
+                    couponIssueService.cancelCouponIssue(productCouponApply.getCouponIssueNo());
+                }
+            }
+        }
+    }
+
+    private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {
+
+        Optional<OrderTotalCouponApply> optionalOrderTotalCouponApply =
+            orderTotalCouponApplyRepositoy.findById(
+                orderNo);
+
+        if (optionalOrderTotalCouponApply.isEmpty()) {
+            return;
+        }
+
+        OrderTotalCouponApply orderTotalCouponApply = optionalOrderTotalCouponApply.get();
+        couponIssueService.cancelCouponIssue(orderTotalCouponApply.getCouponIssueNo());
+    }
+
+    private void addOrderCancelIncreaseDecreasePointHistory(Order order, boolean isDecrease) {
+        if (Objects.equals(order.getIncreasePoint(), 0L)) {
+            return;
+        }
+
+        Optional<OrderMember> optionalOrderMember =
+            orderMemberRepository.findById(order.getOrderNo());
+
+        if (optionalOrderMember.isEmpty()) {
+            return;
+        }
+
+        OrderMember orderMember = optionalOrderMember.get();
+        if (isDecrease) {
+            orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelDecrease(
+                orderMember.getMember(),
+                order,
+                order.getDecreasePoint());
+        } else {
+            orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelIncrease(
+                orderMember.getMember(),
+                order,
+                order.getDecreasePoint());
+        }
+    }
 }
