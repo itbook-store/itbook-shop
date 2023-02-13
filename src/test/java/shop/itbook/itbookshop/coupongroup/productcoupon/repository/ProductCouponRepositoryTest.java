@@ -78,4 +78,22 @@ class ProductCouponRepositoryTest {
 
         assertThat(productCoupon1.getProduct().getName()).isEqualTo(product1.getName());
     }
+
+    @Test
+    void findByCouponNo_success(){
+        ProductCoupon productCoupon1 =
+            productCouponRepository.findByProductCouponByCouponNo(productCoupon.getCouponNo());
+
+        assertThat(productCoupon1.getProduct().getName()).isEqualTo(product1.getName());
+        assertThat(productCoupon1.getProduct().getProductNo()).isEqualTo(product1.getProductNo());
+        assertThat(productCoupon1.getCouponNo()).isEqualTo(amountDummyCoupon.getCouponNo());
+    }
+
+    @Test
+    void findByCouponNo_fail(){
+        ProductCoupon productCoupon1 =
+            productCouponRepository.findByProductCouponByCouponNo(123L);
+
+        assertThat(productCoupon1).isEqualTo(null);
+    }
 }
