@@ -3,7 +3,8 @@ package shop.itbook.itbookshop.coupongroup.productcoupon.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 
 /**
  * @author 송다혜
@@ -11,5 +12,5 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponListResponse
  */
 @NoRepositoryBean
 public interface CustomProductCouponRepository {
-    Page<CouponListResponseDto> findProductCouponPageList(Pageable pageable);
+    Page<AdminCouponListResponseDto> findProductCouponPageList(Pageable pageable);
 }

@@ -248,17 +248,19 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
     @Override
     public Long findRecentlyPurchaseProduct(Long memberNo) {
         QOrderMember qOrderMember = QOrderMember.orderMember;
-        QMember qMember = QMember.member;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
         QOrder qOrder = QOrder.order;
 
         return from(qOrder)
             .innerJoin(qOrder.orderProducts, qOrderProduct)
             .select(qOrderProduct.product.productNo)
-            .where(qOrderProduct.order.eq(JPAExpressions.select(qOrderMember.order)
-                .from(qOrderMember)
-                .innerJoin(qOrderMember.member, qMember)
-                .where(qMember.memberNo.eq(memberNo))))
+            .where(qOrderProduct.order.in(
+                    JPAExpressions.select(qOrderMember.order)
+                        .from(qOrderMember)
+                        .where(qOrderMember.member.memberNo.eq(memberNo))
+                        .orderBy(qOrderMember.orderNo.desc())
+                )
+            )
             .orderBy(qOrder.orderCreatedAt.desc())
             .fetchFirst();
     }

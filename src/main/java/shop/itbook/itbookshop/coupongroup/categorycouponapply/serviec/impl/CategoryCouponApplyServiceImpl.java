@@ -29,20 +29,16 @@ public class CategoryCouponApplyServiceImpl implements CategoryCouponApplyServic
     @Override
     @Transactional
     public void saveCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo,
-                                                             List<OrderProduct> orderProducts) {
-        CouponIssue usedCouponIssue = couponIssueService.usingCouponIssue(couponIssueNo);
-        List<CategoryCouponApply> categoryCouponApplyList = new ArrayList<>();
-        for (OrderProduct orderProduct : orderProducts) {
-            categoryCouponApplyList.add(new CategoryCouponApply(usedCouponIssue, orderProduct));
-        }
-        categoryCouponApplyRepository.saveAll(categoryCouponApplyList);
+                                                             OrderProduct orderProduct) {
+        couponIssueService.usingCouponIssue(couponIssueNo);
+
+        categoryCouponApplyRepository.save(new CategoryCouponApply(couponIssueNo, orderProduct));
     }
 
     @Override
     @Transactional
     public void cancelCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo) {
         CouponIssue canceledCouponIssue = couponIssueService.cancelCouponIssue(couponIssueNo);
-        categoryCouponApplyRepository.deleteAllByCouponIssue_CouponIssueNo(
-            canceledCouponIssue.getCouponIssueNo());
+        categoryCouponApplyRepository.deleteById(canceledCouponIssue.getCouponIssueNo());
     }
 }

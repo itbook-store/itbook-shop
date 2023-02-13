@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.categorycouponapply.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,11 +34,10 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 public class CategoryCouponApply {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_coupon_apply_no", nullable = false)
-    private Long categoryCouponApplyNo;
+    private Long couponIssueNo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("couponIssueNo")
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "coupon_issue_no", nullable = false)
     private CouponIssue couponIssue;
 
@@ -45,8 +45,8 @@ public class CategoryCouponApply {
     @JoinColumn(name = "order_product_no", nullable = false, unique = true)
     private OrderProduct orderProduct;
 
-    public CategoryCouponApply(CouponIssue couponIssue, OrderProduct orderProduct) {
-        this.couponIssue = couponIssue;
+    public CategoryCouponApply(Long couponIssueNo, OrderProduct orderProduct) {
+        this.couponIssueNo = couponIssueNo;
         this.orderProduct = orderProduct;
     }
 }
