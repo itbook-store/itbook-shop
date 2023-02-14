@@ -23,6 +23,8 @@ public class ReviewResponseDto {
 
     private String productName;
 
+    private String thumbnailUrl;
+
     private Long memberNo;
 
     private Integer starPoint;
