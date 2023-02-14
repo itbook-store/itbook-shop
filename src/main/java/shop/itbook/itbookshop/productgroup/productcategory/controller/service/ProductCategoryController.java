@@ -60,7 +60,7 @@ public class ProductCategoryController {
      * @return 상품 번호에 해당하는 상품의 카테고리 리스트를 response dto에 담아 반환합니다.
      * @author 이하늬
      */
-    @GetMapping(params = "productNo")
+    @GetMapping(value = "/categories", params = "productNo")
     public ResponseEntity<CommonResponseBody<PageResponse<CategoryDetailsResponseDto>>> productList(
         @PageableDefault Pageable pageable, @RequestParam Long productNo) {
 
