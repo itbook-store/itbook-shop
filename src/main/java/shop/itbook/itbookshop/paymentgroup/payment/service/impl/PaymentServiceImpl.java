@@ -76,6 +76,10 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setOrder(order);
 
             paymentRepository.save(payment);
+
+            if (orderService.isSubscription(orderNo)) {
+                orderService.addOrderSubscriptionAfterPayment(orderNo);
+            }
         } catch (InvalidPaymentException e) {
             throw new InvalidPaymentException(e.getMessage());
         }

@@ -44,6 +44,7 @@ public class ReviewTransfer {
             .orderProductNo(review.getOrderProductNo())
             .productNo(review.getProduct().getProductNo())
             .productName(review.getProduct().getName())
+            .thumbnailUrl(review.getProduct().getThumbnailUrl())
             .memberNo(review.getMember().getMemberNo())
             .starPoint(review.getStarPoint())
             .content(review.getContent())

@@ -56,7 +56,9 @@ public class MembershipCouponRepositoryImpl extends QuerydslRepositorySupport
                     qCategory.categoryNo, qCategory.categoryName,
                     qParentCategory.categoryName.as("parentCategoryName"),
                     qCoupon.couponCreatedAt,
-                    qCoupon.couponExpiredAt)).as("coupon"))
+                    qCoupon.couponExpiredAt).as("coupon")))
+            .join(qMembershipCoupon.coupon,qCoupon)
+            .join(qMembershipCoupon.membership, qMembership)
             .join(qCoupon.couponType, qCouponType)
             .leftJoin(qProductCoupon).on(qCoupon.couponNo.eq(qProductCoupon.couponNo))
             .leftJoin(qProduct).on(qProductCoupon.product.productNo.eq(qProduct.productNo))

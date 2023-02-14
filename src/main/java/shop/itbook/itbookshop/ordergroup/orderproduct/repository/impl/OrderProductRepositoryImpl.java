@@ -29,7 +29,7 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport implem
         return from(qOrderProduct)
             .where(qOrderProduct.order.orderNo.eq(orderNo))
             .select(Projections.fields(OrderProductDetailResponseDto.class,
-                qOrderProduct.orderProductNo, qOrderProduct.product.name,
+                qOrderProduct.orderProductNo, qOrderProduct.product.name.as("productName"),
                 qOrderProduct.count, qOrderProduct.productPrice))
             .fetch();
     }

@@ -27,6 +27,8 @@ public class OrderTransfer {
             .postcode(orderAddRequestDto.getPostcode())
             .roadNameAddress(orderAddRequestDto.getRoadNameAddress())
             .recipientAddressDetails(orderAddRequestDto.getRecipientAddressDetails())
+            .increasePoint(0L)
+            .decreasePoint(orderAddRequestDto.getDecreasePoint())
             .isHidden(false)
             .decreasePoint(orderAddRequestDto.getDecreasePoint())
             .increasePoint(0L)

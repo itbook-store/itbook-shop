@@ -91,7 +91,7 @@ public class OrderController {
     }
 
     /**
-     * 주문 데이터를 추가합니다.
+     * 결제 전, 주문 데이터 등록의 요청을 받아 처리합니다.
      *
      * @param memberNo           회원 번호(null 일 경우 비회원)
      * @param orderAddRequestDto 주문시 작성한 정보를 담은 Dto
@@ -104,11 +104,6 @@ public class OrderController {
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
 
         Optional<Long> optMemberNo = Optional.empty();
-
-        // TODO delete jun : 테스트를위해 잠시 나둠 지워야함
-        orderAddRequestDto.setDecreasePoint(0L);
-        ProductDetailsDto productDetailsDto = new ProductDetailsDto(415L, 3, 130L);
-        orderAddRequestDto.setProductDetailsDtoList(List.of(productDetailsDto));
 
         if (Objects.nonNull(memberNo)) {
             optMemberNo = Optional.of(memberNo);
@@ -132,7 +127,7 @@ public class OrderController {
      * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
      * @author 정재원 *
      */
-    @PostMapping("/{orderNo}")
+    @PostMapping("/re-order/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> reOrder(
         @PathVariable("orderNo") Long orderNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
@@ -145,6 +140,51 @@ public class OrderController {
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    /**
+     * 구독 주문의 요청을 받아 처리합니다.
+     *
+     * @param memberNo           회원 번호(null 일 경우 비회원)
+     * @param orderAddRequestDto 주문시 작성한 정보를 담은 Dto
+     * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
+     * @author 정재원
+     */
+    @PostMapping("/subscription")
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionAfterPayment(
+        @RequestParam(value = "memberNo", required = false) Long memberNo,
+        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
+
+        Optional<Long> optMemberNo = Optional.empty();
+
+        if (Objects.nonNull(memberNo)) {
+            optMemberNo = Optional.of(memberNo);
+        }
+
+        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.addOrderSubscriptionBeforePayment(orderAddRequestDto, optMemberNo)
+            );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    /**
+     * 구독 주문 완료 후 결제 정보 저장 요청을 받아 처리합니다.
+     *
+     * @param orderNo 주문 번호(null 일 경우 비회원)
+     * @return 응답 객체
+     * @author 정재원
+     */
+    @PostMapping("/subscription/completion")
+    public ResponseEntity<CommonResponseBody<Void>> orderSubscriptionAfterPayment(
+        @RequestParam("orderNo") Long orderNo) {
+
+        orderService.addOrderSubscriptionAfterPayment(orderNo);
+
+        return ResponseEntity.ok().build();
     }
 
     /**
