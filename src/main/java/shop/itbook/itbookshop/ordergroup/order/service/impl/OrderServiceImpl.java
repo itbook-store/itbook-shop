@@ -534,8 +534,8 @@ public class OrderServiceImpl implements OrderService {
 
         if (Objects.nonNull(productAndCategoryCouponApplyDto)) {
             for (InfoForCouponIssueApply info : productAndCategoryCouponApplyDto.getInfoForCouponIssueApplyList()) {
-//            couponIssueService.saveCouponApplyAboutCategoryAndProduct(info.getCouponIssueNo(),
-//                info.getOrderProductNo());
+                couponIssueService.saveCouponApplyAboutCategoryAndProduct(info.getCouponIssueNo(),
+                    info.getOrderProductNo());
             }
         }
 

@@ -13,13 +13,10 @@ public class AmountCalculationBeforePaymentUtil {
                                             long basePriceToCompareAboutStandardAmount) {
 
         Coupon coupon = couponIssue.getCoupon();
-        if (Objects.isNull(coupon)) {
-            return null;
-        }
 
         Long standardAmount = coupon.getStandardAmount();
         if (basePriceToCompareAboutStandardAmount < standardAmount) {
-            return null;
+            throw new CanNotApplyCouponException();
         }
 
         return coupon;
