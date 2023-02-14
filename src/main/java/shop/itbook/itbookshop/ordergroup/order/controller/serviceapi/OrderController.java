@@ -107,8 +107,8 @@ public class OrderController {
 
         // TODO delete jun : 테스트를위해 잠시 나둠 지워야함
         orderAddRequestDto.setDecreasePoint(0L);
-        ProductDetailsDto productDetailsDto = new ProductDetailsDto(415L, 3, 130L);
-        orderAddRequestDto.setProductDetailsDtoList(List.of(productDetailsDto));
+//        ProductDetailsDto productDetailsDto = new ProductDetailsDto(415L, 3, null);
+//        orderAddRequestDto.setProductDetailsDtoList(List.of(productDetailsDto));
 
         if (Objects.nonNull(memberNo)) {
             optMemberNo = Optional.of(memberNo);
