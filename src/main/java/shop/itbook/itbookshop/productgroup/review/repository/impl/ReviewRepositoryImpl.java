@@ -52,6 +52,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
                 .innerJoin(qReview.member, qMember)
                 .select(Projections.constructor(ReviewResponseDto.class,
                     qReview.orderProductNo, qReview.product.productNo, qReview.product.name,
+                    qProduct.thumbnailUrl,
                     qReview.member.memberNo,
                     qReview.starPoint, qReview.content, qReview.image))
                 .where(qReview.member.memberNo.eq(memberNo).and(qReview.starPoint.ne(-1)))
@@ -83,6 +84,7 @@ public class ReviewRepositoryImpl extends QuerydslRepositorySupport
                 .innerJoin(qReview.member, qMember)
                 .select(Projections.constructor(ReviewResponseDto.class,
                     qReview.orderProductNo, qReview.product.productNo, qReview.product.name,
+                    qProduct.thumbnailUrl,
                     qReview.member.memberNo,
                     qReview.starPoint, qReview.content, qReview.image))
                 .where(qReview.product.productNo.eq(productNo).and(qReview.starPoint.ne(-1)))
