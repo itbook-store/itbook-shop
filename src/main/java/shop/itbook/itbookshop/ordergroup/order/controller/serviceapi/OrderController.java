@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
@@ -20,6 +21,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.deliverygroup.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
@@ -102,9 +104,7 @@ public class OrderController {
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
 
         Optional<Long> optMemberNo = Optional.empty();
-        // TODO delete jun : 테스트를위해 잠시 나둠 지워야함
 
-        orderAddRequestDto.setDecreasePoint(0L);
         if (Objects.nonNull(memberNo)) {
             optMemberNo = Optional.of(memberNo);
         }
@@ -113,7 +113,7 @@ public class OrderController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo, session)
+                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -130,13 +130,13 @@ public class OrderController {
     @PostMapping("/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> reOrder(
         @PathVariable("orderNo") Long orderNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.reOrderBeforePayment(orderAddRequestDto, orderNo, session)
+                ), orderService.reOrderBeforePayment(orderAddRequestDto, orderNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
