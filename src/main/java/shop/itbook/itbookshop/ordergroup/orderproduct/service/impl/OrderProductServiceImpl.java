@@ -26,18 +26,20 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
     @Transactional
-    public void addOrderProduct(Order order, Product product, Integer productCnt,
-                                Long productPrice) {
+    public OrderProduct addOrderProduct(Order order, Product product, Integer productCnt,
+                                        Long productPrice) {
 
         Optional<OrderProduct> optOrderProduct = orderProductRepository.findByOrder(order);
 
         if (optOrderProduct.isPresent()) {
             OrderProduct orderProduct = optOrderProduct.get();
             orderProduct.setProductPrice(productPrice);
-            return;
+            return orderProduct;
         }
 
         OrderProduct orderProduct = OrderProduct.builder()
@@ -46,7 +48,7 @@ public class OrderProductServiceImpl implements OrderProductService {
             .count(productCnt)
             .productPrice(productPrice)
             .build();
-        orderProductRepository.save(orderProduct);
+        return orderProductRepository.save(orderProduct);
     }
 
     /**
