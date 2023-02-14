@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +41,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -65,6 +65,9 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
@@ -83,7 +86,6 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -142,6 +144,15 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(orderNo).orElseThrow(OrderNotFoundException::new);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isSubscription(Long orderNo) {
+
+        return orderSubscriptionRepository.findByOrder_OrderNo(orderNo).isPresent();
+    }
+
     @Override
     public Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
                                                                                 Long memberNo) {
@@ -157,10 +168,6 @@ public class OrderServiceImpl implements OrderService {
     public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                  Optional<Long> memberNo) {
 
-        if (Objects.nonNull(orderAddRequestDto.getIsSubscription())) {
-            // 구독 처리
-            return orderSubscription(orderAddRequestDto, memberNo);
-        }
 
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
@@ -194,18 +201,27 @@ public class OrderServiceImpl implements OrderService {
         orderNonMemberRepository.save(orderNonMember);
     }
 
-    private OrderPaymentDto orderSubscription(OrderAddRequestDto orderAddRequestDto,
-                                              Optional<Long> memberNo) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public OrderPaymentDto addOrderSubscriptionBeforePayment(OrderAddRequestDto orderAddRequestDto,
+                                                             Optional<Long> memberNo) {
+
+        if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
+            throw new InvalidOrderException();
+        }
 
         int sequence = 1;
-        long orderNo = 0;
+
+        OrderPaymentDto orderPaymentDto = null;
 
         while (sequence <= orderAddRequestDto.getSubscriptionPeriod()) {
 
             Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
             order.setSelectedDeliveryDate(LocalDate.now().plusMonths(sequence).withDayOfMonth(1));
             orderRepository.save(order);
-            orderNo = order.getOrderNo();
 
             OrderSubscription orderSubscription = OrderSubscription.builder()
                 .order(order)
@@ -221,12 +237,68 @@ public class OrderServiceImpl implements OrderService {
 
             // 회원, 비회원 구분해서 저장
             checkMemberAndSaveOrder(order, memberNo);
+
+            sequence++;
+
+            OrderPaymentDto temp =
+                getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order,
+                    memberNo);
+
+            if (Objects.isNull(orderPaymentDto)) {
+                orderPaymentDto = temp;
+            }
         }
 
-        orderNo = orderNo - sequence;
+        if (Objects.isNull(orderPaymentDto)) {
+            throw new InvalidOrderException();
+        }
 
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, findOrderEntity(orderNo),
-            memberNo);
+        return orderPaymentDto;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void addOrderSubscriptionAfterPayment(Long orderNo) {
+
+        OrderSubscription orderSubscription =
+            orderSubscriptionRepository.findByOrder_OrderNo(orderNo)
+                .orElseThrow(InvalidPaymentException::new);
+
+        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
+
+        Payment payment = paymentRepository.findPaymentByOrder_OrderNo(orderNo)
+            .orElseThrow(InvalidPaymentException::new);
+
+        while (subscriptionPeriod > 1) {
+            subscriptionPeriod--;
+            orderNo++;
+
+            Order order = findOrderEntity(orderNo);
+
+            Payment tempPayment = Payment.builder()
+                .paymentStatus(payment.getPaymentStatus())
+                .order(order)
+                .card(payment.getCard())
+                .totalAmount(payment.getTotalAmount())
+                .paymentKey(payment.getPaymentKey())
+                .orderId(payment.getOrderId())
+                .orderName(payment.getOrderName())
+                .receiptUrl(payment.getReceiptUrl())
+                .requestedAt(payment.getRequestedAt())
+                .approvedAt(payment.getApprovedAt())
+                .country(payment.getCountry())
+                .checkoutUrl(payment.getCheckoutUrl())
+                .vat(payment.getVat())
+                .build();
+            paymentRepository.save(tempPayment);
+
+            // 완료 처리.
+            // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
+            processAfterOrderPaymentSuccess(orderNo);
+        } //end while
     }
 
     /**
@@ -484,7 +556,6 @@ public class OrderServiceImpl implements OrderService {
         return orderId;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -662,5 +733,13 @@ public class OrderServiceImpl implements OrderService {
                 order,
                 order.getDecreasePoint());
         }
+    }
+
+    @Override
+    public Page<OrderListAdminViewResponseDto> findOrderListAdmin() {
+
+        // todo won : 레포지토리 로직 추가.
+
+        return null;
     }
 }
