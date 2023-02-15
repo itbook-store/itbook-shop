@@ -48,6 +48,7 @@ public interface ReviewService {
      */
     ReviewResponseDto findReviewById(Long orderProductNo);
 
+    ReviewResponseDto findReviewByIdAndMemberNo(Long memberNo, Long orderProductNo);
 
     /**
      * orderProductNo로 테이블에서 리뷰 데이터를 찾아 삭제합니다.

@@ -34,6 +34,7 @@ public class ReviewRequestDto {
     private Long memberNo;
 
     @Positive(message = "별점은 양수여야 합니다.")
+    @NotNull(message = "별점은 null을 허용하지 않습니다.")
     private Integer starPoint;
 
     @NotBlank(message = "리뷰 내용은 null이거나 공백이어서는 안됩니다.")

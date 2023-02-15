@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.review.controller;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -76,7 +77,7 @@ public class ReviewController {
      */
     @PostMapping("/add")
     public ResponseEntity<CommonResponseBody<ReviewNoResponseDto>> reviewAdd(
-        @RequestPart ReviewRequestDto reviewRequestDto,
+        @Valid @RequestPart ReviewRequestDto reviewRequestDto,
         @RequestPart(required = false) MultipartFile images) {
 
         ReviewNoResponseDto reviewNoResponseDto =
@@ -111,6 +112,21 @@ public class ReviewController {
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @GetMapping("/modify-form/{memberNo}/{orderProductNo}")
+    public ResponseEntity<CommonResponseBody<ReviewResponseDto>> reviewDetailsForModify(
+        @PathVariable("memberNo") Long memberNo,
+        @PathVariable("orderProductNo") Long orderProductNo) {
+
+        CommonResponseBody<ReviewResponseDto> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                ReviewResultMessageEnum.REVIEW_GET_SUCCESS.getResultMessage()),
+            reviewService.findReviewByIdAndMemberNo(memberNo, orderProductNo)
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+
     }
 
     /**

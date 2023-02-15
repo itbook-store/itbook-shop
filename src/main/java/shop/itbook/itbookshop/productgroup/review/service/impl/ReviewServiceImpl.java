@@ -15,13 +15,13 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.service.ReviewIncreasePointHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewComCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
@@ -92,9 +92,8 @@ public class ReviewServiceImpl implements ReviewService {
             reviewIncreasePointHistoryService.savePointHistoryAboutReviewIncrease(member, review,
                 100L);
 
-
         } catch (DataIntegrityViolationException e) {
-            throw new InvalidInputException();
+            throw e;
         }
 
         return reviewNo;
@@ -122,6 +121,19 @@ public class ReviewServiceImpl implements ReviewService {
 
         return ReviewTransfer.entityToDto(
             reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new));
+    }
+
+    @Override
+    public ReviewResponseDto findReviewByIdAndMemberNo(Long memberNo, Long orderProductNo) {
+
+        ReviewResponseDto reviewResponseDto = ReviewTransfer.entityToDto(
+            reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new));
+
+        if (!Objects.equals(reviewResponseDto.getMemberNo(), memberNo)) {
+            throw new ReviewComCloseOtherMemberException();
+        }
+
+        return reviewResponseDto;
     }
 
     /**
