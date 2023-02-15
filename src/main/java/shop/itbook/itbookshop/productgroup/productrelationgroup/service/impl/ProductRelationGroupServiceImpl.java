@@ -2,12 +2,14 @@ package shop.itbook.itbookshop.productgroup.productrelationgroup.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productrelationgroup.dto.request.ProductRelationRequestDto;
@@ -41,8 +43,12 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
 
         List<Product> products = productRepository.findAllById(productNoList);
 
-        for (Product product : products) {
-            productRelationRepository.save(new ProductRelationGroup(basedProduct, product));
+        try {
+            for (Product product : products) {
+                productRelationRepository.save(new ProductRelationGroup(basedProduct, product));
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
         }
 
         return basedProduct;
@@ -72,8 +78,12 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
         productRelationRepository.deleteByBasedProduct_productNo(basedProduct.getProductNo());
         List<Product> products = productRepository.findAllById(productNoList.getRelationList());
 
-        for (Product product : products) {
-            productRelationRepository.save(new ProductRelationGroup(basedProduct, product));
+        try {
+            for (Product product : products) {
+                productRelationRepository.save(new ProductRelationGroup(basedProduct, product));
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
         }
 
         return basedProduct;
@@ -91,7 +101,11 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
                 basedProductNo, productNo);
 
         productRelation.setIsDeleted(true);
-        productRelationRepository.save(productRelation);
+        try {
+            productRelationRepository.save(productRelation);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
+        }
     }
 
     /**

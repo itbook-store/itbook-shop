@@ -55,7 +55,7 @@ public class ProductModifyRequestDto {
 
     @Min(value = 0, message = "할인율은 0% 이상이어야 합니다.")
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
-    private Integer discountPercent;
+    private Double discountPercent;
 
     @NotNull(message = "원가는 반드시 입력되어야 합니다.")
     @Min(value = 0, message = "매입원가는 0원 이상이어야 합니다.")

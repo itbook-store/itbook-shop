@@ -55,13 +55,21 @@ public class ProductServiceImpl implements ProductService {
 
         Product product;
 
+        String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
+        requestDto.setFileThumbnailsUrl(fileUrl);
         try {
-            String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
-            requestDto.setFileThumbnailsUrl(fileUrl);
             product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
         } catch (DataIntegrityViolationException e) {
+//            Throwable rootCause = e.getRootCause();
+//            String message = Objects.requireNonNull(rootCause).getMessage();
+//
+//            if (message.contains("name") || message.contains("")) {
+//                throw new InvalidInputException();
+//            }
+
             throw new InvalidInputException();
+
         }
         return product.getProductNo();
     }
@@ -79,11 +87,17 @@ public class ProductServiceImpl implements ProductService {
         }
 
         Product product = updateProduct(requestDto, productNo);
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
+        }
 
         if (!Objects.isNull(requestDto.getCategoryNoList())) {
-            productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
+            productCategoryService.modifyProductCategory(product,
+                requestDto.getCategoryNoList());
         }
+
     }
 
     /**

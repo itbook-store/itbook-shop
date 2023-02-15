@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import shop.itbook.itbookshop.fileservice.FileService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.service.ProductCategoryService;
 
@@ -85,17 +87,23 @@ public class BookServiceImpl implements BookService {
     public Long addBook(ProductBookRequestDto requestDto, MultipartFile thumbnails,
                         MultipartFile ebook) {
 
-        Long productNo =
-            productService.addProduct(productService.toProductRequestDto(requestDto), thumbnails);
+        Long productNo;
 
-        if (Objects.nonNull(ebook)) {
-            String fileUrl = fileService.uploadFile(ebook, folderPathEbook);
-            requestDto.setFileEbookUrl(fileUrl);
+        try {
+            productNo =
+                productService.addProduct(productService.toProductRequestDto(requestDto),
+                    thumbnails);
+
+            if (Objects.nonNull(ebook)) {
+                String fileUrl = fileService.uploadFile(ebook, folderPathEbook);
+                requestDto.setFileEbookUrl(fileUrl);
+            }
+
+            Book book = BookTransfer.dtoToEntityAdd(requestDto, productNo);
+            bookRepository.save(book);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
         }
-
-        Book book = BookTransfer.dtoToEntityAdd(requestDto, productNo);
-        bookRepository.save(book);
-
         return productNo;
     }
 
@@ -107,22 +115,28 @@ public class BookServiceImpl implements BookService {
     public void modifyBook(Long productNo, BookModifyRequestDto requestDto,
                            MultipartFile thumbnails, MultipartFile ebook) {
 
-        if (!Objects.isNull(thumbnails)) {
-            String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
-            requestDto.setFileThumbnailsUrl(fileUrl);
+        try {
+            if (!Objects.isNull(thumbnails)) {
+                String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
+                requestDto.setFileThumbnailsUrl(fileUrl);
+            }
+
+            if (!Objects.isNull(ebook)) {
+                String fileUrl = fileService.uploadFile(ebook, folderPathEbook);
+                requestDto.setFileEbookUrl(fileUrl);
+            }
+
+            Product product = productService.updateProduct(requestDto, productNo);
+            this.updateBook(requestDto, productNo, product);
+
+            if (!Objects.isNull(requestDto.getCategoryNoList())) {
+                productCategoryService.modifyProductCategory(product,
+                    requestDto.getCategoryNoList());
+            }
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
         }
 
-        if (!Objects.isNull(ebook)) {
-            String fileUrl = fileService.uploadFile(ebook, folderPathEbook);
-            requestDto.setFileEbookUrl(fileUrl);
-        }
-
-        Product product = productService.updateProduct(requestDto, productNo);
-        Book book = this.updateBook(requestDto, productNo, product);
-
-        if (!Objects.isNull(requestDto.getCategoryNoList())) {
-            productCategoryService.modifyProductCategory(product, requestDto.getCategoryNoList());
-        }
     }
 
     /**

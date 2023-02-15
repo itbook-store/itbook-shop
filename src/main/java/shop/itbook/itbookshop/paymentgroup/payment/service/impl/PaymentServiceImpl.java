@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -28,9 +29,12 @@ import shop.itbook.itbookshop.paymentgroup.paymentcancel.service.PaymentCancelSe
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.service.PaymentStatusService;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.PaymentStatusEnum;
+import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 
 /**
- * @author 이하늬
+ * The type Payment service.
+ *
+ * @author 이하늬 * @since 1.0
  * @since 1.0
  */
 @Service
@@ -59,29 +63,29 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
 
+        response = payService.requestApprovePayment(paymentApproveRequestDto);
+
+        payment = PaymentTransfer.dtoToEntity(response);
+        if (!Objects.isNull(response.getCard())) {
+            Card card = cardService.addCard(response);
+            payment.setCard(card);
+        }
+
+        PaymentStatus paymentStatus =
+            paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
+        payment.setPaymentStatus(paymentStatus);
+
+        Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
+        payment.setOrder(order);
+
         try {
-            response = payService.requestApprovePayment(paymentApproveRequestDto);
-
-            payment = PaymentTransfer.dtoToEntity(response);
-            if (!Objects.isNull(response.getCard())) {
-                Card card = cardService.addCard(response);
-                payment.setCard(card);
-            }
-
-            PaymentStatus paymentStatus =
-                paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
-            payment.setPaymentStatus(paymentStatus);
-
-            Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
-            payment.setOrder(order);
-
             paymentRepository.save(payment);
-
-            if (orderService.isSubscription(orderNo)) {
-                orderService.addOrderSubscriptionAfterPayment(orderNo);
-            }
-        } catch (InvalidPaymentException e) {
-            throw new InvalidPaymentException(e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
+        }
+        
+        if (orderService.isSubscription(orderNo)) {
+            orderService.addOrderSubscriptionAfterPayment(orderNo);
         }
         return new OrderResponseDto(payment.getOrder().getOrderNo(), payment.getTotalAmount());
     }
@@ -95,27 +99,25 @@ public class PaymentServiceImpl implements PaymentService {
 
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
+        orderService.processAfterOrderCancelPaymentSuccess(
+            paymentCanceledRequestDto.getOrderNo());
+
+        response = payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
+
+        // 결제 상태를 결제 취소로 수정
+        payment = findPaymentByOrderNo(paymentCanceledRequestDto.getOrderNo());
+        PaymentStatus paymentStatusEntity =
+            paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.CANCELED);
+        payment.setPaymentStatus(paymentStatusEntity);
+
         try {
-            orderService.processAfterOrderCancelPaymentSuccess(
-                paymentCanceledRequestDto.getOrderNo());
-
-            response = payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
-
-            // 결제 상태를 결제 취소로 수정
-            payment = findPaymentByOrderNo(paymentCanceledRequestDto.getOrderNo());
-            PaymentStatus paymentStatusEntity =
-                paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.CANCELED);
-            payment.setPaymentStatus(paymentStatusEntity);
             paymentRepository.save(payment);
-
             // 결제 취소 테이블에 취소 데이터 등록
             paymentCancelService.addPaymentCancel(payment, response);
 
-
-        } catch (InvalidPaymentCancelException e) {
-            throw new InvalidPaymentException(e.getMessage());
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
         }
-
 
         return new OrderResponseDto(payment.getOrder().getOrderNo(),
             payment.getTotalAmount());
@@ -126,6 +128,11 @@ public class PaymentServiceImpl implements PaymentService {
             .orElseThrow(InvalidPaymentException::new);
     }
 
+    /**
+     * @param orderNo the order no
+     * @return the payment card response dto
+     * @author 이하늬
+     */
     public PaymentCardResponseDto findPaymentCardInfo(Long orderNo) {
         return paymentRepository.findPaymentCardByOrderNo(orderNo);
     }

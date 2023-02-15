@@ -58,7 +58,7 @@ public class SearchProduct {
     private Integer increasePointPercent;
 
     @Column
-    private Integer discountPercent;
+    private Double discountPercent;
 
     @Column
     private Long rawPrice;
@@ -85,7 +85,7 @@ public class SearchProduct {
                          String detailsDescription, Integer stock, Boolean isSelled,
                          Boolean isForceSoldOut,
                          String thumbnailUrl, Long fixedPrice,
-                         Integer increasePointPercent, Integer discountPercent, Long rawPrice) {
+                         Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.productNo = productNo;
         this.name = name;
         this.simpleDescription = simpleDescription;

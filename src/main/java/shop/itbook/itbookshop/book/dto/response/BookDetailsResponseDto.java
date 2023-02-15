@@ -39,7 +39,7 @@ public class BookDetailsResponseDto {
 
     private Long fixedPrice;
 
-    private Integer discountPercent;
+    private Double discountPercent;
 
     private String fileThumbnailsUrl;
 
@@ -67,7 +67,7 @@ public class BookDetailsResponseDto {
                                   String detailsDescription, Boolean isSelled,
                                   Boolean isForceSoldOut,
                                   Integer stock, Integer increasePointPercent, Long rawPrice,
-                                  Long fixedPrice, Integer discountPercent,
+                                  Long fixedPrice, Double discountPercent,
                                   String fileThumbnailsUrl,
                                   String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
                                   Boolean isEbook, String fileEbookUrl, String publisherName,

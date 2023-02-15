@@ -58,7 +58,7 @@ public class ProductBookRequestDto {
 
     @Min(value = 0, message = "할인율은 0% 이상이어야 합니다.")
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
-    private Integer discountPercent;
+    private Double discountPercent;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     private Boolean isPointApplying;
