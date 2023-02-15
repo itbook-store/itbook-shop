@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
@@ -24,6 +26,7 @@ import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto
 public class PointHistoryAdminServiceImpl implements PointHistoryAdminService {
 
     private final PointHistoryRepository pointHistoryRepository;
+    private final OrderService orderService;
 
     @Override
     public Page<PointHistoryListResponseDto> findPointHistoryList(Pageable pageable,
@@ -68,5 +71,13 @@ public class PointHistoryAdminServiceImpl implements PointHistoryAdminService {
         Long pointHistoryNo) {
 
         return pointHistoryRepository.findPointHistoryCouponDetailsDto(pointHistoryNo);
+    }
+
+    @Override
+    public OrderDetailsResponseDto findOrderDetailsResponseDtoForPointHistoryOrderDetails(
+        Long pointHistoryNo) {
+
+        Long orderNo = pointHistoryRepository.findOrderNoThroughPointHistory(pointHistoryNo);
+        return orderService.findOrderDetails(orderNo);
     }
 }
