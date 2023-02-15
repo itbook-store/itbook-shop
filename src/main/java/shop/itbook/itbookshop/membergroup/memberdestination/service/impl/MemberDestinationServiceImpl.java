@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.membergroup.memberdestination.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.dto.request.MemberDe
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationNoResponseDto;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
 import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
+import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationComeCloseOtherMemberException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.repository.MemberDestinationRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
@@ -73,6 +75,21 @@ public class MemberDestinationServiceImpl implements MemberDestinationService {
     public MemberDestination findByRecipientDestinationNo(Long recipientDestinationNo) {
         return memberDestinationRepository.findById(recipientDestinationNo).orElseThrow(
             MemberDestinationNotFoundException::new);
+    }
+
+    @Override
+    public MemberDestination findByRecipientDestinationNoAndMemberNo(Long memberNo,
+                                                                     Long recipientDestinationNo) {
+
+        MemberDestination memberDestination =
+            memberDestinationRepository.findById(recipientDestinationNo).orElseThrow(
+                MemberDestinationNotFoundException::new);
+
+        if (!Objects.equals(memberDestination.getMember().getMemberNo(), memberNo)) {
+            throw new MemberDestinationComeCloseOtherMemberException();
+        }
+
+        return memberDestination;
     }
 
     @Override
