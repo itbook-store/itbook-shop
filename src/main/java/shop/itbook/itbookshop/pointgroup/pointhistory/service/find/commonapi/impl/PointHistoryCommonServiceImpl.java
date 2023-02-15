@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
-import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
@@ -20,7 +19,6 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.Poi
 public class PointHistoryCommonServiceImpl implements PointHistoryCommonService {
 
     private final PointHistoryRepository pointHistoryRepository;
-    private final MemberService memberService;
 
     @Override
     public Optional<PointHistory> findRecentlyPointHistory(Member member) {
@@ -30,19 +28,6 @@ public class PointHistoryCommonServiceImpl implements PointHistoryCommonService 
 
     @Override
     public Long findRecentlyPoint(Member member) {
-        Optional<PointHistory> recentPointHistory = this.findRecentlyPointHistory(member);
-
-        Long recentlyRemainedPoint = 0L;
-        if (recentPointHistory.isPresent()) {
-            recentlyRemainedPoint = recentPointHistory.get().getRemainedPoint();
-        }
-
-        return recentlyRemainedPoint;
-    }
-
-    @Override
-    public Long findRecentlyPointByMemberNo(Long memberNo) {
-        Member member = memberService.findMemberByMemberNo(memberNo);
         Optional<PointHistory> recentPointHistory = this.findRecentlyPointHistory(member);
 
         Long recentlyRemainedPoint = 0L;

@@ -15,5 +15,4 @@ public interface PointHistoryCommonService {
 
     Long findRecentlyPoint(Member member);
 
-    Long findRecentlyPointByMemberNo(Long memberNo);
 }

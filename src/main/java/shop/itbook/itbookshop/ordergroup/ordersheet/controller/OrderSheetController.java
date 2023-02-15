@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
@@ -35,6 +36,7 @@ public class OrderSheetController {
     private final ProductService productService;
     private final MemberDestinationService memberDestinationService;
     private final PointHistoryCommonService pointHistoryCommonService;
+    private final MemberService memberService;
 
     /**
      * 회원의 주문서 작성을 처리하는 컨트롤러입니다.
@@ -63,13 +65,13 @@ public class OrderSheetController {
         if (Objects.nonNull(memberNo)) {
             memberDestinationResponseDtoList =
                 memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
-            memberPoint = pointHistoryCommonService.findRecentlyPointByMemberNo(memberNo);
+            memberPoint = pointHistoryCommonService.findRecentlyPoint(
+                memberService.findMemberByMemberNo(memberNo));
         }
 
         OrderSheetResponseDto orderSheetResponseDto =
             OrderSheetTransfer.createOrderSheetResponseDto(productDetailsResponseDtoList,
-                memberDestinationResponseDtoList);
-        orderSheetResponseDto.setMemberPoint(memberPoint);
+                memberDestinationResponseDtoList, memberPoint);
 
         CommonResponseBody<OrderSheetResponseDto> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
