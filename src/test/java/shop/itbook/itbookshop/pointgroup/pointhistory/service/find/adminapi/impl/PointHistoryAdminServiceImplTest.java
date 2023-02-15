@@ -21,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
@@ -40,6 +41,8 @@ class PointHistoryAdminServiceImplTest {
     @MockBean
     PointHistoryRepository pointHistoryRepository;
 
+    @MockBean
+    OrderService orderService;
     PointIncreaseDecreaseContentEnum couponPointEnum;
 
     PointIncreaseDecreaseContentEnum orderPointEnum;

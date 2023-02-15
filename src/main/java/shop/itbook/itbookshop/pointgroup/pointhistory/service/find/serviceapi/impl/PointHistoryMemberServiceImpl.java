@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.exception.MyPointHistoryDetailsNotFoundException;
@@ -25,6 +27,7 @@ import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto
 @Transactional(readOnly = true)
 public class PointHistoryMemberServiceImpl implements PointHistoryMemberService {
     private final PointHistoryRepository pointHistoryRepository;
+    private final OrderService orderService;
 
     @Override
     public Page<PointHistoryListResponseDto> findMyPointHistoryList(Long memberNo,
@@ -94,4 +97,12 @@ public class PointHistoryMemberServiceImpl implements PointHistoryMemberService 
         return myPointHistoryCouponDetailsDto;
     }
 
+    @Override
+    public OrderDetailsResponseDto findPointHistoryOrderDetailsResponseDto(Long pointHistoryNo,
+                                                                           Long memberNo) {
+
+        Long orderNo =
+            pointHistoryRepository.findMyOrderNoThroughPointHistory(pointHistoryNo, memberNo);
+        return orderService.findOrderDetails(orderNo);
+    }
 }

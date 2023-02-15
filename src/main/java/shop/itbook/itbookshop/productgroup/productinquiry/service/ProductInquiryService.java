@@ -76,6 +76,8 @@ public interface ProductInquiryService {
      */
     ProductInquiryResponseDto findProductInquiry(Long productInquiryNo);
 
+    ProductInquiryResponseDto findProductInquiryByMemberNo(Long memberNo, Long productInquiryNo);
+
     /**
      * 해당 회원의 모든 상품 문의 리스트를 반환합니다.
      *
