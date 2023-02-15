@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -36,9 +37,10 @@ import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
 @Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
-    private static final int NO_PARENT_NUMBER = 0;
+    private static final int PARENT_CATEGORY_NO = 0;
     private static final int MAIN_CATEGORY_LEVEL = 0;
     private static final int CHILD_CATEGORY_LEVEL = MAIN_CATEGORY_LEVEL + 1;
+    private static final int FIRST_SEQUENCE = 1;
 
     private final CategoryRepository categoryRepository;
 
@@ -51,18 +53,21 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category category = CategoryTransfer.dtoToEntity(categoryRequestDto);
 
-        boolean isNoParentCategory =
-            Objects.equals(categoryRequestDto.getParentCategoryNo(), NO_PARENT_NUMBER);
+        boolean isParentCategory =
+            Objects.equals(categoryRequestDto.getParentCategoryNo(), PARENT_CATEGORY_NO);
 
         return saveCategoryAndGetCategoryNo(categoryRequestDto, category,
-            isNoParentCategory);
+            isParentCategory);
     }
 
     private Integer saveCategoryAndGetCategoryNo(CategoryRequestDto categoryRequestDto,
-                                                 Category category, boolean isNoParentCategory) {
-        if (isNoParentCategory) {
+                                                 Category category, boolean isParentCategory) {
+
+        if (isParentCategory) {
+            this.checkAlreadyAddedCategoryName(categoryRequestDto);
+
             category.setLevel(MAIN_CATEGORY_LEVEL);
-            categoryRepository.modifyMainCategorySequence(1);
+            categoryRepository.modifyMainCategorySequence(FIRST_SEQUENCE);
 
             category = categoryRepository.save(category);
             category.setParentCategory(category);
@@ -72,7 +77,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         settingParentCategory(categoryRequestDto.getParentCategoryNo(), category);
         categoryRepository.modifyChildCategorySequence(category.getParentCategory().getCategoryNo(),
-            1);
+            FIRST_SEQUENCE);
 
         try {
             category = categoryRepository.save(category);
@@ -92,8 +97,17 @@ public class CategoryServiceImpl implements CategoryService {
             throw e;
         }
 
-
         return category.getCategoryNo();
+    }
+
+    private void checkAlreadyAddedCategoryName(CategoryRequestDto categoryRequestDto) {
+        Optional<Category> optionalCategory =
+            categoryRepository.findByCategoryNameAndLevel(categoryRequestDto.getCategoryName(),
+                MAIN_CATEGORY_LEVEL);
+
+        if (optionalCategory.isPresent()) {
+            throw new AlreadyAddedCategoryNameException();
+        }
     }
 
     /**
@@ -129,6 +143,11 @@ public class CategoryServiceImpl implements CategoryService {
         settingCount(categoryListByEmployee, categoryNoAndProductNoDtoList);
 
         return page;
+    }
+
+    @Override
+    public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
+        return categoryRepository.findCategoryListByNotEmployee(pageable);
     }
 
     @Override
@@ -183,11 +202,6 @@ public class CategoryServiceImpl implements CategoryService {
 
             categoryListResponseDto.setCount(productCount);
         }
-    }
-
-    @Override
-    public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
-        return categoryRepository.findCategoryListByNotEmployee(pageable);
     }
 
 
