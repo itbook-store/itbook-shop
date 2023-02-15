@@ -37,7 +37,7 @@ public class BookAdminController {
     private final AladinApiService aladinApiService;
     private final BookService bookService;
     private final ProductService productService;
-    private final ProductSearchService productSearchService;
+//    private final ProductSearchService productSearchService;
 
     /**
      * 알라딘 API를 이용해 ISBN으로 도서 부가정보를 검색하는 기능을 담당합니다.
@@ -124,8 +124,8 @@ public class BookAdminController {
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
-        productSearchService.addSearchProduct(
-            productService.findProductEntity(productPk.getProductNo()));
+//        productSearchService.addSearchProduct(
+//            productService.findProductEntity(productPk.getProductNo()));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
@@ -154,7 +154,7 @@ public class BookAdminController {
             new CommonResponseBody.CommonHeader(
                 ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
-        productSearchService.modifySearchProduct(productService.findProductEntity(productNo));
+//        productSearchService.modifySearchProduct(productService.findProductEntity(productNo));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }

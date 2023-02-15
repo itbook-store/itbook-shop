@@ -62,9 +62,16 @@ public class RestControllerAdvisor {
      * @return 에러메세지를 response entity 에 담아서 전송합니다.
      * @author 최겸준
      */
-    @ExceptionHandler(value = {CategoryNotFoundException.class,
+    @ExceptionHandler(value = {
+        CategoryNotFoundException.class,
         CategoryContainsProductsException.class,
         NotChildCategoryException.class,
+        PointContentNotFoundException.class,
+        LackOfPointException.class,
+        MismatchCategoryNoWhenCouponApplyException.class,
+        MismatchProductNoWhenCouponApplyException.class,
+        NotOrderTotalCouponException.class,
+
         SearchProductNotFoundException.class,
         MethodArgumentNotValidException.class,
         MemberNotFoundException.class,
@@ -74,8 +81,7 @@ public class RestControllerAdvisor {
         AlreadyAddedCategoryNameException.class,
         RoleNotFoundException.class,
         CartNotFountException.class,
-        PointContentNotFoundException.class,
-        LackOfPointException.class,
+
         RoleNotFoundException.class,
         MemberDestinationNotFoundException.class,
         AlreadyAddedCouponIssueMemberCouponException.class,
@@ -98,9 +104,6 @@ public class RestControllerAdvisor {
         InvalidPaymentCancelException.class,
         PaymentStatusNotFoundException.class,
         NotSellableProductException.class,
-        MismatchCategoryNoWhenCouponApplyException.class,
-        MismatchProductNoWhenCouponApplyException.class,
-        NotOrderTotalCouponException.class,
         CanNotApplyCouponException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(

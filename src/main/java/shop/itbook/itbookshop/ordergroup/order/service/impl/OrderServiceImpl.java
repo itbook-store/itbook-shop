@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -675,7 +674,7 @@ public class OrderServiceImpl implements OrderService {
         for (OrderProductDetailResponseDto orderProductDetailResponseDto : OrderProductDetailResponseDtoList) {
 
             Optional<CategoryCouponApply> optionalCategoryCouponApply =
-                categoryCouponApplyRepository.findById(
+                categoryCouponApplyRepository.findByOrderProduct_OrderProductNo(
                     orderProductDetailResponseDto.getOrderProductNo());
 
             if (optionalCategoryCouponApply.isPresent()) {
