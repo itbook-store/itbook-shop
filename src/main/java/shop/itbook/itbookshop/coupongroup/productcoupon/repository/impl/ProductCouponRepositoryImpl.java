@@ -49,6 +49,7 @@ public class ProductCouponRepositoryImpl extends QuerydslRepositorySupport
                 qCouponType.couponTypeEnum))
             .innerJoin(qProductCoupon.coupon, qCoupon)
             .innerJoin(qProductCoupon.product, qProduct)
+            .orderBy(qCoupon.couponNo.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
