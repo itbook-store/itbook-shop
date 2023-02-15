@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.productgroup.productinquiry.service.impl;
 
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.membergroup.memberrole.dto.response.MemberRoleResponseDto;
+import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
@@ -17,6 +21,7 @@ import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductIn
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
+import shop.itbook.itbookshop.productgroup.productinquiry.exception.ProductInquiryComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.productinquiry.exception.ProductInquiryNotFoundException;
 import shop.itbook.itbookshop.productgroup.productinquiry.repository.ProductInquiryRepository;
 import shop.itbook.itbookshop.productgroup.productinquiry.service.ProductInquiryService;
@@ -39,6 +44,8 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
     private final ProductService productService;
 
     private final MemberService memberService;
+
+    private final MemberRoleService memberRoleService;
 
     /**
      * {@inheritDoc}
@@ -112,6 +119,35 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
     public ProductInquiryResponseDto findProductInquiry(Long productInquiryNo) {
 
         return productInquiryRepository.findProductInquiry(productInquiryNo);
+    }
+
+    @Override
+    public ProductInquiryResponseDto findProductInquiryByMemberNo(Long memberNo,
+                                                                  Long productInquiryNo) {
+        ProductInquiryResponseDto productInquiryResponseDto =
+            productInquiryRepository.findProductInquiry(productInquiryNo);
+
+        List<MemberRoleResponseDto> memberRoles =
+            memberRoleService.findMemberRoleWithMemberNo(memberNo);
+
+        for (MemberRoleResponseDto memberRole : memberRoles) {
+            if (memberRole.getRole().equals("ADMIN")) {
+
+                return productInquiryResponseDto;
+            }
+        }
+
+        if (memberService.findMemberByMemberNo(memberNo).getIsWriter()) {
+
+            return productInquiryResponseDto;
+        }
+
+        if (!productInquiryResponseDto.getIsPublic() &&
+            !Objects.equals(productInquiryResponseDto.getMemberNo(), memberNo)) {
+            throw new ProductInquiryComeCloseOtherMemberException();
+        }
+
+        return productInquiryResponseDto;
     }
 
     /**
