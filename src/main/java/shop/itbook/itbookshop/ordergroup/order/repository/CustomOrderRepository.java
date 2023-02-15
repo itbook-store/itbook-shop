@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 
 /**
@@ -23,4 +24,6 @@ public interface CustomOrderRepository {
     String findOrderStatusByOrderNo(Long orderNo);
 
     List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo);
+
+    Page<OrderListAdminViewResponseDto> getOrderListOfAdminWithStatus(Pageable pageable);
 }

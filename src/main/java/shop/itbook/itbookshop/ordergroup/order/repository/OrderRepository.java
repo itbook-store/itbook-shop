@@ -10,5 +10,4 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * @since 1.0
  */
 public interface OrderRepository extends JpaRepository<Order, Long>, CustomOrderRepository {
-
 }

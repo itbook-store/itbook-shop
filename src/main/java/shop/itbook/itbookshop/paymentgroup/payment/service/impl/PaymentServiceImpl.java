@@ -76,6 +76,10 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setOrder(order);
 
             paymentRepository.save(payment);
+
+            if (orderService.isSubscription(orderNo)) {
+                orderService.addOrderSubscriptionAfterPayment(orderNo);
+            }
         } catch (InvalidPaymentException e) {
             throw new InvalidPaymentException(e.getMessage());
         }
@@ -92,6 +96,9 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
         try {
+            orderService.processAfterOrderCancelPaymentSuccess(
+                paymentCanceledRequestDto.getOrderNo());
+
             response = payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
 
             // 결제 상태를 결제 취소로 수정
@@ -104,9 +111,12 @@ public class PaymentServiceImpl implements PaymentService {
             // 결제 취소 테이블에 취소 데이터 등록
             paymentCancelService.addPaymentCancel(payment, response);
 
+
         } catch (InvalidPaymentCancelException e) {
             throw new InvalidPaymentException(e.getMessage());
         }
+
+
         return new OrderResponseDto(payment.getOrder().getOrderNo(),
             payment.getTotalAmount());
     }

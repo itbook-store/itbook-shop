@@ -13,6 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -131,5 +132,61 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrder.postcode, qOrder.roadNameAddress, qOrder.recipientAddressDetails
             ))
             .fetch();
+    }
+
+    @Override
+    public Page<OrderListAdminViewResponseDto> getOrderListOfAdminWithStatus(Pageable pageable) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+
+        QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
+
+        JPQLQuery<OrderListAdminViewResponseDto> jpqlQuery = from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(
+                qOrderStatusHistory2.order.orderNo).and(
+                qOrderStatusHistory.orderStatusHistoryNo.lt(
+                    qOrderStatusHistory2.orderStatusHistoryNo)))
+            .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
+            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
+            .select(Projections.fields(OrderListAdminViewResponseDto.class,
+                qOrderStatusHistory.order.orderNo,
+                qOrderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                qOrderStatusHistory.order.recipientName,
+                qOrderStatusHistory.order.recipientPhoneNumber
+            ))
+            .orderBy(qOrderStatusHistory.order.orderNo.asc());
+
+        QDelivery qDelivery = QDelivery.delivery;
+
+        List<OrderListAdminViewResponseDto> orderListAdminViewResponseDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        List<Delivery> deliveryList = from(qDelivery)
+            .select(qDelivery)
+            .orderBy(qDelivery.order.orderNo.asc())
+            .fetch();
+
+        Queue<Delivery> deliveryQueue = new LinkedList<>(deliveryList);
+
+        if (!deliveryQueue.isEmpty()) {
+            
+            orderListAdminViewResponseDtoList.forEach(
+                orderListAdminViewResponseDto -> {
+                    if (Objects.equals(orderListAdminViewResponseDto.getOrderNo(),
+                        deliveryQueue.peek().getDeliveryNo())) {
+                        orderListAdminViewResponseDto.setTrackingNo(
+                            Objects.requireNonNull(deliveryQueue.poll()).getTrackingNo());
+                    }
+                }
+            );
+        }
+
+        return PageableExecutionUtils.getPage(orderListAdminViewResponseDtoList, pageable,
+            jpqlQuery::fetchCount);
     }
 }
