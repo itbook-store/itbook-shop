@@ -430,8 +430,9 @@ public class MemberController {
      * @return the response entity
      * @author
      */
-    @GetMapping("/memberDestinations/{recipientDestinationNo}/info")
+    @GetMapping("/{memberNo}/memberDestinations/{recipientDestinationNo}/info")
     public ResponseEntity<CommonResponseBody<MemberDestinationResponseDto>> memberDestinationDetails(
+        @PathVariable("memberNo") Long memberNo,
         @PathVariable("recipientDestinationNo") Long recipientDestinationNo) {
 
         CommonResponseBody<MemberDestinationResponseDto> commonResponseBody =
@@ -439,7 +440,8 @@ public class MemberController {
                 new CommonResponseBody.CommonHeader(
                     MemberDestinationResultMessageEnum.MEMBER_DESTINATION_FIND_MESSAGE.getSuccessMessage()),
                 MemberDestinationTransfer.entityToDto(
-                    memberDestinationService.findByRecipientDestinationNo(recipientDestinationNo))
+                    memberDestinationService.findByRecipientDestinationNoAndMemberNo(memberNo,
+                        recipientDestinationNo))
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
