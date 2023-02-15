@@ -27,7 +27,7 @@ public class ProductSearchResponseDto {
     private String thumbnailUrl;
     private Long fixedPrice;
     private Integer increasePointPercent;
-    private Double discountPercent;
+    private Integer discountPercent;
     private Long rawPrice;
     private Long selledPrice;
 }

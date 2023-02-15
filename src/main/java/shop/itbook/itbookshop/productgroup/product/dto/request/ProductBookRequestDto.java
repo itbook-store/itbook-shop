@@ -58,7 +58,7 @@ public class ProductBookRequestDto {
 
     @Min(value = 0, message = "할인율은 0% 이상이어야 합니다.")
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
-    private Double discountPercent;
+    private Integer discountPercent;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     private Boolean isPointApplying;
@@ -70,8 +70,6 @@ public class ProductBookRequestDto {
 
     @Setter
     private String fileThumbnailsUrl;
-
-//    book
 
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(min = 10, max = 13, message = "isbn은 10자-13자가 되어야 합니다.")
