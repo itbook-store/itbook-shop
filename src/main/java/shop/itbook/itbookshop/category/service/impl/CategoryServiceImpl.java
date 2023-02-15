@@ -22,6 +22,7 @@ import shop.itbook.itbookshop.category.exception.AlreadyAddedCategoryNameExcepti
 import shop.itbook.itbookshop.category.exception.CategoryContainsProductsException;
 import shop.itbook.itbookshop.category.exception.CategoryNotFoundException;
 import shop.itbook.itbookshop.category.exception.NotChildCategoryException;
+import shop.itbook.itbookshop.category.exception.ParentCategoryNotFoundException;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.category.transfer.CategoryTransfer;
@@ -64,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
                                                  Category category, boolean isParentCategory) {
 
         if (isParentCategory) {
-            this.checkAlreadyAddedCategoryName(categoryRequestDto);
+            this.checkAlreadyAddedCategoryNameAboutParentCategory(categoryRequestDto);
 
             category.setLevel(MAIN_CATEGORY_LEVEL);
             categoryRepository.modifyMainCategorySequence(FIRST_SEQUENCE);
@@ -79,6 +80,11 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.modifyChildCategorySequence(category.getParentCategory().getCategoryNo(),
             FIRST_SEQUENCE);
 
+        category = this.saveAndCheckAlreadyAddedCategoryNameAboutChildCategory(category);
+        return category.getCategoryNo();
+    }
+
+    private Category saveAndCheckAlreadyAddedCategoryNameAboutChildCategory(Category category) {
         try {
             category = categoryRepository.save(category);
         } catch (DataIntegrityViolationException e) {
@@ -89,18 +95,17 @@ public class CategoryServiceImpl implements CategoryService {
                 message = rootCause.getMessage();
             }
 
-
             if (message.contains("category.parentNoAndCategoryName")) {
                 throw new AlreadyAddedCategoryNameException();
             }
 
             throw e;
         }
-
-        return category.getCategoryNo();
+        return category;
     }
 
-    private void checkAlreadyAddedCategoryName(CategoryRequestDto categoryRequestDto) {
+    private void checkAlreadyAddedCategoryNameAboutParentCategory(
+        CategoryRequestDto categoryRequestDto) {
         Optional<Category> optionalCategory =
             categoryRepository.findByCategoryNameAndLevel(categoryRequestDto.getCategoryName(),
                 MAIN_CATEGORY_LEVEL);
@@ -119,8 +124,13 @@ public class CategoryServiceImpl implements CategoryService {
      * @author 최겸준
      */
     private void settingParentCategory(Integer parentCategoryNo, Category category) {
+        Category parentCategory;
+        try {
+            parentCategory = this.findCategoryEntity(parentCategoryNo);
+        } catch (CategoryNotFoundException e) {
+            throw new ParentCategoryNotFoundException();
+        }
 
-        Category parentCategory = this.findCategoryEntity(parentCategoryNo);
         category.setParentCategory(parentCategory);
         category.setLevel(CHILD_CATEGORY_LEVEL);
     }
