@@ -21,7 +21,7 @@ import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto
 import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
-import shop.itbook.itbookshop.productgroup.review.exception.ReviewComCloseOtherMemberException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
@@ -130,7 +130,7 @@ public class ReviewServiceImpl implements ReviewService {
             reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new));
 
         if (!Objects.equals(reviewResponseDto.getMemberNo(), memberNo)) {
-            throw new ReviewComCloseOtherMemberException();
+            throw new ReviewComeCloseOtherMemberException();
         }
 
         return reviewResponseDto;

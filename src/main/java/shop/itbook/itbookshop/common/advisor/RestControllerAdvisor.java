@@ -42,9 +42,10 @@ import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductE
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
+import shop.itbook.itbookshop.productgroup.productinquiry.exception.ProductInquiryComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
-import shop.itbook.itbookshop.productgroup.review.exception.ReviewComCloseOtherMemberException;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.role.exception.RoleNotFoundException;
 
@@ -109,7 +110,8 @@ public class RestControllerAdvisor {
         NotOrderTotalCouponException.class,
         CanNotApplyCouponException.class,
         MemberDestinationComeCloseOtherMemberException.class,
-        ReviewComCloseOtherMemberException.class
+        ReviewComeCloseOtherMemberException.class,
+        ProductInquiryComeCloseOtherMemberException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
