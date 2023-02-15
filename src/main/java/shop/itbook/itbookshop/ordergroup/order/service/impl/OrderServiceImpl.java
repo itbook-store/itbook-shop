@@ -32,6 +32,7 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
@@ -109,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
     private final CouponIssueRepository couponIssueRepository;
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
+    private final DeliveryService deliveryService;
 
 
     /**
@@ -166,17 +168,13 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                  Optional<Long> memberNo) {
-
-
+        
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
         orderRepository.save(order);
 
         // 주문_상태_이력 테이블 저장
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAITING_FOR_PAYMENT);
-
-//        // 배송 상태 생성 후 저장
-//        deliveryService.registerDelivery(order);
 
         // 회원, 비회원 구분해서 저장
         checkMemberAndSaveOrder(order, memberNo);
@@ -468,6 +466,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @SuppressWarnings("java:S5411")
     private void increasePointPerOrderProduct(Order order, Product product, long productPrice,
                                               Integer productCnt) {
 
@@ -490,7 +489,6 @@ public class OrderServiceImpl implements OrderService {
 
     private Coupon getAvailableCoupon(Long couponIssueNo,
                                       Long basePriceToCompareAboutStandardAmount) {
-
 
         if (Objects.isNull(couponIssueNo)) {
             return null;
@@ -596,6 +594,10 @@ public class OrderServiceImpl implements OrderService {
 
         usingCouponIssue(productAndCategoryCouponApplyDto, orderTotalCouponApplyDto, order);
         savePointHistoryAboutMember(order);
+
+        // 배송 상태 생성 후 저장
+        deliveryService.registerDelivery(order);
+
         return order;
     }
 
