@@ -33,7 +33,10 @@ public class ProductCouponApplyServiceImpl implements ProductCouponApplyService 
     @Override
     @Transactional
     public void cancelProductCouponApplyAndChangeCouponIssue(Long couponIssueNo) {
-        productCouponApplyRepository.deleteById(couponIssueNo);
+
+        if (productCouponApplyRepository.existsById(couponIssueNo)) {
+            productCouponApplyRepository.deleteById(couponIssueNo);
+        }
     }
 
 }
