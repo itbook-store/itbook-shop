@@ -195,7 +195,7 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
         @PathVariable("orderNo") Long orderNo) {
 
-        orderService.processAfterOrderCancelPaymentSuccess(orderNo);
+        orderService.processBeforeOrderCancelPayment(orderNo);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

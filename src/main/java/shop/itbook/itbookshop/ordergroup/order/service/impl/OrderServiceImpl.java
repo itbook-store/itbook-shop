@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,6 +62,8 @@ import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMembe
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
+import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
@@ -72,6 +75,7 @@ import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
+import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.PaymentStatusEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
@@ -116,6 +120,7 @@ public class OrderServiceImpl implements OrderService {
     private final CouponIssueRepository couponIssueRepository;
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
     private final DeliveryService deliveryService;
+    private final OrderStatusService orderStatusService;
 
     /**
      * The Origin url.
@@ -293,7 +298,7 @@ public class OrderServiceImpl implements OrderService {
                 .paymentStatus(payment.getPaymentStatus())
                 .order(order)
                 .card(payment.getCard())
-                .totalAmount(payment.getTotalAmount())
+                .totalAmount(0L)
                 .paymentKey(payment.getPaymentKey())
                 .orderId(payment.getOrderId())
                 .orderName(payment.getOrderName())
@@ -302,7 +307,7 @@ public class OrderServiceImpl implements OrderService {
                 .approvedAt(payment.getApprovedAt())
                 .country(payment.getCountry())
                 .checkoutUrl(payment.getCheckoutUrl())
-                .vat(payment.getVat())
+                .vat(0L)
                 .build();
             paymentRepository.save(tempPayment);
 
@@ -662,13 +667,16 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public void processAfterOrderCancelPaymentSuccess(Long orderNo) {
+    public void processBeforeOrderCancelPayment(Long orderNo) {
 
-        Order order = findOrderEntity(orderNo);
+        Order order = this.findOrderEntity(orderNo);
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
 
+        List<OrderProduct> orderProductList =
+            orderProductService.findOrderProductsEntityByOrderNo(orderNo);
+
         // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
-        this.changeCategoryAndProductCouponStatusByCancel(orderNo);
+        this.changeCategoryAndProductCouponStatusByCancel(orderProductList);
 
         // 주문번호로 주문총액상품쿠폰 있는지 확인하고 있으면 사용전상태로 변경
         this.changeOrderTotalAmountCouponStatusByCancel(orderNo);
@@ -680,17 +688,46 @@ public class OrderServiceImpl implements OrderService {
         // 먼저 주문취소차감 api 만들기 -> 포인트 적립금액 있는지 확인해서 주문취소차감
         this.addOrderCancelIncreaseDecreasePointHistory(order,
             PointHistoryServiceImpl.DECREASE_POINT_HISTORY);
+
+        // 주문번호로 구독상품이 있는지 확인
+        Optional<OrderSubscription> optionalOrderSubscription =
+            orderSubscriptionRepository.findByOrder_OrderNo(orderNo);
+
+        if (optionalOrderSubscription.isEmpty()) {
+            return;
+        }
+
+        // 구독상품이라면 시퀸스만큼 그뒤에 있는 주문들을 주문취소상태로 변경
+        OrderSubscription orderSubscription = optionalOrderSubscription.get();
+
+        // 시퀀스만큼 반복하여 주문번호를 계산후 리스트뽑기
+        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
+        List<Long> subScriptionOrderNoList = new ArrayList<>();
+        for (long i = 1L; i < subscriptionPeriod; i++) {
+            subScriptionOrderNoList.add(orderNo + i);
+        }
+
+        // 계산된 리스트로 실제 order 다 가져와서 각각 주문취소상태로 변경
+        List<Order> orderList = orderRepository
+            .findOrdersByOrderNoIn(subScriptionOrderNoList);
+        OrderStatus orderStatus =
+            orderStatusService.findByOrderStatusEnum(OrderStatusEnum.REFUND_COMPLETED);
+
+        for (Order subScriptionOrder : orderList) {
+            OrderStatusHistory orderStatusHistory =
+                new OrderStatusHistory(subScriptionOrder, orderStatus, LocalDateTime.now());
+            orderStatusHistoryService.save(orderStatusHistory);
+        }
     }
 
-    private void changeCategoryAndProductCouponStatusByCancel(Long orderNo) {
-        List<OrderProductDetailResponseDto> OrderProductDetailResponseDtoList =
-            orderProductService.findOrderProductsByOrderNo(orderNo);
+    private void changeCategoryAndProductCouponStatusByCancel(
+        List<OrderProduct> orderProductList) {
 
-        for (OrderProductDetailResponseDto orderProductDetailResponseDto : OrderProductDetailResponseDtoList) {
+        for (OrderProduct orderProduct : orderProductList) {
 
             Optional<CategoryCouponApply> optionalCategoryCouponApply =
                 categoryCouponApplyRepository.findByOrderProduct_OrderProductNo(
-                    orderProductDetailResponseDto.getOrderProductNo());
+                    orderProduct.getOrderProductNo());
 
             if (optionalCategoryCouponApply.isPresent()) {
                 CategoryCouponApply categoryCouponApply = optionalCategoryCouponApply.get();
@@ -699,7 +736,7 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 Optional<ProductCouponApply> optionalProductCouponApply =
                     productCouponApplyRepository.findById(
-                        orderProductDetailResponseDto.getOrderProductNo());
+                        orderProduct.getOrderProductNo());
 
                 if (optionalProductCouponApply.isPresent()) {
                     ProductCouponApply productCouponApply = optionalProductCouponApply.get();
@@ -707,6 +744,8 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
+
+//        return orderProductList;
     }
 
     private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {

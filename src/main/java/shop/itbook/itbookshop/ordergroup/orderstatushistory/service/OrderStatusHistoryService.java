@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.orderstatushistory.service;
 
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 
 /**
  * 주문 상태 이력을 관련 로직을 담당하는 서비스입니다.
@@ -19,4 +20,6 @@ public interface OrderStatusHistoryService {
      * @author 정재원 *
      */
     void addOrderStatusHistory(Order order, OrderStatusEnum orderStatusEnum);
+
+    OrderStatusHistory save(OrderStatusHistory orderStatusHistory);
 }
