@@ -16,6 +16,7 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatus.QDeliveryStatus;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.QDeliveryStatusHistory;
+import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 
 /**
  * CustomDeliveryRepository 의 구현 클래스.
@@ -150,5 +151,17 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
             .on(qDeliveryStatusHistory1.deliveryStatus.eq(qDeliveryStatus))
             .fetchJoin()
             .where(deliveryStatusHistoryNoIsNull);
+    }
+
+    @Override
+    public String findTrackingNoByOrderNo(Long orderNo) {
+
+        QOrder qOrder = QOrder.order;
+        QDelivery qDelivery = QDelivery.delivery;
+
+        return from(qDelivery)
+            .innerJoin(qDelivery.order, qOrder)
+            .on(qOrder.orderNo.eq(orderNo))
+            .fetchOne().getTrackingNo();
     }
 }

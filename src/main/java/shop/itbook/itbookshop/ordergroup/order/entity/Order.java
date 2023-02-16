@@ -91,7 +91,7 @@ public class Order {
                  List<OrderProduct> orderProducts, String recipientName,
                  String recipientPhoneNumber,
                  Integer postcode, String roadNameAddress, String recipientAddressDetails,
-                 Boolean isHidden, Long increasePoint, Long decreasePoint) {
+                 Boolean isHidden, Long increasePoint, Long decreasePoint, Long deliveryFee) {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
         this.orderProducts = orderProducts;
@@ -103,5 +103,6 @@ public class Order {
         this.isHidden = isHidden;
         this.increasePoint = increasePoint;
         this.decreasePoint = decreasePoint;
+        this.deliveryFee = deliveryFee;
     }
 }
