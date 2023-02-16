@@ -331,6 +331,7 @@ public class MemberController {
     public ResponseEntity<CommonResponseBody<MemberBooleanResponseDto>> nameCheck(
         @PathVariable("memberId") String memberId,
         @PathVariable("name") String name) {
+
         return ResponseEntity.ok().body(new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(""),
             memberService.checkNameDuplicate(memberId, name)
