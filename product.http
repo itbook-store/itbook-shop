@@ -8,7 +8,7 @@ Content-Type: application/json
   "detailsDescription" : "상세 설명",
   "stock" : 0,
   "isSelled" : true,
-  "isDeleted" : false,
+  "isForceSoldOut" : false,
   "thumbnailUrl" : "testUrl",
   "fixedPrice" : 20000,
   "increasePointPercent" : 1,
@@ -28,5 +28,5 @@ POST http://localhost:8082/api/products/search/415
 Content-Type: application/json
 
 ###
-DELETE http://localhost:8082/api/products/search/407
+DELETE http://localhost:8082/api/products/search/406
 Content-Type: application/json

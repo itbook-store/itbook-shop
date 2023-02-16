@@ -116,5 +116,5 @@ public interface OrderService {
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
 
 
-    Page<OrderListAdminViewResponseDto> findOrderListAdmin();
+    Page<OrderListAdminViewResponseDto> findOrderListAdmin(Pageable pageable);
 }

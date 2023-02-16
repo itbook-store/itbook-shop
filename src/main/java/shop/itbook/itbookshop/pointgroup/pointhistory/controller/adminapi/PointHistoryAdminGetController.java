@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
@@ -32,6 +34,20 @@ public class PointHistoryAdminGetController {
 
     private final PointHistoryAdminService pointHistoryAdminService;
 
+
+    @GetMapping("/{pointHistoryNo}/order-details")
+    public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> pointHistoryOrderDetails(
+        @PathVariable Long pointHistoryNo) {
+
+        OrderDetailsResponseDto orderDetailsResponseDto =
+            pointHistoryAdminService.findOrderDetailsResponseDtoForPointHistoryOrderDetails(
+                pointHistoryNo);
+
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
+            , orderDetailsResponseDto));
+    }
 
     @GetMapping("/{pointHistoryNo}/coupon-details")
     public ResponseEntity<CommonResponseBody<PointHistoryCouponDetailsResponseDto>> pointHistoryCouponDetails(

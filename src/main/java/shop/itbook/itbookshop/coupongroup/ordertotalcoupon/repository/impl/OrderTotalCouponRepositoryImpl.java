@@ -46,6 +46,7 @@ public class OrderTotalCouponRepositoryImpl extends QuerydslRepositorySupport
             .join(qCouponType).on(qOrderTotalCoupon.coupon.couponType.couponTypeEnum.eq(
                 qCouponType.couponTypeEnum))
             .innerJoin(qOrderTotalCoupon.coupon, qCoupon)
+            .orderBy(qCoupon.couponNo.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();

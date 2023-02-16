@@ -12,16 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.resultmessageenum.OrderSheetMessageEnum;
 import shop.itbook.itbookshop.ordergroup.ordersheet.transfer.OrderSheetTransfer;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
 /**
- * 주문서 작성에 관한 요청을 담당하고 처리하는 컨트롤러
+ * 주문서 작성에 관한 요청을 담당하고 처리하는 컨트롤러.
  *
  * @author 정재원
  * @since 1.0
@@ -33,6 +35,8 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 public class OrderSheetController {
     private final ProductService productService;
     private final MemberDestinationService memberDestinationService;
+    private final PointHistoryCommonService pointHistoryCommonService;
+    private final MemberService memberService;
 
     /**
      * 회원의 주문서 작성을 처리하는 컨트롤러입니다.
@@ -56,17 +60,24 @@ public class OrderSheetController {
                 Collectors.toList());
 
         List<MemberDestinationResponseDto> memberDestinationResponseDtoList = new ArrayList<>();
+        long memberPoint = 0;
 
         if (Objects.nonNull(memberNo)) {
             memberDestinationResponseDtoList =
                 memberDestinationService.findMemberDestinationResponseDtoByMemberNo(memberNo);
+            memberPoint = pointHistoryCommonService.findRecentlyPoint(
+                memberService.findMemberByMemberNo(memberNo));
         }
+
+        OrderSheetResponseDto orderSheetResponseDto =
+            OrderSheetTransfer.createOrderSheetResponseDto(productDetailsResponseDtoList,
+                memberDestinationResponseDtoList, memberPoint);
 
         CommonResponseBody<OrderSheetResponseDto> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 OrderSheetMessageEnum.ORDER_SHEET_FIND_INFO_SUCCESS_MESSAGE.getSuccessMessage()),
-                OrderSheetTransfer.createOrderSheetResponseDto(productDetailsResponseDtoList,
-                    memberDestinationResponseDtoList));
+                orderSheetResponseDto
+            );
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
