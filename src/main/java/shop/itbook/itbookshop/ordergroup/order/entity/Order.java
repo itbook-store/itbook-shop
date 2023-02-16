@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
@@ -22,6 +23,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
  * @author 노수연
  * @since 1.0
  */
+@ToString
 @Getter
 @Setter
 @Table(name = "order_paper")

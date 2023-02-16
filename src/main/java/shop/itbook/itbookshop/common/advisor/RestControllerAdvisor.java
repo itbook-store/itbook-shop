@@ -18,6 +18,7 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponQuantityExhaustedException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
@@ -88,7 +89,7 @@ public class RestControllerAdvisor {
         AlreadyAddedCouponIssueMemberCouponException.class,
         CouponIssueNotFoundException.class,
         NotPointCouponException.class,
-        UnableToCreateCouponException.class,
+        CouponQuantityExhaustedException.class,
         CouponTypeNotFoundException.class,
         UsageStatusNotFoundException.class,
         CouponNotFoundException.class,

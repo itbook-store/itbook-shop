@@ -71,8 +71,6 @@ public class ProductBookRequestDto {
     @Setter
     private String fileThumbnailsUrl;
 
-//    book
-
     @NotBlank(message = "공백이 아닌 문자를 하나 이상 포함해야 됩니다.")
     @Length(min = 10, max = 13, message = "isbn은 10자-13자가 되어야 합니다.")
     private String isbn;
