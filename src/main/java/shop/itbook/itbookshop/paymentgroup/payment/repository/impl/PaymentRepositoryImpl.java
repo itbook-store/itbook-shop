@@ -42,28 +42,6 @@ public class PaymentRepositoryImpl extends QuerydslRepositorySupport
 
     @Override
     public PaymentCardResponseDto findPaymentCardByOrderNo(Long orderNo) {
-        QOrder order = QOrder.order;
-        QPayment payment = QPayment.payment;
-        QCard card = QCard.card;
-
-        PaymentCardResponseDto d;
-        PaymentCardResponseDto paymentCardResponseDto;
-        PaymentResponseDto paymentResponseDto;
-
-        return from(payment)
-            .innerJoin(payment.card, card)
-            .innerJoin(payment.order, order)
-            .where(order.orderNo.eq(orderNo))
-            .select(Projections.constructor(PaymentCardResponseDto.class,
-                card.type,
-                card.cardSerialNo, card.totalAmount,
-                payment.paymentStatus))
-            .fetchOne();
-    }
-
-    @Override
-    public PaymentResponseDto findPaymentResponseDtoByOrderNo(Long orderNo) {
-
         QOrder qOrder = QOrder.order;
         QPayment qPayment = QPayment.payment;
         QCard qCard = QCard.card;
@@ -72,11 +50,10 @@ public class PaymentRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(qPayment.card, qCard)
             .innerJoin(qPayment.order, qOrder)
             .where(qOrder.orderNo.eq(orderNo))
-            .select(Projections.constructor(PaymentResponseDto.class,
-                
-                qCard.type,
+            .select(Projections.constructor(PaymentCardResponseDto.class,
+                qCard.type.as("cardType"),
                 qCard.cardSerialNo, qCard.totalAmount,
-                qPayment.paymentStatus))
+                qPayment.paymentStatus.paymentStatusEnum.stringValue().as("paymentStatus")))
             .fetchOne();
     }
 }

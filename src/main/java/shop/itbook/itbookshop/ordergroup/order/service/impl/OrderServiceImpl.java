@@ -34,7 +34,9 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
+import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl.DeliveryServiceImpl;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
@@ -65,7 +67,6 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductServic
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
@@ -146,6 +147,7 @@ public class OrderServiceImpl implements OrderService {
             paymentRepository.findPaymentCardByOrderNo(orderNo);
 
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
+        String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
 
         return OrderDetailsResponseDto.builder()
             .orderNo(orderNo)
@@ -154,6 +156,8 @@ public class OrderServiceImpl implements OrderService {
             .paymentCardResponseDto(paymentCardResponseDto)
             .orderStatus(orderStatus)
             .orderCreatedAt(order.getOrderCreatedAt())
+            .deliveryFee(order.getDeliveryFee())
+            .trackingNo(trackingNo)
             // todo: 주문에 배송비 테이블 추가 후 넣어주기
             .deliveryFee(0L)
             .build();
