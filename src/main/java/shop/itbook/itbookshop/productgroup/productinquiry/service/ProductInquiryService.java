@@ -45,6 +45,10 @@ public interface ProductInquiryService {
      */
     Long addProductInquiry(ProductInquiryRequestDto requestDto);
 
+    void deleteProductInquiry(Long productInquiryNo);
+
+    void modifyProductInquiry(Long productInquiryNo,
+                              ProductInquiryRequestDto productInquiryRequestDto);
 
     /**
      * 전체 상품 문의 카운트 수와 답변된 상품문의 카운트 수를 구하는 메서드입니다.

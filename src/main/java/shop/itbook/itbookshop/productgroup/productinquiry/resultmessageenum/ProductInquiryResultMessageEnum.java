@@ -15,7 +15,9 @@ public enum ProductInquiryResultMessageEnum {
     PRODUCT_INQUIRY_ADD_SUCCESS("상품 문의 생성에 성공하였습니다."),
     PRODUCT_INQUIRY_COUNT_GET_SUCCESS("상품 문의 갯수 반환에 성공하였습니다."),
     PRODUCT_INQUIRY_ORDER_PRODUCT_LIST_GET_SUCCESS("상품문의 작성가능한 주문 상품 리스트 반환에 성공하였습니다."),
-    PRODUCT_INQUIRY_GET_SUCCESS("상품 문의 상세 정보 반환에 성공하였습니다.");
+    PRODUCT_INQUIRY_GET_SUCCESS("상품 문의 상세 정보 반환에 성공하였습니다."),
+    PRODUCT_INQUIRY_DELETE_SUCCESS("상품 문의 삭제에 성공하였습니다."),
+    PRODUCT_INQUIRY_MODIFY_SUCCESS("상품 문의 수정에 성공하였습니다.");
 
     private String resultMessage;
 
