@@ -1,10 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
@@ -117,4 +115,19 @@ public interface OrderService {
 
 
     Page<OrderListAdminViewResponseDto> findOrderListAdmin(Pageable pageable);
+
+    /**
+     * 주문 구문확정 처리.
+     *
+     * @param orderNo 주문번호.
+     * @author 강명관
+     */
+    void orderPurchaseComplete(Long orderNo);
+
+    /**
+     * 구독 상품 결제완료인 상태의 주문을 매달 배송 대기로 만들기 위한 메서드입니다.
+     *
+     * @author 강명관
+     */
+    void addOrderStatusHistorySubscriptionProductDeliveryWait();
 }
