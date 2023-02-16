@@ -18,6 +18,14 @@ public interface BookRepository extends JpaRepository<Book, Long>, BookRepositor
 
     void deleteById(Long productNo);
 
+    /**
+     * ISBN으로 도서를 조회해 DB에 해당 도서가 존재하는지를 반환하는 기능을 담당합니다.
+     *
+     * @param isbn 조회할 도서(상품) isbn입니다.
+     * @return isbn으로 조회한 도서의 존재 여부를 반환합니다.
+     * @author 이하늬
+     */
+
     boolean existsBookByIsbn(String isbn);
 
 }
