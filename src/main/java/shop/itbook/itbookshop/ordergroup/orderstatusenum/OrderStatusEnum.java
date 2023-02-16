@@ -16,7 +16,7 @@ public enum OrderStatusEnum {
     /**
      * Waiting for payment order status enum.
      */
-    WAITING_FOR_PAYMENT("결제대기중"),
+    WAITING_FOR_PAYMENT("결제대기"),
     /**
      * Deposit complete order status enum.
      */

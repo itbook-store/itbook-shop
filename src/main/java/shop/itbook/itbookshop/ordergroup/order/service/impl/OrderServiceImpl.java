@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +62,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResp
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
@@ -83,6 +85,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @author 정재원
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -748,6 +751,23 @@ public class OrderServiceImpl implements OrderService {
         Order order = findOrderEntity(orderNo);
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PURCHASE_COMPLETE);
+
+    }
+
+    @Transactional
+    @Override
+    public void addOrderStatusHistorySubscriptionProductDeliveryWait() {
+
+        log.info("이거 실행 안되고있나?");
+
+        List<Order> orders =
+            orderRepository.paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
+
+        log.info("orders {}", orders);
+
+        orders.forEach(order ->
+            orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY)
+        );
 
     }
 }

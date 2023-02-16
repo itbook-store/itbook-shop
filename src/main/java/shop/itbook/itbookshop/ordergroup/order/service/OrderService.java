@@ -123,4 +123,11 @@ public interface OrderService {
      * @author 강명관
      */
     void orderPurchaseComplete(Long orderNo);
+
+    /**
+     * 구독 상품 결제완료인 상태의 주문을 매달 배송 대기로 만들기 위한 메서드입니다.
+     *
+     * @author 강명관
+     */
+    void addOrderStatusHistorySubscriptionProductDeliveryWait();
 }
