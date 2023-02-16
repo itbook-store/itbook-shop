@@ -17,8 +17,8 @@ public class OrderSheetResponseDto {
     private final List<ProductDetailsResponseDto> productDetailsResponseDtoList;
     private final List<MemberDestinationResponseDto> memberDestinationResponseDtoList;
 
-    private final Long deliveryFee;
-    private final Long memberPoint;
+    private Long deliveryFee;
+    private Long memberPoint;
 
     /**
      * 주문서 Dto 생성자.
