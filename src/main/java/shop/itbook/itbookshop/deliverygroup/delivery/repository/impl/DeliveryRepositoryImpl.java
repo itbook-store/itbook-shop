@@ -159,9 +159,10 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
         QOrder qOrder = QOrder.order;
         QDelivery qDelivery = QDelivery.delivery;
 
-        return from(qDelivery)
-            .innerJoin(qDelivery.order, qOrder)
-            .on(qOrder.orderNo.eq(orderNo))
-            .fetchOne().getTrackingNo();
+        return from(qOrder)
+            .leftJoin(qDelivery)
+            .on(qOrder.eq(qDelivery.order))
+            .select(qDelivery.trackingNo)
+            .fetchOne();
     }
 }

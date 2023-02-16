@@ -53,7 +53,7 @@ public class PaymentRepositoryImpl extends QuerydslRepositorySupport
             .select(Projections.constructor(PaymentCardResponseDto.class,
                 qCard.type.as("cardType"),
                 qCard.cardSerialNo, qCard.totalAmount,
-                qPayment.paymentStatus))
+                qPayment.paymentStatus.paymentStatusEnum.stringValue().as("paymentStatus")))
             .fetchOne();
     }
 }
