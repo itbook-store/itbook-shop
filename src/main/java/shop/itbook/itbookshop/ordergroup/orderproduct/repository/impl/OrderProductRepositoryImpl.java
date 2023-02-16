@@ -30,7 +30,8 @@ public class OrderProductRepositoryImpl extends QuerydslRepositorySupport implem
             .where(qOrderProduct.order.orderNo.eq(orderNo))
             .select(Projections.fields(OrderProductDetailResponseDto.class,
                 qOrderProduct.orderProductNo, qOrderProduct.product.name.as("productName"),
-                qOrderProduct.count, qOrderProduct.productPrice))
+                qOrderProduct.count, qOrderProduct.productPrice,
+                qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl")))
             .fetch();
     }
 }

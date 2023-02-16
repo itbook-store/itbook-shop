@@ -23,7 +23,7 @@ public interface CustomOrderRepository {
 
     String findOrderStatusByOrderNo(Long orderNo);
 
-    List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo);
+    OrderDestinationDto findOrderDestinationsByOrderNo(Long orderNo);
 
     Page<OrderListAdminViewResponseDto> getOrderListOfAdminWithStatus(Pageable pageable);
 }
