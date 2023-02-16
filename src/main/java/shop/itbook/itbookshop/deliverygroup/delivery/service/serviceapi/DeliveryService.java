@@ -19,4 +19,6 @@ public interface DeliveryService {
      * @author 정재원 *
      */
     void registerDelivery(Order order);
+
+    String findTrackingNoByOrderNo(Long orderNo);
 }

@@ -31,6 +31,4 @@ public interface PaymentRepositoryCustom {
      * @author 정재원
      */
     PaymentCardResponseDto findPaymentCardByOrderNo(Long orderNo);
-
-    PaymentResponseDto findPaymentResponseDtoByOrderNo(Long orderNo);
 }

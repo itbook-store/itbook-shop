@@ -439,6 +439,8 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
 
         if (Objects.isNull(orderNo)) {
             orderNo = from(qOrderCancelIncreasePointHistory)
+                .innerJoin(qOrderCancelIncreasePointHistory.pointHistory, qPointHistory)
+                .innerJoin(qPointHistory.member, qMember)
                 .where(qOrderCancelIncreasePointHistory.pointHistoryNo.eq(pointHistoryNo)
                     .and(qMember.memberNo.eq(memberNo)))
                 .select(qOrderCancelIncreasePointHistory.order.orderNo)

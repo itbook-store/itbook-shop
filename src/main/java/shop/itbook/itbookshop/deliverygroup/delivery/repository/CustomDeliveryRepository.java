@@ -19,6 +19,7 @@ public interface CustomDeliveryRepository {
     /**
      * 배송 정보를 배송 상태와 함께 불러옵니다.
      *
+     * @param pageable the pageable
      * @return 배송 상태가 담긴 배송 정보의 리스트
      * @author 정재원 *
      */
@@ -27,6 +28,7 @@ public interface CustomDeliveryRepository {
     /**
      * 배송 상태가 배송대기인 배송 정보의 리스트
      *
+     * @param pageable the pageable
      * @return 배송 상태가 배송대기인 리스트
      * @author 정재원 *
      */
@@ -39,4 +41,14 @@ public interface CustomDeliveryRepository {
      * @author 정재원 *
      */
     List<Delivery> findDeliveryEntityListWithStatusWait();
+
+
+    /**
+     * 주문 번호로 운송장 번호를 조회합니다.
+     *
+     * @param orderNo 주문 번호
+     * @return 해당 주문의 운송장 번호
+     * @author 정재원 *
+     */
+    String findTrackingNoByOrderNo(Long orderNo);
 }

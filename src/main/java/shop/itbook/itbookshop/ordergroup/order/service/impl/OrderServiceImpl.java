@@ -33,7 +33,9 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
+import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl.DeliveryServiceImpl;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
@@ -46,6 +48,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewRe
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
@@ -62,7 +65,6 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResp
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
@@ -141,6 +143,7 @@ public class OrderServiceImpl implements OrderService {
             paymentRepository.findPaymentCardByOrderNo(orderNo);
 
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
+        String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
 
         return OrderDetailsResponseDto.builder()
             .orderNo(orderNo)
@@ -149,6 +152,8 @@ public class OrderServiceImpl implements OrderService {
             .paymentCardResponseDto(paymentCardResponseDto)
             .orderStatus(orderStatus)
             .orderCreatedAt(order.getOrderCreatedAt())
+            .deliveryFee(order.getDeliveryFee())
+            .trackingNo(trackingNo)
             // todo: 주문에 배송비 테이블 추가 후 넣어주기
             .deliveryFee(0L)
             .build();
@@ -350,6 +355,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (optionalMemberNo.isPresent()) {
             amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
+        }
+
+        // toss 정책 상 100원 이하 결제 막기.
+        if (amount <= 100) {
+            throw new AmountException(amount);
         }
 
         return OrderPaymentDto.builder()
@@ -665,7 +675,7 @@ public class OrderServiceImpl implements OrderService {
     public void processAfterOrderCancelPaymentSuccess(Long orderNo) {
 
         Order order = findOrderEntity(orderNo);
-        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
 
         // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
         this.changeCategoryAndProductCouponStatusByCancel(orderNo);
@@ -712,7 +722,7 @@ public class OrderServiceImpl implements OrderService {
     private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {
 
         Optional<OrderTotalCouponApply> optionalOrderTotalCouponApply =
-            orderTotalCouponApplyRepositoy.findById(
+            orderTotalCouponApplyRepositoy.findByOrder_OrderNo(
                 orderNo);
 
         if (optionalOrderTotalCouponApply.isEmpty()) {
@@ -720,11 +730,19 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderTotalCouponApply orderTotalCouponApply = optionalOrderTotalCouponApply.get();
-        couponIssueService.cancelCouponIssue(orderTotalCouponApply.getCouponIssueNo());
+        Long couponIssueNo = orderTotalCouponApply.getCouponIssueNo();
+
+        couponIssueService.cancelCouponIssue(couponIssueNo);
+        orderTotalCouponApplyService.cancelOrderTotalCouponApplyAndChangeCouponIssue(couponIssueNo);
     }
 
     private void addOrderCancelIncreaseDecreasePointHistory(Order order, boolean isDecrease) {
-        if (Objects.equals(order.getIncreasePoint(), 0L)) {
+
+        if (isDecrease && Objects.equals(order.getIncreasePoint(), 0L)) {
+            return;
+        }
+
+        if (!isDecrease && Objects.equals(order.getDecreasePoint(), 0L)) {
             return;
         }
 
@@ -740,7 +758,7 @@ public class OrderServiceImpl implements OrderService {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelDecrease(
                 orderMember.getMember(),
                 order,
-                order.getDecreasePoint());
+                order.getIncreasePoint());
         } else {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelIncrease(
                 orderMember.getMember(),

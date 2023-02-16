@@ -29,8 +29,8 @@ public class OrderDetailsResponseDto {
     private Long deliveryFee;
     private String trackingNo;
 
-    private String couponType;
-    private String couponName;
-    private LocalDateTime couponUsageCreatedAt;
-    private LocalDateTime couponIssueCreatedAt;
+//    private String couponType;
+//    private String couponName;
+//    private LocalDateTime couponUsageCreatedAt;
+//    private LocalDateTime couponIssueCreatedAt;
 }
