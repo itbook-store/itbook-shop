@@ -89,12 +89,14 @@ public class ProductRelationGroupRepositoryImpl extends QuerydslRepositorySuppor
         QProduct qProduct = QProduct.product;
 
         JPQLQuery<ProductRelationResponseDto> productListQuery =
-            from(qProductRelationGroup)
-                .rightJoin(qProductRelationGroup.basedProduct, qProduct)
+            from(qProduct)
+                .leftJoin(qProductRelationGroup)
+                .on(qProductRelationGroup.basedProduct.productNo.eq(qProduct.productNo))
                 .select(Projections.constructor(ProductRelationResponseDto.class,
-                    qProduct.productNo, qProduct.name, qProductRelationGroup.basedProduct.count()))
-                .groupBy(qProduct)
-                .orderBy(qProductRelationGroup.basedProduct.count().desc());
+                    qProduct.productNo, qProduct.name,
+                    qProductRelationGroup.basedProduct.productNo.count()))
+                .groupBy(qProduct.productNo)
+                .orderBy(qProductRelationGroup.basedProduct.productNo.count().desc());
 
         List<ProductRelationResponseDto> productList = productListQuery
             .offset(pageable.getOffset())

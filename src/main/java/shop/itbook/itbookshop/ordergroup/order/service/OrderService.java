@@ -1,10 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
@@ -29,7 +27,6 @@ public interface OrderService {
      */
     Order findOrderEntity(Long orderNo);
 
-
     /**
      * 구독 주문 인지 검사합니다.
      *
@@ -42,7 +39,6 @@ public interface OrderService {
      *
      * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
      * @param memberNo           회원 번호. 비회원일 경우 null
-     * @param session            세션
      * @return 결제 요청에 사용될 정보를 담은 Dto
      * @author 정재원
      */
@@ -116,5 +112,20 @@ public interface OrderService {
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
 
 
-    Page<OrderListAdminViewResponseDto> findOrderListAdmin();
+    Page<OrderListAdminViewResponseDto> findOrderListAdmin(Pageable pageable);
+
+    /**
+     * 주문 구문확정 처리.
+     *
+     * @param orderNo 주문번호.
+     * @author 강명관
+     */
+    void orderPurchaseComplete(Long orderNo);
+
+    /**
+     * 구독 상품 결제완료인 상태의 주문을 매달 배송 대기로 만들기 위한 메서드입니다.
+     *
+     * @author 강명관
+     */
+    void addOrderStatusHistorySubscriptionProductDeliveryWait();
 }

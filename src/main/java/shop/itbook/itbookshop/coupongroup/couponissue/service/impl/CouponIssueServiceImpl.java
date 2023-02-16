@@ -23,6 +23,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.UserCouponIss
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponQuantityExhaustedException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
@@ -71,8 +72,9 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
         Coupon coupon = couponService.findByCouponEntity(couponNo);
 
-        CouponIssue couponIssue = makeCouponIssue(member, coupon);
+        CouponIssue couponIssue = null;
         try {
+            couponIssue = makeCouponIssue(member, coupon);
             couponIssue = couponIssueRepository.save(couponIssue);
         } catch (DataIntegrityViolationException e) {
             Throwable rootCause = e.getRootCause();
@@ -83,11 +85,14 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             }
 
             throw e;
+        } catch ( UnableToCreateCouponException e){
+            throw new CouponQuantityExhaustedException();
         }
         return couponIssue.getCouponIssueNo();
     }
 
     @Override
+    @Transactional
     public List<CouponIssue> addCouponIssueByCoupons(Long memberNo, String couponType) {
 
         Member member = memberService.findMemberByMemberNo(memberNo);
@@ -108,17 +113,21 @@ public class CouponIssueServiceImpl implements CouponIssueService {
         return couponIssueRepository.saveAll(couponIssueList);
     }
 
-    public CouponIssue makeCouponIssue(Member member, Coupon coupon) {
+    public CouponIssue makeCouponIssue(Member member, Coupon coupon) throws UnableToCreateCouponException {
 
         coupon = couponService.useCoupon(coupon);
 
         UsageStatus usageStatus = usageStatusService.findUsageStatus("사용가능");
 
+        LocalDateTime expiredDate = coupon.getCouponExpiredAt();
+        if (!Objects.isNull(coupon.getUsagePeriod())) {
+            expiredDate = LocalDateTime.now().plusDays(coupon.getUsagePeriod());
+        }
         return CouponIssue.builder()
             .member(member)
             .coupon(coupon)
             .usageStatus(usageStatus)
-            .couponExpiredAt(coupon.getCouponExpiredAt())
+            .couponExpiredAt(expiredDate)
             .build();
     }
 

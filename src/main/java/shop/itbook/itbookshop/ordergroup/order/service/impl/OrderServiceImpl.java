@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
@@ -60,9 +62,11 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResp
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
+import shop.itbook.itbookshop.paymentgroup.card.repository.CardRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
@@ -82,6 +86,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @author 정재원
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -91,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
+    private final CardRepository cardRepository;
 
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
@@ -109,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService;
     private final CouponIssueRepository couponIssueRepository;
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
-
+    private final DeliveryService deliveryService;
 
     /**
      * The Origin url.
@@ -126,16 +132,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
 
+        Order order = findOrderEntity(orderNo);
         List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
             orderProductService.findOrderProductsByOrderNo(orderNo);
-        List<OrderDestinationDto> orderDestinationList =
+        OrderDestinationDto orderDestinationDto =
             orderRepository.findOrderDestinationsByOrderNo(orderNo);
         PaymentCardResponseDto paymentCardResponseDto =
             paymentRepository.findPaymentCardByOrderNo(orderNo);
+
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
 
-        return new OrderDetailsResponseDto(orderProductDetailResponseDtoList, orderDestinationList,
-            paymentCardResponseDto, orderStatus);
+        return OrderDetailsResponseDto.builder()
+            .orderNo(orderNo)
+            .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
+            .orderDestinationDto(orderDestinationDto)
+            .paymentCardResponseDto(paymentCardResponseDto)
+            .orderStatus(orderStatus)
+            .orderCreatedAt(order.getOrderCreatedAt())
+            // todo: 주문에 배송비 테이블 추가 후 넣어주기
+            .deliveryFee(0L)
+            .build();
     }
 
     @Override
@@ -167,16 +183,12 @@ public class OrderServiceImpl implements OrderService {
     public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                  Optional<Long> memberNo) {
 
-
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
         orderRepository.save(order);
 
         // 주문_상태_이력 테이블 저장
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAITING_FOR_PAYMENT);
-
-//        // 배송 상태 생성 후 저장
-//        deliveryService.registerDelivery(order);
 
         // 회원, 비회원 구분해서 저장
         checkMemberAndSaveOrder(order, memberNo);
@@ -468,6 +480,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @SuppressWarnings("java:S5411")
     private void increasePointPerOrderProduct(Order order, Product product, long productPrice,
                                               Integer productCnt) {
 
@@ -490,7 +503,6 @@ public class OrderServiceImpl implements OrderService {
 
     private Coupon getAvailableCoupon(Long couponIssueNo,
                                       Long basePriceToCompareAboutStandardAmount) {
-
 
         if (Objects.isNull(couponIssueNo)) {
             return null;
@@ -551,8 +563,7 @@ public class OrderServiceImpl implements OrderService {
         String orderNoString = String.valueOf(order.getOrderNo());
         String randomUuidString = UUID.randomUUID().toString();
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
-        String orderId = UUID.fromString(randomUuidString).toString();
-        return orderId;
+        return UUID.fromString(randomUuidString).toString();
     }
 
     /**
@@ -596,6 +607,10 @@ public class OrderServiceImpl implements OrderService {
 
         usingCouponIssue(productAndCategoryCouponApplyDto, orderTotalCouponApplyDto, order);
         savePointHistoryAboutMember(order);
+
+        // 배송 상태 생성 후 저장
+        deliveryService.registerDelivery(order);
+
         return order;
     }
 
@@ -743,10 +758,35 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderListAdminViewResponseDto> findOrderListAdmin() {
+    public Page<OrderListAdminViewResponseDto> findOrderListAdmin(Pageable pageable) {
 
-        // todo won : 레포지토리 로직 추가.
+        return orderRepository.getOrderListOfAdminWithStatus(pageable);
+    }
 
-        return null;
+    @Override
+    @Transactional
+    public void orderPurchaseComplete(Long orderNo) {
+
+        Order order = findOrderEntity(orderNo);
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PURCHASE_COMPLETE);
+
+    }
+
+    @Transactional
+    @Override
+    public void addOrderStatusHistorySubscriptionProductDeliveryWait() {
+
+        log.info("이거 실행 안되고있나?");
+
+        List<Order> orders =
+            orderRepository.paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
+
+        log.info("orders {}", orders);
+
+        orders.forEach(order ->
+            orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY)
+        );
+
     }
 }

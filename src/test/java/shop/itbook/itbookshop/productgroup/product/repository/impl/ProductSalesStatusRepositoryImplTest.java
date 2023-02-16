@@ -192,10 +192,10 @@ class ProductSalesStatusRepositoryImplTest {
             .isEqualTo(dummyProduct1.getProductNo());
         Assertions.assertThat(productList.get(0).getCount()).isEqualTo(5);
         Assertions.assertThat(productList.get(1).getProductNo())
-            .isEqualTo(dummyProduct3.getProductNo());
+            .isEqualTo(dummyProduct2.getProductNo());
         Assertions.assertThat(productList.get(1).getCount()).isEqualTo(1);
         Assertions.assertThat(productList.get(2).getProductNo())
-            .isEqualTo(dummyProduct2.getProductNo());
+            .isEqualTo(dummyProduct3.getProductNo());
         Assertions.assertThat(productList.get(2).getCount()).isEqualTo(1);
     }
 
@@ -222,12 +222,12 @@ class ProductSalesStatusRepositoryImplTest {
         Assertions.assertThat(productList).hasSize(3);
 
         Assertions.assertThat(productList.get(0).getProductNo())
-            .isEqualTo(dummyProduct2.getProductNo());
+            .isEqualTo(dummyProduct1.getProductNo());
         Assertions.assertThat(productList.get(0).getPrice())
             .isEqualTo(dummyOrderProduct4.getProductPrice() + dummyOrderProduct6.getProductPrice());
 
         Assertions.assertThat(productList.get(1).getProductNo())
-            .isEqualTo(dummyProduct1.getProductNo());
+            .isEqualTo(dummyProduct2.getProductNo());
         Assertions.assertThat(productList.get(1).getPrice())
             .isEqualTo(dummyOrderProduct3.getProductPrice() + dummyOrderProduct5.getProductPrice());
 

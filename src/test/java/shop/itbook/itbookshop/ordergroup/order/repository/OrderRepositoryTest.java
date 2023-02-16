@@ -2,7 +2,9 @@ package shop.itbook.itbookshop.ordergroup.order.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ import shop.itbook.itbookshop.ordergroup.orderstatus.dummy.OrderStatusDummy;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.repository.OrderStatusRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.dummy.OrderSubscriptionDummy;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
@@ -69,6 +74,9 @@ class OrderRepositoryTest {
     MemberStatusRepository memberStatusRepository;
     @Autowired
     OrderMemberRepository orderMemberRepository;
+
+    @Autowired
+    OrderSubscriptionRepository orderSubscriptionRepository;
 
     @Autowired
     TestEntityManager testEntityManager;
@@ -126,4 +134,29 @@ class OrderRepositoryTest {
         assertThat(orderListOfMemberWithStatus.getContent().get(0).getOrderNo()).isEqualTo(
             order.getOrderNo());
     }
+
+//    @DisplayName("결제완료 상태인 구독상품 리스트 가져오기")
+//    @Test
+//    void paymentCompleteSubscriptionProductStatusChangeWaitDelivery() {
+//        // given
+//        Order order = orderRepository.save(OrderDummy.getOrder());
+//        OrderSubscription orderSubscription =
+//            OrderSubscriptionDummy.createOrderSubscription(order);
+//
+//        orderSubscriptionRepository.save(orderSubscription);
+//
+//        OrderStatus orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
+//        orderStatusRepository.save(orderStatus);
+//
+//        OrderStatusHistory orderStatusHistory =
+//            OrderStatusHistoryDummy.createOrderStatusHistory(order, orderStatus);
+//        orderStatusHistoryRepository.save(orderStatusHistory);
+//
+//        // when
+//        List<Order> orders =
+//            orderRepository.paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
+//
+//        // then
+//        assertThat(orders.get(0)).isEqualTo(order);
+//    }
 }

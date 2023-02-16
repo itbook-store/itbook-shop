@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi;
 
-import java.util.List;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**

@@ -127,6 +127,14 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
         ProductInquiryResponseDto productInquiryResponseDto =
             productInquiryRepository.findProductInquiry(productInquiryNo);
 
+        if (memberNo == -1L && !productInquiryResponseDto.getIsPublic()) {
+            throw new ProductInquiryComeCloseOtherMemberException();
+        }
+
+        if (memberNo == -1L && productInquiryResponseDto.getIsPublic()) {
+            return productInquiryResponseDto;
+        }
+        
         List<MemberRoleResponseDto> memberRoles =
             memberRoleService.findMemberRoleWithMemberNo(memberNo);
 

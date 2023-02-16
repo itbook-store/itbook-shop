@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.book.controller.adminapi;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,7 +114,7 @@ public class BookAdminController {
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> BookAdd(
-        @RequestPart ProductBookRequestDto requestDto,
+        @RequestPart @Valid ProductBookRequestDto requestDto,
         @RequestPart MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 
@@ -144,7 +145,7 @@ public class BookAdminController {
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart BookModifyRequestDto requestDto,
+        @RequestPart @Valid BookModifyRequestDto requestDto,
         @RequestPart(required = false) MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {
 

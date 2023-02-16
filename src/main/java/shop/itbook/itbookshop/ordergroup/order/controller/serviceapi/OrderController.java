@@ -1,9 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
-import shop.itbook.itbookshop.deliverygroup.resultemessageenum.OrderResultMessageEnum;
+import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
@@ -101,7 +98,7 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAddBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
         Optional<Long> optMemberNo = Optional.empty();
 
@@ -151,9 +148,9 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionAfterPayment(
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpSession session) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
         Optional<Long> optMemberNo = Optional.empty();
 
@@ -225,6 +222,29 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.findOrderDetails(orderNo)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * 주문 구매 확정뱐경 메서드 입니다.
+     *
+     * @param orderNo 주문번호
+     * @return 공용응답객체
+     * @author 강명관
+     */
+    @PostMapping("/purchase-complete/{orderNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderStatusChangePurchaseComplete(
+        @PathVariable(value = "orderNo") Long orderNo
+    ) {
+        orderService.orderPurchaseComplete(orderNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
+                ), null
             );
 
         return ResponseEntity.ok().body(commonResponseBody);

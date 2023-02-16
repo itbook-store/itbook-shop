@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.ordersheet.transfer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -24,9 +25,21 @@ public class OrderSheetTransfer {
      */
     public static OrderSheetResponseDto createOrderSheetResponseDto(
         List<ProductDetailsResponseDto> productDetailsResponseDtoList,
-        List<MemberDestinationResponseDto> memberDestinationResponseDtoList) {
+        List<MemberDestinationResponseDto> memberDestinationResponseDtoList,
+        Long memberPoint) {
 
-        return new OrderSheetResponseDto(productDetailsResponseDtoList,
-            memberDestinationResponseDtoList);
+        long deliveryFee = 3000L;
+        long amount = 0;
+
+        for (ProductDetailsResponseDto product : productDetailsResponseDtoList) {
+            amount += product.getSelledPrice();
+        }
+
+        return OrderSheetResponseDto.builder()
+            .productDetailsResponseDtoList(productDetailsResponseDtoList)
+            .memberDestinationResponseDtoList(memberDestinationResponseDtoList)
+            .deliveryFee(deliveryFee)
+            .memberPoint(memberPoint)
+            .build();
     }
 }

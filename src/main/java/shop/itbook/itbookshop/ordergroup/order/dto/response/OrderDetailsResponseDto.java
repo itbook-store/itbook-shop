@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.ordergroup.order.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
@@ -16,9 +18,19 @@ import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardRespo
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OrderDetailsResponseDto {
+    private Long orderNo;
     private List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList;
-    private List<OrderDestinationDto> orderDestinationDtoList;
+    private OrderDestinationDto orderDestinationDto;
     private PaymentCardResponseDto paymentCardResponseDto;
     private String orderStatus;
+    private LocalDateTime orderCreatedAt;
+    private Long deliveryFee;
+    private String trackingNo;
+
+    private String couponType;
+    private String couponName;
+    private LocalDateTime couponUsageCreatedAt;
+    private LocalDateTime couponIssueCreatedAt;
 }
