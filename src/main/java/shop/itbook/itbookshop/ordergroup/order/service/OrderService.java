@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
@@ -140,4 +141,24 @@ public interface OrderService {
      * @author 강명관
      */
     void addOrderStatusHistorySubscriptionProductDeliveryWait();
+
+    /**
+     * 관리자가 모든 구독 상품 주문 리스트에 대해 조회하는 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @return 페징된 DTO 객체.
+     * @author 강명관
+     */
+    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable);
+
+    /**
+     * 회원이 마이페이지 에서 구독 상품 주문 리스트에 대해 조회하는 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @param memberNo 회원 번호
+     * @return 페이징된 DTO 객체.
+     * @author 강명관
+     */
+    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+                                                                        Long memberNo);
 }

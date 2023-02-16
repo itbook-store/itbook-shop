@@ -7,10 +7,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 
@@ -43,5 +45,56 @@ public class OrderAdminController {
                 new PageResponse<>(orderService.findOrderListAdmin(pageable)));
 
         return ResponseEntity.ok().body(response);
+    }
+
+
+    /**
+     * 관리자페이지에서 구독 주문 목록 리스트 반환 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @return 페이징된 구독 주문 목록 DTO
+     * @author 강명관
+     */
+    @GetMapping("/list/subscription")
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderSubscriptionListDto>>> orderSubscriptionListByAdmin(
+        @PageableDefault Pageable pageable
+    ) {
+
+        Page<OrderSubscriptionListDto> allSubscriptionOrderListByAdmin =
+            orderService.findAllSubscriptionOrderListByAdmin(pageable);
+
+        CommonResponseBody<PageResponse<OrderSubscriptionListDto>> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage()
+            ), new PageResponse<>(allSubscriptionOrderListByAdmin)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * 회원 구독 주문 목록 리스틑 반환 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @param memberNo 회원 번호
+     * @return 페이징 처리된 해당 회원의 구독 주문 목록 DTO
+     * @author 강명관
+     */
+    @GetMapping("/list/subscription/{memberNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderSubscriptionListDto>>> orderSubscriptionListByMember(
+        @PageableDefault Pageable pageable,
+        @PathVariable(value = "memberNo") Long memberNo
+    ) {
+
+        Page<OrderSubscriptionListDto> allSubscriptionOrderListByMember =
+            orderService.findAllSubscriptionOrderListByMember(pageable, memberNo);
+
+        CommonResponseBody<PageResponse<OrderSubscriptionListDto>> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage()
+            ), new PageResponse<>(allSubscriptionOrderListByMember)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
     }
 }
