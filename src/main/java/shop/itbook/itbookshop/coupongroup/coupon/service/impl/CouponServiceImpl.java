@@ -79,8 +79,14 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     @Transactional
-    public Coupon useCoupon(Coupon coupon) {
-        return couponQuantity(coupon);
+    public Coupon useCoupon(Coupon coupon) throws UnableToCreateCouponException {
+        int quantity = coupon.getIssuedQuantity();
+
+        if (coupon.getTotalQuantity() != 0 && coupon.getTotalQuantity() == quantity) {
+            throw new UnableToCreateCouponException();
+        }
+        coupon.setIssuedQuantity(++quantity);
+        return couponRepository.save(coupon);
     }
 
     @Override
@@ -96,13 +102,4 @@ public class CouponServiceImpl implements CouponService {
         return couponRepository.findByAvailableCouponDtoByCouponType(couponTypeEnum);
     }
 
-    public Coupon couponQuantity(Coupon coupon) {
-        int quantity = coupon.getIssuedQuantity();
-
-        if (coupon.getTotalQuantity() != 0 && coupon.getTotalQuantity() == quantity) {
-            throw new UnableToCreateCouponException();
-        }
-        coupon.setIssuedQuantity(++quantity);
-        return couponRepository.save(coupon);
-    }
 }
