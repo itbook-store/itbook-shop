@@ -234,6 +234,8 @@ public class MemberServiceImpl implements MemberService {
 
         memberRoleService.addMemberRole(member, role);
 
+        publisher.publishEvent(new SignedUpEvent(this, member));
+
         return memberNo;
     }
 
