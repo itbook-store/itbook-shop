@@ -168,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                  Optional<Long> memberNo) {
-        
+
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
         orderRepository.save(order);
@@ -737,10 +737,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderListAdminViewResponseDto> findOrderListAdmin() {
+    public Page<OrderListAdminViewResponseDto> findOrderListAdmin(Pageable pageable) {
 
-        // todo won : 레포지토리 로직 추가.
-
-        return null;
+        return orderRepository.getOrderListOfAdminWithStatus(pageable);
     }
 }
