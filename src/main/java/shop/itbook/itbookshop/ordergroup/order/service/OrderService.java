@@ -1,9 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service;
 
-import co.elastic.clients.elasticsearch.nodes.Http;
-import java.util.List;
 import java.util.Optional;
-import javax.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -83,4 +80,12 @@ public interface OrderService {
      * @author 정재원 *
      */
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
+
+    /**
+     * 주문 구문확정 처리.
+     *
+     * @param orderNo 주문번호.
+     * @author 강명관
+     */
+    void orderPurchaseComplete(Long orderNo);
 }

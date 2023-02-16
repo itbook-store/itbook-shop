@@ -24,7 +24,7 @@ public enum OrderStatusEnum {
     /**
      * Delivery reception order status enum.
      */
-    DELIVERY_RECEPTION("배송접수중"),
+    WAIT_DELIVERY("배송대기"),
     /**
      * Shipping order status enum.
      */
