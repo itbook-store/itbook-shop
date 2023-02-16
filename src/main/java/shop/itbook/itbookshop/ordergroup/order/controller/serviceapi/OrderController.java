@@ -226,4 +226,27 @@ public class OrderController {
 
         return ResponseEntity.ok().body(commonResponseBody);
     }
+
+    /**
+     * 주문 구매 확정뱐경 메서드 입니다.
+     *
+     * @param orderNo 주문번호
+     * @return 공용응답객체
+     * @author 강명관
+     */
+    @PostMapping("/purchase-complete/{orderNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderStatusChangePurchaseComplete(
+        @PathVariable(value = "orderNo") Long orderNo
+    ) {
+        orderService.orderPurchaseComplete(orderNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
+                ), null
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
 }
