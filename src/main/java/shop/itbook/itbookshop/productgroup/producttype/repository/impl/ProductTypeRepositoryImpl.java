@@ -316,7 +316,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                 qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
                 qProduct.dailyHits))
             .groupBy(qProduct.productNo)
-            .orderBy(qOrderProduct.count.sum().desc());
+            .orderBy(qOrderProduct.count.sum().desc(), qProduct.productNo.desc());
 
     }
 

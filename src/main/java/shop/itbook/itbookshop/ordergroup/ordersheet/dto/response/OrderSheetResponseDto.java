@@ -2,7 +2,9 @@ package shop.itbook.itbookshop.ordergroup.ordersheet.dto.response;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 
@@ -13,8 +15,20 @@ import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsRe
  * @since 1.0
  */
 @Getter
-@AllArgsConstructor
 public class OrderSheetResponseDto {
-    private List<ProductDetailsResponseDto> productDetailsResponseDtoList;
-    private List<MemberDestinationResponseDto> memberDestinationResponseDtoList;
+    private final List<ProductDetailsResponseDto> productDetailsResponseDtoList;
+    private final List<MemberDestinationResponseDto> memberDestinationResponseDtoList;
+
+    private Long deliveryFee;
+    private Long memberPoint;
+
+    @Builder
+    public OrderSheetResponseDto(List<ProductDetailsResponseDto> productDetailsResponseDtoList,
+                                 List<MemberDestinationResponseDto> memberDestinationResponseDtoList,
+                                 Long deliveryFee, Long memberPoint) {
+        this.productDetailsResponseDtoList = productDetailsResponseDtoList;
+        this.memberDestinationResponseDtoList = memberDestinationResponseDtoList;
+        this.deliveryFee = deliveryFee;
+        this.memberPoint = memberPoint;
+    }
 }

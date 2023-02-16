@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.controller.adminapi;
 
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -127,7 +128,7 @@ public class ProductAdminController {
      */
     @PostMapping
     public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> productAdd(
-        @RequestPart ProductAddRequestDto requestDto,
+        @RequestPart @Valid ProductAddRequestDto requestDto,
         @RequestPart MultipartFile thumbnails) {
 
         ProductNoResponseDto productPk =
@@ -155,7 +156,7 @@ public class ProductAdminController {
     @PutMapping("/{productNo}")
     public ResponseEntity<CommonResponseBody<Void>> productModify(
         @PathVariable Long productNo,
-        @RequestPart ProductModifyRequestDto requestDto,
+        @RequestPart @Valid ProductModifyRequestDto requestDto,
         @RequestPart(required = false) MultipartFile thumbnails) {
 
         productService.modifyProduct(productNo, requestDto, thumbnails);

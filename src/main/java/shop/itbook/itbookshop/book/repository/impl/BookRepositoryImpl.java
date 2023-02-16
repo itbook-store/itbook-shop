@@ -64,4 +64,5 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(book.fetchOne());
     }
+
 }
