@@ -135,6 +135,26 @@ class OrderRepositoryTest {
             order.getOrderNo());
     }
 
+    @DisplayName("주문들을 in절을 통해 잘 가져온다.")
+    @Test
+    void findOrdersByOrderNoIn() {
+        Order order1 = orderRepository.save(OrderDummy.getOrder());
+        Order order2 = orderRepository.save(OrderDummy.getOrder());
+        testEntityManager.clear();
+        List<Order> actual = orderRepository.findOrdersByOrderNoIn(
+            List.of(order1.getOrderNo(), order2.getOrderNo()));
+
+        assertThat(actual.get(0).getOrderNo())
+            .isEqualTo(order1.getOrderNo());
+        assertThat(actual.get(0).getRecipientName())
+            .isEqualTo(order1.getRecipientName());
+        assertThat(actual.get(1).getOrderNo())
+            .isEqualTo(order2.getOrderNo());
+        assertThat(actual.get(1).getRecipientName())
+            .isEqualTo(order2.getRecipientName());
+
+    }
+
 //    @DisplayName("결제완료 상태인 구독상품 리스트 가져오기")
 //    @Test
 //    void paymentCompleteSubscriptionProductStatusChangeWaitDelivery() {
