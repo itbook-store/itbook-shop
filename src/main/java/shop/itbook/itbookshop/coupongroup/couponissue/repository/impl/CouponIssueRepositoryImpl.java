@@ -86,6 +86,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .leftJoin(qParentCategory)
             .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
             .where(qCouponIssue.member.memberNo.eq(memberNo))
+            .orderBy(qCouponIssue.couponIssueNo.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
@@ -406,6 +407,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .leftJoin(qCategoryCoupon).on(qCouponIssue.coupon.couponNo.eq(qCategoryCoupon.couponNo))
             .leftJoin(qCategory).on(qCategoryCoupon.category.categoryNo.eq(qCategory.categoryNo))
             .leftJoin(qParentCategory)
-            .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo));
+            .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
+            .orderBy(qCouponIssue.couponIssueNo.desc());
     }
 }

@@ -92,7 +92,9 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
             .join(qCoupon.couponType, qCouponType)
             .where(qCoupon.couponType.couponTypeEnum.eq(couponTypeEnum))
             .where(qCoupon.couponCreatedAt.before(LocalDateTime.now()))
-            .where(qCoupon.couponExpiredAt.after(LocalDateTime.now()));
+            .where(qCoupon.couponExpiredAt.after(LocalDateTime.now()))
+            .orderBy(qCoupon.couponNo.desc());
+
         return jpqlQuery.fetch();
     }
 
@@ -137,6 +139,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
             .where(qCoupon.couponType.couponTypeEnum.eq(couponTypeEnum))
             .where(qCoupon.couponCreatedAt.before(LocalDateTime.now()))
             .where(qCoupon.couponExpiredAt.after(LocalDateTime.now()))
+            .orderBy(qCoupon.couponNo.desc())
             .fetch();
     }
     /**
@@ -188,6 +191,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
             .leftJoin(qProductCoupon).on(qCoupon.couponNo.eq(qProductCoupon.couponNo))
             .leftJoin(qProduct).on(qProductCoupon.product.productNo.eq(qProduct.productNo))
             .where(qCouponType.couponTypeEnum.eq(couponTypeEnum))
+            .orderBy(qCoupon.couponNo.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
