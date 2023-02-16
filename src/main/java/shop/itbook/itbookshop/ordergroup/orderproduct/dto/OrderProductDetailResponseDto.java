@@ -12,9 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderProductDetailResponseDto {
-
     private Long orderProductNo;
     private String productName;
     private Integer count;
     private Long productPrice;
+    private String fileThumbnailsUrl;
 }

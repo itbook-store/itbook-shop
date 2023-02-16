@@ -130,7 +130,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo) {
+    public OrderDestinationDto findOrderDestinationsByOrderNo(Long orderNo) {
 
         QOrder qOrder = QOrder.order;
 
@@ -140,7 +140,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrder.recipientName, qOrder.recipientPhoneNumber,
                 qOrder.postcode, qOrder.roadNameAddress, qOrder.recipientAddressDetails
             ))
-            .fetch();
+            .fetchOne();
     }
 
     @Override

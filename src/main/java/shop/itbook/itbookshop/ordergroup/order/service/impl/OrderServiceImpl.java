@@ -66,6 +66,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHi
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
+import shop.itbook.itbookshop.paymentgroup.card.repository.CardRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
@@ -95,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
+    private final CardRepository cardRepository;
 
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
@@ -115,7 +117,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
     private final DeliveryService deliveryService;
 
-
     /**
      * The Origin url.
      */
@@ -131,16 +132,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
 
+        Order order = findOrderEntity(orderNo);
         List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
             orderProductService.findOrderProductsByOrderNo(orderNo);
-        List<OrderDestinationDto> orderDestinationList =
+        OrderDestinationDto orderDestinationDto =
             orderRepository.findOrderDestinationsByOrderNo(orderNo);
         PaymentCardResponseDto paymentCardResponseDto =
             paymentRepository.findPaymentCardByOrderNo(orderNo);
+
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
 
-        return new OrderDetailsResponseDto(orderProductDetailResponseDtoList, orderDestinationList,
-            paymentCardResponseDto, orderStatus);
+        return OrderDetailsResponseDto.builder()
+            .orderNo(orderNo)
+            .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
+            .orderDestinationDto(orderDestinationDto)
+            .paymentCardResponseDto(paymentCardResponseDto)
+            .orderStatus(orderStatus)
+            .orderCreatedAt(order.getOrderCreatedAt())
+            // todo: 주문에 배송비 테이블 추가 후 넣어주기
+            .deliveryFee(0L)
+            .build();
     }
 
     @Override

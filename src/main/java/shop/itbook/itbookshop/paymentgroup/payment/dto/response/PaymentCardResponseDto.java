@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PaymentCardResponseDto {
-
     private String cardSerialNo;
     private Long totalAmount;
+    private String paymentStatus;
 }

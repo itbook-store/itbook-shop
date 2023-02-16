@@ -27,7 +27,6 @@ public interface OrderService {
      */
     Order findOrderEntity(Long orderNo);
 
-
     /**
      * 구독 주문 인지 검사합니다.
      *
@@ -40,7 +39,6 @@ public interface OrderService {
      *
      * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
      * @param memberNo           회원 번호. 비회원일 경우 null
-     * @param session            세션
      * @return 결제 요청에 사용될 정보를 담은 Dto
      * @author 정재원
      */
