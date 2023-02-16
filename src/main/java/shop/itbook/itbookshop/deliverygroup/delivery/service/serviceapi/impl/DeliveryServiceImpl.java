@@ -60,4 +60,9 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         deliveryStatusHistoryRepository.save(deliveryStatusHistory);
     }
+
+    @Override
+    public String findTrackingNoByOrderNo(Long orderNo) {
+        return deliveryRepository.findTrackingNoByOrderNo(orderNo);
+    }
 }
