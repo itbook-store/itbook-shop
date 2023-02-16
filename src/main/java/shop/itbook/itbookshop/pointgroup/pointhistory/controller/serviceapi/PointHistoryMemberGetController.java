@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.resultmessageenum.PointHistroyResultMessageEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi.PointHistoryAdminService;
@@ -32,6 +33,20 @@ import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto
 public class PointHistoryMemberGetController {
 
     private final PointHistoryMemberService pointHistoryMemberService;
+
+    @GetMapping("/{pointHistoryNo}/my-order-details/member-no/{memberNo}")
+    public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> pointHistoryOrderDetails(
+        @PathVariable Long pointHistoryNo, @PathVariable Long memberNo) {
+
+        OrderDetailsResponseDto orderDetailsResponseDto =
+            pointHistoryMemberService.findPointHistoryOrderDetailsResponseDto(pointHistoryNo,
+                memberNo);
+
+
+        return ResponseEntity.ok(new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+            PointHistroyResultMessageEnum.POINT_HISTORY_DETAILS_GET_SUCCESS.getResultMessage())
+            , orderDetailsResponseDto));
+    }
 
     @GetMapping("/{pointHistoryNo}/my-coupon-details/member-no/{memberNo}")
     public ResponseEntity<CommonResponseBody<PointHistoryCouponDetailsResponseDto>> pointHistoryCouponDetails(
@@ -96,4 +111,6 @@ public class PointHistoryMemberGetController {
             PointHistroyResultMessageEnum.MY_POINT_HISTORY_LIST_GET_SUCCESS.getResultMessage())
             , new PageResponse<>(pointHistoryList)));
     }
+
+
 }

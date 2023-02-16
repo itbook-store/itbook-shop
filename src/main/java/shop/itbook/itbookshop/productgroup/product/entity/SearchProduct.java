@@ -82,7 +82,8 @@ public class SearchProduct {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
     public SearchProduct(Long productNo, String name, String simpleDescription,
-                         String detailsDescription, Integer stock, Boolean isSelled, Boolean isForceSoldOut,
+                         String detailsDescription, Integer stock, Boolean isSelled,
+                         Boolean isForceSoldOut,
                          String thumbnailUrl, Long fixedPrice,
                          Integer increasePointPercent, Double discountPercent, Long rawPrice) {
         this.productNo = productNo;

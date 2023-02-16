@@ -21,6 +21,5 @@ public class PaymentStatusImpl implements PaymentStatusService {
     public PaymentStatus findPaymentStatusEntity(PaymentStatusEnum paymentStatusEnum) {
         return paymentStatusRepository.findPaymentStatusByPaymentStatusEnum(paymentStatusEnum)
             .orElseThrow(PaymentStatusNotFoundException::new);
-
     }
 }

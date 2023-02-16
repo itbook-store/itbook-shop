@@ -29,8 +29,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final DeliveryStatusRepository deliveryStatusRepository;
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
-
     private final OrderStatusHistoryService orderStatusHistoryService;
+
 
     @Override
     @Transactional

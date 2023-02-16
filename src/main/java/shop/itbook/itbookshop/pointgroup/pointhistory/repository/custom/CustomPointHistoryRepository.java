@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
@@ -48,4 +49,8 @@ public interface CustomPointHistoryRepository {
 
     PointHistoryCouponDetailsResponseDto findMyPointHistoryCouponDetailsDto(Long pointHistoryNo,
                                                                             Long memberNo);
+
+    Long findOrderNoThroughPointHistory(Long pointHistoryNo);
+
+    Long findMyOrderNoThroughPointHistory(Long pointHistoryNo, Long memberNo);
 }

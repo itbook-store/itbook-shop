@@ -23,6 +23,9 @@ public interface MemberDestinationService {
 
     MemberDestination findByRecipientDestinationNo(Long recipientDestinationNo);
 
+    MemberDestination findByRecipientDestinationNoAndMemberNo(Long memberNo,
+                                                              Long recipientDestinationNo);
+
     void modifyMemberDestination(Long recipientDestinationNo,
                                  MemberDestinationRequestDto memberDestinationRequestDto);
 }

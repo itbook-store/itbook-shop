@@ -78,6 +78,19 @@ public class ProductInquiryController {
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
+    @GetMapping("/view/{memberNo}/{productInquiryNo}")
+    public ResponseEntity<CommonResponseBody<ProductInquiryResponseDto>> productInquiryDetailsInProductDetails(
+        @PathVariable("memberNo") Long memberNo,
+        @PathVariable("productInquiryNo") Long productInquiryNo) {
+
+        CommonResponseBody<ProductInquiryResponseDto> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_GET_SUCCESS.getResultMessage()),
+            productInquiryService.findProductInquiryByMemberNo(memberNo, productInquiryNo));
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
     @GetMapping("/list/{memberNo}")
     public ResponseEntity<CommonResponseBody<PageResponse<ProductInquiryResponseDto>>> productInquiryListByMemberNo(
         @PageableDefault Pageable pageable, @PathVariable("memberNo") Long memberNo) {

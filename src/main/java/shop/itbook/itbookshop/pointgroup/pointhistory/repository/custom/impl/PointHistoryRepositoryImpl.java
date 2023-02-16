@@ -12,6 +12,8 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.membergroup.membership.entity.QMembership;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.entity.QCouponIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
@@ -22,6 +24,8 @@ import shop.itbook.itbookshop.pointgroup.pointhistory.repository.custom.CustomPo
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.QGiftIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.dto.response.PointHistoryGradeDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.grade.entity.QGradeIncreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.entity.QOrderIncreaseDecreasePointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.entity.QOrderCancelIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.entity.QReviewIncreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.entity.QPointIncreaseDecreaseContent;
 import shop.itbook.itbookshop.pointgroup.pointincreasedecreasecontent.increasepointplaceenum.PointIncreaseDecreaseContentEnum;
@@ -385,5 +389,66 @@ public class PointHistoryRepositoryImpl extends QuerydslRepositorySupport
                 qPointHistory.historyCreatedAt,
                 qPointHistory.isDecrease
             ));
+    }
+
+    @Override
+    public Long findOrderNoThroughPointHistory(Long pointHistoryNo) {
+
+        QOrderIncreaseDecreasePointHistory qOrderIncreaseDecreasePointHistory =
+            QOrderIncreaseDecreasePointHistory.orderIncreaseDecreasePointHistory;
+        QOrderCancelIncreasePointHistory qOrderCancelIncreasePointHistory =
+            QOrderCancelIncreasePointHistory.orderCancelIncreasePointHistory;
+
+        Long orderNo = from(qOrderIncreaseDecreasePointHistory)
+            .where(qOrderIncreaseDecreasePointHistory.pointHistoryNo.eq(pointHistoryNo))
+            .select(qOrderIncreaseDecreasePointHistory.order.orderNo)
+            .fetchOne();
+
+        if (Objects.isNull(orderNo)) {
+            orderNo = from(qOrderCancelIncreasePointHistory)
+                .where(qOrderCancelIncreasePointHistory.pointHistoryNo.eq(pointHistoryNo))
+                .select(qOrderCancelIncreasePointHistory.order.orderNo)
+                .fetchOne();
+        }
+
+        if (Objects.isNull(orderNo)) {
+            throw new OrderNotFoundException();
+        }
+
+        return orderNo;
+    }
+
+    @Override
+    public Long findMyOrderNoThroughPointHistory(Long pointHistoryNo, Long memberNo) {
+
+        QOrderIncreaseDecreasePointHistory qOrderIncreaseDecreasePointHistory =
+            QOrderIncreaseDecreasePointHistory.orderIncreaseDecreasePointHistory;
+        QOrderCancelIncreasePointHistory qOrderCancelIncreasePointHistory =
+            QOrderCancelIncreasePointHistory.orderCancelIncreasePointHistory;
+
+        QPointHistory qPointHistory = QPointHistory.pointHistory;
+        QMember qMember = QMember.member;
+
+        Long orderNo = from(qOrderIncreaseDecreasePointHistory)
+            .innerJoin(qOrderIncreaseDecreasePointHistory.pointHistory, qPointHistory)
+            .innerJoin(qPointHistory.member, qMember)
+            .where(qOrderIncreaseDecreasePointHistory.pointHistoryNo.eq(pointHistoryNo)
+                .and(qMember.memberNo.eq(memberNo)))
+            .select(qOrderIncreaseDecreasePointHistory.order.orderNo)
+            .fetchOne();
+
+        if (Objects.isNull(orderNo)) {
+            orderNo = from(qOrderCancelIncreasePointHistory)
+                .where(qOrderCancelIncreasePointHistory.pointHistoryNo.eq(pointHistoryNo)
+                    .and(qMember.memberNo.eq(memberNo)))
+                .select(qOrderCancelIncreasePointHistory.order.orderNo)
+                .fetchOne();
+        }
+
+        if (Objects.isNull(orderNo)) {
+            throw new OrderNotFoundException();
+        }
+
+        return orderNo;
     }
 }

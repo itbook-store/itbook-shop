@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.pointgroup.pointhistory.service.find.adminapi;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.dto.response.PointHistoryCouponDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.dto.response.PointHistoryGiftDetailsResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
@@ -29,4 +30,7 @@ public interface PointHistoryAdminService {
     ReviewResponseDto findReviewResponseDtoForPointHistoryReviewDetails(Long pointHistoryNo);
 
     PointHistoryCouponDetailsResponseDto findPointHistoryCouponDetailsDto(Long pointHistoryNo);
+
+    OrderDetailsResponseDto findOrderDetailsResponseDtoForPointHistoryOrderDetails(
+        Long pointHistoryNo);
 }
