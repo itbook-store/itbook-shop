@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.CategoryCouponApply;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec.CategoryCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponSimpleListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
@@ -29,7 +30,9 @@ import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepo
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.OrderTotalCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponService;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.service.ProductCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService;
@@ -55,6 +58,11 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     private final MemberService memberService;
     private final CouponService couponService;
     private final CouponIncreasePointHistoryService couponIncreasePointHistoryService;
+    private final CategoryCouponApplyService categoryCouponApplyService;
+    private final ProductCouponApplyService productCouponApplyService;
+    private final ProductCouponService productCouponService;
+    private final OrderProductRepository orderProductRepository;
+
 
     @Override
     @Transactional
@@ -208,16 +216,18 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     public CouponIssue cancelCouponIssue(Long couponIssueNo) {
 
         CouponIssue couponIssue = findCouponIssueByCouponIssueNo(couponIssueNo);
-        couponIssue.setUsageStatus(
-            usageStatusService.findUsageStatus(UsageStatusEnum.AVAILABLE.getUsageStatus()));
+        UsageStatus usageStatus =
+            usageStatusService.findUsageStatus(UsageStatusEnum.AVAILABLE.getUsageStatus());
+
+        couponIssue.setUsageStatus(usageStatus);
         couponIssue.setCouponUsageCreatedAt(null);
+
+        productCouponApplyService.cancelProductCouponApplyAndChangeCouponIssue(couponIssueNo);
+        categoryCouponApplyService.cancelCategoryCouponApplyAndChangeCouponIssues(couponIssueNo);
+
         return couponIssueRepository.save(couponIssue);
     }
 
-    private final CategoryCouponApplyService categoryCouponApplyService;
-    private final ProductCouponService productCouponService;
-    private final ProductCouponApplyService productCouponApplyService;
-    private final OrderProductRepository orderProductRepository;
 
     @Override
     @Transactional

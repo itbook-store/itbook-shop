@@ -669,7 +669,7 @@ public class OrderServiceImpl implements OrderService {
     public void processAfterOrderCancelPaymentSuccess(Long orderNo) {
 
         Order order = findOrderEntity(orderNo);
-        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
 
         // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
         this.changeCategoryAndProductCouponStatusByCancel(orderNo);
@@ -716,7 +716,7 @@ public class OrderServiceImpl implements OrderService {
     private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {
 
         Optional<OrderTotalCouponApply> optionalOrderTotalCouponApply =
-            orderTotalCouponApplyRepositoy.findById(
+            orderTotalCouponApplyRepositoy.findByOrder_OrderNo(
                 orderNo);
 
         if (optionalOrderTotalCouponApply.isEmpty()) {
@@ -724,11 +724,19 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderTotalCouponApply orderTotalCouponApply = optionalOrderTotalCouponApply.get();
-        couponIssueService.cancelCouponIssue(orderTotalCouponApply.getCouponIssueNo());
+        Long couponIssueNo = orderTotalCouponApply.getCouponIssueNo();
+
+        couponIssueService.cancelCouponIssue(couponIssueNo);
+        orderTotalCouponApplyService.cancelOrderTotalCouponApplyAndChangeCouponIssue(couponIssueNo);
     }
 
     private void addOrderCancelIncreaseDecreasePointHistory(Order order, boolean isDecrease) {
-        if (Objects.equals(order.getIncreasePoint(), 0L)) {
+
+        if (isDecrease && Objects.equals(order.getIncreasePoint(), 0L)) {
+            return;
+        }
+
+        if (!isDecrease && Objects.equals(order.getDecreasePoint(), 0L)) {
             return;
         }
 
@@ -744,7 +752,7 @@ public class OrderServiceImpl implements OrderService {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelDecrease(
                 orderMember.getMember(),
                 order,
-                order.getDecreasePoint());
+                order.getIncreasePoint());
         } else {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelIncrease(
                 orderMember.getMember(),
