@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
+import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
@@ -19,8 +20,11 @@ import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
+import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
+import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
+import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 
 /**
  * CustomOrderRepository 인터페이스의 기능을 구현합니다.
@@ -142,6 +146,13 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
         QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
 
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+        QMember qMember = QMember.member;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QProduct qProduct = QProduct.product;
+        QDelivery qDelivery = QDelivery.delivery;
+
+
         JPQLQuery<OrderListAdminViewResponseDto> jpqlQuery = from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
             .on(qOrderStatusHistory.order.orderNo.eq(
@@ -149,42 +160,33 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderStatusHistory.orderStatusHistoryNo.lt(
                     qOrderStatusHistory2.orderStatusHistoryNo)))
             .innerJoin(qOrderStatusHistory.orderStatus, qOrderStatus)
+            .leftJoin(qOrderMember)
+            .on(qOrderMember.order.eq(qOrderStatusHistory.order))
+            .leftJoin(qMember)
+            .on(qOrderMember.member.eq(qMember))
+            .innerJoin(qOrderProduct)
+            .on(qOrderProduct.order.eq(qOrderStatusHistory.order))
+            .innerJoin(qProduct)
+            .on(qProduct.eq(qOrderProduct.product))
+            .leftJoin(qDelivery)
+            .on(qDelivery.order.eq(qOrderStatusHistory.order))
             .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
             .select(Projections.fields(OrderListAdminViewResponseDto.class,
                 qOrderStatusHistory.order.orderNo,
+                qMember.memberId,
+                qProduct.name.as("productName"),
+                qOrderStatusHistory.order.orderCreatedAt,
                 qOrderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                 qOrderStatusHistory.order.recipientName,
-                qOrderStatusHistory.order.recipientPhoneNumber
+                qDelivery.trackingNo
             ))
             .orderBy(qOrderStatusHistory.order.orderNo.asc());
-
-        QDelivery qDelivery = QDelivery.delivery;
 
         List<OrderListAdminViewResponseDto> orderListAdminViewResponseDtoList =
             jpqlQuery
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-        List<Delivery> deliveryList = from(qDelivery)
-            .select(qDelivery)
-            .orderBy(qDelivery.order.orderNo.asc())
-            .fetch();
-
-        Queue<Delivery> deliveryQueue = new LinkedList<>(deliveryList);
-
-        if (!deliveryQueue.isEmpty()) {
-            
-            orderListAdminViewResponseDtoList.forEach(
-                orderListAdminViewResponseDto -> {
-                    if (Objects.equals(orderListAdminViewResponseDto.getOrderNo(),
-                        deliveryQueue.peek().getDeliveryNo())) {
-                        orderListAdminViewResponseDto.setTrackingNo(
-                            Objects.requireNonNull(deliveryQueue.poll()).getTrackingNo());
-                    }
-                }
-            );
-        }
 
         return PageableExecutionUtils.getPage(orderListAdminViewResponseDtoList, pageable,
             jpqlQuery::fetchCount);

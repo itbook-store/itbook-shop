@@ -14,4 +14,5 @@ public interface PointHistoryCommonService {
     Optional<PointHistory> findRecentlyPointHistory(Member member);
 
     Long findRecentlyPoint(Member member);
+
 }
