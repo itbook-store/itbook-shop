@@ -30,4 +30,6 @@ public interface BookRepositoryCustom {
      * @author 이하늬
      */
     Optional<BookDetailsResponseDto> findBook(Long productNo);
+
+
 }

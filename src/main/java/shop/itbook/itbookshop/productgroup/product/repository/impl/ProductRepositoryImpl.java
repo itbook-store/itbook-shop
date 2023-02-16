@@ -200,7 +200,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                         qOrderProduct.productPrice.sum()))
                 .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
                 .groupBy(qOrderProduct.product)
-                .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.product.productNo.desc());
+                .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.productPrice.sum().desc());
 
         List<ProductSalesRankResponseDto> productList = productSalesRankQuery
             .offset(pageable.getOffset())
@@ -231,7 +231,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.REFUND_COMPLETED)
                     .or(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.CANCELED)))
                 .groupBy(qOrderProduct.product)
-                .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.product.productNo.desc());
+                .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.productPrice.sum().desc());
 
         List<ProductSalesRankResponseDto> productList = productSalesRankQuery
             .offset(pageable.getOffset())
@@ -273,7 +273,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
                 .groupBy(qOrderProduct.product)
                 .orderBy((sellingPrice.multiply(qOrderProduct.count.sum())).desc(),
-                    qOrderProduct.product.productNo.desc());
+                    qOrderProduct.count.sum().desc());
 
         List<ProductSalesRankResponseDto> productList = productSalesRankQuery
             .offset(pageable.getOffset())
@@ -304,7 +304,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                 .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
                 .groupBy(qOrderProduct.product)
                 .orderBy(qOrderProduct.productPrice.sum().desc(),
-                    qOrderProduct.product.productNo.desc());
+                    qOrderProduct.count.sum().desc());
 
         List<ProductSalesRankResponseDto> productList = productSalesRankQuery
             .offset(pageable.getOffset())
