@@ -32,6 +32,7 @@ public class OrderTransfer {
             .isHidden(false)
             .decreasePoint(orderAddRequestDto.getDecreasePoint())
             .increasePoint(0L)
+            .deliveryFee(orderAddRequestDto.getDeliveryFee())
             .build();
     }
 }
