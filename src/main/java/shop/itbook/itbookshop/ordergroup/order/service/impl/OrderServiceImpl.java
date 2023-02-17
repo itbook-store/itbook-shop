@@ -34,6 +34,9 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
+import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNotFoundException;
+import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -46,6 +49,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
@@ -105,6 +109,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
     private final CardRepository cardRepository;
+    private final DeliveryRepository deliveryRepository;
 
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
@@ -152,6 +157,11 @@ public class OrderServiceImpl implements OrderService {
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
         String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
 
+        Delivery delivery =
+            deliveryRepository.findDeliveryByOrder_OrderNo(orderNo).orElseThrow(
+                DeliveryNotFoundException::new);
+
+
         return OrderDetailsResponseDto.builder()
             .orderNo(orderNo)
             .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
@@ -159,8 +169,10 @@ public class OrderServiceImpl implements OrderService {
             .paymentCardResponseDto(paymentCardResponseDto)
             .orderStatus(orderStatus)
             .orderCreatedAt(order.getOrderCreatedAt())
+            .amount(order.getAmount())
             .deliveryFee(order.getDeliveryFee())
-            .trackingNo(trackingNo)
+            .trackingNo(delivery.getTrackingNo())
+            .deliveryNo(delivery.getDeliveryNo())
             // todo: 주문에 배송비 테이블 추가 후 넣어주기
             .deliveryFee(0L)
             .build();
@@ -169,6 +181,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order findOrderEntity(Long orderNo) {
         return orderRepository.findById(orderNo).orElseThrow(OrderNotFoundException::new);
+    }
+
+    @Override
+    public Optional<Order> findOrderByDeliveryNo(Long deliveryNo) {
+        return Optional.of(orderRepository.findOrderByDeliveryNo(deliveryNo));
     }
 
     /**
@@ -356,8 +373,13 @@ public class OrderServiceImpl implements OrderService {
         List<ProductDetailsDto> productDetailsDtoList =
             orderAddRequestDto.getProductDetailsDtoList();
 
+        Optional<Integer> subscriptionPeriod = Optional.empty();
+        if (Objects.nonNull(orderAddRequestDto.getSubscriptionPeriod())) {
+            subscriptionPeriod = Optional.of(orderAddRequestDto.getSubscriptionPeriod());
+        }
+
         amount = this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
-            productDetailsDtoList);
+            productDetailsDtoList, subscriptionPeriod);
         amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto, amount,
             order.getOrderNo());
 
@@ -369,6 +391,9 @@ public class OrderServiceImpl implements OrderService {
         if (amount <= 100) {
             throw new AmountException(amount);
         }
+
+        order.setAmount(amount);
+        orderRepository.save(order);
 
         return OrderPaymentDto.builder()
             .orderNo(order.getOrderNo())
@@ -398,7 +423,8 @@ public class OrderServiceImpl implements OrderService {
 
     private long calculateAmountAboutOrderProductCoupon(Order order, StringBuilder stringBuilder,
                                                         long amount,
-                                                        List<ProductDetailsDto> productDetailsDtoList) {
+                                                        List<ProductDetailsDto> productDetailsDtoList,
+                                                        Optional<Integer> subscriptionPeriod) {
 
         List<InfoForCouponIssueApply> infoForCouponIssueApplyList = new ArrayList<>();
 
@@ -410,6 +436,11 @@ public class OrderServiceImpl implements OrderService {
                 (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
 
             long totalPriceOfSameProducts = productPrice * productCnt;
+
+            if (subscriptionPeriod.isPresent()) {
+                totalPriceOfSameProducts = totalPriceOfSameProducts * subscriptionPeriod.get();
+            }
+
             amount += totalPriceOfSameProducts;
 
             if (stringBuilder.length() == 0) {
@@ -859,7 +890,8 @@ public class OrderServiceImpl implements OrderService {
      * {@inheritDoc}
      */
     @Override
-    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable) {
+    public Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(
+        Pageable pageable) {
         return orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
     }
 

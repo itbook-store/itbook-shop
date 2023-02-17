@@ -32,7 +32,7 @@ class ProductRepositoryTest {
 
     Product dummyProductSuccess1;
     Product dummyProductSuccess2;
-    
+
 
     @BeforeEach
     void setUp() {
@@ -83,15 +83,15 @@ class ProductRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
         Page<ProductDetailsResponseDto> productList =
-            productRepository.findProductListUser(pageable);
+            productRepository.findProductListAdmin(pageable);
         Assertions.assertThat(productList).isNotEmpty();
         ProductDetailsResponseDto productDetailsResponseDtoActual = productList.getContent().get(0);
 
         Assertions.assertThat(productList).hasSize(2);
         Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
-            .isEqualTo(dummyProductSuccess1.getProductNo());
+            .isEqualTo(dummyProductSuccess2.getProductNo());
         Assertions.assertThat(productDetailsResponseDtoActual.getIsSelled())
-            .isEqualTo(dummyProductSuccess1.getIsSelled());
+            .isEqualTo(dummyProductSuccess2.getIsSelled());
     }
 
     @Test

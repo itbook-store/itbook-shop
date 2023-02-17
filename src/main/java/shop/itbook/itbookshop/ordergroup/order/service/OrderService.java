@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
@@ -27,6 +28,15 @@ public interface OrderService {
      * @author 정재원 *
      */
     Order findOrderEntity(Long orderNo);
+
+    /**
+     * 배송 번호로 주문 엔티티를 찾습니다.
+     *
+     * @param deliveryNo 배송 번호
+     * @return 조회에 성공한 주문 엔티티 인스턴스
+     * @author 정재원 *
+     */
+    Optional<Order> findOrderByDeliveryNo(Long deliveryNo);
 
     /**
      * 구독 주문 인지 검사합니다.
@@ -149,7 +159,7 @@ public interface OrderService {
      * @return 페징된 DTO 객체.
      * @author 강명관
      */
-    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable);
+    Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable);
 
     /**
      * 회원이 마이페이지 에서 구독 상품 주문 리스트에 대해 조회하는 메서드 입니다.

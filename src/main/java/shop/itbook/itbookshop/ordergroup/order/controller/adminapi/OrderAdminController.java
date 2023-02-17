@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 
@@ -55,14 +55,14 @@ public class OrderAdminController {
      * @author 강명관
      */
     @GetMapping("/list/subscription")
-    public ResponseEntity<CommonResponseBody<PageResponse<OrderSubscriptionListDto>>> orderSubscriptionListByAdmin(
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderSubscriptionAdminListDto>>> orderSubscriptionListByAdmin(
         @PageableDefault Pageable pageable
     ) {
 
-        Page<OrderSubscriptionListDto> allSubscriptionOrderListByAdmin =
+        Page<OrderSubscriptionAdminListDto> allSubscriptionOrderListByAdmin =
             orderService.findAllSubscriptionOrderListByAdmin(pageable);
 
-        CommonResponseBody<PageResponse<OrderSubscriptionListDto>> commonResponseBody =
+        CommonResponseBody<PageResponse<OrderSubscriptionAdminListDto>> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage()
             ), new PageResponse<>(allSubscriptionOrderListByAdmin)

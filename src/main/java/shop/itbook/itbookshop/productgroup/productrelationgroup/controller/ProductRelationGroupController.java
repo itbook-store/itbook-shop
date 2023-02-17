@@ -112,7 +112,7 @@ public class ProductRelationGroupController {
      * @return 상품 리스트를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
-    @GetMapping("/api/products/relation/add-candidates/{basedProductNo}")
+    @GetMapping("/api/admin/products/relation/add-candidates/{basedProductNo}")
     public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productListExceptBasedProduct(
         @PageableDefault Pageable pageable, @PathVariable Long basedProductNo) {
 
@@ -137,7 +137,7 @@ public class ProductRelationGroupController {
      * @return 결과 메세지를 response entity에 담아 반환합니다.
      * @author 이하늬
      */
-    @PostMapping("/api/products/relation/{basedProductNo}/edit")
+    @PostMapping("/api/admin/products/relation/{basedProductNo}/edit")
     public ResponseEntity<CommonResponseBody<Void>> productListExceptBasedProduct(
         @RequestBody ProductRelationRequestDto relationList, @PathVariable Long basedProductNo) {
 

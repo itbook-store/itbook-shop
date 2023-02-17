@@ -58,7 +58,7 @@ public class ProductAdminController {
         @PageableDefault Pageable pageable) {
 
         Page<ProductDetailsResponseDto> productList =
-            productService.findProductList(pageable, true);
+            productService.findProductListForAdmin(pageable);
 
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(

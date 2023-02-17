@@ -26,7 +26,9 @@ public class OrderDetailsResponseDto {
     private PaymentCardResponseDto paymentCardResponseDto;
     private String orderStatus;
     private LocalDateTime orderCreatedAt;
+    private Long amount;
     private Long deliveryFee;
+    private Long deliveryNo;
     private String trackingNo;
 
 //    private String couponType;

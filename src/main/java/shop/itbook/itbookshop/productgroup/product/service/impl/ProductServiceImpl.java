@@ -119,7 +119,11 @@ public class ProductServiceImpl implements ProductService {
         if (fieldName.equals("isSelled")) {
             product.setIsSelled(!product.getIsSelled());
         }
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
+        }
     }
 
     @Override
@@ -127,7 +131,12 @@ public class ProductServiceImpl implements ProductService {
     public void changeDailyHits(Long productNo) {
         Product product = this.findProductEntity(productNo);
         product.setDailyHits(product.getDailyHits() + 1);
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidInputException();
+        }
+        
     }
 
     /**
@@ -143,16 +152,20 @@ public class ProductServiceImpl implements ProductService {
      * {@inheritDoc}
      */
     @Override
-    public Page<ProductDetailsResponseDto> findProductList(Pageable pageable, boolean isAdmin) {
+    public Page<ProductDetailsResponseDto> findProductListForAdmin(Pageable pageable) {
+        Page<ProductDetailsResponseDto> productList =
+            productRepository.findProductListAdmin(pageable);
+        setExtraFieldsForList(productList);
+        return productList;
+    }
 
-        Page<ProductDetailsResponseDto> productList;
-
-        if (isAdmin) {
-            productList = productRepository.findProductListAdmin(pageable);
-        } else {
-            productList = productRepository.findProductListUser(pageable);
-        }
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<ProductDetailsResponseDto> findProductListForUser(Pageable pageable) {
+        Page<ProductDetailsResponseDto> productList =
+            productRepository.findProductListUser(pageable);
         setExtraFieldsForList(productList);
         return productList;
     }

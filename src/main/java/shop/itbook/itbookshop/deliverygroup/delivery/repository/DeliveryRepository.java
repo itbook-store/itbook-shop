@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.repository;
 
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
@@ -13,4 +14,6 @@ import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 @Repository
 public interface DeliveryRepository
     extends JpaRepository<Delivery, Long>, CustomDeliveryRepository {
+
+    Optional<Delivery> findDeliveryByOrder_OrderNo(Long orderNo);
 }
