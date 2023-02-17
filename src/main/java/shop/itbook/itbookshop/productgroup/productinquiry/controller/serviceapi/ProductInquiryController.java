@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +53,35 @@ public class ProductInquiryController {
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
+    }
+
+    @PutMapping("/{productInquiryNo}/delete")
+    public ResponseEntity<CommonResponseBody<Void>> productInquiryDelete(
+        @PathVariable("productInquiryNo") Long productInquiryNo) {
+
+        productInquiryService.deleteProductInquiry(productInquiryNo);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_DELETE_SUCCESS.getResultMessage()),
+            null);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(commonResponseBody);
+    }
+
+    @PutMapping("/{productInquiryNo}/modify")
+    public ResponseEntity<CommonResponseBody<Void>> productInquiryModify(
+        @PathVariable("productInquiryNo") Long productInquiryNo,
+        @RequestBody ProductInquiryRequestDto productInquiryRequestDto) {
+
+        productInquiryService.modifyProductInquiry(productInquiryNo, productInquiryRequestDto);
+
+        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                ProductInquiryResultMessageEnum.PRODUCT_INQUIRY_MODIFY_SUCCESS.getResultMessage()),
+            null);
+
+        return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
 
     @GetMapping("/writable/{memberNo}")
