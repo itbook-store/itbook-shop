@@ -72,6 +72,9 @@ public class Order {
     @Column(name = "delivery_fee", nullable = false, columnDefinition = "bigint default 0")
     private Long deliveryFee;
 
+    @Column(name = "amount")
+    private Long amount;
+
     /**
      * 주문 엔티티의 생성자입니다.
      *

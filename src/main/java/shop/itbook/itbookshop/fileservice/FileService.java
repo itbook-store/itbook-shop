@@ -1,11 +1,16 @@
 package shop.itbook.itbookshop.fileservice;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -14,11 +19,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import shop.itbook.itbookshop.fileservice.dto.Token;
+import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
 
 
 /**
@@ -64,11 +71,12 @@ public class FileService {
         try {
             InputStream inputStream = multipartFile.getInputStream();
             return this.uploadObject(tokenId, containerName, folderPath, savedName, inputStream);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (HttpClientErrorException e) {
+            throw new ObjectStroageFileUploadException();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        return multipartFile.getOriginalFilename();
     }
 
     /**
@@ -92,7 +100,11 @@ public class FileService {
         HttpEntity<String> requestHttpEntity = new HttpEntity<>(null, headers);
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
+        try {
+            restTemplate.exchange(url, HttpMethod.DELETE, requestHttpEntity, String.class);
+        } catch (HttpClientErrorException e) {
+            throw new ObjectStroageFileUploadException();
+        }
     }
 
 
@@ -123,7 +135,11 @@ public class FileService {
             = new HttpMessageConverterExtractor<>(String.class,
             restTemplate.getMessageConverters());
 
-        restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
+        try {
+            restTemplate.execute(url, HttpMethod.PUT, requestCallback, responseExtractor);
+        } catch (HttpClientErrorException e) {
+            throw new ObjectStroageFileUploadException();
+        }
 
         return url;
     }

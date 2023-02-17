@@ -35,4 +35,6 @@ public interface CustomOrderRepository {
 
     Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
                                                                         Long memberNo);
+
+    Order findOrderByDeliveryNo(Long deliveryNo);
 }

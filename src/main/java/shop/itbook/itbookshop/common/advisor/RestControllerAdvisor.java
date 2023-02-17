@@ -25,12 +25,14 @@ import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoun
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
+import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
 import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationComeCloseOtherMemberException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
+import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
@@ -120,7 +122,10 @@ public class RestControllerAdvisor {
         MemberDestinationComeCloseOtherMemberException.class,
         ReviewComeCloseOtherMemberException.class,
         ProductInquiryComeCloseOtherMemberException.class,
-        NotMatchCouponException.class
+        ObjectStroageFileUploadException.class,
+        NotMatchCouponException.class,
+        ProductInquiryComeCloseOtherMemberException.class,
+        AmountException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

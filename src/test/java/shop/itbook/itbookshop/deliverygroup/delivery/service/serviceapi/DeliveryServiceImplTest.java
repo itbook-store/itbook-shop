@@ -26,6 +26,7 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.Deliver
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -39,6 +40,8 @@ public class DeliveryServiceImplTest {
     @Autowired
     DeliveryService deliveryService;
 
+    @MockBean
+    OrderRepository orderRepository;
     @MockBean
     DeliveryRepository deliveryRepository;
 

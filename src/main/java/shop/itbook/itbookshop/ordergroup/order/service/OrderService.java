@@ -30,6 +30,15 @@ public interface OrderService {
     Order findOrderEntity(Long orderNo);
 
     /**
+     * 배송 번호로 주문 엔티티를 찾습니다.
+     *
+     * @param deliveryNo 배송 번호
+     * @return 조회에 성공한 주문 엔티티 인스턴스
+     * @author 정재원 *
+     */
+    Optional<Order> findOrderByDeliveryNo(Long deliveryNo);
+
+    /**
      * 구독 주문 인지 검사합니다.
      *
      * @param orderNo the order no
