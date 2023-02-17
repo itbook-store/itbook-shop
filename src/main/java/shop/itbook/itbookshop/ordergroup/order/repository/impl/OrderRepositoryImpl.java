@@ -20,6 +20,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -230,14 +231,19 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable) {
+    public Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(
+        Pageable pageable) {
         QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
         QOrder qOrder = QOrder.order;
         QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
         QDelivery qDelivery = QDelivery.delivery;
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QMember qMember = QMember.member;
+        QProduct qProduct = QProduct.product;
 
-        JPQLQuery<OrderSubscriptionListDto> jpqlQuery =
+        JPQLQuery<OrderSubscriptionAdminListDto> jpqlQuery =
             from(qOrderStatusHistory)
                 .leftJoin(qOrderStatusHistory2)
                 .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
@@ -247,22 +253,32 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qOrderStatusHistory.order.eq(qOrder))
                 .innerJoin(qOrderSubscription)
                 .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
-                .innerJoin(qDelivery)
+                .leftJoin(qDelivery)
                 .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .leftJoin(qOrderMember)
+                .on(qOrder.orderNo.eq(qOrderMember.orderNo))
+                .innerJoin(qMember)
+                .on(qOrderMember.member.memberNo.eq(qMember.memberNo))
+                .innerJoin(qOrderProduct)
+                .on(qOrder.orderNo.eq(qOrderProduct.order.orderNo))
+                .innerJoin(qProduct)
+                .on(qOrderProduct.product.productNo.eq(qProduct.productNo))
                 .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
                     .and(qOrderSubscription.sequence.eq(1)))
-                .select(Projections.fields(OrderSubscriptionListDto.class,
-                        qOrder.orderNo,
+                .select(Projections.fields(OrderSubscriptionAdminListDto.class,
+                        qOrderStatusHistory.order.orderNo,
+                        qMember.memberId,
+                        qProduct.name.as("productName"),
+                        qOrderStatusHistory.order.orderCreatedAt,
                         qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
-                        qOrder.recipientName,
-                        qOrder.recipientPhoneNumber,
+                        qOrderStatusHistory.order.recipientName,
                         qDelivery.trackingNo,
                         qOrderSubscription.subscriptionPeriod
                     )
                 )
                 .orderBy(qOrder.orderNo.desc());
 
-        List<OrderSubscriptionListDto> orderSubscriptionListDtoList =
+        List<OrderSubscriptionAdminListDto> orderSubscriptionListDtoList =
             jpqlQuery
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -293,12 +309,12 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
                 .innerJoin(qOrderSubscription)
                 .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
-                .innerJoin(qDelivery)
+                .leftJoin(qDelivery)
                 .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
                 .innerJoin(qOrderMember)
-                .on(qOrder.orderNo.eq(qOrderMember.orderNo))
+                .on(qOrder.orderNo.eq(qOrderMember.orderNo)
+                    .and(qOrderMember.member.memberNo.eq(memberNo)))
                 .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
-                    .and(qOrderMember.member.memberNo.eq(memberNo))
                     .and(qOrderSubscription.sequence.eq(1)))
                 .select(Projections.fields(OrderSubscriptionListDto.class,
                         qOrder.orderNo,
