@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.request.CouponIssueNoRequest;
+import shop.itbook.itbookshop.coupongroup.couponissue.resultmessageenum.CouponIssueResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.MembershipCouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.resultmessageenum.MembershipCouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.service.MembershipCouponService;
@@ -24,17 +28,34 @@ public class MembershipAdminCouponController {
     private final MembershipCouponService membershipCouponService;
 
     @GetMapping("/list")
-    public ResponseEntity<CommonResponseBody<List<MembershipCouponResponseDto>>> addMembershipCoupon() {
+    public ResponseEntity<CommonResponseBody<List<List<MembershipCouponResponseDto>>>> addMembershipCoupon() {
 
-        List<MembershipCouponResponseDto> membershipCouponNoResponseDto =
+        List<List<MembershipCouponResponseDto>> membershipCouponNoResponseDto =
             membershipCouponService.findAvailableMembershipCouponList();
 
-        CommonResponseBody<List<MembershipCouponResponseDto>> commonResponseBody =
+        CommonResponseBody<List<List<MembershipCouponResponseDto>>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MembershipCouponResultMessageEnum.MEMBERSHIP_COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
                 membershipCouponNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
+    }
+
+    @PostMapping("/{couponNo}/{memberNo}/add")
+    public ResponseEntity<CommonResponseBody<CouponIssueNoRequest>> addMembershipCouponIssue(
+        @PathVariable("memberNo") Long memberNo,
+        @PathVariable("couponNo") Long couponNo) {
+
+        CouponIssueNoRequest couponIssueNoRequest =
+            new CouponIssueNoRequest(membershipCouponService.membershipCouponDownload(memberNo, couponNo));
+
+        CommonResponseBody<CouponIssueNoRequest> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    MembershipCouponResultMessageEnum.MEMBERSHIP_COUPON_DOWNLOAD_SUCCESS_MESSAGE.getSuccessMessage()),
+                couponIssueNoRequest);
+
+        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
     }
 }
