@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 
@@ -44,4 +45,31 @@ public class OrderAdminController {
 
         return ResponseEntity.ok().body(response);
     }
+
+
+    /**
+     * 관리자페이지에서 구독 주문 목록 리스트 반환 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @return 페이징된 구독 주문 목록 DTO
+     * @author 강명관
+     */
+    @GetMapping("/list/subscription")
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderSubscriptionAdminListDto>>> orderSubscriptionListByAdmin(
+        @PageableDefault Pageable pageable
+    ) {
+
+        Page<OrderSubscriptionAdminListDto> allSubscriptionOrderListByAdmin =
+            orderService.findAllSubscriptionOrderListByAdmin(pageable);
+
+        CommonResponseBody<PageResponse<OrderSubscriptionAdminListDto>> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage()
+            ), new PageResponse<>(allSubscriptionOrderListByAdmin)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+
 }

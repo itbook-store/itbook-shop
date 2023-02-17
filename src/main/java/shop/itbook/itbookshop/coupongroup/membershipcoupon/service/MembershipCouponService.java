@@ -11,5 +11,7 @@ import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.Membersh
 public interface MembershipCouponService {
     Long addMembershipCoupon(Long couponNo, String membershipGrade);
 
-    List<MembershipCouponResponseDto> findAvailableMembershipCouponList();
+    List<List<MembershipCouponResponseDto>> findAvailableMembershipCouponList();
+
+    Long membershipCouponDownload(Long couponNo, Long memberId);
 }

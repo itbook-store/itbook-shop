@@ -20,7 +20,8 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubsc
  * @since 1.0
  */
 @DataJpaTest
-class OrderSubscriptionRepositoryTest {
+class
+OrderSubscriptionRepositoryTest {
     @Autowired
     OrderSubscriptionRepository orderSubscriptionRepository;
     @Autowired

@@ -8,7 +8,8 @@ import lombok.Getter;
  */
 @Getter
 public enum MembershipCouponResultMessageEnum {
-    MEMBERSHIP_COUPON_SAVE_SUCCESS_MESSAGE("등급 쿠폰 생성에 성공했습니다.");
+    MEMBERSHIP_COUPON_SAVE_SUCCESS_MESSAGE("등급 쿠폰 생성에 성공했습니다."),
+    MEMBERSHIP_COUPON_DOWNLOAD_SUCCESS_MESSAGE("등급 쿠폰 발급에 성공했습니다.");
 
     private final String successMessage;
 

@@ -196,8 +196,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
             getPopularity(qProduct, qBook)
                 .where(qProduct.isDeleted.eq(Boolean.FALSE));
-
-
+        
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
@@ -250,8 +249,8 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         return from(qOrder)
             .innerJoin(qOrder.orderProducts, qOrderProduct)
             .select(qOrderProduct.product.productNo)
-            .where(qOrderProduct.order.in(
-                    JPAExpressions.select(qOrderMember.order)
+            .where(qOrderProduct.order.orderNo.in(
+                    JPAExpressions.select(qOrderMember.order.orderNo)
                         .from(qOrderMember)
                         .where(qOrderMember.member.memberNo.eq(memberNo))
                         .orderBy(qOrderMember.orderNo.desc())
@@ -283,14 +282,17 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
     public List<Long> findPurchasedTogetherProductList(Long productNo) {
 
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrder qOrder = QOrder.order;
 
         return from(qOrderProduct)
+            .innerJoin(qOrderProduct.order, qOrder)
             .select(qOrderProduct.product.productNo)
-            .where(qOrderProduct.order.in(JPAExpressions.select(qOrderProduct.order)
-                .from(qOrderProduct)
-                .where(qOrderProduct.product.productNo.eq(productNo))))
+            .where(qOrderProduct.order.orderNo
+                .in(JPAExpressions.select(qOrderProduct.order.orderNo)
+                    .from(qOrderProduct)
+                    .where(qOrderProduct.product.productNo.eq(productNo))))
             .where(qOrderProduct.product.productNo.ne(productNo))
-            .groupBy(qOrderProduct.product)
+            .groupBy(qOrderProduct.product.productNo)
             .fetch();
     }
 

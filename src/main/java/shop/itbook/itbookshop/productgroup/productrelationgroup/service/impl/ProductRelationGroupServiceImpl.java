@@ -40,9 +40,7 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
     public Product addProductRelation(Long basedProductNo, List<Long> productNoList) {
 
         Product basedProduct = productService.findProductEntity(basedProductNo);
-
         List<Product> products = productRepository.findAllById(productNoList);
-
         try {
             for (Product product : products) {
                 productRelationRepository.save(new ProductRelationGroup(basedProduct, product));
@@ -75,10 +73,9 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
                                          ProductRelationRequestDto productNoList) {
         Product basedProduct = productService.findProductEntity(basedProductNo);
 
-        productRelationRepository.deleteByBasedProduct_productNo(basedProduct.getProductNo());
-        List<Product> products = productRepository.findAllById(productNoList.getRelationList());
-
         try {
+            productRelationRepository.deleteByBasedProduct_productNo(basedProduct.getProductNo());
+            List<Product> products = productRepository.findAllById(productNoList.getRelationList());
             for (Product product : products) {
                 productRelationRepository.save(new ProductRelationGroup(basedProduct, product));
             }
@@ -126,7 +123,10 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
     @Override
     public Page<ProductRelationResponseDto> findAllMainProductRelationForAdmin(Pageable pageable) {
 
-        return productRelationRepository.getAllBasedProductNoListAdmin(pageable);
+        Page<ProductRelationResponseDto> basedProductNoListAdmin =
+            productRelationRepository.getAllBasedProductNoListAdmin(pageable);
+        ;
+        return basedProductNoListAdmin;
     }
 
     /**
@@ -138,7 +138,9 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
         List<Long> productNoList =
             productRelationRepository.getRelationProductNoListWithBasedProductNoUser(productNo);
 
-        return productService.findProductListByProductNoListForUser(pageable, productNoList);
+        Page<ProductDetailsResponseDto> list =
+            productService.findProductListByProductNoListForUser(pageable, productNoList);
+        return list;
     }
 
 }
