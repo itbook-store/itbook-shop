@@ -46,4 +46,10 @@ public class OrderStatusHistoryServiceImpl implements OrderStatusHistoryService 
     public OrderStatusHistory save(OrderStatusHistory orderStatusHistory) {
         return orderStatusHistoryRepository.save(orderStatusHistory);
     }
+
+    @Override
+    public OrderStatusHistory findOrderStatusHistoryByOrderNo(Long orderNo) {
+        return orderStatusHistoryRepository.findFirstByOrder_OrderNoOrderByOrderStatusHistoryNoDesc(
+            orderNo);
+    }
 }

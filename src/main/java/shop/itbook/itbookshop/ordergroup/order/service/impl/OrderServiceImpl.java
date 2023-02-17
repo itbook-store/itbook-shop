@@ -34,9 +34,7 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
-import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
-import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl.DeliveryServiceImpl;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
@@ -50,10 +48,13 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
+import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
+import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
@@ -78,7 +79,6 @@ import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
-import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.PaymentStatusEnum;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
@@ -456,8 +456,7 @@ public class OrderServiceImpl implements OrderService {
                             new CouponApplyDto(infoForCouponIssueApplyList)));
 
             } catch (JsonProcessingException e) {
-                // TODO jun : 클래스 예외처리 커스톰
-                throw new RuntimeException();
+                throw new CanNotSaveRedisException();
             }
         }
 
@@ -510,10 +509,10 @@ public class OrderServiceImpl implements OrderService {
 
             if (product.getIsPointApplyingBasedSellingPrice()) {
                 order.setIncreasePoint(
-                    increasePoint + ((productPrice * increasePointPercent)) * productCnt);
+                    increasePoint + (product.getFixedPrice() * increasePointPercent));
             } else {
                 order.setIncreasePoint(
-                    increasePoint + (product.getFixedPrice() * increasePointPercent));
+                    increasePoint + ((productPrice * increasePointPercent)) * productCnt);
             }
         }
     }
@@ -554,8 +553,7 @@ public class OrderServiceImpl implements OrderService {
                             null)))));
 
         } catch (JsonProcessingException e) {
-            // TODO jun : 클래스 예외처리 커스톰
-            throw new RuntimeException();
+            throw new CanNotSaveRedisException();
         }
 
         return AmountCalculationBeforePaymentUtil.getTotalPriceWithCouponApplied(coupon,
@@ -621,10 +619,10 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException(e);
         }
 
-
         usingCouponIssue(productAndCategoryCouponApplyDto, orderTotalCouponApplyDto, order);
         savePointHistoryAboutMember(order);
 
+        // TODO jun : orderProduct의 단하나의 프로덕트를 꺼내서 제일앞에꺼라도 ebook이면 전체가 ebook인 주문이니까 배송을넣지않는 로직 추가
         // 배송 상태 생성 후 저장
         if (!this.isSubscription(orderNo)) {
             deliveryService.registerDelivery(order);
@@ -684,6 +682,17 @@ public class OrderServiceImpl implements OrderService {
     public void processBeforeOrderCancelPayment(Long orderNo) {
 
         Order order = this.findOrderEntity(orderNo);
+
+        // 현재 상태가 배송완료, 결제완료, 배송대기 상태가 아니면 환불 불가 예외발생
+        OrderStatusHistory orderStatusHistory =
+            orderStatusHistoryService.findOrderStatusHistoryByOrderNo(orderNo);
+        OrderStatusEnum orderStatusEnum = orderStatusHistory.getOrderStatus().getOrderStatusEnum();
+        if (!(orderStatusEnum.equals(OrderStatusEnum.PAYMENT_COMPLETE)
+            || orderStatusEnum.equals(OrderStatusEnum.WAIT_DELIVERY)
+            || orderStatusEnum.equals(OrderStatusEnum.DELIVERY_COMPLETED))) {
+            throw new NotStatusOfOrderCancel();
+        }
+
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
 
         List<OrderProduct> orderProductList =
@@ -714,6 +723,11 @@ public class OrderServiceImpl implements OrderService {
         // 구독상품이라면 시퀸스만큼 그뒤에 있는 주문들을 주문취소상태로 변경
         OrderSubscription orderSubscription = optionalOrderSubscription.get();
 
+        // 구독주문이 첫번째 시퀀스가 아니면 짜르기
+        if (!Objects.equals(orderSubscription.getSequence(), 1)) {
+            throw new OrderSubscriptionNotFirstSequenceException();
+        }
+
         // 시퀀스만큼 반복하여 주문번호를 계산후 리스트뽑기
         Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
         List<Long> subScriptionOrderNoList = new ArrayList<>();
@@ -728,9 +742,8 @@ public class OrderServiceImpl implements OrderService {
             orderStatusService.findByOrderStatusEnum(OrderStatusEnum.REFUND_COMPLETED);
 
         for (Order subScriptionOrder : orderList) {
-            OrderStatusHistory orderStatusHistory =
-                new OrderStatusHistory(subScriptionOrder, orderStatus, LocalDateTime.now());
-            orderStatusHistoryService.save(orderStatusHistory);
+            orderStatusHistoryService.save(
+                new OrderStatusHistory(subScriptionOrder, orderStatus, LocalDateTime.now()));
         }
     }
 

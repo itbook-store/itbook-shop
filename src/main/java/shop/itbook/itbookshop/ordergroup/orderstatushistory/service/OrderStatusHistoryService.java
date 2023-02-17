@@ -22,4 +22,6 @@ public interface OrderStatusHistoryService {
     void addOrderStatusHistory(Order order, OrderStatusEnum orderStatusEnum);
 
     OrderStatusHistory save(OrderStatusHistory orderStatusHistory);
+
+    OrderStatusHistory findOrderStatusHistoryByOrderNo(Long orderNo);
 }
