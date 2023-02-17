@@ -17,7 +17,10 @@ public enum OrderResultMessageEnum {
     ORDER_SHEET_SUCCESS_MESSAGE("회원의 주문서 작성이 완료되었습니다."),
     ORDER_PAY_SUCCESS_MESSAGE("회원이 주문한 건의 결제가 완료되었습니다."),
     ORDER_DETAILS_FIND_SUCCESS_MESSAGE("주문 상세 조회에 성공했습니다."),
-    ORDER_LIST_OF_ADMIN_FIND_SUCCESS_MESSAGE("관리자의 주문 목록 조회에 성공했습니다.");
+    ORDER_LIST_OF_ADMIN_FIND_SUCCESS_MESSAGE("관리자의 주문 목록 조회에 성공했습니다."),
+
+    ORDER_PURCHASE_COMPLETE_SUCCESS_MESSAGE("주문 구매 확정에 성공했습니다."),
+    ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE("관리자의 구독 주문 목록 조회에 성공했습니다.");
 
     private final String resultMessage;
 

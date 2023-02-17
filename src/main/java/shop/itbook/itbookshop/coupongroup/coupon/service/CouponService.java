@@ -8,6 +8,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListRes
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 
 /**
  * @author 송다혜
@@ -27,7 +28,7 @@ public interface CouponService {
 
     Coupon findByCouponEntity(Long couponNo);
 
-    Coupon useCoupon(Coupon coupon);
+    Coupon useCoupon(Coupon coupon) throws UnableToCreateCouponException;
 
     List<Coupon> findByAvailableCouponByCouponType(String couponType);
 

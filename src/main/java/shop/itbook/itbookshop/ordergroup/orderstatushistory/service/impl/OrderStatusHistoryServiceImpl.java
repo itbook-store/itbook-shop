@@ -33,10 +33,23 @@ public class OrderStatusHistoryServiceImpl implements OrderStatusHistoryService 
     @Transactional
     public void addOrderStatusHistory(Order order, OrderStatusEnum orderStatusEnum) {
 
+        //  TODO -> 여기서 Order 받고, 주문이 완료면 지금
+
         OrderStatus orderStatus = orderStatusService.findByOrderStatusEnum(orderStatusEnum);
 
         OrderStatusHistory orderStatusHistory =
             new OrderStatusHistory(order, orderStatus, LocalDateTime.now());
         orderStatusHistoryRepository.save(orderStatusHistory);
+    }
+
+    @Override
+    public OrderStatusHistory save(OrderStatusHistory orderStatusHistory) {
+        return orderStatusHistoryRepository.save(orderStatusHistory);
+    }
+
+    @Override
+    public OrderStatusHistory findOrderStatusHistoryByOrderNo(Long orderNo) {
+        return orderStatusHistoryRepository.findFirstByOrder_OrderNoOrderByOrderStatusHistoryNoDesc(
+            orderNo);
     }
 }

@@ -79,7 +79,8 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 
         productInquiry.setProduct(product);
         productInquiry.setMember(member);
-        productInquiry.setReplied(false);
+        productInquiry.setIsReplied(false);
+        productInquiry.setIsDeleted(false);
 
         Long productInquiryNo;
 
@@ -90,6 +91,27 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
         }
 
         return productInquiryNo;
+    }
+
+    @Override
+    @Transactional
+    public void deleteProductInquiry(Long productInquiryNo) {
+
+        ProductInquiry productInquiry = findProductInquiryByProductInquiryNo(productInquiryNo);
+        productInquiry.setIsDeleted(true);
+
+
+    }
+
+    @Override
+    @Transactional
+    public void modifyProductInquiry(Long productInquiryNo,
+                                     ProductInquiryRequestDto productInquiryRequestDto) {
+
+        ProductInquiry productInquiry = findProductInquiryByProductInquiryNo(productInquiryNo);
+
+        productInquiry.modifyProductInquiry(productInquiryRequestDto.getTitle(),
+            productInquiryRequestDto.getContent(), productInquiryRequestDto.getIsPublic());
     }
 
     /**
@@ -126,6 +148,14 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
                                                                   Long productInquiryNo) {
         ProductInquiryResponseDto productInquiryResponseDto =
             productInquiryRepository.findProductInquiry(productInquiryNo);
+
+        if (memberNo == -1L && !productInquiryResponseDto.getIsPublic()) {
+            throw new ProductInquiryComeCloseOtherMemberException();
+        }
+
+        if (memberNo == -1L && productInquiryResponseDto.getIsPublic()) {
+            return productInquiryResponseDto;
+        }
 
         List<MemberRoleResponseDto> memberRoles =
             memberRoleService.findMemberRoleWithMemberNo(memberNo);

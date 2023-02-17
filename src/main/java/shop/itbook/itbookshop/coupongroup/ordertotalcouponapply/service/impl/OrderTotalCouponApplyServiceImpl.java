@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.impl;
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,13 +28,17 @@ public class OrderTotalCouponApplyServiceImpl implements OrderTotalCouponApplySe
     @Transactional
     public void saveOrderTotalCouponApplyAndChangeCouponIssue(Long couponIssueNo, Order order) {
         CouponIssue usedCouponIssue = couponIssueService.usingCouponIssue(couponIssueNo);
-        orderTotalCouponApplyRepositoy.save(new OrderTotalCouponApply(usedCouponIssue.getCouponIssueNo(), order));
+        orderTotalCouponApplyRepositoy.save(
+            new OrderTotalCouponApply(usedCouponIssue.getCouponIssueNo(), order));
     }
 
     @Override
     @Transactional
     public void cancelOrderTotalCouponApplyAndChangeCouponIssue(Long couponIssueNo) {
         CouponIssue canceledCouponIssue = couponIssueService.cancelCouponIssue(couponIssueNo);
+        if (Objects.isNull(canceledCouponIssue)) {
+            return;
+        }
         orderTotalCouponApplyRepositoy.deleteById(canceledCouponIssue.getCouponIssueNo());
     }
 

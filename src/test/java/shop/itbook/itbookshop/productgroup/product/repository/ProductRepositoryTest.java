@@ -89,9 +89,9 @@ class ProductRepositoryTest {
 
         Assertions.assertThat(productList).hasSize(2);
         Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
-            .isEqualTo(dummyProductSuccess1.getProductNo());
+            .isEqualTo(dummyProductSuccess2.getProductNo());
         Assertions.assertThat(productDetailsResponseDtoActual.getIsSelled())
-            .isEqualTo(dummyProductSuccess1.getIsSelled());
+            .isEqualTo(dummyProductSuccess2.getIsSelled());
     }
 
     @Test

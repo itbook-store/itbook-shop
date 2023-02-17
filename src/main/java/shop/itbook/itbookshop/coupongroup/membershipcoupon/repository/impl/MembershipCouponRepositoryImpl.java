@@ -33,7 +33,7 @@ public class MembershipCouponRepositoryImpl extends QuerydslRepositorySupport
     }
 
     @Override
-    public List<MembershipCouponResponseDto> findAvailableMembershipCouponList() {
+    public List<MembershipCouponResponseDto> findAvailableMembershipCouponList(String membershipGrade) {
         QMembershipCoupon qMembershipCoupon = QMembershipCoupon.membershipCoupon;
         QMembership qMembership = QMembership.membership;
         QCoupon qCoupon = QCoupon.coupon;
@@ -68,6 +68,7 @@ public class MembershipCouponRepositoryImpl extends QuerydslRepositorySupport
             .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
             .where(qCoupon.couponExpiredAt.after(LocalDateTime.now()))
             .where(qCoupon.couponCreatedAt.before(LocalDateTime.now()))
+            .where(qMembershipCoupon.membership.membershipGrade.eq(membershipGrade))
             .orderBy(qMembershipCoupon.membership.membershipStandardAmount.desc())
             .fetch();
 

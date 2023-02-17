@@ -18,9 +18,11 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCouponIssueMemberCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
+import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponQuantityExhaustedException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
+import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
 import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
@@ -29,9 +31,12 @@ import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundExcepti
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationComeCloseOtherMemberException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
+import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
+import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.util.CanNotApplyCouponException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
@@ -72,6 +77,9 @@ public class RestControllerAdvisor {
         NotChildCategoryException.class,
         PointContentNotFoundException.class,
         LackOfPointException.class,
+        CanNotSaveRedisException.class,
+        OrderSubscriptionNotFirstSequenceException.class,
+        NotStatusOfOrderCancel.class,
         MismatchCategoryNoWhenCouponApplyException.class,
         MismatchProductNoWhenCouponApplyException.class,
         NotOrderTotalCouponException.class,
@@ -89,7 +97,7 @@ public class RestControllerAdvisor {
         AlreadyAddedCouponIssueMemberCouponException.class,
         CouponIssueNotFoundException.class,
         NotPointCouponException.class,
-        UnableToCreateCouponException.class,
+        CouponQuantityExhaustedException.class,
         CouponTypeNotFoundException.class,
         UsageStatusNotFoundException.class,
         CouponNotFoundException.class,
@@ -113,7 +121,8 @@ public class RestControllerAdvisor {
         MemberDestinationComeCloseOtherMemberException.class,
         ReviewComeCloseOtherMemberException.class,
         ProductInquiryComeCloseOtherMemberException.class,
-        ObjectStroageFileUploadException.class
+        ObjectStroageFileUploadException.class,
+        NotMatchCouponException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

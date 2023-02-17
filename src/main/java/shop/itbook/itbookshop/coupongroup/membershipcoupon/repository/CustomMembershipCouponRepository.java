@@ -10,5 +10,5 @@ import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.Membersh
  */
 @NoRepositoryBean
 public interface CustomMembershipCouponRepository {
-    List<MembershipCouponResponseDto> findAvailableMembershipCouponList();
+    List<MembershipCouponResponseDto> findAvailableMembershipCouponList(String  membershipGrade);
 }

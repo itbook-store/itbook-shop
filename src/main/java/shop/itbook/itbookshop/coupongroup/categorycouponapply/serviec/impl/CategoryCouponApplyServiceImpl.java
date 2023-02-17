@@ -35,6 +35,9 @@ public class CategoryCouponApplyServiceImpl implements CategoryCouponApplyServic
     @Override
     @Transactional
     public void cancelCategoryCouponApplyAndChangeCouponIssues(Long couponIssueNo) {
-        categoryCouponApplyRepository.deleteById(couponIssueNo);
+
+        if (categoryCouponApplyRepository.existsById(couponIssueNo)) {
+            categoryCouponApplyRepository.deleteById(couponIssueNo);
+        }
     }
 }

@@ -105,7 +105,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
-        orderService.processAfterOrderCancelPaymentSuccess(
+        orderService.processBeforeOrderCancelPayment(
             paymentCanceledRequestDto.getOrderNo());
 
         response = tossPayService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);

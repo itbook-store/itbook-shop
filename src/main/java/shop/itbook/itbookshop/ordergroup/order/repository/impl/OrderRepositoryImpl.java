@@ -1,7 +1,11 @@
 package shop.itbook.itbookshop.ordergroup.order.repository.impl;
 
+import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.DateTemplate;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -16,14 +20,17 @@ import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
-import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.QOrderSubscription;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 
 /**
@@ -125,7 +132,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo) {
+    public OrderDestinationDto findOrderDestinationsByOrderNo(Long orderNo) {
 
         QOrder qOrder = QOrder.order;
 
@@ -135,7 +142,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrder.recipientName, qOrder.recipientPhoneNumber,
                 qOrder.postcode, qOrder.roadNameAddress, qOrder.recipientAddressDetails
             ))
-            .fetch();
+            .fetchOne();
     }
 
     @Override
@@ -191,4 +198,144 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         return PageableExecutionUtils.getPage(orderListAdminViewResponseDtoList, pageable,
             jpqlQuery::fetchCount);
     }
+
+    @Override
+    public List<Order> paymentCompleteSubscriptionProductStatusChangeWaitDelivery() {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+
+        DateTemplate<Date> formattedDateOrderSelectedDeliveryDate = Expressions.dateTemplate(
+            Date.class,
+            "DATE_FORMAT({0}, {1})",
+            qOrder.selectedDeliveryDate,
+            ConstantImpl.create("%Y-%m-%d")
+        );
+
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.eq(qOrder))
+            .innerJoin(qOrderSubscription)
+            .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
+            .where(qOrderStatusHistory2.isNull()
+                .and(qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue()
+                    .eq(OrderStatusEnum.PAYMENT_COMPLETE.getOrderStatus()))
+                .and(Expressions.currentDate().eq(formattedDateOrderSelectedDeliveryDate)))
+            .select(qOrder)
+            .fetch();
+    }
+
+    @Override
+    public Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(
+        Pageable pageable) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+        QDelivery qDelivery = QDelivery.delivery;
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QMember qMember = QMember.member;
+        QProduct qProduct = QProduct.product;
+
+        JPQLQuery<OrderSubscriptionAdminListDto> jpqlQuery =
+            from(qOrderStatusHistory)
+                .leftJoin(qOrderStatusHistory2)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                    .and(qOrderStatusHistory.orderStatusHistoryNo
+                        .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+                .innerJoin(qOrder)
+                .on(qOrderStatusHistory.order.eq(qOrder))
+                .innerJoin(qOrderSubscription)
+                .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
+                .leftJoin(qDelivery)
+                .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .leftJoin(qOrderMember)
+                .on(qOrder.orderNo.eq(qOrderMember.orderNo))
+                .innerJoin(qMember)
+                .on(qOrderMember.member.memberNo.eq(qMember.memberNo))
+                .innerJoin(qOrderProduct)
+                .on(qOrder.orderNo.eq(qOrderProduct.order.orderNo))
+                .innerJoin(qProduct)
+                .on(qOrderProduct.product.productNo.eq(qProduct.productNo))
+                .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                    .and(qOrderSubscription.sequence.eq(1)))
+                .select(Projections.fields(OrderSubscriptionAdminListDto.class,
+                        qOrderStatusHistory.order.orderNo,
+                        qMember.memberId,
+                        qProduct.name.as("productName"),
+                        qOrderStatusHistory.order.orderCreatedAt,
+                        qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                        qOrderStatusHistory.order.recipientName,
+                        qDelivery.trackingNo,
+                        qOrderSubscription.subscriptionPeriod
+                    )
+                )
+                .orderBy(qOrder.orderNo.desc());
+
+        List<OrderSubscriptionAdminListDto> orderSubscriptionListDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(orderSubscriptionListDtoList, pageable,
+            jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+                                                                               Long memberNo) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+        QDelivery qDelivery = QDelivery.delivery;
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+
+        JPQLQuery<OrderSubscriptionListDto> jpqlQuery =
+            from(qOrderStatusHistory)
+                .leftJoin(qOrderStatusHistory2)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                    .and(qOrderStatusHistory.orderStatusHistoryNo
+                        .lt(qOrderStatusHistory2.orderStatusHistoryNo))
+                )
+                .innerJoin(qOrder)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+                .innerJoin(qOrderSubscription)
+                .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
+                .leftJoin(qDelivery)
+                .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .innerJoin(qOrderMember)
+                .on(qOrder.orderNo.eq(qOrderMember.orderNo)
+                    .and(qOrderMember.member.memberNo.eq(memberNo)))
+                .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                    .and(qOrderSubscription.sequence.eq(1)))
+                .select(Projections.fields(OrderSubscriptionListDto.class,
+                        qOrder.orderNo,
+                        qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                        qOrder.recipientName,
+                        qOrder.recipientPhoneNumber,
+                        qDelivery.trackingNo,
+                        qOrderSubscription.subscriptionPeriod
+                    )
+                ).orderBy(qOrder.orderNo.desc());
+
+        List<OrderSubscriptionListDto> orderSubscriptionListDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(orderSubscriptionListDtoList, pageable,
+            jpqlQuery::fetchCount);
+
+    }
+
+
 }

@@ -27,6 +27,8 @@ public class ReviewResponseDto {
 
     private Long memberNo;
 
+    private String memberId;
+
     private Integer starPoint;
 
     private String content;
