@@ -23,6 +23,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCo
 import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
+import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
 import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationComeCloseOtherMemberException;
@@ -111,7 +112,8 @@ public class RestControllerAdvisor {
         CanNotApplyCouponException.class,
         MemberDestinationComeCloseOtherMemberException.class,
         ReviewComeCloseOtherMemberException.class,
-        ProductInquiryComeCloseOtherMemberException.class
+        ProductInquiryComeCloseOtherMemberException.class,
+        ObjectStroageFileUploadException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

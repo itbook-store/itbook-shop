@@ -32,7 +32,7 @@ class ProductRepositoryTest {
 
     Product dummyProductSuccess1;
     Product dummyProductSuccess2;
-    
+
 
     @BeforeEach
     void setUp() {
@@ -83,7 +83,7 @@ class ProductRepositoryTest {
 
         Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
         Page<ProductDetailsResponseDto> productList =
-            productRepository.findProductListUser(pageable);
+            productRepository.findProductListAdmin(pageable);
         Assertions.assertThat(productList).isNotEmpty();
         ProductDetailsResponseDto productDetailsResponseDtoActual = productList.getContent().get(0);
 

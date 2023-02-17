@@ -89,20 +89,27 @@ public class ProductRelationGroupRepositoryImpl extends QuerydslRepositorySuppor
         QProduct qProduct = QProduct.product;
 
         JPQLQuery<ProductRelationResponseDto> productListQuery =
-            from(qProduct)
-                .leftJoin(qProductRelationGroup)
-                .on(qProductRelationGroup.basedProduct.productNo.eq(qProduct.productNo))
-                .select(Projections.constructor(ProductRelationResponseDto.class,
-                    qProduct.productNo, qProduct.name,
-                    qProductRelationGroup.basedProduct.productNo.count()))
-                .groupBy(qProduct.productNo)
-                .orderBy(qProductRelationGroup.basedProduct.productNo.count().desc());
+            getProductListQuery(qProductRelationGroup, qProduct);
 
         List<ProductRelationResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
 
         return PageableExecutionUtils.getPage(productList, pageable,
-            () -> from(qProduct).fetchCount());
+            () -> getProductListQuery(qProductRelationGroup, qProduct).fetch()
+                .size());
+    }
+
+    private JPQLQuery<ProductRelationResponseDto> getProductListQuery(
+        QProductRelationGroup qProductRelationGroup, QProduct qProduct) {
+        return from(qProduct)
+            .leftJoin(qProductRelationGroup)
+            .on(qProductRelationGroup.basedProduct.productNo.eq(qProduct.productNo))
+            .select(Projections.constructor(ProductRelationResponseDto.class,
+                qProduct.productNo, qProduct.name,
+                qProductRelationGroup.basedProduct.productNo.count()))
+            .groupBy(qProduct.productNo)
+            .orderBy(qProductRelationGroup.basedProduct.productNo.count().desc(),
+                qProduct.productNo.desc());
     }
 }

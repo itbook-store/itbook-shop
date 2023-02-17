@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.paymentgroup.payment.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.List;
 import javax.servlet.http.HttpSession;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentCanceledRequestDto;
@@ -23,7 +22,7 @@ public interface PaymentService {
     String findPaymentKey(Long orderNo);
 
     OrderResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
-                                      Long orderNo, HttpSession session);
+                                    Long orderNo, HttpSession session);
 
     /**
      * 토스 서버에 결제 취소를 요청 하여 결제 취소 하는 기능을 담당합니다.
