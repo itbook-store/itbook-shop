@@ -123,7 +123,7 @@ public class RestControllerAdvisor {
         ReviewComeCloseOtherMemberException.class,
         ProductInquiryComeCloseOtherMemberException.class,
         ObjectStroageFileUploadException.class,
-        NotMatchCouponException.class
+        NotMatchCouponException.class,
         ProductInquiryComeCloseOtherMemberException.class,
         AmountException.class
     })
