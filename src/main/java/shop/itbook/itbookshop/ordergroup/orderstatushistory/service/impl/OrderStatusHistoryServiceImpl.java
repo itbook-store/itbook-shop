@@ -33,6 +33,8 @@ public class OrderStatusHistoryServiceImpl implements OrderStatusHistoryService 
     @Transactional
     public void addOrderStatusHistory(Order order, OrderStatusEnum orderStatusEnum) {
 
+        //  TODO -> 여기서 Order 받고, 주문이 완료면 지금
+
         OrderStatus orderStatus = orderStatusService.findByOrderStatusEnum(orderStatusEnum);
 
         OrderStatusHistory orderStatusHistory =

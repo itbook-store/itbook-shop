@@ -1,7 +1,11 @@
 package shop.itbook.itbookshop.ordergroup.order.repository.impl;
 
+import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.DateTemplate;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -20,10 +24,11 @@ import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
-import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.QOrderSubscription;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 
 /**
@@ -125,7 +130,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<OrderDestinationDto> findOrderDestinationsByOrderNo(Long orderNo) {
+    public OrderDestinationDto findOrderDestinationsByOrderNo(Long orderNo) {
 
         QOrder qOrder = QOrder.order;
 
@@ -135,7 +140,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrder.recipientName, qOrder.recipientPhoneNumber,
                 qOrder.postcode, qOrder.roadNameAddress, qOrder.recipientAddressDetails
             ))
-            .fetch();
+            .fetchOne();
     }
 
     @Override
@@ -190,5 +195,37 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
         return PageableExecutionUtils.getPage(orderListAdminViewResponseDtoList, pageable,
             jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public List<Order> paymentCompleteSubscriptionProductStatusChangeWaitDelivery() {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+
+        DateTemplate<Date> formattedDateOrderSelectedDeliveryDate = Expressions.dateTemplate(
+            Date.class,
+            "DATE_FORMAT({0}, {1})",
+            qOrder.selectedDeliveryDate,
+            ConstantImpl.create("%Y-%m-%d")
+        );
+        
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.eq(qOrder))
+            .innerJoin(qOrderSubscription)
+            .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
+            .where(qOrderStatusHistory2.isNull()
+                .and(qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue()
+                    .eq(OrderStatusEnum.PAYMENT_COMPLETE.getOrderStatus()))
+                .and(Expressions.currentDate().eq(formattedDateOrderSelectedDeliveryDate)))
+            .select(qOrder)
+            .fetch();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.paymentgroup.card.entity.QCard;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.QPayment;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepositoryCustom;
@@ -41,16 +42,18 @@ public class PaymentRepositoryImpl extends QuerydslRepositorySupport
 
     @Override
     public PaymentCardResponseDto findPaymentCardByOrderNo(Long orderNo) {
-        QOrder order = QOrder.order;
-        QPayment payment = QPayment.payment;
-        QCard card = QCard.card;
+        QOrder qOrder = QOrder.order;
+        QPayment qPayment = QPayment.payment;
+        QCard qCard = QCard.card;
 
-        return from(payment)
-            .innerJoin(payment.card, card)
-            .innerJoin(payment.order, order)
-            .where(order.orderNo.eq(orderNo))
+        return from(qPayment)
+            .innerJoin(qPayment.card, qCard)
+            .innerJoin(qPayment.order, qOrder)
+            .where(qOrder.orderNo.eq(orderNo))
             .select(Projections.constructor(PaymentCardResponseDto.class,
-                card.cardSerialNo, card.totalAmount))
+                qCard.type.as("cardType"),
+                qCard.cardSerialNo, qCard.totalAmount,
+                qPayment.paymentStatus.paymentStatusEnum.stringValue().as("paymentStatus")))
             .fetchOne();
     }
 }

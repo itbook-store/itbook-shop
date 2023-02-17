@@ -13,7 +13,7 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnu
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -31,11 +31,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final OrderStatusHistoryService orderStatusHistoryService;
 
+
     @Override
     @Transactional
     public void registerDelivery(Order order) {
 
         StringBuilder stringBuilder = new StringBuilder();
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY);
 
         Delivery delivery = new Delivery();
         delivery.setOrder(order);
@@ -50,10 +53,16 @@ public class DeliveryServiceImpl implements DeliveryService {
             delivery,
             stringBuilder
                 .append(order.getRoadNameAddress())
-                .append(" ").append(order.getRecipientAddressDetails())
+                .append(" ")
+                .append(order.getRecipientAddressDetails())
                 .toString(),
             deliveryStatus);
 
         deliveryStatusHistoryRepository.save(deliveryStatusHistory);
+    }
+
+    @Override
+    public String findTrackingNoByOrderNo(Long orderNo) {
+        return deliveryRepository.findTrackingNoByOrderNo(orderNo);
     }
 }

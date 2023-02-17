@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.paymentgroup.payment.repository;
 import java.util.Optional;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 
 /**
  * 쿼리 dsl을 사용하기 위한 ProductRepository 인터페이스입니다.

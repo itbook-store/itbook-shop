@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,7 @@ class ProductCouponApplyServiceImplTest {
 
     @Autowired
     ProductCouponApplyService productCouponApplyService;
+
     @MockBean
     ProductCouponApplyRepository productCouponApplyRepository;
     OrderProduct orderProduct;
@@ -41,7 +43,7 @@ class ProductCouponApplyServiceImplTest {
     Order order;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         product = ProductDummy.getProductSuccess();
         order = OrderDummy.getOrder();
         orderProduct = OrderProductDummy.createOrderProduct(order, product);
@@ -52,7 +54,8 @@ class ProductCouponApplyServiceImplTest {
         //given
         Long couponIssueNo = 1L;
         //when
-        productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo, orderProduct);
+        productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo,
+            orderProduct);
         //then
         verify(productCouponApplyRepository).save(any());
     }
@@ -61,6 +64,10 @@ class ProductCouponApplyServiceImplTest {
     void cancelProductCouponApplyAndChangeCouponIssue() {
         //given
         Long couponIssueNo = 1L;
+        given(productCouponApplyRepository.existsById(anyLong()))
+            .willReturn(true);
+
+
         //when
         productCouponApplyService.cancelProductCouponApplyAndChangeCouponIssue(couponIssueNo);
         //then

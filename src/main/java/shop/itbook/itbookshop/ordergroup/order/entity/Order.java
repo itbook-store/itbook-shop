@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**
@@ -22,6 +23,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
  * @author 노수연
  * @since 1.0
  */
+@ToString
 @Getter
 @Setter
 @Table(name = "order_paper")
@@ -67,6 +69,9 @@ public class Order {
     @Column(name = "decrease_point", nullable = false, columnDefinition = "bigint default 0")
     private Long decreasePoint;
 
+    @Column(name = "delivery_fee", nullable = false, columnDefinition = "bigint default 0")
+    private Long deliveryFee;
+
     /**
      * 주문 엔티티의 생성자입니다.
      *
@@ -86,7 +91,7 @@ public class Order {
                  List<OrderProduct> orderProducts, String recipientName,
                  String recipientPhoneNumber,
                  Integer postcode, String roadNameAddress, String recipientAddressDetails,
-                 Boolean isHidden, Long increasePoint, Long decreasePoint) {
+                 Boolean isHidden, Long increasePoint, Long decreasePoint, Long deliveryFee) {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
         this.orderProducts = orderProducts;
@@ -98,5 +103,6 @@ public class Order {
         this.isHidden = isHidden;
         this.increasePoint = increasePoint;
         this.decreasePoint = decreasePoint;
+        this.deliveryFee = deliveryFee;
     }
 }

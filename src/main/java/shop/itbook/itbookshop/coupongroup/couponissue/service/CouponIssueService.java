@@ -17,9 +17,12 @@ import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
  */
 public interface CouponIssueService {
     Long addCouponIssueByCoupon(Long memberNo, Long couponNo);
+
     List<CouponIssue> addCouponIssueByCoupons(Long memberNo, String couponType);
+
     Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(Pageable pageable,
                                                                        Long memberNo);
+
     void usePointCouponAndCreatePointHistory(Long couponIssueNo);
 
     CouponIssueListByGroupResponseDto findMemberAvailableCouponIssuesList(Long memberNo);
@@ -37,6 +40,5 @@ public interface CouponIssueService {
 
     CouponIssue cancelCouponIssue(Long couponIssueNo);
 
-    @Transactional
     void saveCouponApplyAboutCategoryAndProduct(Long couponIssueNo, Long orderProductNo);
 }

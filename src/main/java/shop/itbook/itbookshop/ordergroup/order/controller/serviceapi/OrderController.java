@@ -68,7 +68,7 @@ public class OrderController {
     /**
      * 비회원 주문 조회 요청을 처리합니다.
      *
-     * @param pageable the pageable
+     * @param pageable 페이징을 위한 객체
      * @param orderNo  주문 조회할 주문 번호
      * @return 비회원이 주문한 건의 상세 정보 Dto 를 담은 응답 객체
      */
@@ -222,6 +222,29 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.findOrderDetails(orderNo)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * 주문 구매 확정뱐경 메서드 입니다.
+     *
+     * @param orderNo 주문번호
+     * @return 공용응답객체
+     * @author 강명관
+     */
+    @PostMapping("/purchase-complete/{orderNo}")
+    public ResponseEntity<CommonResponseBody<Void>> orderStatusChangePurchaseComplete(
+        @PathVariable(value = "orderNo") Long orderNo
+    ) {
+        orderService.orderPurchaseComplete(orderNo);
+
+        CommonResponseBody<Void> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
+                ), null
             );
 
         return ResponseEntity.ok().body(commonResponseBody);

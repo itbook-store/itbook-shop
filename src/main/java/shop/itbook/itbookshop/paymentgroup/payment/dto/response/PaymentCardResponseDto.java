@@ -12,7 +12,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class PaymentCardResponseDto {
-
     private String cardSerialNo;
+    private String cardType;
     private Long totalAmount;
+    private String paymentStatus;
 }

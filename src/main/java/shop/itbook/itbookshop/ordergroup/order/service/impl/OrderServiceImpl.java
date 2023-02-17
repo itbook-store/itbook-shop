@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,9 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
+import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl.DeliveryServiceImpl;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
@@ -45,6 +48,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewRe
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
@@ -64,6 +68,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
+import shop.itbook.itbookshop.paymentgroup.card.repository.CardRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
@@ -83,6 +88,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @author 정재원
  * @since 1.0
  */
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -92,6 +98,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
+    private final CardRepository cardRepository;
 
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
@@ -112,7 +119,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
     private final DeliveryService deliveryService;
 
-
     /**
      * The Origin url.
      */
@@ -128,16 +134,29 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
 
+        Order order = findOrderEntity(orderNo);
         List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
             orderProductService.findOrderProductsByOrderNo(orderNo);
-        List<OrderDestinationDto> orderDestinationList =
+        OrderDestinationDto orderDestinationDto =
             orderRepository.findOrderDestinationsByOrderNo(orderNo);
         PaymentCardResponseDto paymentCardResponseDto =
             paymentRepository.findPaymentCardByOrderNo(orderNo);
-        String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
 
-        return new OrderDetailsResponseDto(orderProductDetailResponseDtoList, orderDestinationList,
-            paymentCardResponseDto, orderStatus);
+        String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
+        String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
+
+        return OrderDetailsResponseDto.builder()
+            .orderNo(orderNo)
+            .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
+            .orderDestinationDto(orderDestinationDto)
+            .paymentCardResponseDto(paymentCardResponseDto)
+            .orderStatus(orderStatus)
+            .orderCreatedAt(order.getOrderCreatedAt())
+            .deliveryFee(order.getDeliveryFee())
+            .trackingNo(trackingNo)
+            // todo: 주문에 배송비 테이블 추가 후 넣어주기
+            .deliveryFee(0L)
+            .build();
     }
 
     @Override
@@ -336,6 +355,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (optionalMemberNo.isPresent()) {
             amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
+        }
+
+        // toss 정책 상 100원 이하 결제 막기.
+        if (amount <= 100) {
+            throw new AmountException(amount);
         }
 
         return OrderPaymentDto.builder()
@@ -549,8 +573,7 @@ public class OrderServiceImpl implements OrderService {
         String orderNoString = String.valueOf(order.getOrderNo());
         String randomUuidString = UUID.randomUUID().toString();
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
-        String orderId = UUID.fromString(randomUuidString).toString();
-        return orderId;
+        return UUID.fromString(randomUuidString).toString();
     }
 
     /**
@@ -652,7 +675,7 @@ public class OrderServiceImpl implements OrderService {
     public void processAfterOrderCancelPaymentSuccess(Long orderNo) {
 
         Order order = findOrderEntity(orderNo);
-        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.CANCELED);
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
 
         // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
         this.changeCategoryAndProductCouponStatusByCancel(orderNo);
@@ -699,7 +722,7 @@ public class OrderServiceImpl implements OrderService {
     private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {
 
         Optional<OrderTotalCouponApply> optionalOrderTotalCouponApply =
-            orderTotalCouponApplyRepositoy.findById(
+            orderTotalCouponApplyRepositoy.findByOrder_OrderNo(
                 orderNo);
 
         if (optionalOrderTotalCouponApply.isEmpty()) {
@@ -707,11 +730,19 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderTotalCouponApply orderTotalCouponApply = optionalOrderTotalCouponApply.get();
-        couponIssueService.cancelCouponIssue(orderTotalCouponApply.getCouponIssueNo());
+        Long couponIssueNo = orderTotalCouponApply.getCouponIssueNo();
+
+        couponIssueService.cancelCouponIssue(couponIssueNo);
+        orderTotalCouponApplyService.cancelOrderTotalCouponApplyAndChangeCouponIssue(couponIssueNo);
     }
 
     private void addOrderCancelIncreaseDecreasePointHistory(Order order, boolean isDecrease) {
-        if (Objects.equals(order.getIncreasePoint(), 0L)) {
+
+        if (isDecrease && Objects.equals(order.getIncreasePoint(), 0L)) {
+            return;
+        }
+
+        if (!isDecrease && Objects.equals(order.getDecreasePoint(), 0L)) {
             return;
         }
 
@@ -727,7 +758,7 @@ public class OrderServiceImpl implements OrderService {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelDecrease(
                 orderMember.getMember(),
                 order,
-                order.getDecreasePoint());
+                order.getIncreasePoint());
         } else {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelIncrease(
                 orderMember.getMember(),
@@ -740,5 +771,32 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderListAdminViewResponseDto> findOrderListAdmin(Pageable pageable) {
 
         return orderRepository.getOrderListOfAdminWithStatus(pageable);
+    }
+
+    @Override
+    @Transactional
+    public void orderPurchaseComplete(Long orderNo) {
+
+        Order order = findOrderEntity(orderNo);
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PURCHASE_COMPLETE);
+
+    }
+
+    @Transactional
+    @Override
+    public void addOrderStatusHistorySubscriptionProductDeliveryWait() {
+
+        log.info("이거 실행 안되고있나?");
+
+        List<Order> orders =
+            orderRepository.paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
+
+        log.info("orders {}", orders);
+
+        orders.forEach(order ->
+            orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY)
+        );
+
     }
 }
