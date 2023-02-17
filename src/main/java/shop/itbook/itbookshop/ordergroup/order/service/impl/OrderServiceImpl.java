@@ -502,18 +502,15 @@ public class OrderServiceImpl implements OrderService {
                                               Integer productCnt) {
 
         if (product.getIsPointApplying()) {
-            int increasePointPercent = product.getIncreasePointPercent() / 100;
-            Long increasePoint = 0L;
-            if (Objects.nonNull(order.getIncreasePoint())) {
-                increasePoint = order.getIncreasePoint();
-            }
+            double increasePointPercent = product.getIncreasePointPercent() / 100.0;
+            Long increasePoint = order.getIncreasePoint();
 
             if (product.getIsPointApplyingBasedSellingPrice()) {
                 order.setIncreasePoint(
-                    increasePoint + (product.getFixedPrice() * increasePointPercent));
+                    increasePoint + (long) (product.getFixedPrice() * increasePointPercent));
             } else {
                 order.setIncreasePoint(
-                    increasePoint + ((productPrice * increasePointPercent)) * productCnt);
+                    increasePoint + (long) ((productPrice * increasePointPercent)) * productCnt);
             }
         }
     }
