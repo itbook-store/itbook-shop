@@ -1,9 +1,11 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
+import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.DeliveryStatus;
@@ -13,6 +15,8 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnu
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
@@ -31,12 +35,12 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final OrderStatusHistoryService orderStatusHistoryService;
 
+    private final OrderRepository orderRepository;
+
 
     @Override
     @Transactional
     public void registerDelivery(Order order) {
-
-        StringBuilder stringBuilder = new StringBuilder();
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY);
 
@@ -44,8 +48,14 @@ public class DeliveryServiceImpl implements DeliveryService {
         delivery.setOrder(order);
         deliveryRepository.save(delivery);
 
+        saveOrderDeliveryHistory(order, delivery, DeliveryStatusEnum.WAIT_DELIVERY);
+    }
+
+    private void saveOrderDeliveryHistory(Order order, Delivery delivery,
+                                          DeliveryStatusEnum deliveryStatusEnum) {
+        StringBuilder stringBuilder = new StringBuilder();
         DeliveryStatus deliveryStatus =
-            deliveryStatusRepository.findByDeliveryStatusEnum(DeliveryStatusEnum.WAIT_DELIVERY)
+            deliveryStatusRepository.findByDeliveryStatusEnum(deliveryStatusEnum)
                 .orElseThrow(
                     DeliveryStatusNotFoundException::new);
 
@@ -64,5 +74,17 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Override
     public String findTrackingNoByOrderNo(Long orderNo) {
         return deliveryRepository.findTrackingNoByOrderNo(orderNo);
+    }
+
+    @Override
+    public void completeDelivery(Long deliveryNo) {
+
+        Delivery delivery = deliveryRepository.findById(deliveryNo).orElseThrow(
+            DeliveryNotFoundException::new);
+        Order order = orderRepository.findOrderByDeliveryNo(deliveryNo);
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.DELIVERY_COMPLETED);
+
+        saveOrderDeliveryHistory(order, delivery, DeliveryStatusEnum.DELIVERY_COMPLETED);
     }
 }

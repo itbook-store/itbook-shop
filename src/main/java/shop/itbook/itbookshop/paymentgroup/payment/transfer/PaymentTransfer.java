@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Objects;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 
@@ -32,10 +34,16 @@ public class PaymentTransfer {
             Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(requestDto.getApprovedAt())).atZone(
                 ZoneId.of("Asia/Seoul")));
 
+        PaymentResponseDto.CardResponseDto card = requestDto.getCard();
+
+        Long amount = 0L;
+        if (Objects.isNull(card)) {
+            amount = card.getAmount();
+        }
         return Payment.builder()
             .paymentKey(requestDto.getPaymentKey())
             .orderId(requestDto.getOrderId())
-            .totalAmount(requestDto.getCard().getAmount())
+            .totalAmount(amount)
             .orderName(requestDto.getOrderName())
             .requestedAt(requestedAt)
             .approvedAt(approvedAt)

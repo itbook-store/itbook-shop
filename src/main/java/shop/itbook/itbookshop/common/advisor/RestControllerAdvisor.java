@@ -32,6 +32,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDest
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
+import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
@@ -123,6 +124,8 @@ public class RestControllerAdvisor {
         ProductInquiryComeCloseOtherMemberException.class,
         ObjectStroageFileUploadException.class,
         NotMatchCouponException.class
+        ProductInquiryComeCloseOtherMemberException.class,
+        AmountException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

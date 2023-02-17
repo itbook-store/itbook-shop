@@ -20,5 +20,20 @@ public interface DeliveryService {
      */
     void registerDelivery(Order order);
 
+    /**
+     * 주문 번호를 받아 해당 주문의 운송장 번호를 조회합니다.
+     *
+     * @param orderNo 주문 번호
+     * @return 운송장 번호
+     * @author 정재원 *
+     */
     String findTrackingNoByOrderNo(Long orderNo);
+
+    /**
+     * 주문의 배송 상태를 배송 완료로 변경합니다.
+     *
+     * @param orderNo 주문 번호
+     * @author 정재원 *
+     */
+    void completeDelivery(Long orderNo);
 }
