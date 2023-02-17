@@ -47,6 +47,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
@@ -773,6 +774,9 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.getOrderListOfAdminWithStatus(pageable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public void orderPurchaseComplete(Long orderNo) {
@@ -783,20 +787,35 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public void addOrderStatusHistorySubscriptionProductDeliveryWait() {
 
-        log.info("이거 실행 안되고있나?");
-
         List<Order> orders =
             orderRepository.paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
-
-        log.info("orders {}", orders);
 
         orders.forEach(order ->
             orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY)
         );
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable) {
+        return orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+                                                                               Long memberNo) {
+        return orderRepository.findAllSubscriptionOrderListByMember(pageable, memberNo);
     }
 }

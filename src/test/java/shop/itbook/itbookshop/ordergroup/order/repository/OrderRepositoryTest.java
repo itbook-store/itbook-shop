@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
@@ -25,6 +25,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.ordermember.dummy.OrderMemberDummy;
@@ -159,4 +160,88 @@ class OrderRepositoryTest {
 //        // then
 //        assertThat(orders.get(0)).isEqualTo(order);
 //    }
+
+    @DisplayName("구독 상품 페이지를위한 구독 상품 리스트 불러오기 테스트")
+    @Test
+    void findAllSubscriptionOrderListByAdminTest() {
+        // given
+        Order order = orderRepository.save(OrderDummy.getOrder());
+        OrderSubscription orderSubscription =
+            OrderSubscriptionDummy.createOrderSubscription(order);
+
+        orderSubscriptionRepository.save(orderSubscription);
+
+        OrderStatus orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
+        orderStatusRepository.save(orderStatus);
+
+        OrderStatusHistory orderStatusHistory =
+            OrderStatusHistoryDummy.createOrderStatusHistory(order, orderStatus);
+        orderStatusHistoryRepository.save(orderStatusHistory);
+
+        Delivery delivery = DeliveryDummy.createDelivery(order);
+        deliveryRepository.save(delivery);
+
+        PageRequest pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<OrderSubscriptionListDto> allSubscriptionOrderList =
+            orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
+
+        // then
+        assertThat(allSubscriptionOrderList.getContent().get(0).getOrderNo())
+            .isEqualTo(order.getOrderNo());
+    }
+
+    @DisplayName("회원 주문 구독 리스트 조회 테스트 ")
+    @Test
+    void findAllSubscriptionOrderListByMemberTest() {
+        // given
+        Order order = orderRepository.save(OrderDummy.getOrder());
+        OrderSubscription orderSubscription =
+            OrderSubscriptionDummy.createOrderSubscription(order);
+
+        orderSubscriptionRepository.save(orderSubscription);
+
+        OrderStatus orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
+        orderStatusRepository.save(orderStatus);
+
+        OrderStatusHistory orderStatusHistory =
+            OrderStatusHistoryDummy.createOrderStatusHistory(order, orderStatus);
+        orderStatusHistoryRepository.save(orderStatusHistory);
+
+        Delivery delivery = DeliveryDummy.createDelivery(order);
+        deliveryRepository.save(delivery);
+
+        Membership membership = MembershipDummy.getMembership();
+        membershipRepository.save(membership);
+
+        MemberStatus normalMemberStatus = MemberStatusDummy.getNormalMemberStatus();
+        memberStatusRepository.save(normalMemberStatus);
+
+        Member member = MemberDummy.getMember1();
+        member.setMembership(membership);
+        member.setMemberStatus(normalMemberStatus);
+        memberRepository.save(member);
+
+        Product product = productRepository.save(ProductDummy.getProductSuccess());
+        OrderProduct orderProduct = OrderProductDummy.createOrderProduct(order, product);
+        orderProductRepository.save(orderProduct);
+
+        OrderMember orderMember = OrderMemberDummy.createOrderMember(order, member);
+        orderMemberRepository.save(orderMember);
+
+        PageRequest pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<OrderSubscriptionListDto> allSubscriptionOrderListByMember =
+            orderRepository.findAllSubscriptionOrderListByMember(pageable, member.getMemberNo());
+
+        // then
+        OrderSubscriptionListDto orderSubscriptionListDto =
+            allSubscriptionOrderListByMember.getContent().get(0);
+
+        assertThat(orderSubscriptionListDto.getOrderNo())
+            .isEqualTo(orderMember.getOrder().getOrderNo());
+
+    }
 }

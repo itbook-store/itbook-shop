@@ -7,6 +7,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
@@ -28,4 +29,9 @@ public interface CustomOrderRepository {
     Page<OrderListAdminViewResponseDto> getOrderListOfAdminWithStatus(Pageable pageable);
 
     List<Order> paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
+
+    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable);
+
+    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+                                                                        Long memberNo);
 }

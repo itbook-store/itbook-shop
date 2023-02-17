@@ -20,6 +20,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -201,7 +202,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     public List<Order> paymentCompleteSubscriptionProductStatusChangeWaitDelivery() {
         QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
-
         QOrder qOrder = QOrder.order;
         QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
 
@@ -211,7 +211,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             qOrder.selectedDeliveryDate,
             ConstantImpl.create("%Y-%m-%d")
         );
-        
+
         return from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
@@ -228,4 +228,98 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .select(qOrder)
             .fetch();
     }
+
+    @Override
+    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+        QDelivery qDelivery = QDelivery.delivery;
+
+        JPQLQuery<OrderSubscriptionListDto> jpqlQuery =
+            from(qOrderStatusHistory)
+                .leftJoin(qOrderStatusHistory2)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                    .and(qOrderStatusHistory.orderStatusHistoryNo
+                        .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+                .innerJoin(qOrder)
+                .on(qOrderStatusHistory.order.eq(qOrder))
+                .innerJoin(qOrderSubscription)
+                .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
+                .innerJoin(qDelivery)
+                .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                    .and(qOrderSubscription.sequence.eq(1)))
+                .select(Projections.fields(OrderSubscriptionListDto.class,
+                        qOrder.orderNo,
+                        qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                        qOrder.recipientName,
+                        qOrder.recipientPhoneNumber,
+                        qDelivery.trackingNo,
+                        qOrderSubscription.subscriptionPeriod
+                    )
+                )
+                .orderBy(qOrder.orderNo.desc());
+
+        List<OrderSubscriptionListDto> orderSubscriptionListDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(orderSubscriptionListDtoList, pageable,
+            jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+                                                                               Long memberNo) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+        QDelivery qDelivery = QDelivery.delivery;
+        QOrderMember qOrderMember = QOrderMember.orderMember;
+
+        JPQLQuery<OrderSubscriptionListDto> jpqlQuery =
+            from(qOrderStatusHistory)
+                .leftJoin(qOrderStatusHistory2)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                    .and(qOrderStatusHistory.orderStatusHistoryNo
+                        .lt(qOrderStatusHistory2.orderStatusHistoryNo))
+                )
+                .innerJoin(qOrder)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+                .innerJoin(qOrderSubscription)
+                .on(qOrder.orderNo.eq(qOrderSubscription.orderNo))
+                .innerJoin(qDelivery)
+                .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .innerJoin(qOrderMember)
+                .on(qOrder.orderNo.eq(qOrderMember.orderNo))
+                .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                    .and(qOrderMember.member.memberNo.eq(memberNo))
+                    .and(qOrderSubscription.sequence.eq(1)))
+                .select(Projections.fields(OrderSubscriptionListDto.class,
+                        qOrder.orderNo,
+                        qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                        qOrder.recipientName,
+                        qOrder.recipientPhoneNumber,
+                        qDelivery.trackingNo,
+                        qOrderSubscription.subscriptionPeriod
+                    )
+                ).orderBy(qOrder.orderNo.desc());
+
+        List<OrderSubscriptionListDto> orderSubscriptionListDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(orderSubscriptionListDtoList, pageable,
+            jpqlQuery::fetchCount);
+
+    }
+
+
 }
