@@ -41,7 +41,7 @@ import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputExcepti
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
 
-    private final PayService payService;
+    private final PayService tossPayService;
     private final CardService cardService;
     private final PaymentCancelService paymentCancelService;
     private final PaymentStatusService paymentStatusService;
@@ -61,12 +61,20 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
 
-        response = payService.requestApprovePayment(paymentApproveRequestDto);
+        if (paymentApproveRequestDto.getAmount() < 100L) {
+            throw new InvalidPaymentException("100원 미만의 결제는 불가능합니다.");
+        }
+
+        response = tossPayService.requestApprovePayment(paymentApproveRequestDto);
 
         payment = PaymentTransfer.dtoToEntity(response);
         if (!Objects.isNull(response.getCard())) {
             Card card = cardService.addCard(response);
             payment.setCard(card);
+        }
+
+        if (!Objects.equals(payment.getTotalAmount(), paymentApproveRequestDto.getAmount())) {
+            throw new InvalidPaymentException("결제가 정상적으로 되지 않았습니다. 결제 금액 확인 요망!");
         }
 
         PaymentStatus paymentStatus =
@@ -100,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
         orderService.processBeforeOrderCancelPayment(
             paymentCanceledRequestDto.getOrderNo());
 
-        response = payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
+        response = tossPayService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
 
         // 결제 상태를 결제 취소로 수정
         payment = findPaymentByOrderNo(paymentCanceledRequestDto.getOrderNo());

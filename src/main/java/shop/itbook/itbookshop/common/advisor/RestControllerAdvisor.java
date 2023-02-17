@@ -25,6 +25,7 @@ import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoun
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
+import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
 import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationComeCloseOtherMemberException;
@@ -120,6 +121,7 @@ public class RestControllerAdvisor {
         MemberDestinationComeCloseOtherMemberException.class,
         ReviewComeCloseOtherMemberException.class,
         ProductInquiryComeCloseOtherMemberException.class,
+        ObjectStroageFileUploadException.class,
         NotMatchCouponException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(

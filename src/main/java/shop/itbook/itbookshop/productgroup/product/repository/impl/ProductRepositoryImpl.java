@@ -55,7 +55,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                     qProduct.isPointApplyingBasedSellingPrice,
                     qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
-                    qProduct.dailyHits));
+                    qProduct.dailyHits))
+                .orderBy(qProduct.productNo.desc());
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -87,7 +88,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
                     qProduct.dailyHits))
                 .where(qProduct.isSelled.eq(Boolean.TRUE))
-                .where(qProduct.isDeleted.eq(Boolean.FALSE));
+                .where(qProduct.isDeleted.eq(Boolean.FALSE))
+                .orderBy(qProduct.productNo.desc());
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -157,8 +159,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
 
-        return PageableExecutionUtils.getPage(productList, pageable,
-            () -> from(qProduct).fetchCount());
+        return PageableExecutionUtils.getPage(productList, pageable, productListQuery::fetchCount);
     }
 
     private JPQLQuery<ProductDetailsResponseDto> getProductListByProductNoList(
@@ -198,7 +199,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
                     Projections.constructor(ProductSalesRankResponseDto.class, qProduct.productNo,
                         qProduct.name, qOrderProduct.count.sum(),
                         qOrderProduct.productPrice.sum()))
-                .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PURCHASE_COMPLETE))
+                .where(qOrderStatus.orderStatusEnum.eq(OrderStatusEnum.PAYMENT_COMPLETE))
                 .groupBy(qOrderProduct.product)
                 .orderBy(qOrderProduct.count.sum().desc(), qOrderProduct.productPrice.sum().desc());
 

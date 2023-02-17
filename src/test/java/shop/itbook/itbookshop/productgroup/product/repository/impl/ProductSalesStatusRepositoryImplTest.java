@@ -66,9 +66,11 @@ class ProductSalesStatusRepositoryImplTest {
     OrderStatus savedCanceledStatus;
     OrderStatus savedPurchaseCompletedStatus;
     OrderStatus savedRefundCompletedStatus;
+    OrderStatus savedPaymentCompleted;
 
     OrderStatus dummyOrderStatusCanceled;
     OrderStatus dummyOrderStatusPurchaseCompleted;
+    OrderStatus dummyOrderStatusPaymentCompleted;
     OrderStatus dummyOrderStatusRefundCompleted;
     OrderProduct dummyOrderProduct3;
     OrderProduct dummyOrderProduct4;
@@ -124,6 +126,8 @@ class ProductSalesStatusRepositoryImplTest {
         dummyOrderStatusCanceled = OrderStatusDummy.createByEnum(OrderStatusEnum.CANCELED);
         dummyOrderStatusPurchaseCompleted =
             OrderStatusDummy.createByEnum(OrderStatusEnum.PURCHASE_COMPLETE);
+        dummyOrderStatusPaymentCompleted =
+            OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
         dummyOrderStatusRefundCompleted =
             OrderStatusDummy.createByEnum(OrderStatusEnum.REFUND_COMPLETED);
 
@@ -131,6 +135,8 @@ class ProductSalesStatusRepositoryImplTest {
         savedPurchaseCompletedStatus =
             orderStatusRepository.save(dummyOrderStatusPurchaseCompleted);
         savedRefundCompletedStatus = orderStatusRepository.save(dummyOrderStatusRefundCompleted);
+        savedRefundCompletedStatus = orderStatusRepository.save(dummyOrderStatusRefundCompleted);
+        savedPaymentCompleted = orderStatusRepository.save(dummyOrderStatusPaymentCompleted);
 
         entityManager.flush();
         entityManager.clear();
@@ -144,10 +150,10 @@ class ProductSalesStatusRepositoryImplTest {
             OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder1, savedCanceledStatus);
         OrderStatusHistory dummyOrderStatusHistory2 =
             OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder2,
-                savedPurchaseCompletedStatus);
+                savedPaymentCompleted);
         OrderStatusHistory dummyOrderStatusHistory3 =
             OrderStatusHistoryDummy.createOrderStatusHistory(savedDummyOrder3,
-                savedPurchaseCompletedStatus);
+                savedPaymentCompleted);
 
         orderStatusHistoryRepository.save(dummyOrderStatusHistory1);
         orderStatusHistoryRepository.save(dummyOrderStatusHistory2);

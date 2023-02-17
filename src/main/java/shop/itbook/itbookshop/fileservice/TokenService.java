@@ -66,7 +66,7 @@ public class TokenService {
 
         if (Objects.isNull(itBookObjectStorageToken)) {
             throw new InvalidTokenException(
-                TokenFailureMessage.FAILURE_INVALID_MESSAGE.getMessage());
+                TokenFailureMessage.INVALID_TOKEN_MESSAGE.getMessage());
         }
 
         return itBookObjectStorageToken;

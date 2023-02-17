@@ -22,12 +22,12 @@ import shop.itbook.itbookshop.productgroup.producttype.service.ProductTypeServic
  */
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/api/products")
-public class ProductTypeController {
+@RequestMapping("/api/admin/products")
+public class ProductTypeAdminController {
     private final ProductTypeService productTypeService;
 
     /**
-     * 사용자가 상품유형별로 상품 조회를 요청하는 기능을 담당합니다.
+     * 관리자가 상품유형별로 상품 조회를 요청하는 기능을 담당합니다.
      * 쿼리스트링으로 상품유형 번호가 파라미터로 들어올 시, 해당 상품유형 번호의 상품들을 조회합니다.
      *
      * @param productTypeNo 조회할 상품유형 번호입니다.
@@ -40,7 +40,7 @@ public class ProductTypeController {
         @RequestParam(required = false) Long memberNo) {
 
         Page<ProductDetailsResponseDto> productList =
-            productTypeService.findProductListByProductTypeNoForUser(pageable, productTypeNo,
+            productTypeService.findProductListByProductTypeNoForAdmin(pageable, productTypeNo,
                 memberNo);
 
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
