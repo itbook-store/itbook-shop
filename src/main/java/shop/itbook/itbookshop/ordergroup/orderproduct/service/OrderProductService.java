@@ -34,4 +34,6 @@ public interface OrderProductService {
      * @author 정재원 *
      */
     List<OrderProductDetailResponseDto> findOrderProductsByOrderNo(Long orderNo);
+
+    List<OrderProduct> findOrderProductsEntityByOrderNo(Long orderNo);
 }

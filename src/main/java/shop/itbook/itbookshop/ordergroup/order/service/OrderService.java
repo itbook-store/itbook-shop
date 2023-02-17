@@ -85,7 +85,7 @@ public interface OrderService {
      * @param orderNo the order no
      * @author 정재원 *
      */
-    void processAfterOrderCancelPaymentSuccess(Long orderNo);
+    void processBeforeOrderCancelPayment(Long orderNo);
 
     /**
      * 회원의 주문 리스트를 조회합니다.

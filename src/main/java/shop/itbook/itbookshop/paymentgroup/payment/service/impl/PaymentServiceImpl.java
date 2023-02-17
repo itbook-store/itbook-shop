@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.paymentgroup.payment.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.List;
 import java.util.Objects;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardRespo
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
-import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.service.PayService;
@@ -83,7 +81,7 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (DataIntegrityViolationException e) {
             throw new InvalidInputException();
         }
-        
+
         if (orderService.isSubscription(orderNo)) {
             orderService.addOrderSubscriptionAfterPayment(orderNo);
         }
@@ -99,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
-        orderService.processAfterOrderCancelPaymentSuccess(
+        orderService.processBeforeOrderCancelPayment(
             paymentCanceledRequestDto.getOrderNo());
 
         response = payService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
