@@ -58,4 +58,9 @@ public class OrderProductServiceImpl implements OrderProductService {
     public List<OrderProductDetailResponseDto> findOrderProductsByOrderNo(Long orderNo) {
         return orderProductRepository.findOrderProductsByOrderNo(orderNo);
     }
+
+    @Override
+    public List<OrderProduct> findOrderProductsEntityByOrderNo(Long orderNo) {
+        return orderProductRepository.findByOrder_OrderNo(orderNo);
+    }
 }
