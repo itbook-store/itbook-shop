@@ -34,16 +34,11 @@ public class PaymentTransfer {
             Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(requestDto.getApprovedAt())).atZone(
                 ZoneId.of("Asia/Seoul")));
 
-        PaymentResponseDto.CardResponseDto card = requestDto.getCard();
 
-        Long amount = 0L;
-        if (Objects.isNull(card)) {
-            amount = card.getAmount();
-        }
         return Payment.builder()
             .paymentKey(requestDto.getPaymentKey())
             .orderId(requestDto.getOrderId())
-            .totalAmount(amount)
+            .totalAmount(requestDto.getCard().getAmount())
             .orderName(requestDto.getOrderName())
             .requestedAt(requestedAt)
             .approvedAt(approvedAt)
