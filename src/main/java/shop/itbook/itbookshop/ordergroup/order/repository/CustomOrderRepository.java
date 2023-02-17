@@ -28,4 +28,6 @@ public interface CustomOrderRepository {
     Page<OrderListAdminViewResponseDto> getOrderListOfAdminWithStatus(Pageable pageable);
 
     List<Order> paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
+
+    Order findOrderByDeliveryNo(Long deliveryNo);
 }

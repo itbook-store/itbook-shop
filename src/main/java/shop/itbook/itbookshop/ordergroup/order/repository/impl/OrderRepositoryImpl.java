@@ -55,6 +55,11 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
         QOrderMember qOrderMember = QOrderMember.orderMember;
 
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+
+        QProduct qProduct = QProduct.product;
+        QDelivery qDelivery = QDelivery.delivery;
+
         JPQLQuery<OrderListMemberViewResponseDto> jpqlQuery = from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
             .on(qOrderStatusHistory.order.orderNo.eq(
@@ -65,44 +70,28 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qOrderMember)
             .on(qOrderMember.order.eq(qOrderStatusHistory.order)
                 .and(qOrderMember.member.memberNo.eq(memberNo)))
+            .innerJoin(qOrderProduct)
+            .on(qOrderProduct.order.eq(qOrderStatusHistory.order))
+            .distinct()
+            .innerJoin(qProduct)
+            .on(qProduct.eq(qOrderProduct.product).and(qProduct.isSubscription.isFalse()))
+            .leftJoin(qDelivery)
+            .on(qDelivery.order.eq(qOrderStatusHistory.order))
             .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
             .select(Projections.fields(OrderListMemberViewResponseDto.class,
                 qOrderStatusHistory.order.orderNo,
                 qOrderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                 qOrderStatusHistory.order.recipientName,
-                qOrderStatusHistory.order.recipientPhoneNumber
+                qOrderStatusHistory.order.recipientPhoneNumber,
+                qDelivery.trackingNo
             ))
             .orderBy(qOrderStatusHistory.order.orderNo.asc());
-
-        QDelivery qDelivery = QDelivery.delivery;
 
         List<OrderListMemberViewResponseDto> orderListViewResponseDtoList =
             jpqlQuery
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-        List<Delivery> deliveryList = from(qDelivery)
-            .innerJoin(qOrderMember)
-            .on(qOrderMember.order.eq(qDelivery.order)
-                .and(qOrderMember.member.memberNo.eq(memberNo)))
-            .select(qDelivery)
-            .orderBy(qDelivery.order.orderNo.asc())
-            .fetch();
-
-        Queue<Delivery> deliveryQueue = new LinkedList<>(deliveryList);
-
-        if (!deliveryQueue.isEmpty()) {
-            orderListViewResponseDtoList.forEach(
-                orderListMemberViewResponseDto -> {
-                    if (Objects.equals(orderListMemberViewResponseDto.getOrderNo(),
-                        deliveryQueue.peek().getDeliveryNo())) {
-                        orderListMemberViewResponseDto.setTrackingNo(
-                            Objects.requireNonNull(deliveryQueue.poll()).getTrackingNo());
-                    }
-                }
-            );
-        }
 
         return PageableExecutionUtils.getPage(orderListViewResponseDtoList, pageable,
             jpqlQuery::fetchCount);
@@ -211,7 +200,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             qOrder.selectedDeliveryDate,
             ConstantImpl.create("%Y-%m-%d")
         );
-        
+
         return from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
@@ -227,5 +216,17 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .and(Expressions.currentDate().eq(formattedDateOrderSelectedDeliveryDate)))
             .select(qOrder)
             .fetch();
+    }
+
+    @Override
+    public Order findOrderByDeliveryNo(Long deliveryNo) {
+
+        QDelivery qDelivery = QDelivery.delivery;
+        QOrder qOrder = QOrder.order;
+
+        return from(qOrder)
+            .innerJoin(qDelivery)
+            .on(qDelivery.order.eq(qOrder).and(qDelivery.deliveryNo.eq(deliveryNo)))
+            .fetchOne();
     }
 }
