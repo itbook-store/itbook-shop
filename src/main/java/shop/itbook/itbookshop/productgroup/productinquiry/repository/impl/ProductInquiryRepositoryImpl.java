@@ -63,6 +63,7 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                     qProductInquiry.content,
                     qProductInquiry.isPublic,
                     qProductInquiry.isReplied))
+                .where(qProductInquiry.isDeleted.eq(false))
                 .orderBy(productAnswerOrNot())
                 .orderBy(qProductInquiry.productInquiryNo.desc());
 
@@ -162,7 +163,8 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                 qProduct.productNo, qProduct.name, qProduct.thumbnailUrl, qBook.authorName,
                 qProductInquiry.title,
                 qProductInquiry.content, qProductInquiry.isPublic, qProductInquiry.isReplied))
-            .where(qProductInquiry.productInquiryNo.eq(productInquiryNo)).fetchOne();
+            .where(qProductInquiry.productInquiryNo.eq(productInquiryNo).and(
+                qProductInquiry.isDeleted.eq(false))).fetchOne();
 
     }
 
@@ -189,7 +191,7 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                     qProductInquiry.isPublic,
                     qProductInquiry.isReplied))
                 .orderBy(qProductInquiry.productInquiryNo.desc())
-                .where(qProduct.productNo.eq(productNo));
+                .where(qProduct.productNo.eq(productNo).and(qProductInquiry.isDeleted.eq(false)));
 
         List<ProductInquiryResponseDto> productInquiryList =
             productInquiryListQuery.offset(pageable.getOffset())
@@ -223,7 +225,7 @@ public class ProductInquiryRepositoryImpl extends QuerydslRepositorySupport impl
                     qProductInquiry.isReplied))
                 .orderBy(productAnswerOrNot())
                 .orderBy(qProductInquiry.productInquiryNo.desc())
-                .where(qMember.memberNo.eq(memberNo));
+                .where(qMember.memberNo.eq(memberNo).and(qProductInquiry.isDeleted.eq(false)));
 
         List<ProductInquiryResponseDto> productInquiryList = productInquiryListQuery
             .offset(pageable.getOffset())

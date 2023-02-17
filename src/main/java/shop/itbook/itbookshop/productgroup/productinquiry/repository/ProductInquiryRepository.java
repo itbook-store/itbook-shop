@@ -11,4 +11,5 @@ import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
  */
 public interface ProductInquiryRepository
     extends JpaRepository<ProductInquiry, Long>, CustomProductInquiryRepository {
+
 }
