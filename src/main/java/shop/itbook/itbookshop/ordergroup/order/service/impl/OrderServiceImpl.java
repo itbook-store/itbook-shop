@@ -157,9 +157,9 @@ public class OrderServiceImpl implements OrderService {
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
         String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
 
-        Delivery delivery =
-            deliveryRepository.findDeliveryByOrder_OrderNo(orderNo).orElseThrow(
-                DeliveryNotFoundException::new);
+
+        Optional<Delivery> deliveryByOrderOrderNo =
+            deliveryRepository.findDeliveryByOrder_OrderNo(orderNo);
 
 
         return OrderDetailsResponseDto.builder()
@@ -171,8 +171,8 @@ public class OrderServiceImpl implements OrderService {
             .orderCreatedAt(order.getOrderCreatedAt())
             .amount(order.getAmount())
             .deliveryFee(order.getDeliveryFee())
-            .trackingNo(delivery.getTrackingNo())
-            .deliveryNo(delivery.getDeliveryNo())
+            .trackingNo(trackingNo)
+            .deliveryNo(null)
             // todo: 주문에 배송비 테이블 추가 후 넣어주기
             .deliveryFee(0L)
             .build();

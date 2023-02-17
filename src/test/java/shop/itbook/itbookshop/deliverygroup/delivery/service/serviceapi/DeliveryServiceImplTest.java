@@ -53,6 +53,8 @@ public class DeliveryServiceImplTest {
 
     @MockBean
     OrderStatusHistoryService orderStatusHistoryService;
+    @MockBean
+    OrderRepository orderRepository;
 
     Order order;
 
