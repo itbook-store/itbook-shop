@@ -70,7 +70,7 @@ public class OrderController {
     /**
      * 비회원 주문 조회 요청을 처리합니다.
      *
-     * @param pageable the pageable
+     * @param pageable 페이징을 위한 객체
      * @param orderNo  주문 조회할 주문 번호
      * @return 비회원이 주문한 건의 상세 정보 Dto 를 담은 응답 객체
      */

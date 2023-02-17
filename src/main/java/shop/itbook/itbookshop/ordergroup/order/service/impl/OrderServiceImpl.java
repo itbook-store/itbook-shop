@@ -48,6 +48,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
@@ -354,6 +355,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (optionalMemberNo.isPresent()) {
             amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
+        }
+
+        // toss 정책 상 100원 이하 결제 막기.
+        if (amount <= 100) {
+            throw new AmountException(amount);
         }
 
         return OrderPaymentDto.builder()
