@@ -294,6 +294,7 @@ public class OrderServiceImpl implements OrderService {
         Payment payment = paymentRepository.findPaymentByOrder_OrderNo(orderNo)
             .orElseThrow(InvalidPaymentException::new);
 
+
         while (subscriptionPeriod > 1) {
             subscriptionPeriod--;
             orderNo++;
@@ -625,7 +626,9 @@ public class OrderServiceImpl implements OrderService {
         savePointHistoryAboutMember(order);
 
         // 배송 상태 생성 후 저장
-        deliveryService.registerDelivery(order);
+        if (!this.isSubscription(orderNo)) {
+            deliveryService.registerDelivery(order);
+        }
 
         return order;
     }
