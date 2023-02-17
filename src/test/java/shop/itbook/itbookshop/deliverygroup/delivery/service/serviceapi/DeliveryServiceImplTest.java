@@ -41,6 +41,8 @@ public class DeliveryServiceImplTest {
     DeliveryService deliveryService;
 
     @MockBean
+    OrderRepository orderRepository;
+    @MockBean
     DeliveryRepository deliveryRepository;
 
     @MockBean

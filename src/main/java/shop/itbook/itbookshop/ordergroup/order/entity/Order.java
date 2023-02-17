@@ -69,7 +69,7 @@ public class Order {
     @Column(name = "decrease_point", nullable = false, columnDefinition = "bigint default 0")
     private Long decreasePoint;
 
-    @Column(name = "delivery_fee", nullable = false, columnDefinition = "bigint default 0")
+    @Column(name = "delivery_fee", columnDefinition = "bigint default 0")
     private Long deliveryFee;
 
     @Column(name = "amount")
