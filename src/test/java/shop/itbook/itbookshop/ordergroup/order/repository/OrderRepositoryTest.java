@@ -25,6 +25,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
@@ -201,10 +202,28 @@ class OrderRepositoryTest {
         Delivery delivery = DeliveryDummy.createDelivery(order);
         deliveryRepository.save(delivery);
 
+        Membership membership = MembershipDummy.getMembership();
+        membershipRepository.save(membership);
+
+        MemberStatus normalMemberStatus = MemberStatusDummy.getNormalMemberStatus();
+        memberStatusRepository.save(normalMemberStatus);
+
+        Member member = MemberDummy.getMember1();
+        member.setMembership(membership);
+        member.setMemberStatus(normalMemberStatus);
+        memberRepository.save(member);
+
+        Product product = productRepository.save(ProductDummy.getProductSuccess());
+        OrderProduct orderProduct = OrderProductDummy.createOrderProduct(order, product);
+        orderProductRepository.save(orderProduct);
+
+        OrderMember orderMember = OrderMemberDummy.createOrderMember(order, member);
+        orderMemberRepository.save(orderMember);
+
         PageRequest pageable = PageRequest.of(0, 10);
 
         // when
-        Page<OrderSubscriptionListDto> allSubscriptionOrderList =
+        Page<OrderSubscriptionAdminListDto> allSubscriptionOrderList =
             orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
 
         // then
