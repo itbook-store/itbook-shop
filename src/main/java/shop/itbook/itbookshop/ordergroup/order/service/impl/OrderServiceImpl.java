@@ -899,4 +899,26 @@ public class OrderServiceImpl implements OrderService {
                                                                                Long memberNo) {
         return orderRepository.findAllSubscriptionOrderListByMember(pageable, memberNo);
     }
+
+    public void findSubscriptionOrderDetailList(Long orderNo) {
+
+        OrderSubscription orderSubscription =
+            orderSubscriptionRepository.findByOrder_OrderNo(orderNo)
+                .orElseThrow(OrderNotFoundException::new);
+
+        Long startOrderNo = orderSubscription.getOrderNo();
+        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
+
+        List<Long> orderNoList = new ArrayList<>();
+
+        orderNoList.add(startOrderNo);
+        for (int i = 1; i < subscriptionPeriod; i++) {
+            orderNoList.add(startOrderNo + i);
+        }
+
+        List<Order> ordersByOrderNoIn = orderRepository.findOrdersByOrderNoIn(orderNoList);
+//
+//
+//        orderRepository.findOrdersByOrderNoIn()
+    }
 }
