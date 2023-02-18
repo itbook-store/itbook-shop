@@ -28,6 +28,8 @@ public interface CustomCouponIssueRepository {
         Pageable pageable,
         Long memberNo);
 
+    List<CouponIssue> changePeriodExpiredByMemberNo(Long memberNo);
+
     CouponIssue findByIdFetchJoin(Long couponIssueNo);
 
     List<OrderTotalCouponIssueResponseListDto> findAvailableOrderTotalCouponIssueByMemberNo(

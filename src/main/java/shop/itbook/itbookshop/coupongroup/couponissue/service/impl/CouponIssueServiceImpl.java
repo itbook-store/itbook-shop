@@ -140,8 +140,22 @@ public class CouponIssueServiceImpl implements CouponIssueService {
                 return couponIssueRepository.findNotAvailableCouponIssueListByMemberNo(pageable,
                     memberNo);
             default:
+                List<CouponIssue> periodExpiredCoupons =
+                    couponIssueRepository.changePeriodExpiredByMemberNo(memberNo);
+                if (!periodExpiredCoupons.isEmpty()) {
+                    changePeriodExpiredByMemberNo(periodExpiredCoupons);
+                }
                 return couponIssueRepository.findCouponIssueListByMemberNo(pageable, memberNo);
         }
+    }
+
+    @Transactional
+    public void changePeriodExpiredByMemberNo(List<CouponIssue> periodExpiredCoupons) {
+        for (CouponIssue couponIssue : periodExpiredCoupons) {
+            couponIssue.setUsageStatus(usageStatusService.findUsageStatus(
+                UsageStatusEnum.PERIOD_EXPIRED.getUsageStatus()));
+        }
+        couponIssueRepository.saveAll(periodExpiredCoupons);
     }
 
     @Override

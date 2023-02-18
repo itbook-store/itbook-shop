@@ -12,7 +12,8 @@ import lombok.Getter;
 public enum UsageStatusEnum {
 
     COMPLETED("사용완료"),
-    AVAILABLE("사용가능");
+    AVAILABLE("사용가능"),
+    PERIOD_EXPIRED("기간만료");
 
     private final String usageStatus;
 
