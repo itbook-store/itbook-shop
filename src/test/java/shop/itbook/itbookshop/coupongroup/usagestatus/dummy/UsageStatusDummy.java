@@ -8,10 +8,20 @@ import shop.itbook.itbookshop.coupongroup.usagestatus.usagestatusenum.UsageStatu
  * @since 1.0
  */
 public class UsageStatusDummy {
-    public static UsageStatus getAvailableUsageStatus(){
+
+    private UsageStatusDummy() {
+
+    }
+
+    public static UsageStatus getAvailableUsageStatus() {
         return new UsageStatus(0, UsageStatusEnum.AVAILABLE);
     }
-    public static UsageStatus getCompletedUsageStatus(){
+
+    public static UsageStatus getCompletedUsageStatus() {
         return new UsageStatus(0, UsageStatusEnum.COMPLETED);
+    }
+
+    public static UsageStatus getUsageStatus() {
+        return new UsageStatus(1, UsageStatusEnum.AVAILABLE);
     }
 }

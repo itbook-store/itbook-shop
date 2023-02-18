@@ -161,7 +161,7 @@ public class OrderServiceImpl implements OrderService {
             .orderNo(orderNo)
             .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
             .orderDestinationDto(orderDestinationDto)
-            .paymentCardResponseDto(paymentCardResponseDto)
+//            .paymentCardResponseDto(paymentCardResponseDto)
             .orderStatus(orderStatus)
             .orderCreatedAt(order.getOrderCreatedAt())
             .amount(order.getAmount())
