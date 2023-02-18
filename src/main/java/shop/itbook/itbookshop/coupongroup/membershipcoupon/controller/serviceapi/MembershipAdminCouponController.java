@@ -1,6 +1,8 @@
 package shop.itbook.itbookshop.coupongroup.membershipcoupon.controller.serviceapi;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +30,12 @@ public class MembershipAdminCouponController {
     private final MembershipCouponService membershipCouponService;
 
     @GetMapping("/list")
-    public ResponseEntity<CommonResponseBody<List<List<MembershipCouponResponseDto>>>> addMembershipCoupon() {
+    public ResponseEntity<CommonResponseBody<Map<String,List<MembershipCouponResponseDto>>>> addMembershipCoupon() {
 
-        List<List<MembershipCouponResponseDto>> membershipCouponNoResponseDto =
+        Map<String,List<MembershipCouponResponseDto>> membershipCouponNoResponseDto =
             membershipCouponService.findAvailableMembershipCouponList();
 
-        CommonResponseBody<List<List<MembershipCouponResponseDto>>> commonResponseBody =
+        CommonResponseBody<Map<String,List<MembershipCouponResponseDto>>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MembershipCouponResultMessageEnum.MEMBERSHIP_COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
