@@ -157,11 +157,6 @@ public class OrderServiceImpl implements OrderService {
         String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
         String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
 
-
-        Optional<Delivery> deliveryByOrderOrderNo =
-            deliveryRepository.findDeliveryByOrder_OrderNo(orderNo);
-
-
         return OrderDetailsResponseDto.builder()
             .orderNo(orderNo)
             .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
