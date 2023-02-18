@@ -34,8 +34,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
-import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -87,6 +85,7 @@ import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
@@ -139,6 +138,9 @@ public class OrderServiceImpl implements OrderService {
 
     private final RedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
+
+    public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
+    public static final long BASE_DELIVERY_FEE = 3000L;
 
     /**
      * {@inheritDoc}
@@ -346,8 +348,12 @@ public class OrderServiceImpl implements OrderService {
                                                 Long orderNo) {
 
         Order order = findOrderEntity(orderNo);
-        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
 
+        order.setAmount(0L);
+        order.setIncreasePoint(0L);
+        order.setDeliveryFee(0L);
+
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
         Optional<Long> optionalMemberNo = Optional.empty();
         if (optionalOrderMember.isPresent()) {
             optionalMemberNo =
@@ -375,6 +381,7 @@ public class OrderServiceImpl implements OrderService {
 
         amount = this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
             productDetailsDtoList, subscriptionPeriod);
+
         amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto, amount,
             order.getOrderNo());
 
@@ -423,18 +430,22 @@ public class OrderServiceImpl implements OrderService {
 
         List<InfoForCouponIssueApply> infoForCouponIssueApplyList = new ArrayList<>();
 
+
+        // TODO jun : 상품 번호들로 한번에 가져오는 로직추가
+//        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
+//            productService.findProductEntityListByProductNoList();
+//        }
+        Long amountForDeliveryFeeCalc = 0L;
         for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
 
             Product product = productService.findProductEntity(productDetailsDto.getProductNo());
-            Integer productCnt = productDetailsDto.getProductCnt();
-            long productPrice =
-                (long) (product.getFixedPrice() * (1 - product.getDiscountPercent() * 0.01));
+            Integer productCnt = subscriptionPeriod.orElseGet(productDetailsDto::getProductCnt);
 
-            long totalPriceOfSameProducts = productPrice * productCnt;
+            long sellingPrice = product.getFixedPrice() -
+                getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent());
+            amountForDeliveryFeeCalc += sellingPrice;
 
-            if (subscriptionPeriod.isPresent()) {
-                totalPriceOfSameProducts = totalPriceOfSameProducts * subscriptionPeriod.get();
-            }
+            long totalPriceOfSameProducts = sellingPrice * productCnt;
 
             amount += totalPriceOfSameProducts;
 
@@ -443,11 +454,12 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Coupon coupon =
-                this.getAvailableCoupon(productDetailsDto.getCouponIssueNo(), productPrice);
+                this.getCoupon(productDetailsDto.getCouponIssueNo(), sellingPrice);
             if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
                 orderProductService.addOrderProduct(order, product, productCnt,
                     totalPriceOfSameProducts);
-                this.increasePointPerOrderProduct(order, product, productPrice, productCnt);
+                this.increasePointAboutOrderProduct(order, product, totalPriceOfSameProducts,
+                    totalPriceOfSameProducts);
                 continue;
             }
 
@@ -455,7 +467,7 @@ public class OrderServiceImpl implements OrderService {
 
             Long totalPriceOfSameProductsWithCouponApplied =
                 AmountCalculationBeforePaymentUtil.getTotalPriceWithCouponApplied(coupon,
-                    totalPriceOfSameProducts, productPrice);
+                    totalPriceOfSameProducts, sellingPrice);
             long discountedPrice =
                 totalPriceOfSameProducts - totalPriceOfSameProductsWithCouponApplied;
 
@@ -471,7 +483,8 @@ public class OrderServiceImpl implements OrderService {
                     orderProduct.getOrderProductNo());
             infoForCouponIssueApplyList.add(infoCouponIssueApply);
 
-            this.increasePointPerOrderProduct(order, product, productPrice, productCnt);
+            this.increasePointAboutOrderProduct(order, product, totalPriceOfSameProducts,
+                totalPriceOfSameProductsWithCouponApplied);
         }
 
 
@@ -493,7 +506,18 @@ public class OrderServiceImpl implements OrderService {
                 .append("건");
         }
 
+        if (amountForDeliveryFeeCalc >= BASE_AMOUNT_FOR_DELIVERY_FEE_CALC) {
+            order.setDeliveryFee(0L);
+            return amount;
+        }
+
+        order.setDeliveryFee(BASE_DELIVERY_FEE);
+        amount += BASE_DELIVERY_FEE;
         return amount;
+    }
+
+    private long getDiscountedPrice(Long priceToApply, Double discountPercent) {
+        return (long) (priceToApply * (discountPercent / 100));
     }
 
     private void checkMismatchAboutRequestedProductAndCoupon(Product product, Coupon coupon) {
@@ -524,25 +548,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @SuppressWarnings("java:S5411")
-    private void increasePointPerOrderProduct(Order order, Product product, long productPrice,
-                                              Integer productCnt) {
+    private void increasePointAboutOrderProduct(Order order, Product product,
+                                                long totalPriceAboutSellingPrice,
+                                                long totalPriceAboutSellingPriceWithCouponApplied) {
 
         if (product.getIsPointApplying()) {
-            double increasePointPercent = product.getIncreasePointPercent() / 100.0;
             Long increasePoint = order.getIncreasePoint();
 
             if (product.getIsPointApplyingBasedSellingPrice()) {
-                order.setIncreasePoint(
-                    increasePoint + (long) (product.getFixedPrice() * increasePointPercent));
+
+                // TODO jun : double로 바뀌면 1.0 곱한거 로직 빼기
+                Long resultPoint = increasePoint + getDiscountedPrice(totalPriceAboutSellingPrice,
+                    product.getIncreasePointPercent() * 1.0);
+                order.setIncreasePoint(resultPoint);
             } else {
-                order.setIncreasePoint(
-                    increasePoint + (long) ((productPrice * increasePointPercent)) * productCnt);
+
+                Long resultPoint = increasePoint +
+                    getDiscountedPrice(totalPriceAboutSellingPriceWithCouponApplied,
+                        product.getIncreasePointPercent() * 1.0);
+                order.setIncreasePoint(resultPoint);
             }
         }
     }
 
-    private Coupon getAvailableCoupon(Long couponIssueNo,
-                                      Long basePriceToCompareAboutStandardAmount) {
+    private Coupon getCoupon(Long couponIssueNo,
+                             Long basePriceToCompareAboutStandardAmount) {
 
         if (Objects.isNull(couponIssueNo)) {
             return null;
@@ -562,7 +592,7 @@ public class OrderServiceImpl implements OrderService {
     private long calculateAmountAboutOrderTotalAmountCoupon(OrderAddRequestDto orderAddRequestDto,
                                                             long amount, Long orderNo) {
         Coupon coupon =
-            this.getAvailableCoupon(orderAddRequestDto.getOrderTotalCouponNo(), amount);
+            this.getCoupon(orderAddRequestDto.getOrderTotalCouponNo(), amount);
         if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
             return amount;
         }
@@ -647,7 +677,6 @@ public class OrderServiceImpl implements OrderService {
         usingCouponIssue(productAndCategoryCouponApplyDto, orderTotalCouponApplyDto, order);
         savePointHistoryAboutMember(order);
 
-        // TODO jun : orderProduct의 단하나의 프로덕트를 꺼내서 제일앞에꺼라도 ebook이면 전체가 ebook인 주문이니까 배송을넣지않는 로직 추가
         // 배송 상태 생성 후 저장
         if (!this.isSubscription(orderNo)) {
             deliveryService.registerDelivery(order);
@@ -729,13 +758,14 @@ public class OrderServiceImpl implements OrderService {
         // 주문번호로 주문총액상품쿠폰 있는지 확인하고 있으면 사용전상태로 변경
         this.changeOrderTotalAmountCouponStatusByCancel(orderNo);
 
+        // 먼저 주문취소차감 api 만들기 -> 포인트 적립금액 있는지 확인해서 주문취소차감
+        this.addOrderCancelIncreaseDecreasePointHistory(order,
+            PointHistoryServiceImpl.DECREASE_POINT_HISTORY);
+
         // 포인트 차감금액 있는지 확인해서 금액만큼 주문취소적립
         this.addOrderCancelIncreaseDecreasePointHistory(order,
             PointHistoryServiceImpl.INCREASE_POINT_HISTORY);
 
-        // 먼저 주문취소차감 api 만들기 -> 포인트 적립금액 있는지 확인해서 주문취소차감
-        this.addOrderCancelIncreaseDecreasePointHistory(order,
-            PointHistoryServiceImpl.DECREASE_POINT_HISTORY);
 
         // 주문번호로 구독상품이 있는지 확인
         Optional<OrderSubscription> optionalOrderSubscription =
