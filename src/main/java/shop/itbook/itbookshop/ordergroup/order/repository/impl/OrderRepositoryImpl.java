@@ -6,21 +6,23 @@ import com.querydsl.core.types.dsl.DateTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.QCategoryCouponApply;
+import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
+import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.QOrderTotalCouponApply;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.QProductCouponApply;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -327,7 +329,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
 
-
     @Override
     public Order findOrderByDeliveryNo(Long deliveryNo) {
 
@@ -338,5 +339,91 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qDelivery)
             .on(qDelivery.order.eq(qOrder).and(qDelivery.deliveryNo.eq(deliveryNo)))
             .fetchOne();
+    }
+
+    @Override
+    public List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
+        Long orderNo) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+
+        QDelivery qDelivery = QDelivery.delivery;
+        QOrderTotalCouponApply qOrderTotalCouponApply =
+            QOrderTotalCouponApply.orderTotalCouponApply;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QCoupon qCoupon = QCoupon.coupon;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QProduct qProduct = QProduct.product;
+        QProductCouponApply qProductCouponApply = QProductCouponApply.productCouponApply;
+        QCategoryCouponApply qCategoryCouponApply = QCategoryCouponApply.categoryCouponApply;
+
+        Integer subscriptionPeriod = from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
+                ))
+            .innerJoin(qOrderSubscription)
+            .on(qOrderSubscription.orderNo.eq(orderNo))
+            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
+            .select(qOrderSubscription.subscriptionPeriod)
+            .fetchOne();
+
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
+                )
+            )
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+            .leftJoin(qDelivery)
+            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+            .leftJoin(qOrderTotalCouponApply)
+            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+            .innerJoin(qOrderProduct)
+            .on(qOrder.orderNo.eq(qOrderProduct.order.orderNo))
+            .innerJoin(qOrderSubscription)
+            .on(qOrderSubscription.orderNo.eq(qOrder.orderNo))
+            .leftJoin(qProductCouponApply)
+            .on(qCategoryCouponApply.orderProduct.eq(qOrderProduct))
+            .leftJoin(qCategoryCouponApply)
+            .on(qCategoryCouponApply.orderProduct.eq(qOrderProduct))
+            .where(
+                qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
+                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
+            .select(Projections.fields(OrderSubscriptionDetailsResponseDto.class,
+                Projections.fields(OrderDestinationDto.class,
+                    qOrder.recipientName,
+                    qOrder.recipientPhoneNumber,
+                    qOrder.postcode,
+                    qOrder.roadNameAddress,
+                    qOrder.recipientAddressDetails
+                ),
+                qOrder.orderNo,
+                qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                qOrder.orderCreatedAt,
+                qOrder.amount,
+                qOrder.deliveryFee,
+                qDelivery.deliveryNo,
+                qDelivery.trackingNo,
+                // Coupon
+                qOrderTotalCouponApply.couponIssue.coupon.name.as("couponName"),
+                qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
+                qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
+                // orderProduct
+                qOrderProduct.orderProductNo,
+                qOrderProduct.product.name.as("productName"),
+                qOrderProduct.count,
+                qOrderProduct.productPrice,
+                qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
+                qCoupon.name.as("couponName"),
+                qCoupon.amount.as("couponAmount"),
+                qCoupon.percent.as("couponPercent")
+            )).fetch();
     }
 }

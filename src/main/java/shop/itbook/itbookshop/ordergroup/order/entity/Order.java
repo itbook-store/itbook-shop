@@ -80,13 +80,17 @@ public class Order {
      *
      * @param orderCreatedAt          주문 생성일
      * @param selectedDeliveryDate    지정 배송일
-     * @param orderProducts           the order products
+     * @param orderProducts           주문 상품 리스트
      * @param recipientName           수령인 이름
      * @param recipientPhoneNumber    수령인 핸드폰번호
      * @param postcode                우편번호
      * @param roadNameAddress         도로명주소
      * @param recipientAddressDetails 상세주소
      * @param isHidden                주문 내역에서 숨김 여부
+     * @param increasePoint           주문으로 적립된 포인트
+     * @param decreasePoint           주문으로 사용된 포인트(구매시 사용됨)
+     * @param deliveryFee             배송비
+     * @param amount                  주문 금액
      * @author 정재원
      */
     @Builder
@@ -94,7 +98,8 @@ public class Order {
                  List<OrderProduct> orderProducts, String recipientName,
                  String recipientPhoneNumber,
                  Integer postcode, String roadNameAddress, String recipientAddressDetails,
-                 Boolean isHidden, Long increasePoint, Long decreasePoint, Long deliveryFee) {
+                 Boolean isHidden, Long increasePoint, Long decreasePoint, Long deliveryFee,
+                 Long amount) {
         this.orderCreatedAt = orderCreatedAt;
         this.selectedDeliveryDate = selectedDeliveryDate;
         this.orderProducts = orderProducts;
@@ -107,5 +112,6 @@ public class Order {
         this.increasePoint = increasePoint;
         this.decreasePoint = decreasePoint;
         this.deliveryFee = deliveryFee;
+        this.amount = amount;
     }
 }

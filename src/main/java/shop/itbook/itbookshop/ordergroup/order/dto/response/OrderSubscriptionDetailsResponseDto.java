@@ -1,0 +1,31 @@
+package shop.itbook.itbookshop.ordergroup.order.dto.response;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
+
+/**
+ * 주문 구독의 상세 정보를 담은 Dto 입니다..
+ *
+ * @author 정재원
+ * @since 1.0
+ */
+@Getter
+public class OrderSubscriptionDetailsResponseDto {
+    private Long orderNo;
+    private Long orderProductNo;
+    private String productName;
+    private Integer count;
+    private Long productPrice;
+    private String fileThumbnailsUrl;
+    private OrderDestinationDto orderDestinationDto;
+    private String orderStatus;
+    private LocalDateTime orderCreatedAt;
+    private Long amount;
+    private Long deliveryFee;
+    private Long deliveryNo;
+    private String trackingNo;
+}
