@@ -21,7 +21,7 @@ public interface CouponIssueService {
     List<CouponIssue> addCouponIssueByCoupons(Long memberNo, String couponType);
 
     Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(Pageable pageable,
-                                                                       Long memberNo);
+                                                                       Long memberNo, String usageStatus);
 
     void usePointCouponAndCreatePointHistory(Long couponIssueNo);
 
@@ -41,4 +41,8 @@ public interface CouponIssueService {
     CouponIssue cancelCouponIssue(Long couponIssueNo);
 
     void saveCouponApplyAboutCategoryAndProduct(Long couponIssueNo, Long orderProductNo);
+
+    Page<AdminCouponIssueListResponseDto> findCouponIssueSearch(Pageable pageable,
+                                                                String searchTarget,
+                                                                String keyword);
 }
