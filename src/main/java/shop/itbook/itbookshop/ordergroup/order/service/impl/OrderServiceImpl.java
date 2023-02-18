@@ -917,7 +917,6 @@ public class OrderServiceImpl implements OrderService {
 
         orderNoList.add(startOrderNo);
         for (int i = 1; i < subscriptionPeriod; i++) {
-            
             orderNoList.add(startOrderNo + i);
         }
 
