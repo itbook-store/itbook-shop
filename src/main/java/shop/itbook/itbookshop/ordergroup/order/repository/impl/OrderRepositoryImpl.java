@@ -1,9 +1,5 @@
 package shop.itbook.itbookshop.ordergroup.order.repository.impl;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static com.querydsl.core.group.GroupBy.list;
-import static com.querydsl.jpa.JPAExpressions.selectFrom;
-
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.DateTemplate;
@@ -11,9 +7,6 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -527,9 +520,12 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qOrderSubscription)
             .on(qOrderSubscription.orderNo.eq(qOrder.orderNo))
             .leftJoin(qProductCouponApply)
-            .on(qCategoryCouponApply.orderProduct.eq(qOrderProduct))
+            .on(qProductCouponApply.orderProduct.eq(qOrderProduct))
             .leftJoin(qCategoryCouponApply)
             .on(qCategoryCouponApply.orderProduct.eq(qOrderProduct))
+            .leftJoin(qCoupon)
+            .on(qCoupon.eq(qCategoryCouponApply.couponIssue.coupon)
+                .or(qCoupon.eq(qProductCouponApply.couponIssue.coupon)))
             .where(
                 qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
                     .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
@@ -540,7 +536,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrder.postcode,
                     qOrder.roadNameAddress,
                     qOrder.recipientAddressDetails
-                ),
+                ).as("orderDestinationDto"),
                 qOrder.orderNo,
                 qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                 qOrder.orderCreatedAt,

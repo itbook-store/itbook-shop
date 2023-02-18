@@ -58,6 +58,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRe
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderTotalResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
@@ -123,6 +124,7 @@ class OrderRepositoryTest {
     @Autowired
     OrderSubscriptionRepository orderSubscriptionRepository;
 
+    @Autowired
     OrderTotalCouponRepository orderTotalCouponRepository;
 
     @Autowired
@@ -346,6 +348,12 @@ class OrderRepositoryTest {
             OrderStatusHistoryDummy.createOrderStatusHistory(order, orderStatus);
         orderStatusHistoryRepository.save(orderStatusHistory);
 
+        Product product = ProductDummy.getProductSuccess();
+        productRepository.save(product);
+
+        OrderProduct orderProduct = OrderProductDummy.createOrderProduct(order, product);
+        orderProductRepository.save(orderProduct);
+
         Delivery delivery = DeliveryDummy.createDelivery(order);
         deliveryRepository.save(delivery);
 
@@ -382,6 +390,10 @@ class OrderRepositoryTest {
 
         orderTotalCouponApplyRepositoy.save(orderTotalCouponApply);
 
+        List<OrderSubscriptionDetailsResponseDto> orderSubscriptionDetailsResponseDto =
+            orderRepository.findOrderSubscriptionDetailsResponseDto(1L);
+
+        assertThat(orderSubscriptionDetailsResponseDto.size()).isEqualTo(1);
     }
 
 //    @DisplayName("주문 상세 조회 테스트")

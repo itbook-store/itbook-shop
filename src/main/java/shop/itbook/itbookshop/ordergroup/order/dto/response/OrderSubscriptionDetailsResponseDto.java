@@ -1,11 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Getter;
-import lombok.Setter;
-import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
-import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 
 /**
  * 주문 구독의 상세 정보를 담은 Dto 입니다..
