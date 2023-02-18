@@ -31,6 +31,3 @@ Content-Type: application/json
 DELETE http://localhost:8082/api/products/search/406
 Content-Type: application/json
 
-###
-POST http://localhost:8082/search/415
-Content-Type: application/json
