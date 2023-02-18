@@ -37,8 +37,11 @@ public class MemberDestinationServiceImpl implements MemberDestinationService {
     public List<MemberDestinationResponseDto> findMemberDestinationResponseDtoByMemberNo(
         Long memberNo) {
 
-        return memberDestinationRepository.findAllByMember_MemberNo(memberNo).stream().map(
-            MemberDestinationTransfer::entityToDto).collect(Collectors.toList());
+        return memberDestinationRepository.findAllByMember_MemberNoOrderByRecipientDestinationNoDesc
+                (memberNo)
+            .stream()
+            .map(MemberDestinationTransfer::entityToDto)
+            .collect(Collectors.toList());
     }
 
     @Override

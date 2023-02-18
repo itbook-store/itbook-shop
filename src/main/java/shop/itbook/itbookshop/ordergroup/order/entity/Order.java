@@ -69,8 +69,11 @@ public class Order {
     @Column(name = "decrease_point", nullable = false, columnDefinition = "bigint default 0")
     private Long decreasePoint;
 
-    @Column(name = "delivery_fee", nullable = false, columnDefinition = "bigint default 0")
+    @Column(name = "delivery_fee", columnDefinition = "bigint default 0")
     private Long deliveryFee;
+
+    @Column(name = "amount")
+    private Long amount;
 
     /**
      * 주문 엔티티의 생성자입니다.

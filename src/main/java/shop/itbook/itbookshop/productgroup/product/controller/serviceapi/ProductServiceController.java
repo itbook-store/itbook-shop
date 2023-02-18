@@ -33,9 +33,9 @@ public class ProductServiceController {
 
 
     /**
-     * 모든 상품 조회를 요청하는 메서드입니다.
+     * 사용자가 모든 상품 조회를 요청하는 메서드입니다.
      *
-     * @return 노출 여부로의 필터링 여부에 따라 조회한 상품 리스트를 response dto에 담아 반환합니다.
+     * @return 노출 여부가 true이고, 삭제되지 않은 상품만 response dto에 담아 반환합니다.
      * @author 이하늬
      */
     @GetMapping
@@ -43,7 +43,7 @@ public class ProductServiceController {
         @PageableDefault Pageable pageable) {
 
         Page<ProductDetailsResponseDto> productList =
-            productService.findProductList(pageable, false);
+            productService.findProductListForUser(pageable);
 
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(

@@ -56,7 +56,7 @@ public class ProductInquiryReplyServiceImpl implements ProductInquiryReplyServic
             productInquiryReplyNo =
                 productInquiryReplyRepository.save(productInquiryReply).getProductInquiryReplyNo();
 
-            productInquiry.setReplied(true);
+            productInquiry.setIsReplied(true);
 
         } catch (DataIntegrityViolationException e) {
             throw new InvalidInputException();
@@ -70,7 +70,7 @@ public class ProductInquiryReplyServiceImpl implements ProductInquiryReplyServic
      */
     @Override
     public List<ProductInquiryReplyResponseDto> findProductInquiryReply(Long productInquiryNo) {
-        
+
         return productInquiryReplyRepository.findProductInquiryReply(productInquiryNo);
     }
 }

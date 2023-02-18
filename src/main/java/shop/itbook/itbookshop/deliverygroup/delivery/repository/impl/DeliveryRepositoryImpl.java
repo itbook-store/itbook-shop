@@ -162,6 +162,7 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
         return from(qOrder)
             .leftJoin(qDelivery)
             .on(qOrder.eq(qDelivery.order))
+            .where(qOrder.orderNo.eq(orderNo))
             .select(qDelivery.trackingNo)
             .fetchOne();
     }

@@ -65,14 +65,23 @@ public interface ProductService {
 
     /**
      * 모든 상품 조회를 담당하는 메서드입니다.
-     * 관리자는 모든 상품을 조회 가능하지만, 사용자는 노출여부가 false인 상품을 조회 가능합니다.
+     * 관리자는 모든 상품을 조회 가능합니다.
      *
      * @param pageable the pageable
-     * @param isAdmin  관리자 여부 입니다.
      * @return 찾은 상품 상세정보를 담은 리스트를 반환합니다.
      * @author 이하늬
      */
-    Page<ProductDetailsResponseDto> findProductList(Pageable pageable, boolean isAdmin);
+    Page<ProductDetailsResponseDto> findProductListForAdmin(Pageable pageable);
+
+    /**
+     * 모든 상품 조회를 담당하는 메서드입니다.
+     * 사용자는 노출여부가 false인 상품을 조회 가능합니다.
+     *
+     * @param pageable the pageable
+     * @return 찾은 상품 상세정보를 담은 리스트를 반환합니다.
+     * @author 이하늬
+     */
+    Page<ProductDetailsResponseDto> findProductListForUser(Pageable pageable);
 
     /**
      * 장바구니에 상품을 담기 위해 상품 번호 리스트에 해당하는 상품 조회를 담당하는 메서드입니다.

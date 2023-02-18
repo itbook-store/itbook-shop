@@ -8,6 +8,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
@@ -26,6 +28,15 @@ public interface OrderService {
      * @author 정재원 *
      */
     Order findOrderEntity(Long orderNo);
+
+    /**
+     * 배송 번호로 주문 엔티티를 찾습니다.
+     *
+     * @param deliveryNo 배송 번호
+     * @return 조회에 성공한 주문 엔티티 인스턴스
+     * @author 정재원 *
+     */
+    Optional<Order> findOrderByDeliveryNo(Long deliveryNo);
 
     /**
      * 구독 주문 인지 검사합니다.
@@ -83,7 +94,7 @@ public interface OrderService {
      * @param orderNo the order no
      * @author 정재원 *
      */
-    void processAfterOrderCancelPaymentSuccess(Long orderNo);
+    void processBeforeOrderCancelPayment(Long orderNo);
 
     /**
      * 회원의 주문 리스트를 조회합니다.
@@ -116,7 +127,6 @@ public interface OrderService {
      */
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
 
-
     /**
      * 관리자에게 보여질 주문 목록을 찾습니다.
      *
@@ -140,4 +150,24 @@ public interface OrderService {
      * @author 강명관
      */
     void addOrderStatusHistorySubscriptionProductDeliveryWait();
+
+    /**
+     * 관리자가 모든 구독 상품 주문 리스트에 대해 조회하는 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @return 페징된 DTO 객체.
+     * @author 강명관
+     */
+    Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable);
+
+    /**
+     * 회원이 마이페이지 에서 구독 상품 주문 리스트에 대해 조회하는 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @param memberNo 회원 번호
+     * @return 페이징된 DTO 객체.
+     * @author 강명관
+     */
+    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+                                                                        Long memberNo);
 }

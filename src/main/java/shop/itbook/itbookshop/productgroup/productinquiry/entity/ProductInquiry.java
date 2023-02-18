@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.productinquiry.entity;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -51,10 +52,13 @@ public class ProductInquiry {
     private String content;
 
     @Column(name = "is_public", nullable = false)
-    private boolean isPublic;
+    private Boolean isPublic;
 
     @Column(name = "is_replied", nullable = false)
-    private boolean isReplied;
+    private Boolean isReplied;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 
     /**
      * 상품 문의 엔티티의 생성자입니다.
@@ -69,12 +73,27 @@ public class ProductInquiry {
      */
     @Builder
     public ProductInquiry(Member member, Product product, String title, String content,
-                          boolean isPublic, boolean isReplied) {
+                          Boolean isPublic, Boolean isReplied, Boolean isDeleted) {
         this.member = member;
         this.product = product;
         this.title = title;
         this.content = content;
         this.isPublic = isPublic;
         this.isReplied = isReplied;
+        this.isDeleted = isDeleted;
+    }
+
+    public void modifyProductInquiry(String title, String content, Boolean isPublic) {
+        if (Objects.nonNull(title)) {
+            this.title = title;
+        }
+
+        if (Objects.nonNull(content)) {
+            this.content = content;
+        }
+
+        if (Objects.nonNull(isPublic)) {
+            this.isPublic = isPublic;
+        }
     }
 }

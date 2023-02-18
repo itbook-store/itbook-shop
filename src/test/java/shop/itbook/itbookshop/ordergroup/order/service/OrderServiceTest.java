@@ -31,6 +31,7 @@ import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.Order
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.OrderTotalCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
+import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
@@ -62,6 +63,8 @@ class OrderServiceTest {
     @Autowired
     OrderService orderService;
 
+    @MockBean
+    DeliveryRepository deliveryRepository;
     @MockBean
     CouponService couponService;
 

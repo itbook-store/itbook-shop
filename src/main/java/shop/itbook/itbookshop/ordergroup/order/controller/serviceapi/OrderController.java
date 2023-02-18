@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
@@ -195,7 +197,7 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
         @PathVariable("orderNo") Long orderNo) {
 
-        orderService.processAfterOrderCancelPaymentSuccess(orderNo);
+        orderService.processBeforeOrderCancelPayment(orderNo);
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
@@ -245,6 +247,32 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
                 ), null
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
+     * 회원 구독 주문 목록 리스틑 반환 메서드 입니다.
+     *
+     * @param pageable 페이징 객체
+     * @param memberNo 회원 번호
+     * @return 페이징 처리된 해당 회원의 구독 주문 목록 DTO
+     * @author 강명관
+     */
+    @GetMapping("/list/subscription/{memberNo}")
+    public ResponseEntity<CommonResponseBody<PageResponse<OrderSubscriptionListDto>>> orderSubscriptionListByMember(
+        @PageableDefault Pageable pageable,
+        @PathVariable(value = "memberNo") Long memberNo
+    ) {
+
+        Page<OrderSubscriptionListDto> allSubscriptionOrderListByMember =
+            orderService.findAllSubscriptionOrderListByMember(pageable, memberNo);
+
+        CommonResponseBody<PageResponse<OrderSubscriptionListDto>> commonResponseBody =
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage()
+            ), new PageResponse<>(allSubscriptionOrderListByMember)
             );
 
         return ResponseEntity.ok().body(commonResponseBody);

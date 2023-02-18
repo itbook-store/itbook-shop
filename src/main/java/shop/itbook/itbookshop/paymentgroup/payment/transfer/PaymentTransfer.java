@@ -1,11 +1,11 @@
 package shop.itbook.itbookshop.paymentgroup.payment.transfer;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Objects;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 
@@ -33,6 +33,7 @@ public class PaymentTransfer {
         LocalDateTime approvedAt = LocalDateTime.from(
             Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(requestDto.getApprovedAt())).atZone(
                 ZoneId.of("Asia/Seoul")));
+
 
         return Payment.builder()
             .paymentKey(requestDto.getPaymentKey())
