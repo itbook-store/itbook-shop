@@ -599,6 +599,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private String createOrderUUID(Order order) {
+
         String orderNoString = String.valueOf(order.getOrderNo());
         String randomUuidString = UUID.randomUUID().toString();
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
@@ -640,7 +641,7 @@ public class OrderServiceImpl implements OrderService {
                     objectMapper.readValue(orderTotalCouponApplyDtoJson, CouponApplyDto.class);
             }
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new CanNotSaveRedisException();
         }
 
         usingCouponIssue(productAndCategoryCouponApplyDto, orderTotalCouponApplyDto, order);
