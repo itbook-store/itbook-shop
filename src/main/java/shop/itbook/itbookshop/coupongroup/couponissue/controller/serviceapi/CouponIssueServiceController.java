@@ -37,11 +37,11 @@ public class CouponIssueServiceController {
 
     @GetMapping("/{memberNo}")
     public ResponseEntity<CommonResponseBody<PageResponse<UserCouponIssueListResponseDto>>>
-    userCouponIssueList(@PageableDefault Pageable pageable,
-                        @PathVariable("memberNo") Long memberNo) {
+        userCouponIssueList(@PageableDefault Pageable pageable,
+                        @PathVariable("memberNo") Long memberNo, @RequestParam(required = false) String usageStatus) {
 
         Page<UserCouponIssueListResponseDto> page =
-            couponIssueService.findCouponIssueListByMemberNo(pageable, memberNo);
+            couponIssueService.findCouponIssueListByMemberNo(pageable, memberNo, usageStatus);
 
         PageResponse<UserCouponIssueListResponseDto> pageResponse =
             new PageResponse<>(page);

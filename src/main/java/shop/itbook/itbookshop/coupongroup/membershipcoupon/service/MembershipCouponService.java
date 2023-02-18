@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.coupongroup.membershipcoupon.service;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.MembershipCouponResponseDto;
 
 /**
@@ -11,7 +13,7 @@ import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.Membersh
 public interface MembershipCouponService {
     Long addMembershipCoupon(Long couponNo, String membershipGrade);
 
-    List<List<MembershipCouponResponseDto>> findAvailableMembershipCouponList();
+    Map<String,List<MembershipCouponResponseDto>> findAvailableMembershipCouponList();
 
     Long membershipCouponDownload(Long couponNo, Long memberId);
 }
