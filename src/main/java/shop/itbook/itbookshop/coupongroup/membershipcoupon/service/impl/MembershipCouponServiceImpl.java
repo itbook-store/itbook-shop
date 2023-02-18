@@ -1,7 +1,9 @@
 package shop.itbook.itbookshop.coupongroup.membershipcoupon.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,11 +46,11 @@ public class MembershipCouponServiceImpl implements MembershipCouponService {
     }
 
     @Override
-    public List<List<MembershipCouponResponseDto>> findAvailableMembershipCouponList() {
+    public Map<String, List<MembershipCouponResponseDto>> findAvailableMembershipCouponList() {
         List<MembershipResponseDto> membershipGrade = membershipService.findMembershipList();
-        List<List<MembershipCouponResponseDto>> membershipCoupons = new ArrayList<>();
+        Map<String,List<MembershipCouponResponseDto>> membershipCoupons = new HashMap<>();
         for (MembershipResponseDto grade : membershipGrade) {
-            membershipCoupons.add(membershipCouponRepository.findAvailableMembershipCouponList(
+            membershipCoupons.put(grade.getMembershipGrade(), membershipCouponRepository.findAvailableMembershipCouponList(
                 grade.getMembershipGrade()));
         }
         return membershipCoupons;

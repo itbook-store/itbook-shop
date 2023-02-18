@@ -1,0 +1,33 @@
+{
+  "properties": {
+    "name": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "name_jaso": {
+      "type": "text",
+      "analyzer": "suggest_index_analyzer",
+      "search_analyzer": "suggest_search_analyzer"
+    },
+    "simpleDescription": {
+      "type": "text",
+      "analyzer": "korean"
+    },
+    "isbn": {
+      "type": "long",
+      "filter": "nGram"
+    },
+    "publisherName" : {
+      "type": "text",
+      "store": true,
+      "analyzer": "suggest_index_analyzer",
+      "search_analyzer": "suggest_search_analyzer"
+    },
+    "authorName" : {
+      "type": "text",
+      "store": true,
+      "analyzer": "suggest_index_analyzer",
+      "search_analyzer": "suggest_search_analyzer"
+    }
+  }
+}

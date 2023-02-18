@@ -59,14 +59,93 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .join(qCouponIssue.member, qMember)
             .where(qCouponIssue.member.memberNo.eq(memberNo));
 
-        List<UserCouponIssueListResponseDto> couponList = from(qCouponIssue)
+        List<UserCouponIssueListResponseDto> couponList =
+            userCouponIssueJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
+                qMember, qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory,
+                memberNo)
+                .orderBy(qCouponIssue.couponIssueNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+    }
+
+    @Override
+    public Page<UserCouponIssueListResponseDto> findAvailableCouponIssueListByMemberNo(
+        Pageable pageable,
+        Long memberNo) {
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProduct qProduct = QProduct.product;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
+
+        JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
+            .select(qCouponIssue.count())
+            .join(qCouponIssue.member, qMember)
+            .where(qCouponIssue.member.memberNo.eq(memberNo));
+
+        List<UserCouponIssueListResponseDto> couponList =
+            userCouponIssueJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
+                qMember, qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory,
+                memberNo)
+                .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
+                .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
+                .where(qCouponIssue.couponUsageCreatedAt.isNull())
+                .orderBy(qCouponIssue.couponIssueNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+    }
+
+    @Override
+    public Page<UserCouponIssueListResponseDto> findNotAvailableCouponIssueListByMemberNo(
+        Pageable pageable,
+        Long memberNo) {
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProduct qProduct = QProduct.product;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
+
+        JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
+            .select(qCouponIssue.count())
+            .join(qCouponIssue.member, qMember)
+            .where(qCouponIssue.member.memberNo.eq(memberNo));
+
+        List<UserCouponIssueListResponseDto> couponList =
+            userCouponIssueJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus, qMember,
+                qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory, memberNo)
+                .where(qUsageStatus.usageStatusName.ne(UsageStatusEnum.AVAILABLE))
+                .orderBy(qCouponIssue.couponIssueNo.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+        return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+    }
+
+    private JPQLQuery<UserCouponIssueListResponseDto> userCouponIssueJpqlQuery(
+        QCoupon qCoupon, QCouponType qCouponType,
+        QCouponIssue qCouponIssue, QUsageStatus qUsageStatus,
+        QMember qMember, QProductCoupon qProductCoupon,
+        QProduct qProduct, QCategoryCoupon qCategoryCoupon,
+        QCategory qCategory, QCategory qParentCategory, Long memberNo) {
+        return from(qCouponIssue)
             .select(Projections.fields(UserCouponIssueListResponseDto.class,
                 qCouponIssue.couponIssueNo,
-                qCoupon.name,
-                qCoupon.code,
-                qCoupon.amount,
-                qCoupon.percent,
-                qCoupon.point,
+                qCoupon.name, qCoupon.code,
+                qCoupon.amount, qCoupon.percent, qCoupon.point,
                 qProduct.productNo, qProduct.name.as("productName"),
                 qCategory.categoryNo, qCategory.categoryName,
                 qParentCategory.categoryName.as("parentCategoryName"),
@@ -85,14 +164,33 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .leftJoin(qCategory).on(qCategoryCoupon.category.categoryNo.eq(qCategory.categoryNo))
             .leftJoin(qParentCategory)
             .on(qCategory.parentCategory.categoryNo.eq(qParentCategory.categoryNo))
-            .where(qCouponIssue.member.memberNo.eq(memberNo))
-            .orderBy(qCouponIssue.couponIssueNo.desc())
-            .offset(pageable.getOffset())
-            .limit(pageable.getPageSize())
-            .fetch();
-        return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+            .where(qCouponIssue.member.memberNo.eq(memberNo));
     }
 
+    @Override
+    public List<CouponIssue> changePeriodExpiredByMemberNo(Long memberNo){
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+
+        return from(qCouponIssue)
+            .select(qCouponIssue)
+            .join(qCouponIssue.coupon, qCoupon)
+            .fetchJoin()
+            .join(qCouponIssue.usageStatus, qUsageStatus)
+            .fetchJoin()
+            .join(qCoupon.couponType, qCouponType)
+            .fetchJoin()
+            .join(qCouponIssue.member, qMember)
+            .fetchJoin()
+            .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
+            .where(qCouponIssue.member.memberNo.eq(memberNo))
+            .where(qCouponIssue.couponExpiredAt.before(LocalDateTime.now()))
+            .fetch();
+
+    }
     @Override
     public CouponIssue findByIdFetchJoin(Long couponIssueNo) {
         QCoupon qCoupon = QCoupon.coupon;
@@ -277,7 +375,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .join(qCouponIssue.member, qMember)
             .join(qCategoryCoupon).on(qCouponIssue.coupon.couponNo.eq(
                 qCategoryCoupon.couponNo))
-            .leftJoin(qProductCategory).on(qCategoryCoupon.category.categoryNo.eq(qProductCategory.category.categoryNo))
+            .leftJoin(qProductCategory)
+            .on(qCategoryCoupon.category.categoryNo.eq(qProductCategory.category.categoryNo))
             .where(qMember.memberNo.eq(memberNo))
             .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
             .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
@@ -342,6 +441,102 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
 
         return PageableExecutionUtils.getPage(couponIssueListResponseDtoList, pageable,
             jpqlQuery::fetchOne);
+    }
+
+    @Override
+    public Page<AdminCouponIssueListResponseDto> findCouponIssueSearchMemberId(Pageable pageable,
+                                                                               String memberId) {
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProduct qProduct = QProduct.product;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
+
+        JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
+            = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
+            qMember, qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory);
+
+        JPQLQuery<AdminCouponIssueListResponseDto> jpqlQuery =
+            adminCouponIssueListResponseDtoJpqlQuery
+                .where(qMember.memberId.contains(memberId));
+
+        List<AdminCouponIssueListResponseDto> couponIssueListResponseDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(couponIssueListResponseDtoList, pageable,
+            jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<AdminCouponIssueListResponseDto> findCouponIssueSearchCouponName(Pageable pageable,
+                                                                                 String couponName) {
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProduct qProduct = QProduct.product;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
+
+        JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
+            = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
+            qMember, qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory);
+
+        JPQLQuery<AdminCouponIssueListResponseDto> jpqlQuery =
+            adminCouponIssueListResponseDtoJpqlQuery
+                .where(qCoupon.name.contains(couponName));
+
+        List<AdminCouponIssueListResponseDto> couponIssueListResponseDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(couponIssueListResponseDtoList, pageable,
+            jpqlQuery::fetchCount);
+    }
+
+    @Override
+    public Page<AdminCouponIssueListResponseDto> findCouponIssueSearchCouponCode(Pageable pageable,
+                                                                                 String couponCode) {
+        QCoupon qCoupon = QCoupon.coupon;
+        QCouponType qCouponType = QCouponType.couponType;
+        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
+        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
+        QMember qMember = QMember.member;
+        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
+        QProduct qProduct = QProduct.product;
+        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
+        QCategory qCategory = QCategory.category;
+        QCategory qParentCategory = new QCategory("parentCategory");
+
+        JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
+            = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
+            qMember, qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory);
+
+        JPQLQuery<AdminCouponIssueListResponseDto> jpqlQuery =
+            adminCouponIssueListResponseDtoJpqlQuery
+                .where(qCoupon.code.contains(couponCode));
+
+        List<AdminCouponIssueListResponseDto> couponIssueListResponseDtoList =
+            jpqlQuery
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return PageableExecutionUtils.getPage(couponIssueListResponseDtoList, pageable,
+            jpqlQuery::fetchCount);
     }
 
     @Override
