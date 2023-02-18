@@ -80,7 +80,8 @@ class MemberDestinationRepositoryTest {
         memberDestinationRepository.save(memberDestination);
 
         List<MemberDestination> memberDestinationList =
-            memberDestinationRepository.findAllByMember_MemberNo(member.getMemberNo());
+            memberDestinationRepository.findAllByMember_MemberNoOrderByRecipientDestinationNoDesc(
+                member.getMemberNo());
 
         assertThat(memberDestinationList.get(0).getMember().getMemberNo()).isEqualTo(
             member.getMemberNo());
