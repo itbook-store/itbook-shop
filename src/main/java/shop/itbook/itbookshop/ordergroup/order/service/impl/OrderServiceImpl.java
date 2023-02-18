@@ -34,9 +34,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
-import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNotFoundException;
-import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -44,7 +41,6 @@ import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
@@ -68,7 +64,6 @@ import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
-import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
@@ -78,8 +73,6 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHi
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
-import shop.itbook.itbookshop.paymentgroup.card.repository.CardRepository;
-import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
@@ -108,9 +101,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMemberRepository orderMemberRepository;
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final PaymentRepository paymentRepository;
-    private final CardRepository cardRepository;
-    private final DeliveryRepository deliveryRepository;
-
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
     private final MemberService memberService;
@@ -145,32 +135,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
-
-        Order order = findOrderEntity(orderNo);
-        List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList =
-            orderProductService.findOrderProductsByOrderNo(orderNo);
-        OrderDestinationDto orderDestinationDto =
-            orderRepository.findOrderDestinationsByOrderNo(orderNo);
-        PaymentCardResponseDto paymentCardResponseDto =
-            paymentRepository.findPaymentCardByOrderNo(orderNo);
-
-        String orderStatus = orderRepository.findOrderStatusByOrderNo(orderNo);
-        String trackingNo = deliveryService.findTrackingNoByOrderNo(orderNo);
-
-        return OrderDetailsResponseDto.builder()
-            .orderNo(orderNo)
-            .orderProductDetailResponseDtoList(orderProductDetailResponseDtoList)
-            .orderDestinationDto(orderDestinationDto)
-//            .paymentCardResponseDto(paymentCardResponseDto)
-            .orderStatus(orderStatus)
-            .orderCreatedAt(order.getOrderCreatedAt())
-            .amount(order.getAmount())
-            .deliveryFee(order.getDeliveryFee())
-            .trackingNo(trackingNo)
-            .deliveryNo(null)
-            // todo: 주문에 배송비 테이블 추가 후 넣어주기
-            .deliveryFee(0L)
-            .build();
+        return orderRepository.findOrderDetail(orderNo);
     }
 
     @Override
@@ -897,27 +862,5 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
                                                                                Long memberNo) {
         return orderRepository.findAllSubscriptionOrderListByMember(pageable, memberNo);
-    }
-
-    public void findSubscriptionOrderDetailList(Long orderNo) {
-
-        OrderSubscription orderSubscription =
-            orderSubscriptionRepository.findByOrder_OrderNo(orderNo)
-                .orElseThrow(OrderNotFoundException::new);
-
-        Long startOrderNo = orderSubscription.getOrderNo();
-        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
-
-        List<Long> orderNoList = new ArrayList<>();
-
-        orderNoList.add(startOrderNo);
-        for (int i = 1; i < subscriptionPeriod; i++) {
-            orderNoList.add(startOrderNo + i);
-        }
-
-        List<Order> ordersByOrderNoIn = orderRepository.findOrdersByOrderNoIn(orderNoList);
-//
-//
-//        orderRepository.findOrdersByOrderNoIn()
     }
 }
