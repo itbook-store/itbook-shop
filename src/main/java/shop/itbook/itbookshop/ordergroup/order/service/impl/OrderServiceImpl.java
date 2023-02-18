@@ -58,6 +58,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponExce
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
+import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
@@ -85,7 +86,6 @@ import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
-import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
@@ -440,6 +440,7 @@ public class OrderServiceImpl implements OrderService {
 
             Product product = productService.findProductEntity(productDetailsDto.getProductNo());
             Integer productCnt = subscriptionPeriod.orElseGet(productDetailsDto::getProductCnt);
+            this.checkAndSetStock(subscriptionPeriod, product, productCnt);
 
             long sellingPrice = product.getFixedPrice() -
                 getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent());
@@ -514,6 +515,18 @@ public class OrderServiceImpl implements OrderService {
         order.setDeliveryFee(BASE_DELIVERY_FEE);
         amount += BASE_DELIVERY_FEE;
         return amount;
+    }
+
+    private static void checkAndSetStock(Optional<Integer> subscriptionPeriod, Product product,
+                                         Integer productCnt) {
+        if (subscriptionPeriod.isEmpty()) {
+            Integer stock = product.getStock();
+            if (Objects.equals(stock, 0) || productCnt > stock) {
+                throw new ProductStockIsZeroException();
+            }
+
+            product.setStock(--stock);
+        }
     }
 
     private long getDiscountedPrice(Long priceToApply, Double discountPercent) {

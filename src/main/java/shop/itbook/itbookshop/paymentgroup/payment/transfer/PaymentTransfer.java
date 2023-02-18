@@ -34,7 +34,6 @@ public class PaymentTransfer {
             Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(requestDto.getApprovedAt())).atZone(
                 ZoneId.of("Asia/Seoul")));
 
-
         PaymentResponseDto.CardResponseDto card = requestDto.getCard();
         Long amount;
         if (Objects.isNull(card)) {
