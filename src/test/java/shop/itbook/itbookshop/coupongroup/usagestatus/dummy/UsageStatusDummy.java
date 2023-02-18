@@ -22,6 +22,6 @@ public class UsageStatusDummy {
     }
 
     public static UsageStatus getUsageStatus() {
-        return new UsageStatus(1, UsageStatusEnum.AVAILABLE);
+        return new UsageStatus(null, UsageStatusEnum.AVAILABLE);
     }
 }

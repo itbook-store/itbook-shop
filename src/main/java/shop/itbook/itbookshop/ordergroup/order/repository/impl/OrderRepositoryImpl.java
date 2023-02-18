@@ -21,20 +21,20 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.QOrderTotalCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.QProductCouponApply;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderTotalResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
@@ -349,8 +349,11 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .fetchOne();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public OrderTotalResponseDto findOrderDetail(Long orderNo) {
+    public OrderDetailsResponseDto findOrderDetail(Long orderNo) {
 
         QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
@@ -361,7 +364,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
         QCoupon qCoupon = QCoupon.coupon;
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
-        QProduct qProduct = QProduct.product;
         QProductCouponApply qProductCouponApply = QProductCouponApply.productCouponApply;
         QCategoryCouponApply qCategoryCouponApply = QCategoryCouponApply.categoryCouponApply;
 
@@ -385,8 +387,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
             );
 
-        OrderTotalResponseDto orderTotalResponseDto = jpqlQuery
-            .select(Projections.fields(OrderTotalResponseDto.class,
+        OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
+            .select(Projections.fields(OrderDetailsResponseDto.class,
                     qOrder.orderNo,
                     qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                     qOrder.orderCreatedAt,
@@ -398,75 +400,41 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
                     qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
                     Projections.fields(OrderDestinationDto.class,
-                        qOrder.recipientName,
-                        qOrder.recipientPhoneNumber,
-                        qOrder.postcode,
-                        qOrder.roadNameAddress,
-                        qOrder.recipientAddressDetails
-                    )
+                        qOrder.recipientName.as("recipientName"),
+                        qOrder.recipientPhoneNumber.as("recipientPhoneNumber"),
+                        qOrder.postcode.as("postcode"),
+                        qOrder.roadNameAddress.as("roadNameAddress"),
+                        qOrder.recipientAddressDetails.as("recipientAddressDetails")
+                    ).as("orderDestinationDto")
                 )
             ).fetchOne();
 
-//        List<OrderProductDetailResponseDto> productDetailList =
-//            jpqlQuery.leftJoin(qProductCouponApply)
-//                .on(qOrderProduct.orderProductNo.eq(
-//                    qProductCouponApply.orderProduct.orderProductNo))
-//                .leftJoin(qCategoryCouponApply)
-//                .on(qOrderProduct.orderProductNo.eq(
-//                    qCategoryCouponApply.orderProduct.orderProductNo))
-//                .leftJoin(qCouponIssue)
-//                .on(qCategoryCouponApply.couponIssue.couponIssueNo.eq(qCouponIssue.couponIssueNo))
-//                .leftJoin(qCoupon)
-//                .on(qCouponIssue.coupon.couponNo.eq(qCoupon.couponNo))
-//                .select(Projections.fields(OrderProductDetailResponseDto.class,
-//                    qOrderProduct.orderProductNo,
-//                    qOrderProduct.product.name.as("productName"),
-//                    qOrderProduct.count,
-//                    qOrderProduct.productPrice,
-//                    qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
-//                    qCoupon.name.as("couponName"),
-//                    qCoupon.amount.as("couponAmount"),
-//                    qCoupon.percent.as("couponPercent")
-//                ))
-//                .fetch();
-//
-//        orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
+        List<OrderProductDetailResponseDto> productDetailList =
+            jpqlQuery.leftJoin(qProductCouponApply)
+                .on(qOrderProduct.orderProductNo.eq(
+                    qProductCouponApply.orderProduct.orderProductNo))
+                .leftJoin(qCategoryCouponApply)
+                .on(qOrderProduct.orderProductNo.eq(
+                    qCategoryCouponApply.orderProduct.orderProductNo))
+                .leftJoin(qCouponIssue)
+                .on(qCategoryCouponApply.couponIssue.couponIssueNo.eq(qCouponIssue.couponIssueNo))
+                .leftJoin(qCoupon)
+                .on(qCouponIssue.coupon.couponNo.eq(qCoupon.couponNo))
+                .select(Projections.fields(OrderProductDetailResponseDto.class,
+                    qOrderProduct.orderProductNo,
+                    qOrderProduct.product.name.as("productName"),
+                    qOrderProduct.count,
+                    qOrderProduct.productPrice,
+                    qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
+                    qCoupon.name.as("couponName"),
+                    qCoupon.amount.as("couponAmount"),
+                    qCoupon.percent.as("couponPercent")
+                ))
+                .fetch();
 
+        orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
-        return orderTotalResponseDto;
-
-
-//                Projections.fields(OrderDetailsResponseDto.class,
-//
-//                    Projections.list(OrderProductDetailResponseDto.class,
-//                        qOrderProduct.orderProductNo,
-//                        qOrderProduct.product.name.as("productName"),
-//                        qOrderProduct.count,
-//                        qOrderProduct.productPrice,
-//                        qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
-//                        qCoupon.name.as("couponName"),
-//                        qCoupon.amount.as("couponAmount"),
-//                        qCoupon.percent.as("couponPercent")
-//                    ),
-//                    Projections.fields(OrderDestinationDto.class,
-//                        qOrder.recipientName,
-//                        qOrder.recipientPhoneNumber,
-//                        qOrder.postcode,
-//                        qOrder.roadNameAddress,
-//                        qOrder.recipientAddressDetails
-//                    ),
-//                    qOrder.orderNo,
-//                    qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue()
-//                        .as("orderStatus"),
-//                    qOrder.orderCreatedAt,
-//                    qOrder.amount,
-//                    qOrder.deliveryFee,
-//                    qDelivery.deliveryNo,
-//                    qDelivery.trackingNo,
-//                    qOrderTotalCouponApply.couponIssue.coupon.name.as("couponName"),
-//                    qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
-//                    qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent")
-//                )
+        return orderDetailsResponseDto;
     }
 
     @Override

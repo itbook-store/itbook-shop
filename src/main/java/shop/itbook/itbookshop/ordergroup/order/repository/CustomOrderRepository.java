@@ -11,13 +11,12 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderTotalResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
  * 주문 엔티티 관련 쿼리 dsl 을 처리합니다.
  *
- * @author 정재원
+ * @author 정재원, 최겸준, 강명관
  * @since 1.0
  */
 @NoRepositoryBean
@@ -41,7 +40,13 @@ public interface CustomOrderRepository {
 
     Order findOrderByDeliveryNo(Long deliveryNo);
 
-    OrderTotalResponseDto findOrderDetail(Long orderNo);
+    /**
+     * 일반 상품 주문에 대한 상세 조회를 위한 쿼리 입니다.
+     *
+     * @param orderNo 주문번호
+     * @return 주문상세 DTO
+     */
+    OrderDetailsResponseDto findOrderDetail(Long orderNo);
 
     List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
         Long orderNo);

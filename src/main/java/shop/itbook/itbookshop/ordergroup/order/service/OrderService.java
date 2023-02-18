@@ -126,6 +126,7 @@ public interface OrderService {
      * @param orderNo 조회할 주문 번호
      * @return 주문 상세보기에 필요한 정보를 담은 Dto
      * @author 정재원
+     * @author 정재원, 강명관 *
      */
     OrderDetailsResponseDto findOrderDetails(Long orderNo);
 
