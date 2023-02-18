@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderTotalResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
@@ -38,6 +40,8 @@ public interface CustomOrderRepository {
                                                                         Long memberNo);
 
     Order findOrderByDeliveryNo(Long deliveryNo);
+
+    OrderTotalResponseDto findOrderDetail(Long orderNo);
 
     List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
         Long orderNo);
