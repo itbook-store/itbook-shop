@@ -35,10 +35,18 @@ public class PaymentTransfer {
                 ZoneId.of("Asia/Seoul")));
 
 
+        PaymentResponseDto.CardResponseDto card = requestDto.getCard();
+        Long amount;
+        if (Objects.isNull(card)) {
+            amount = 0L;
+        } else {
+            amount = card.getAmount();
+        }
+
         return Payment.builder()
             .paymentKey(requestDto.getPaymentKey())
             .orderId(requestDto.getOrderId())
-            .totalAmount(requestDto.getCard().getAmount())
+            .totalAmount(amount)
             .orderName(requestDto.getOrderName())
             .requestedAt(requestedAt)
             .approvedAt(approvedAt)
