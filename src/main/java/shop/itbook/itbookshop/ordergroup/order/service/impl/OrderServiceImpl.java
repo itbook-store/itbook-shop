@@ -760,13 +760,11 @@ public class OrderServiceImpl implements OrderService {
             throw new NotStatusOfOrderCancel();
         }
 
-        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
-
         List<OrderProduct> orderProductList =
             orderProductService.findOrderProductsEntityByOrderNo(orderNo);
 
         // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
-        this.changeCategoryAndProductCouponStatusByCancel(orderProductList);
+        this.changeCategoryAndProductCouponStatusByCancel(orderProductList, orderStatusEnum);
 
         // 주문번호로 주문총액상품쿠폰 있는지 확인하고 있으면 사용전상태로 변경
         this.changeOrderTotalAmountCouponStatusByCancel(orderNo);
@@ -779,6 +777,7 @@ public class OrderServiceImpl implements OrderService {
         this.addOrderCancelIncreaseDecreasePointHistory(order,
             PointHistoryServiceImpl.INCREASE_POINT_HISTORY);
 
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
 
         // 주문번호로 구독상품이 있는지 확인
         Optional<OrderSubscription> optionalOrderSubscription =
@@ -816,13 +815,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void changeCategoryAndProductCouponStatusByCancel(
-        List<OrderProduct> orderProductList) {
+        List<OrderProduct> orderProductList, OrderStatusEnum orderStatusEnum) {
+
 
         for (OrderProduct orderProduct : orderProductList) {
 
             Optional<CategoryCouponApply> optionalCategoryCouponApply =
                 categoryCouponApplyRepository.findByOrderProduct_OrderProductNo(
                     orderProduct.getOrderProductNo());
+
+            if (Objects.equals(orderStatusEnum, OrderStatusEnum.WAIT_DELIVERY)) {
+                Product product = orderProduct.getProduct();
+                int stock = product.getStock();
+                product.setStock(++stock);
+            }
 
             if (optionalCategoryCouponApply.isPresent()) {
                 CategoryCouponApply categoryCouponApply = optionalCategoryCouponApply.get();
