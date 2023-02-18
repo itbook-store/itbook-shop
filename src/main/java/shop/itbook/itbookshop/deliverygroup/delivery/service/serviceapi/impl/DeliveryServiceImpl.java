@@ -36,8 +36,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final OrderStatusHistoryService orderStatusHistoryService;
 
     private final OrderRepository orderRepository;
-
-
+    
     @Override
     @Transactional
     public void registerDelivery(Order order) {
@@ -53,6 +52,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private void saveOrderDeliveryHistory(Order order, Delivery delivery,
                                           DeliveryStatusEnum deliveryStatusEnum) {
+
         StringBuilder stringBuilder = new StringBuilder();
         DeliveryStatus deliveryStatus =
             deliveryStatusRepository.findByDeliveryStatusEnum(deliveryStatusEnum)

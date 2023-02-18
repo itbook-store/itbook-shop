@@ -84,7 +84,7 @@ public class DeliveryAdminController {
      * @return 배송 등록 성공한 배송 정보들의 리스트
      */
     @PostMapping("/registration")
-    public ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> addDeliveryListWithStatusWait() {
+    public ResponseEntity<CommonResponseBody<List<DeliveryDetailResponseDto>>> deliveryListWithStatusWaitRegister() {
 
         CommonResponseBody<List<DeliveryDetailResponseDto>> commonResponseBody =
             new CommonResponseBody<>(

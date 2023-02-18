@@ -41,13 +41,13 @@ public class DeliveryTransfer {
     public static DeliveryServerRequestDto entityToServerRequestDto(Delivery delivery) {
         return DeliveryServerRequestDto.builder()
             .orderNo(delivery.getOrder().getOrderNo())
-//            .receiverName(delivery.getOrder().getMemberDestination().getRecipientName())
-//            .receiverAddress(
-//                delivery.getOrder().getMemberDestination().getRoadNameAddress())
-//            .receiverDetailAddress(
-//                delivery.getOrder().getMemberDestination().getRecipientAddressDetails())
-//            .receiverPhoneNumber(
-//                delivery.getOrder().getMemberDestination().getRecipientPhoneNumber())
+            .receiverName(delivery.getOrder().getRecipientName())
+            .receiverAddress(
+                delivery.getOrder().getRoadNameAddress())
+            .receiverDetailAddress(
+                delivery.getOrder().getRecipientAddressDetails())
+            .receiverPhoneNumber(
+                delivery.getOrder().getRecipientPhoneNumber())
             .build();
     }
 
@@ -61,10 +61,13 @@ public class DeliveryTransfer {
     public static DeliveryServerRequestDto orderEntityToDto(Order order) {
         return DeliveryServerRequestDto.builder()
             .orderNo(order.getOrderNo())
-//            .receiverName(order.getMemberDestination().getRecipientName())
-//            .receiverAddress(order.getMemberDestination().getRoadNameAddress())
-//            .receiverDetailAddress(order.getMemberDestination().getRecipientAddressDetails())
-//            .receiverPhoneNumber(order.getMemberDestination().getRecipientPhoneNumber())
+            .receiverName(order.getRecipientName())
+            .receiverAddress(
+                order.getRoadNameAddress())
+            .receiverDetailAddress(
+                order.getRecipientAddressDetails())
+            .receiverPhoneNumber(
+                order.getRecipientPhoneNumber())
             .build();
     }
 }
