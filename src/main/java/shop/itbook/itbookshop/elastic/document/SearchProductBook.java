@@ -21,9 +21,8 @@ import org.springframework.data.elasticsearch.annotations.Setting;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document(indexName = "#{@environment.getProperty('elastic.index.book')}")
-@Setting(settingPath = "elastic/total-setting.json")
-@Mapping(mappingPath = "elastic/total-mapping.json")
+//@Document(indexName = "#{@environment.getProperty('elastic.index.book')}")
+//@Mapping(mappingPath = "elastic/total-mapping.json")
 public class SearchProductBook {
 
     @Id
