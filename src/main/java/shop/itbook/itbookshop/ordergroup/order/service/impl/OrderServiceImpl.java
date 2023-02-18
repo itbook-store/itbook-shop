@@ -34,8 +34,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
-import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -50,6 +48,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewRe
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
@@ -916,8 +915,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         List<Order> ordersByOrderNoIn = orderRepository.findOrdersByOrderNoIn(orderNoList);
-//
-//
-//        orderRepository.findOrdersByOrderNoIn()
+
+    }
+
+    @Override
+    public List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
+        Long orderNo) {
+        return orderRepository.findOrderSubscriptionDetailsResponseDto(orderNo);
     }
 }

@@ -25,7 +25,6 @@ import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
@@ -36,7 +35,6 @@ import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
-import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
@@ -99,7 +97,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderStatusHistory.order.recipientPhoneNumber,
                 qDelivery.trackingNo
             ))
-            .orderBy(qOrderStatusHistory.order.orderNo.asc());
+            .orderBy(qOrderStatusHistory.order.orderNo.desc());
 
         List<OrderListMemberViewResponseDto> orderListViewResponseDtoList =
             jpqlQuery
@@ -188,7 +186,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderStatusHistory.order.recipientName,
                 qDelivery.trackingNo
             ))
-            .orderBy(qOrderStatusHistory.order.orderNo.asc());
+            .orderBy(qOrderStatusHistory.order.orderNo.desc());
 
         List<OrderListAdminViewResponseDto> orderListAdminViewResponseDtoList =
             jpqlQuery
@@ -544,6 +542,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrder.deliveryFee,
                 qDelivery.deliveryNo,
                 qDelivery.trackingNo,
+                qOrder.selectedDeliveryDate,
                 // Coupon
                 qOrderTotalCouponApply.couponIssue.coupon.name.as("couponName"),
                 qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
