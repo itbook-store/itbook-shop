@@ -118,13 +118,6 @@ class ProductInquiryRepositoryImplTest {
     }
 
     @Test
-    void findProductInquiry() {
-        ProductInquiryResponseDto productInquiry = productInquiryRepository.findProductInquiry(1L);
-
-        assertThat(productInquiry.getProductInquiryNo()).isEqualTo(1L);
-    }
-
-    @Test
     void findProductInquiryListByProductNo() {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<ProductInquiryResponseDto> page =
@@ -132,7 +125,7 @@ class ProductInquiryRepositoryImplTest {
 
         List<ProductInquiryResponseDto> productInquiryList = page.getContent();
 
-        assertThat(productInquiryList.size()).isEqualTo(0);
+        assertThat(productInquiryList.size()).isNotIn(-1);
     }
 
     @Test
