@@ -78,17 +78,6 @@ public interface OrderService {
     void addOrderSubscriptionAfterPayment(Long orderNo);
 
     /**
-     * 결제를 완료하지 않은 주문에 대해 다시 주문을 진행합니다.
-     *
-     * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
-     * @param orderNo            재주문 할 주문 번호 - 결제 대기 상태
-     * @return 결제 요청에 사용될 정보를 담은 Dto
-     * @author 정재원 *
-     */
-    OrderPaymentDto reOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                         Long orderNo);
-
-    /**
      * Process after order cancel payment success.
      *
      * @param orderNo the order no
@@ -170,4 +159,6 @@ public interface OrderService {
      */
     Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
                                                                         Long memberNo);
+
+    void deleteOrderAndRollBackStock(Long orderNo);
 }
