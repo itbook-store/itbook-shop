@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 
 /**
  * @author 송다혜

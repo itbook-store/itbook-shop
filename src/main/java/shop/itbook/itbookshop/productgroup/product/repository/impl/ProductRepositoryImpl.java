@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.repository.impl;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;

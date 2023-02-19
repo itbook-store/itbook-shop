@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.paymentgroup.card.entity.QCard;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentCardResponseDto;
-import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.QPayment;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepositoryCustom;
