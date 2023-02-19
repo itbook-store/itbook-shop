@@ -9,6 +9,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
@@ -47,4 +48,6 @@ public interface CustomOrderRepository {
      */
     OrderDetailsResponseDto findOrderDetail(Long orderNo);
 
+    List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
+        Long orderNo);
 }

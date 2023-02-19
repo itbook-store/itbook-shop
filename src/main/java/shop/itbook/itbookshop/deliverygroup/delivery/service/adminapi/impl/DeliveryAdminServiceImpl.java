@@ -29,6 +29,9 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatus.repository.DeliverySt
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
+import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
  * DeliveryService 인터페이스의 기본 구현체 입니다.
@@ -45,6 +48,9 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final DeliveryAdaptor<DeliveryDetailResponseDto> deliveryAdaptor;
     private final ServerConfig serverConfig;
+
+    private final OrderStatusHistoryService orderStatusHistoryService;
+    private final OrderRepository orderRepository;
 
     /**
      * {@inheritDoc}
@@ -121,6 +127,8 @@ public class DeliveryAdminServiceImpl implements DeliveryAdminService {
 
             deliveryRepository.save(delivery);
             deliveryStatusHistoryRepository.save(deliveryStatusHistory);
+            orderStatusHistoryService.addOrderStatusHistory(orderRepository.findOrderByDeliveryNo(
+                delivery.getDeliveryNo()), OrderStatusEnum.SHIPPING);
         });
 
         return result;

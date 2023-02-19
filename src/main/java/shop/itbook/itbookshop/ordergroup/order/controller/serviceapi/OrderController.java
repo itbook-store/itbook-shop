@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -170,7 +172,7 @@ public class OrderController {
      *
      * @param orderNo 취소 처리할 주문 번호
      * @return 성공시 ok 응답 객체
-     * @author 정재원 *
+     * @author 정재원
      */
     @PostMapping("/cancel/{orderNo}")
     public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
@@ -192,7 +194,7 @@ public class OrderController {
      *
      * @param orderNo the order no
      * @return the response entity
-     * @author 정재원 *
+     * @author 정재원
      */
     @GetMapping("/details/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
@@ -209,10 +211,30 @@ public class OrderController {
     }
 
     /**
+     * 주문 구독 상세 보기
+     *
+     * @param orderNo 구독 시작 주문 번호
+     * @return 주문 구독 리스트
+     */
+    @GetMapping("/details-sub/{orderNo}")
+    public ResponseEntity<CommonResponseBody<List<OrderSubscriptionDetailsResponseDto>>> orderSubscriptionDetails(
+        @PathVariable("orderNo") Long orderNo) {
+
+        CommonResponseBody<List<OrderSubscriptionDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_SUBSCRIPTION_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.findOrderSubscriptionDetailsResponseDto(orderNo)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
      * 주문 구매 확정뱐경 메서드 입니다.
      *
      * @param orderNo 주문번호
-     * @return 공용응답객체
+     * @return 공용응답객체 response entity
      * @author 강명관
      */
     @PostMapping("/purchase-complete/{orderNo}")
