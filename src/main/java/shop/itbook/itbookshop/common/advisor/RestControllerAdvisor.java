@@ -38,6 +38,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCo
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
+import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.util.CanNotApplyCouponException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
@@ -79,6 +80,7 @@ public class RestControllerAdvisor {
         LackOfPointException.class,
         CanNotSaveRedisException.class,
         OrderSubscriptionNotFirstSequenceException.class,
+        ProductStockIsZeroException.class,
         NotStatusOfOrderCancel.class,
         MismatchCategoryNoWhenCouponApplyException.class,
         MismatchProductNoWhenCouponApplyException.class,

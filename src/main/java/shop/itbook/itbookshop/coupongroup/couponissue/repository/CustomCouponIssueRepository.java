@@ -21,6 +21,15 @@ public interface CustomCouponIssueRepository {
     Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(Pageable pageable,
                                                                   Long memberNo);
 
+    Page<UserCouponIssueListResponseDto> findAvailableCouponIssueListByMemberNo(Pageable pageable,
+                                                                                Long memberNo);
+
+    Page<UserCouponIssueListResponseDto> findNotAvailableCouponIssueListByMemberNo(
+        Pageable pageable,
+        Long memberNo);
+
+    List<CouponIssue> changePeriodExpiredByMemberNo(Long memberNo);
+
     CouponIssue findByIdFetchJoin(Long couponIssueNo);
 
     List<OrderTotalCouponIssueResponseListDto> findAvailableOrderTotalCouponIssueByMemberNo(
@@ -42,6 +51,15 @@ public interface CustomCouponIssueRepository {
         Long memberNo);
 
     Page<AdminCouponIssueListResponseDto> findAllCouponIssue(Pageable pageable);
+
+    Page<AdminCouponIssueListResponseDto> findCouponIssueSearchMemberId(Pageable pageable,
+                                                                        String memberId);
+
+    Page<AdminCouponIssueListResponseDto> findCouponIssueSearchCouponName(Pageable pageable,
+                                                                          String couponName);
+
+    Page<AdminCouponIssueListResponseDto> findCouponIssueSearchCouponCode(Pageable pageable,
+                                                                          String couponCode);
 
     Page<AdminCouponIssueListResponseDto> findAvailableCouponIssueList(Pageable pageable);
 }

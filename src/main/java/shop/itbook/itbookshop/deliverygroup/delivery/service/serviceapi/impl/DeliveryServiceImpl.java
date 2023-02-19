@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.impl;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.Deliver
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
@@ -34,9 +32,7 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryStatusRepository deliveryStatusRepository;
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final OrderStatusHistoryService orderStatusHistoryService;
-
     private final OrderRepository orderRepository;
-
 
     @Override
     @Transactional
@@ -53,6 +49,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     private void saveOrderDeliveryHistory(Order order, Delivery delivery,
                                           DeliveryStatusEnum deliveryStatusEnum) {
+
         StringBuilder stringBuilder = new StringBuilder();
         DeliveryStatus deliveryStatus =
             deliveryStatusRepository.findByDeliveryStatusEnum(deliveryStatusEnum)

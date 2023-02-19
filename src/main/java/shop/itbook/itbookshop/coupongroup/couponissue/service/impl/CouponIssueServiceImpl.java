@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.CategoryCouponApply;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec.CategoryCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponSimpleListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
@@ -30,9 +29,7 @@ import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepo
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.ProductCouponIssueListResponseDto;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.OrderTotalCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.productcoupon.service.ProductCouponService;
-import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.service.ProductCouponApplyService;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.service.UsageStatusService;
@@ -85,7 +82,7 @@ public class CouponIssueServiceImpl implements CouponIssueService {
             }
 
             throw e;
-        } catch ( UnableToCreateCouponException e){
+        } catch (UnableToCreateCouponException e) {
             throw new CouponQuantityExhaustedException();
         }
         return couponIssue.getCouponIssueNo();
@@ -113,7 +110,8 @@ public class CouponIssueServiceImpl implements CouponIssueService {
         return couponIssueRepository.saveAll(couponIssueList);
     }
 
-    public CouponIssue makeCouponIssue(Member member, Coupon coupon) throws UnableToCreateCouponException {
+    public CouponIssue makeCouponIssue(Member member, Coupon coupon)
+        throws UnableToCreateCouponException {
 
         coupon = couponService.useCoupon(coupon);
 
@@ -133,8 +131,31 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
     @Override
     public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(
-        Pageable pageable, Long memberNo) {
-        return couponIssueRepository.findCouponIssueListByMemberNo(pageable, memberNo);
+        Pageable pageable, Long memberNo, String usageStatus) {
+        switch (usageStatus) {
+            case "사용가능":
+                return couponIssueRepository.findAvailableCouponIssueListByMemberNo(pageable,
+                    memberNo);
+            case "사용불가":
+                return couponIssueRepository.findNotAvailableCouponIssueListByMemberNo(pageable,
+                    memberNo);
+            default:
+                List<CouponIssue> periodExpiredCoupons =
+                    couponIssueRepository.changePeriodExpiredByMemberNo(memberNo);
+                if (!periodExpiredCoupons.isEmpty()) {
+                    changePeriodExpiredByMemberNo(periodExpiredCoupons);
+                }
+                return couponIssueRepository.findCouponIssueListByMemberNo(pageable, memberNo);
+        }
+    }
+
+    @Transactional
+    public void changePeriodExpiredByMemberNo(List<CouponIssue> periodExpiredCoupons) {
+        for (CouponIssue couponIssue : periodExpiredCoupons) {
+            couponIssue.setUsageStatus(usageStatusService.findUsageStatus(
+                UsageStatusEnum.PERIOD_EXPIRED.getUsageStatus()));
+        }
+        couponIssueRepository.saveAll(periodExpiredCoupons);
     }
 
     @Override
@@ -242,6 +263,22 @@ public class CouponIssueServiceImpl implements CouponIssueService {
         } else {
             categoryCouponApplyService.saveCategoryCouponApplyAndChangeCouponIssues(couponIssueNo,
                 orderProduct);
+        }
+    }
+
+    @Override
+    public Page<AdminCouponIssueListResponseDto> findCouponIssueSearch(Pageable pageable,
+                                                                       String searchTarget,
+                                                                       String keyword) {
+        switch (searchTarget) {
+            case "memberId":
+                return couponIssueRepository.findCouponIssueSearchMemberId(pageable, keyword);
+            case "couponName":
+                return couponIssueRepository.findCouponIssueSearchCouponName(pageable, keyword);
+            case "couponCode":
+                return couponIssueRepository.findCouponIssueSearchCouponCode(pageable, keyword);
+            default:
+                return couponIssueRepository.findAllCouponIssue(pageable);
         }
     }
 }

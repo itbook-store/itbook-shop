@@ -35,6 +35,10 @@ public class OrderSheetTransfer {
             amount += product.getSelledPrice();
         }
 
+        if (amount >= 20000L) {
+            deliveryFee = 0L;
+        }
+
         return OrderSheetResponseDto.builder()
             .productDetailsResponseDtoList(productDetailsResponseDtoList)
             .memberDestinationResponseDtoList(memberDestinationResponseDtoList)

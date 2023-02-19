@@ -1,5 +1,7 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.repository.impl;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
@@ -8,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
+import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
@@ -162,6 +165,7 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
         return from(qOrder)
             .leftJoin(qDelivery)
             .on(qOrder.eq(qDelivery.order))
+            .where(qOrder.orderNo.eq(orderNo))
             .select(qDelivery.trackingNo)
             .fetchOne();
     }

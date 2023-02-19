@@ -31,7 +31,7 @@ public class DeliveryController {
      * @author 정재원 *
      */
     @PostMapping("/completion/{deliveryNo}")
-    public ResponseEntity<CommonResponseBody<Void>> DeliveryCompletion(
+    public ResponseEntity<CommonResponseBody<Void>> deliveryCompletion(
         @PathVariable Long deliveryNo) {
 
         deliveryService.completeDelivery(deliveryNo);
