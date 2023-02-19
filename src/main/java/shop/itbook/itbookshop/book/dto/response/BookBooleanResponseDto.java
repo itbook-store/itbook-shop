@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.book.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * @author 이하늬

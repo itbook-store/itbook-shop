@@ -159,8 +159,8 @@ public class BookServiceImpl implements BookService {
     public Book updateBook(BookModifyRequestDto requestDto, Long productNo, Product product) {
         Book book = this.findBookEntity(productNo);
 
-        DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate ld = LocalDate.parse(requestDto.getBookCreatedAt(), DATEFORMATTER);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate ld = LocalDate.parse(requestDto.getBookCreatedAt(), dateFormatter);
         LocalDateTime date = LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
 
         book.setProduct(product);

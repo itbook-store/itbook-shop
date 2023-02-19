@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.productgroup.producttype.service.impl;
 
 import static shop.itbook.itbookshop.productgroup.product.service.impl.ProductServiceImpl.setExtraFieldsForList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.producttype.dto.response.ProductTypeResponseDto;
@@ -33,7 +33,6 @@ public class ProductTypeServiceImpl implements ProductTypeService {
     private final ProductTypeRepository productTypeRepository;
     private final ProductService productService;
     private final ProductTypeRegistrationService productTypeRegistrationService;
-    private final MemberRoleService memberRoleService;
 
     /**
      * {@inheritDoc}
@@ -65,21 +64,17 @@ public class ProductTypeServiceImpl implements ProductTypeService {
             this.findProductType(productTypeNo).getProductTypeEnum();
 
         switch (productTypeEnum) {
+            case NEW_ISSUE:
+                productList = this.findNewBookListForUser(pageable);
+                break;
+
             case DISCOUNT:
                 productList =
                     this.findDiscountBookListForUser(pageable);
                 break;
 
-            case NEW_ISSUE:
-                productList = this.findNewBookListForUser(pageable);
-                break;
-
             case BESTSELLER:
                 productList = this.findBestSellerBookListForUser(pageable);
-                break;
-
-            case POPULARITY:
-                productList = this.findPopularityBookListForUser(pageable);
                 break;
 
             case RECOMMENDATION:
@@ -88,8 +83,8 @@ public class ProductTypeServiceImpl implements ProductTypeService {
                     productService.findProductListByProductNoListForUser(pageable, productNoList);
                 break;
 
-            case RECENTLY_SEEN_PRODUCT:
-                productList = this.findRecentlySeenProductList();
+            case POPULARITY:
+                productList = this.findPopularityBookListForUser(pageable);
                 break;
 
             default:
@@ -118,29 +113,25 @@ public class ProductTypeServiceImpl implements ProductTypeService {
         switch (productTypeEnum) {
             case DISCOUNT:
                 productList =
-                    this.findDiscountBookListForUser(pageable);
+                    this.findDiscountBookListForAdmin(pageable);
                 break;
 
             case NEW_ISSUE:
-                productList = this.findNewBookListForUser(pageable);
+                productList = this.findNewBookListForAdmin(pageable);
                 break;
 
             case BESTSELLER:
-                productList = this.findBestSellerBookListForUser(pageable);
+                productList = this.findBestSellerBookListForAdmin(pageable);
                 break;
 
             case POPULARITY:
-                productList = this.findPopularityBookListForUser(pageable);
+                productList = this.findPopularityBookListForAdmin(pageable);
                 break;
 
             case RECOMMENDATION:
-                List<Long> productNoList = this.findRecommendationBookListForUser(memberNo);
+                List<Long> productNoList = this.findRecommendationBookListForAdmin(memberNo);
                 productList =
-                    productService.findProductListByProductNoListForUser(pageable, productNoList);
-                break;
-
-            case RECENTLY_SEEN_PRODUCT:
-                productList = this.findRecentlySeenProductList();
+                    productService.findProductListByProductNoListForAdmin(pageable, productNoList);
                 break;
 
             default:
@@ -258,12 +249,8 @@ public class ProductTypeServiceImpl implements ProductTypeService {
                 return purchasedTogetherProductList;
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 
 
-    // TODO 수연님 여기서 최근 본 상품 개발하시면 됩니당
-    public Page<ProductDetailsResponseDto> findRecentlySeenProductList() {
-        return null;
-    }
 }
