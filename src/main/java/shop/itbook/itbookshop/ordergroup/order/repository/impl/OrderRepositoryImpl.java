@@ -16,6 +16,11 @@ import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.QOrderTotalCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.QProductCouponApply;
+import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.QCategoryCouponApply;
+import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
+import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
+import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.QOrderTotalCouponApply;
+import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.QProductCouponApply;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.membergroup.member.entity.QMember;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDestinationDto;
@@ -23,6 +28,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
@@ -87,11 +93,12 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .select(Projections.fields(OrderListMemberViewResponseDto.class,
                 qOrderStatusHistory.order.orderNo,
                 qOrderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                qOrderStatusHistory.order.orderCreatedAt,
                 qOrderStatusHistory.order.recipientName,
                 qOrderStatusHistory.order.recipientPhoneNumber,
                 qDelivery.trackingNo
             ))
-            .orderBy(qOrderStatusHistory.order.orderNo.asc());
+            .orderBy(qOrderStatusHistory.order.orderNo.desc());
 
         List<OrderListMemberViewResponseDto> orderListViewResponseDtoList =
             jpqlQuery
@@ -180,7 +187,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderStatusHistory.order.recipientName,
                 qDelivery.trackingNo
             ))
-            .orderBy(qOrderStatusHistory.order.orderNo.asc());
+            .orderBy(qOrderStatusHistory.order.orderNo.desc());
 
         List<OrderListAdminViewResponseDto> orderListAdminViewResponseDtoList =
             jpqlQuery
@@ -330,6 +337,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
     }
 
+
     @Override
     public Order findOrderByDeliveryNo(Long deliveryNo) {
 
@@ -360,26 +368,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QProductCouponApply qProductCouponApply = QProductCouponApply.productCouponApply;
         QCategoryCouponApply qCategoryCouponApply = QCategoryCouponApply.categoryCouponApply;
 
-        JPQLQuery<OrderStatusHistory> jpqlQuery = from(qOrderStatusHistory)
-            .leftJoin(qOrderStatusHistory2)
-            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
-                .and(qOrderStatusHistory.orderStatusHistoryNo
-                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
-                )
-            )
-
-            .innerJoin(qOrder)
-            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
-//            .leftJoin(qDelivery)
-//            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-
-//            .leftJoin(qOrderTotalCouponApply)
-//            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
-
-            .where(
-                qOrder.orderNo.eq(orderNo)
-                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
-            );
+        JPQLQuery<OrderStatusHistory> jpqlQuery =
+            getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder);
 
         OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
             .leftJoin(qDelivery)
@@ -413,7 +403,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             ).fetchOne();
 
         List<OrderProductDetailResponseDto> productDetailList =
-            jpqlQuery
+            getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder)
                 .innerJoin(qOrderProduct)
                 .on(qOrderProduct.order.orderNo.eq(qOrder.orderNo))
                 .leftJoin(qProductCouponApply)
@@ -435,12 +425,153 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
                     qCoupon.name.as("couponName"),
                     qCoupon.amount.as("couponAmount"),
-                    qCoupon.percent.as("couponPercent")
+                    qCoupon.percent.as("couponPercent"),
+                    qOrderProduct.product.fixedPrice,
+                    qOrderProduct.product.discountPercent
                 ))
                 .fetch();
 
         orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
         return orderDetailsResponseDto;
+    }
+
+    private JPQLQuery<OrderStatusHistory> getJpqlQuery(Long orderNo,
+                                                       QOrderStatusHistory qOrderStatusHistory,
+                                                       QOrderStatusHistory qOrderStatusHistory2,
+                                                       QOrder qOrder) {
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
+                )
+            )
+
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+//            .leftJoin(qDelivery)
+//            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+
+//            .leftJoin(qOrderTotalCouponApply)
+//            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+
+            .where(
+                qOrder.orderNo.eq(orderNo)
+                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
+            );
+    }
+
+    @Override
+    public List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
+        Long orderNo) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+
+        QDelivery qDelivery = QDelivery.delivery;
+
+        // 주문 총액 쿠폰
+        QOrderTotalCouponApply qOrderTotalCouponApply =
+            QOrderTotalCouponApply.orderTotalCouponApply;
+        QCouponIssue qCouponIssueTotal = QCouponIssue.couponIssue;
+        QCoupon qCouponTotal = QCoupon.coupon;
+
+        // 개별 적용 쿠폰
+        QProductCouponApply qProductCouponApply = QProductCouponApply.productCouponApply;
+        QCategoryCouponApply qCategoryCouponApply = QCategoryCouponApply.categoryCouponApply;
+        QCouponIssue qCouponIssueNotTotal = new QCouponIssue("couponIssue2");
+        QCoupon qCouponNotTotal = new QCoupon("coupon2");
+
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QProduct qProduct = QProduct.product;
+
+        Integer subscriptionPeriod = from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
+                ))
+            .innerJoin(qOrderSubscription)
+            .on(qOrderSubscription.orderNo.eq(orderNo))
+            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                .and(qOrderStatusHistory.order.orderNo.eq(orderNo)))
+            .select(qOrderSubscription.subscriptionPeriod)
+            .fetchOne();
+
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
+                )
+            )
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+            .leftJoin(qDelivery)
+            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+            .innerJoin(qOrderProduct)
+            .on(qOrder.orderNo.eq(qOrderProduct.order.orderNo))
+            .innerJoin(qOrderSubscription)
+            .on(qOrderSubscription.orderNo.eq(qOrder.orderNo))
+
+            // 주문 총액 쿠폰
+            .leftJoin(qOrderTotalCouponApply)
+            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+            .leftJoin(qCouponIssueTotal)
+            .on(qCouponIssueTotal.couponIssueNo.eq(qOrderTotalCouponApply.couponIssueNo))
+            .leftJoin(qCouponTotal)
+            .on(qCouponTotal.couponNo.eq(qCouponIssueTotal.coupon.couponNo))
+
+            // 개별 적용 쿠폰 : 개별 상품, 카테고리
+            .leftJoin(qProductCouponApply)
+            .on(qProductCouponApply.orderProduct.eq(qOrderProduct))
+            .leftJoin(qCategoryCouponApply)
+            .on(qCategoryCouponApply.orderProduct.eq(qOrderProduct))
+            .leftJoin(qCouponIssueNotTotal)
+            .on(qCouponIssueNotTotal.couponIssueNo.eq(qProductCouponApply.couponIssueNo)
+                .or(qCouponIssueNotTotal.couponIssueNo.eq(qCategoryCouponApply.couponIssueNo)))
+            .leftJoin(qCouponNotTotal)
+            .on(qCouponNotTotal.couponNo.eq(qCouponIssueNotTotal.coupon.couponNo))
+            .where(
+                qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
+                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
+            .select(Projections.fields(OrderSubscriptionDetailsResponseDto.class,
+                Projections.fields(OrderDestinationDto.class,
+                    qOrder.recipientName,
+                    qOrder.recipientPhoneNumber,
+                    qOrder.postcode,
+                    qOrder.roadNameAddress,
+                    qOrder.recipientAddressDetails
+                ).as("orderDestinationDto"),
+                qOrder.orderNo,
+                qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                qOrder.orderCreatedAt,
+                qOrder.amount,
+                qOrder.deliveryFee,
+                qDelivery.deliveryNo,
+                qDelivery.trackingNo,
+                qOrder.selectedDeliveryDate,
+                // Coupon
+                qOrderTotalCouponApply.couponIssue.coupon.name.as("couponName"),
+                qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
+                qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
+                // orderProduct
+                qOrderProduct.orderProductNo,
+                qOrderProduct.product.name.as("productName"),
+                qOrderProduct.count,
+                qOrderProduct.productPrice,
+                qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
+                // 주문 총액 쿠폰
+                qCouponTotal.name.as("totalCouponName"),
+                qCouponTotal.amount.as("totalCouponAmount"),
+                qCouponTotal.percent.as("totalCouponPercent"),
+                // 개별 적용 쿠폰
+                qCouponNotTotal.name.as("couponName"),
+                qCouponNotTotal.amount.as("couponAmount"),
+                qCouponNotTotal.percent.as("couponPercent")
+            )).fetch();
     }
 }

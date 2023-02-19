@@ -12,20 +12,26 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CustomCategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.QCouponType;
 
 /**
+ * CustomCategoryCouponRepository 의 구현체 입니다.
+ *
  * @author 송다혜
  * @since 1.0
  */
 public class CategoryCouponRepositoryImpl extends QuerydslRepositorySupport implements
     CustomCategoryCouponRepository {
+
     public CategoryCouponRepositoryImpl() {
         super(CategoryCoupon.class);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<AdminCouponListResponseDto> findCategoryCouponList(Pageable pageable) {
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;

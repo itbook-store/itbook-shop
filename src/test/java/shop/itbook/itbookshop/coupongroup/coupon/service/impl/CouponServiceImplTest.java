@@ -1,13 +1,16 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,20 +19,26 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
+import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
@@ -112,4 +121,51 @@ class CouponServiceImplTest {
         assertThat(actual.getCode()).isEqualTo(percentDummyCoupon.getCode());
 
     }
+
+    @Test
+    void findByCouponList(){
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto()), pageRequest, 10);
+
+        given(couponRepository.findCouponList(any())).willReturn(page);
+
+        Page<AdminCouponListResponseDto> results = couponService.findByCouponList(pageRequest.previousOrFirst());
+
+        assertThat(results).hasSize(page.getContent().size());
+    }
+
+    @Test
+    void findByCouponAtCouponTypeList_success(){
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto()), pageRequest, 10);
+
+        given(couponRepository.findByCouponAtCouponTypeList(any(),any())).willReturn(page);
+
+        Page<AdminCouponListResponseDto> results = couponService.findByCouponAtCouponTypeList(pageRequest.previousOrFirst(), CouponTypeEnum.BIRTHDAY_COUPON.getCouponType());
+
+        assertThat(results).hasSize(page.getContent().size());
+    }
+
+    @Test
+    void findByCouponAtCouponTypeList_fail(){
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto()), pageRequest, 10);
+
+        given(couponRepository.findByCouponAtCouponTypeList(any(),any())).willReturn(page);
+
+        assertThatThrownBy(() -> couponService.findByCouponAtCouponTypeList(pageRequest.previousOrFirst(), "아무거나"))
+            .isInstanceOf(CouponTypeNotFoundException.class);
+    }
+
+    @Test
+    void findByCouponEntity_success(){
+        Coupon coupon = new Coupon();
+        coupon.setCouponNo(1L);
+        given(couponRepository.findById(anyLong())).willReturn(Optional.of(coupon));
+
+        Coupon result = couponService.findByCouponEntity(coupon.getCouponNo());
+
+        assertThat(result.getCouponNo()).isEqualTo(coupon.getCouponNo());
+    }
+
 }

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
  * @since 1.0
  */
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 public class BookBooleanResponseDto {
     private Boolean isExists;
