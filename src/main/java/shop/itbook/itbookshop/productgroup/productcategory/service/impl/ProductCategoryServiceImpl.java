@@ -60,7 +60,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         Category parentCategory =
             categoryService.findCategoryEntity(categoryList.get(0)).getParentCategory();
 
-        productCategoryRepository.deleteByPk_productNo(product.getProductNo());
+        this.removeProductCategory(product.getProductNo());
         List<Category> categories = categoryRepository.findAllById(categoryList);
 
         for (Category category : categories) {
