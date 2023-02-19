@@ -99,6 +99,7 @@ class ProductInquiryReplyRepositoryImplTest {
             productInquiryReplyRepository.findProductInquiryReply(1L);
 
         assertThat(productInquiryReplyResponseDtos.size()).isNotIn(-1);
+        
     }
 
 
