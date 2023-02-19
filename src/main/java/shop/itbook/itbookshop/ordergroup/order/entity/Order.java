@@ -3,19 +3,24 @@ package shop.itbook.itbookshop.ordergroup.order.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
+import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 
 /**
  * 주문에 관한 엔티티입니다.
@@ -42,8 +47,19 @@ public class Order {
     @Column(name = "selected_delivery_date", nullable = false)
     private LocalDate selectedDeliveryDate;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.REMOVE})
     private List<OrderProduct> orderProducts;
+
+    @OneToMany(mappedBy = "order", cascade = {CascadeType.REMOVE})
+    private List<OrderStatusHistory> orderStatusHistories;
+
+
+    @OneToOne(mappedBy = "order", cascade = {CascadeType.REMOVE})
+    private OrderMember orderMember;
+
+    @OneToOne(mappedBy = "order", cascade = {CascadeType.REMOVE})
+    private OrderNonMember orderNonMember;
+
 
     @Column(name = "recipient_name", columnDefinition = "varchar(20)", nullable = false)
     private String recipientName;

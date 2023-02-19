@@ -308,31 +308,6 @@ public class OrderServiceImpl implements OrderService {
         } //end while
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Transactional
-    public OrderPaymentDto reOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                                Long orderNo) {
-
-        Order order = findOrderEntity(orderNo);
-
-        order.setAmount(0L);
-        order.setIncreasePoint(0L);
-        order.setDeliveryFee(0L);
-
-        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
-        Optional<Long> optionalMemberNo = Optional.empty();
-        if (optionalOrderMember.isPresent()) {
-            optionalMemberNo =
-                Optional.ofNullable(optionalOrderMember.get().getMember().getMemberNo());
-        }
-
-        return getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order,
-            optionalMemberNo);
-    }
-
     private OrderPaymentDto getOrderPaymentDtoForMakingPayment(
         OrderAddRequestDto orderAddRequestDto,
         Order order, Optional<Long> optionalMemberNo) {
@@ -359,7 +334,7 @@ public class OrderServiceImpl implements OrderService {
 
         // toss 정책 상 100원 이하 결제 막기.
         if (amount <= 100) {
-            throw new AmountException(amount);
+            throw new AmountException();
         }
 
         order.setAmount(amount);
@@ -424,7 +399,7 @@ public class OrderServiceImpl implements OrderService {
 
             Coupon coupon =
                 this.getCoupon(productDetailsDto.getCouponIssueNo(), sellingPrice);
-            if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
+            if (Objects.isNull(coupon)) {
                 orderProductService.addOrderProduct(order, product, productCnt,
                     totalPriceOfSameProducts);
                 this.increasePointAboutOrderProduct(order, product, totalPriceOfSameProducts,
@@ -574,7 +549,7 @@ public class OrderServiceImpl implements OrderService {
                                                             long amount, Long orderNo) {
         Coupon coupon =
             this.getCoupon(orderAddRequestDto.getOrderTotalCouponNo(), amount);
-        if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
+        if (Objects.isNull(coupon)) {
             return amount;
         }
 
@@ -941,5 +916,33 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
         Long orderNo) {
         return orderRepository.findOrderSubscriptionDetailsResponseDto(orderNo);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrderAndRollBackStock(Long orderNo) {
+
+        List<OrderProduct> orderProductList =
+            orderProductService.findOrderProductsEntityByOrderNo(orderNo);
+
+        if (orderProductList.isEmpty()) {
+            if (!orderRepository.existsById(orderNo)) {
+                throw new OrderNotFoundException();
+            }
+        }
+
+        for (OrderProduct orderProduct : orderProductList) {
+            Product product =
+                productService.findProductEntity(orderProduct.getProduct().getProductNo());
+
+            if (product.getIsSubscription()) {
+                break;
+            }
+
+            Integer stock = product.getStock();
+            product.setStock(++stock);
+        }
+
+        orderRepository.deleteById(orderNo);
     }
 }
