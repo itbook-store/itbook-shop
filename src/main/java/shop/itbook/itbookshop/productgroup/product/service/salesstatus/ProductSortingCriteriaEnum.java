@@ -27,7 +27,8 @@ public enum ProductSortingCriteriaEnum {
                 return TOTAL_SALES;
             case "판매금액":
                 return SALES_AMOUNT;
+            default:
+                return null;
         }
-        return null;
     }
 }

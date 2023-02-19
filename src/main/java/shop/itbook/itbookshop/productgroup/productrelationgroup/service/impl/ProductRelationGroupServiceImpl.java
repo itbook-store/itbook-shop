@@ -125,7 +125,6 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
 
         Page<ProductRelationResponseDto> basedProductNoListAdmin =
             productRelationRepository.getAllBasedProductNoListAdmin(pageable);
-        ;
         return basedProductNoListAdmin;
     }
 
