@@ -464,7 +464,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 ))
             .innerJoin(qOrderSubscription)
             .on(qOrderSubscription.orderNo.eq(orderNo))
-            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
+            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                .and(qOrderStatusHistory.order.orderNo.eq(orderNo)))
             .select(qOrderSubscription.subscriptionPeriod)
             .fetchOne();
 
@@ -489,9 +490,11 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .on(qProductCouponApply.orderProduct.eq(qOrderProduct))
             .leftJoin(qCategoryCouponApply)
             .on(qCategoryCouponApply.orderProduct.eq(qOrderProduct))
+            .leftJoin(qCouponIssue)
+            .on(qProductCouponApply.couponIssue.eq(qCouponIssue)
+                .or(qCategoryCouponApply.couponIssue.eq(qCouponIssue)))
             .leftJoin(qCoupon)
-            .on(qCoupon.eq(qCategoryCouponApply.couponIssue.coupon)
-                .or(qCoupon.eq(qProductCouponApply.couponIssue.coupon)))
+            .on(qCoupon.eq(qCouponIssue.coupon))
             .where(
                 qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
                     .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
