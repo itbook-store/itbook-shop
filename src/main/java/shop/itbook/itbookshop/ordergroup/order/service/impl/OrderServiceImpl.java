@@ -423,7 +423,7 @@ public class OrderServiceImpl implements OrderService {
 
             Coupon coupon =
                 this.getCoupon(productDetailsDto.getCouponIssueNo(), sellingPrice);
-            if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
+            if (Objects.isNull(coupon)) {
                 orderProductService.addOrderProduct(order, product, productCnt,
                     totalPriceOfSameProducts);
                 this.increasePointAboutOrderProduct(order, product, totalPriceOfSameProducts,
@@ -573,7 +573,7 @@ public class OrderServiceImpl implements OrderService {
                                                             long amount, Long orderNo) {
         Coupon coupon =
             this.getCoupon(orderAddRequestDto.getOrderTotalCouponNo(), amount);
-        if (AmountCalculationBeforePaymentUtil.isUnavailableCoupon(coupon)) {
+        if (Objects.isNull(coupon)) {
             return amount;
         }
 
