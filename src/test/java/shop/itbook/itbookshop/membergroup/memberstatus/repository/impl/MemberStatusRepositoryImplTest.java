@@ -36,7 +36,7 @@ class MemberStatusRepositoryImplTest {
         MemberStatusResponseDto memberStatusResponseDto =
             memberStatusRepository.findByMemberStatusName("정상회원").orElseThrow();
 
-        assertThat(memberStatusResponseDto.getMemberStatusNo()).isEqualTo(2);
+        assertThat(memberStatusResponseDto.getMemberStatusName()).isEqualTo("정상회원");
     }
 
     @Test

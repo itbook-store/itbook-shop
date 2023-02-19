@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -40,16 +41,18 @@ import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.review.service.ReviewIncreasePointHistoryService;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.review.dto.request.ReviewRequestDto;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.review.dummy.ReviewDummy;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
+import shop.itbook.itbookshop.productgroup.review.exception.ReviewComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
@@ -109,6 +112,8 @@ class ReviewServiceImplTest {
     ProductAddRequestDto productAddRequestDto;
 
     MemberRequestDto memberRequestDto;
+
+    UnwrittenReviewOrderProductResponseDto unwrittenReviewOrderProductResponseDto;
 
     Review dummyReview;
     OrderProduct dummyOrderProduct;
@@ -174,6 +179,11 @@ class ReviewServiceImplTest {
         dummyReview.setProduct(dummyProduct);
         dummyReview.setMember(dummyMember);
         reviewRepository.save(dummyReview);
+
+        unwrittenReviewOrderProductResponseDto =
+            UnwrittenReviewOrderProductResponseDto.builder().orderProductNo(4L).productNo(1L)
+                .name("재미있습니다.").thumbnailUrl("testurl").orderCreatedAt(
+                    LocalDateTime.now()).build();
     }
 
     @Test
@@ -228,5 +238,63 @@ class ReviewServiceImplTest {
         Assertions.assertThatThrownBy(() -> reviewService.findReviewById(1L))
             .isInstanceOf(ReviewNotFoundException.class)
             .hasMessage(ReviewNotFoundException.MESSAGE);
+    }
+
+    @Test
+    void findReviewByIdAndMemberNo() {
+
+        given(reviewRepository.findById(anyLong())).willReturn(Optional.of(dummyReview));
+
+        Assertions.assertThatThrownBy(() -> reviewService.findReviewByIdAndMemberNo(1L, 1L))
+            .isInstanceOf(ReviewComeCloseOtherMemberException.class)
+            .hasMessage(ReviewComeCloseOtherMemberException.MESSAGE);
+    }
+
+    @Test
+    void deleteReview() {
+        given(reviewRepository.findById(any())).willReturn(Optional.of(dummyReview));
+
+        Review review = reviewRepository.findById(1L).orElseThrow();
+        reviewService.deleteReview(review.getOrderProductNo());
+
+    }
+
+    @Test
+    void modifyReview() {
+
+        given(reviewRepository.findById(any())).willReturn(Optional.of(dummyReview));
+
+        Review review = reviewRepository.findById(1L).orElseThrow();
+        reviewService.modifyReview(review.getOrderProductNo(), reviewRequestDto, null);
+    }
+
+    @Test
+    void findReviewListByProductNo() {
+        given(reviewService.findReviewListByProductNo(any(), any())).willReturn(
+            new PageImpl<>(List.of(reviewResponseDto)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<ReviewResponseDto> page = reviewService.findReviewListByProductNo(pageRequest, 1L);
+
+        List<ReviewResponseDto> reviewList = page.getContent();
+
+        assertThat(reviewList.size()).isEqualTo(1);
+        assertThat(reviewList.get(0).getMemberNo()).isEqualTo(1L);
+    }
+
+    @Test
+    void findUnwrittenReviewOrderProductList() {
+        given(reviewService.findUnwrittenReviewOrderProductList(any(), any())).willReturn(
+            new PageImpl<>(List.of(unwrittenReviewOrderProductResponseDto)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<UnwrittenReviewOrderProductResponseDto> page =
+            reviewService.findUnwrittenReviewOrderProductList(pageRequest, 1L);
+
+        List<UnwrittenReviewOrderProductResponseDto> reviewList = page.getContent();
+
+        assertThat(reviewList.size()).isEqualTo(1);
     }
 }
