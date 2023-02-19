@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.membergroup.member.controller.serviceapi;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -13,6 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +24,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
+import shop.itbook.itbookshop.membergroup.member.dto.request.MemberSocialRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberStatusUpdateAdminRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberUpdateRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberBooleanResponseDto;
 import shop.itbook.itbookshop.membergroup.member.dto.response.MemberResponseDto;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
+import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
+import shop.itbook.itbookshop.membergroup.memberdestination.entity.MemberDestination;
+import shop.itbook.itbookshop.membergroup.memberdestination.repository.MemberDestinationRepository;
 import shop.itbook.itbookshop.membergroup.memberdestination.service.MemberDestinationService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 
@@ -55,6 +63,8 @@ class MemberControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
+    @MockBean
+    private MemberDestinationRepository memberDestinationRepository;
 
     @Test
     void memberAdd() throws Exception {
@@ -114,6 +124,32 @@ class MemberControllerTest {
     }
 
     @Test
+    void memberDetailsByMemberId() throws Exception {
+        MemberResponseDto memberResponseDto =
+            new MemberResponseDto(1L, "user1000", "white", "정상회원", "딸기", "유저1000", true,
+                LocalDateTime.of(2000, 1, 1, 0, 0, 0), "1234", "010-0000-0000", "user1000@test.com",
+                LocalDateTime.now(), false, false);
+
+        given(memberService.findMemberByMemberId(any()))
+            .willReturn(memberResponseDto);
+
+        mvc.perform(get("/api/members/memberId/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.result.memberNo", equalTo(1)))
+            .andExpect(jsonPath("$.result.memberId", equalTo(memberResponseDto.getMemberId())))
+            .andExpect(jsonPath("$.result.membershipGrade",
+                equalTo(memberResponseDto.getMembershipGrade())))
+            .andExpect(jsonPath("$.result.memberStatusName",
+                equalTo(memberResponseDto.getMemberStatusName())))
+            .andExpect(jsonPath("$.result.nickname", equalTo(memberResponseDto.getNickname())))
+            .andExpect(jsonPath("$.result.name", equalTo(memberResponseDto.getName())))
+            .andExpect(jsonPath("$.result.isMan", equalTo(memberResponseDto.getIsMan())));
+    }
+
+    @Test
     void memberModify() throws Exception {
 
         MemberUpdateRequestDto memberUpdateRequestDto = new MemberUpdateRequestDto();
@@ -148,6 +184,69 @@ class MemberControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
+
+    @Test
+    void OauthRegister() throws Exception {
+        MemberSocialRequestDto memberSocialRequestDto = new MemberSocialRequestDto();
+
+        ReflectionTestUtils.setField(memberSocialRequestDto, "memberNo", 1L);
+        ReflectionTestUtils.setField(memberSocialRequestDto, "memberId", "user@gmail.com");
+        ReflectionTestUtils.setField(memberSocialRequestDto, "nickname", "유저5");
+        ReflectionTestUtils.setField(memberSocialRequestDto, "name", "유저");
+        ReflectionTestUtils.setField(memberSocialRequestDto, "isMan", false);
+        ReflectionTestUtils.setField(memberSocialRequestDto, "birth",
+            "20000504000000");
+        ReflectionTestUtils.setField(memberSocialRequestDto, "phoneNumber", "01022933823");
+        ReflectionTestUtils.setField(memberSocialRequestDto, "email", "user@gmail.com");
+        ReflectionTestUtils.setField(memberSocialRequestDto, "isSocial", true);
+        ReflectionTestUtils.setField(memberSocialRequestDto, "isWriter", false);
+
+        mvc.perform(put("/api/members/sign-up/social")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(memberSocialRequestDto)))
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void OauthLoginExistsEmail() throws Exception {
+
+        SuccessfulResponseDto successfulResponseDto = new SuccessfulResponseDto();
+
+        given(memberRepository.existsByEmailAndIsSocial(any())).willReturn(false);
+
+        successfulResponseDto.setIsSuccessful(
+            memberService.checkMemberOauthEmailExists("user@gmail.com"));
+
+        mvc.perform(post("/api/members/oauth/login/find")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(successfulResponseDto)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void OauthLoginNotExistsEmail() throws Exception {
+
+        SuccessfulResponseDto successfulResponseDto = new SuccessfulResponseDto();
+
+        given(memberRepository.existsByEmailAndIsSocial(any())).willReturn(true);
+
+        given(memberService.socialMemberAdd(any(), anyString())).willReturn(1L);
+
+        successfulResponseDto.setIsSuccessful(
+            memberService.checkMemberOauthEmailExists("user@gmail.com"));
+
+        mvc.perform(post("/api/members/oauth/login/find")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(successfulResponseDto)))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
 
     @Test
     void memberIdDuplicateCheck() throws Exception {
@@ -213,7 +312,6 @@ class MemberControllerTest {
             .andExpect(jsonPath("$.result.isExists", equalTo(true)));
     }
 
-
     @DisplayName("자사 로그인 컨트롤러 테스트")
     @Test
     void authLogin() throws Exception {
@@ -231,4 +329,52 @@ class MemberControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.header.resultMessage", equalTo("특정 멤버를 불러오는데 성공하였습니다.")));
     }
+
+    @Test
+    void nameCheck() throws Exception {
+        MemberBooleanResponseDto memberBooleanResponseDto = new MemberBooleanResponseDto();
+        ReflectionTestUtils.setField(memberBooleanResponseDto, "isExists", true);
+
+        given(memberRepository.existsByNameAndFindNameWithMemberId(any(), anyString())).willReturn(
+            true);
+
+        given(memberService.checkNameDuplicate("user1", "유저")).willReturn(memberBooleanResponseDto);
+
+        mvc.perform(get("/api/members/register-check/memberId/1/name/유저")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void memberDestinationList() throws Exception {
+
+        MemberDestinationResponseDto memberDestinationResponseDto =
+            new MemberDestinationResponseDto();
+        ReflectionTestUtils.setField(memberDestinationResponseDto, "recipientDestinationNo", 1L);
+        ReflectionTestUtils.setField(memberDestinationResponseDto, "recipientName", "유저");
+        ReflectionTestUtils.setField(memberDestinationResponseDto, "recipientPhoneNumber",
+            "01029292811");
+        ReflectionTestUtils.setField(memberDestinationResponseDto, "postcode", 62222);
+        ReflectionTestUtils.setField(memberDestinationResponseDto, "roadNameAddress", "서울 동작구");
+        ReflectionTestUtils.setField(memberDestinationResponseDto, "recipientAddressDetails", "1층");
+
+        given(memberDestinationRepository.findAllByMember_MemberNoOrderByRecipientDestinationNoDesc(
+            anyLong())).willReturn(
+            List.of(new MemberDestination()));
+
+        given(memberDestinationService.findMemberDestinationResponseDtoByMemberNo(1L)).willReturn(
+            List.of(memberDestinationResponseDto));
+
+        mvc.perform(get("/api/members/1/member-destinations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+
 }
