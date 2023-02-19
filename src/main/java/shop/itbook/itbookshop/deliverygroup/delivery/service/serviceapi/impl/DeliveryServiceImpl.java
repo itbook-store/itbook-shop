@@ -34,9 +34,8 @@ public class DeliveryServiceImpl implements DeliveryService {
     private final DeliveryStatusRepository deliveryStatusRepository;
     private final DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
     private final OrderStatusHistoryService orderStatusHistoryService;
-
     private final OrderRepository orderRepository;
-    
+
     @Override
     @Transactional
     public void registerDelivery(Order order) {

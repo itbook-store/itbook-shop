@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -37,7 +38,7 @@ public class OrderCancelIncreasePointHistory {
     @JoinColumn(name = "point_history_no", nullable = false)
     private PointHistory pointHistory;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_no", nullable = false, unique = true)
     private Order order;
 
