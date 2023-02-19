@@ -3,23 +3,22 @@ package shop.itbook.itbookshop.deliverygroup.delivery.repository.impl;
 import static com.querydsl.core.group.GroupBy.groupBy;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryDetailResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithStatusResponseDto;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.CustomDeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.QDeliveryStatus;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
-import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.QDeliveryStatusHistory;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
+import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
 
 /**
  * CustomDeliveryRepository 의 구현 클래스.
@@ -43,26 +42,33 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
     @SuppressWarnings("checkstyle:LocalVariableName")
     @Override
     public Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatus(Pageable pageable) {
+
+        return getDeliveryWithStatusResponseDtoList(pageable, OrderStatusEnum.PAYMENT_COMPLETE);
+    }
+
+    private Page<DeliveryWithStatusResponseDto> getDeliveryWithStatusResponseDtoList(
+        Pageable pageable, OrderStatusEnum orderStatusEnum) {
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+
         QDelivery qDelivery = QDelivery.delivery;
 
-        QDeliveryStatusHistory qDeliveryStatusHistory1 =
-            QDeliveryStatusHistory.deliveryStatusHistory;
-
-        QDeliveryStatusHistory qDeliveryStatusHistory2 =
-            new QDeliveryStatusHistory("deliveryStatusHistory2");
-
-        QDeliveryStatus qDeliveryStatus = QDeliveryStatus.deliveryStatus;
-
-        JPQLQuery<DeliveryWithStatusResponseDto> jpqlQuery =
-            getDeliveryStatusHistoryJPQLQuery(qDeliveryStatusHistory1, qDeliveryStatusHistory2,
-                qDelivery,
-                qDeliveryStatus, qDeliveryStatusHistory2.deliveryStatusHistoryNo.isNull())
-                .select(Projections.fields(DeliveryWithStatusResponseDto.class,
-                    qDelivery.deliveryNo,
-                    qDelivery.order.orderNo,
-                    qDelivery.trackingNo,
-                    qDeliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")))
-                .orderBy(qDelivery.deliveryNo.asc());
+        JPQLQuery<DeliveryWithStatusResponseDto> jpqlQuery = from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+            .where(qOrderStatusHistory.orderStatus.orderStatusEnum.eq(orderStatusEnum)
+                .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
+            .select(Projections.fields(DeliveryWithStatusResponseDto.class,
+                qDelivery.deliveryNo,
+                qDelivery.order.orderNo,
+                qDelivery.trackingNo,
+                qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("deliveryStatus")))
+            .orderBy(qDelivery.deliveryNo.desc());
 
         List<DeliveryWithStatusResponseDto> deliveryWithStatusResponseDtoList =
             jpqlQuery.offset(pageable.getOffset())
@@ -79,36 +85,7 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
     @SuppressWarnings("checkstyle:LocalVariableName")
     @Override
     public Page<DeliveryWithStatusResponseDto> findDeliveryListWithStatusWait(Pageable pageable) {
-        QDelivery qDelivery = QDelivery.delivery;
-
-        QDeliveryStatusHistory qDeliveryStatusHistory1 =
-            QDeliveryStatusHistory.deliveryStatusHistory;
-
-        QDeliveryStatusHistory qDeliveryStatusHistory2 =
-            new QDeliveryStatusHistory("deliveryStatusHistory2");
-
-        QDeliveryStatus qDeliveryStatus = QDeliveryStatus.deliveryStatus;
-
-        JPQLQuery<DeliveryWithStatusResponseDto> jpqlQuery =
-            getDeliveryStatusHistoryJPQLQuery(qDeliveryStatusHistory1, qDeliveryStatusHistory2,
-                qDelivery,
-                qDeliveryStatus, qDeliveryStatusHistory2.deliveryStatusHistoryNo.isNull()
-                    .and(qDeliveryStatus.deliveryStatusEnum.eq(DeliveryStatusEnum.WAIT_DELIVERY)))
-                .select(Projections.fields(DeliveryWithStatusResponseDto.class,
-                    qDelivery.deliveryNo,
-                    qDelivery.order.orderNo,
-                    qDelivery.trackingNo,
-                    qDeliveryStatus.deliveryStatusEnum.stringValue().as("deliveryStatus")))
-                .orderBy(qDelivery.deliveryNo.asc());
-
-        List<DeliveryWithStatusResponseDto> deliveryWithStatusWaitResponseDtoList =
-            jpqlQuery
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        return PageableExecutionUtils.getPage(deliveryWithStatusWaitResponseDtoList, pageable,
-            jpqlQuery::fetchCount);
+        return getDeliveryWithStatusResponseDtoList(pageable, OrderStatusEnum.WAIT_DELIVERY);
     }
 
     /**
@@ -117,43 +94,26 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
     @SuppressWarnings("checkstyle:LocalVariableName")
     @Override
     public List<Delivery> findDeliveryEntityListWithStatusWait() {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+
         QDelivery qDelivery = QDelivery.delivery;
 
-        QDeliveryStatusHistory qDeliveryStatusHistory1 =
-            QDeliveryStatusHistory.deliveryStatusHistory;
-
-        QDeliveryStatusHistory qDeliveryStatusHistory2 =
-            new QDeliveryStatusHistory("deliveryStatusHistory2");
-
-        QDeliveryStatus qDeliveryStatus = QDeliveryStatus.deliveryStatus;
-
-        return getDeliveryStatusHistoryJPQLQuery(qDeliveryStatusHistory1, qDeliveryStatusHistory2,
-            qDelivery,
-            qDeliveryStatus, qDeliveryStatusHistory2.deliveryStatusHistoryNo.isNull()
-                .and(qDeliveryStatus.deliveryStatusEnum.eq(DeliveryStatusEnum.WAIT_DELIVERY)))
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+            .innerJoin(qDelivery)
+            .on(qDelivery.order.eq(qOrderStatusHistory.order))
+            .where(qOrderStatusHistory.orderStatus.orderStatusEnum.eq(OrderStatusEnum.WAIT_DELIVERY)
+                .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
             .select(qDelivery)
             .fetch();
-    }
-
-    @SuppressWarnings("checkstyle:ParameterName")
-    private JPQLQuery<DeliveryStatusHistory> getDeliveryStatusHistoryJPQLQuery(
-        QDeliveryStatusHistory qDeliveryStatusHistory1,
-        QDeliveryStatusHistory qDeliveryStatusHistory2,
-        QDelivery qDelivery, QDeliveryStatus qDeliveryStatus,
-        BooleanExpression deliveryStatusHistoryNoIsNull) {
-        return from(qDeliveryStatusHistory1)
-            .leftJoin(qDeliveryStatusHistory2)
-            .on(qDeliveryStatusHistory1.delivery.deliveryNo.eq(
-                qDeliveryStatusHistory2.delivery.deliveryNo).and(
-                qDeliveryStatusHistory1.deliveryStatusHistoryNo.lt(
-                    qDeliveryStatusHistory2.deliveryStatusHistoryNo)))
-            .innerJoin(qDelivery)
-            .on(qDelivery.deliveryNo.eq(qDeliveryStatusHistory1.delivery.deliveryNo))
-            .fetchJoin()
-            .innerJoin(qDeliveryStatus)
-            .on(qDeliveryStatusHistory1.deliveryStatus.eq(qDeliveryStatus))
-            .fetchJoin()
-            .where(deliveryStatusHistoryNoIsNull);
     }
 
     @Override
