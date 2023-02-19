@@ -231,6 +231,9 @@ class CategoryServiceImplTest {
         Category dummyCategory = Category.builder()
             .categoryName("IT서적")
             .isHidden(false)
+            .parentCategory(dummyCategoryBook)
+            .level(0)
+            .sequence(1)
             .build();
         dummyCategory.setCategoryNo(3);
         given(categoryRepository.findById(anyInt()))
