@@ -121,7 +121,7 @@ class ProductInquiryRepositoryImplTest {
     void findProductInquiry() {
         ProductInquiryResponseDto productInquiry = productInquiryRepository.findProductInquiry(1L);
 
-        assertThat(productInquiry.getProductNo()).isEqualTo(dummyProduct.getProductNo());
+        assertThat(productInquiry.getProductInquiryNo()).isEqualTo(1L);
     }
 
     @Test
