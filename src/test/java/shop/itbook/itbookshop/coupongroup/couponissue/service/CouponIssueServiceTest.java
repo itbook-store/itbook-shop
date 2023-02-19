@@ -11,9 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec.CategoryCouponApplyService;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CategoryCouponIssueListResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CouponIssueListByGroupResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.OrderTotalCouponIssueResponseListDto;
@@ -62,6 +66,36 @@ class CouponIssueServiceTest {
     @MockBean
     OrderProductRepository orderProductRepository;
 
+
+
+//    @Test
+//    void addCouponIssueByCoupon(){
+//
+//    }
+//
+//    @Test
+//    void addCouponIssueByCoupons(){
+//
+//    }
+//    @Test
+//    void makeCouponIssue(){
+//
+//    }
+
+    @Test
+    void findCouponIssueListByMemberNo(){
+
+    }
+
+    @Test
+    void changePeriodExpiredByMemberNo(){
+
+    }
+
+    @Test
+    void usePointCouponAndCreatePointHistory(){
+
+    }
     @Test
     @DisplayName("유저가 사용 가능한 모든 쿠폰을 불러오는지 테스트")
     void findMemberAvailableCouponIssuesList() {
@@ -81,5 +115,58 @@ class CouponIssueServiceTest {
         assertThat(actual.getCategoryCouponList()).hasSize(2);
         assertThat(actual.getProductCouponList()).hasSize(2);
         assertThat(actual.getOrderTotalCouponList()).hasSize(2);
+    }
+
+    @Test
+    void findAvailableProductCategoryCouponByMemberNoAndProductNo(){
+
+    }
+
+    @Test
+    void findAvailableOrderTotalCouponByMemberNo(){
+
+    }
+
+    @Test
+    void findAllCouponIssue(){
+
+    }
+
+    @Test
+    void findCouponIssueByCouponIssueNo(){
+
+    }
+
+    @Test
+    void usingCouponIssue(){
+
+    }
+
+    @Test
+    void cancelCouponIssue(){
+
+    }
+
+    @Test
+    void saveCouponApplyAboutCategoryAndProduct(){
+
+    }
+
+    @Test
+    void findCouponIssueSearch_memberId(){
+        Pageable pageable = Pageable.unpaged();
+//        Page<AdminCouponIssueListResponseDto> couponIssueList = List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto())
+    }
+    @Test
+    void findCouponIssueSearch_couponName(){
+
+    }
+    @Test
+    void findCouponIssueSearch_couponCode(){
+
+    }
+    @Test
+    void findCouponIssueSearch_default(){
+
     }
 }

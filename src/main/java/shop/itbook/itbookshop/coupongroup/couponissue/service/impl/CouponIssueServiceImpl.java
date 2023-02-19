@@ -39,6 +39,7 @@ import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberServic
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
+import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 
 /**
  * @author 송다혜
@@ -69,7 +70,7 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
         Coupon coupon = couponService.findByCouponEntity(couponNo);
 
-        CouponIssue couponIssue = null;
+        CouponIssue couponIssue;
         try {
             couponIssue = makeCouponIssue(member, coupon);
             couponIssue = couponIssueRepository.save(couponIssue);
@@ -255,7 +256,8 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     public void saveCouponApplyAboutCategoryAndProduct(Long couponIssueNo, Long orderProductNo) {
         CouponIssue couponIssue = couponIssueRepository.findByIdFetchJoin(couponIssueNo);
         usingCouponIssue(couponIssueNo);
-        OrderProduct orderProduct = orderProductRepository.findById(orderProductNo).get();
+        OrderProduct orderProduct = orderProductRepository.findById(orderProductNo).orElseThrow(
+            ProductNotFoundException::new);
         if (productCouponService.findByProductCoupon(couponIssue.getCoupon().getCouponNo()) !=
             null) {
             productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo,

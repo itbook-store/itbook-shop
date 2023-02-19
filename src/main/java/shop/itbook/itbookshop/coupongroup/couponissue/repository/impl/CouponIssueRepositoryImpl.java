@@ -36,6 +36,12 @@ import shop.itbook.itbookshop.productgroup.productcategory.entity.QProductCatego
  */
 public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport implements
     CustomCouponIssueRepository {
+
+    private static final String PARENT_CATEGORY = "parentCategory";
+    private static final String USAGE_STATUS_NAME = "usageStatusName";
+    private static final String COUPON_LIST_RESPONSE_DTO = "couponListResponseDto";
+    private static final String COUPON_TYPE_NAME = "couponTypeName";
+
     public CouponIssueRepositoryImpl() {
         super(CouponIssue.class);
     }
@@ -52,7 +58,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
             .select(qCouponIssue.count())
@@ -83,7 +89,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
             .select(qCouponIssue.count())
@@ -117,7 +123,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
             .select(qCouponIssue.count())
@@ -150,7 +156,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCategory.categoryNo, qCategory.categoryName,
                 qParentCategory.categoryName.as("parentCategoryName"),
                 qCouponType.couponTypeEnum.stringValue().as("couponType"),
-                qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
+                qUsageStatus.usageStatusName.stringValue().as(USAGE_STATUS_NAME),
                 qCouponIssue.couponIssueCreatedAt,
                 qCouponIssue.couponExpiredAt,
                 qCouponIssue.couponUsageCreatedAt))
@@ -231,10 +237,10 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                     qCouponIssue.couponIssueNo, qCoupon.name,
                     qCoupon.code, qCoupon.amount,
                     qCoupon.percent, qCoupon.point,
-                    qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
-                    qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
+                    qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE_NAME),
+                    qUsageStatus.usageStatusName.stringValue().as(USAGE_STATUS_NAME),
                     qCoupon.couponCreatedAt,
-                    qCoupon.couponExpiredAt).as("couponListResponseDto")))
+                    qCoupon.couponExpiredAt).as(COUPON_LIST_RESPONSE_DTO)))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
@@ -268,10 +274,10 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                     qCoupon.couponNo, qCoupon.name,
                     qCoupon.code, qCoupon.amount,
                     qCoupon.percent, qCoupon.point,
-                    qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
-                    qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
+                    qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE_NAME),
+                    qUsageStatus.usageStatusName.stringValue().as(USAGE_STATUS_NAME),
                     qCoupon.couponCreatedAt,
-                    qCoupon.couponExpiredAt).as("couponListResponseDto")))
+                    qCoupon.couponExpiredAt).as(COUPON_LIST_RESPONSE_DTO)))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
@@ -305,10 +311,10 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                     qCoupon.couponNo, qCoupon.name,
                     qCoupon.code, qCoupon.amount,
                     qCoupon.percent, qCoupon.point,
-                    qCouponType.couponTypeEnum.stringValue().as("couponTypeName"),
-                    qUsageStatus.usageStatusName.stringValue().as("usageStatusName"),
+                    qCouponType.couponTypeEnum.stringValue().as(COUPON_TYPE_NAME),
+                    qUsageStatus.usageStatusName.stringValue().as(USAGE_STATUS_NAME),
                     qCoupon.couponCreatedAt,
-                    qCoupon.couponExpiredAt).as("couponListResponseDto")))
+                    qCoupon.couponExpiredAt).as(COUPON_LIST_RESPONSE_DTO)))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCoupon.couponType, qCouponType)
@@ -422,7 +428,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
             .select(qCouponIssue.count());
@@ -453,7 +459,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
             = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
@@ -485,7 +491,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
             = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
@@ -517,7 +523,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         QProduct qProduct = QProduct.product;
         QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
         QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
+        QCategory qParentCategory = new QCategory(PARENT_CATEGORY);
 
         JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
             = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
