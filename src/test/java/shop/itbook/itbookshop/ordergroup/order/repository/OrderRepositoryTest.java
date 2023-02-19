@@ -421,7 +421,7 @@ class OrderRepositoryTest {
         orderTotalCouponApplyRepositoy.save(orderTotalCouponApply);
 
         List<OrderSubscriptionDetailsResponseDto> orderSubscriptionDetailsResponseDto =
-            orderRepository.findOrderSubscriptionDetailsResponseDto(1L);
+            orderRepository.findOrderSubscriptionDetailsResponseDto(order.getOrderNo());
 
         assertThat(orderSubscriptionDetailsResponseDto.size()).isEqualTo(1);
     }
