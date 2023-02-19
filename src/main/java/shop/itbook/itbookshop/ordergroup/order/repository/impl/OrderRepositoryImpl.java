@@ -367,20 +367,30 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     .lt(qOrderStatusHistory2.orderStatusHistoryNo)
                 )
             )
+
             .innerJoin(qOrder)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
-            .leftJoin(qDelivery)
-            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-            .leftJoin(qOrderTotalCouponApply)
-            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
-            .innerJoin(qOrderProduct)
-            .on(qOrder.orderNo.eq(qOrderProduct.order.orderNo))
+//            .leftJoin(qDelivery)
+//            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+
+//            .leftJoin(qOrderTotalCouponApply)
+//            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+
             .where(
                 qOrder.orderNo.eq(orderNo)
                     .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
             );
 
         OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
+            .leftJoin(qDelivery)
+            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+
+            .leftJoin(qOrderTotalCouponApply)
+            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+            .leftJoin(qCouponIssue)
+            .on(qCouponIssue.couponIssueNo.eq(qOrderTotalCouponApply.couponIssueNo))
+            .leftJoin(qCoupon)
+            .on(qCoupon.couponNo.eq(qCouponIssue.coupon.couponNo))
             .select(Projections.fields(OrderDetailsResponseDto.class,
                     qOrder.orderNo,
                     qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
@@ -389,9 +399,9 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrder.deliveryFee,
                     qDelivery.deliveryNo,
                     qDelivery.trackingNo,
-                    qOrderTotalCouponApply.couponIssue.coupon.name.as("couponName"),
-                    qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
-                    qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
+                    qCoupon.name.as("couponName"),
+                    qCoupon.amount.as("totalCouponAmount"),
+                    qCoupon.percent.as("totalCouponPercent"),
                     Projections.fields(OrderDestinationDto.class,
                         qOrder.recipientName.as("recipientName"),
                         qOrder.recipientPhoneNumber.as("recipientPhoneNumber"),
@@ -403,16 +413,20 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             ).fetchOne();
 
         List<OrderProductDetailResponseDto> productDetailList =
-            jpqlQuery.leftJoin(qProductCouponApply)
+            jpqlQuery
+                .innerJoin(qOrderProduct)
+                .on(qOrderProduct.order.orderNo.eq(qOrder.orderNo))
+                .leftJoin(qProductCouponApply)
                 .on(qOrderProduct.orderProductNo.eq(
                     qProductCouponApply.orderProduct.orderProductNo))
                 .leftJoin(qCategoryCouponApply)
                 .on(qOrderProduct.orderProductNo.eq(
                     qCategoryCouponApply.orderProduct.orderProductNo))
                 .leftJoin(qCouponIssue)
-                .on(qCategoryCouponApply.couponIssue.couponIssueNo.eq(qCouponIssue.couponIssueNo))
+                .on(qCouponIssue.couponIssueNo.eq(qProductCouponApply.couponIssueNo)
+                    .or(qCouponIssue.couponIssueNo.eq(qCategoryCouponApply.couponIssueNo)))
                 .leftJoin(qCoupon)
-                .on(qCouponIssue.coupon.couponNo.eq(qCoupon.couponNo))
+                .on(qCoupon.couponNo.eq(qCouponIssue.coupon.couponNo))
                 .select(Projections.fields(OrderProductDetailResponseDto.class,
                     qOrderProduct.orderProductNo,
                     qOrderProduct.product.name.as("productName"),
