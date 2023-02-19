@@ -93,6 +93,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .select(Projections.fields(OrderListMemberViewResponseDto.class,
                 qOrderStatusHistory.order.orderNo,
                 qOrderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                qOrderStatusHistory.order.orderCreatedAt,
                 qOrderStatusHistory.order.recipientName,
                 qOrderStatusHistory.order.recipientPhoneNumber,
                 qDelivery.trackingNo

@@ -401,7 +401,7 @@ class OrderRepositoryTest {
         UsageStatus usageStatus = UsageStatusDummy.getUsageStatus();
         usageStatusRepository.save(usageStatus);
 
-        CouponType couponType = CouponTypeDummy.getCouponType();
+        CouponType couponType = CouponTypeDummy.getCouponType2();
         couponTypeRepository.save(couponType);
 
         Coupon coupon = CouponDummy.getPercentCoupon();
