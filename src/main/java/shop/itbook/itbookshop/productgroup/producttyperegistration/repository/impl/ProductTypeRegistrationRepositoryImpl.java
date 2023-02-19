@@ -126,7 +126,8 @@ public class ProductTypeRegistrationRepositoryImpl extends QuerydslRepositorySup
                 qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook,
                 qBook.ebookUrl, qBook.publisherName, qBook.authorName,
                 qProduct.isPointApplyingBasedSellingPrice,
-                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted))
+                qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
+                qProduct.dailyHits))
             .where(qProductTypeRegistration.productType.productTypeNo.eq(productTypeNo));
     }
 

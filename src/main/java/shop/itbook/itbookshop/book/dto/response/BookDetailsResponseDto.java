@@ -30,6 +30,7 @@ public class BookDetailsResponseDto {
     private Boolean isSelled;
 
     private Boolean isForceSoldOut;
+    private Boolean isPointApplying;
 
     private Integer stock;
 
@@ -50,6 +51,8 @@ public class BookDetailsResponseDto {
     private LocalDateTime bookCreatedAt;
 
     private Boolean isEbook;
+    private Boolean isSubscription;
+    private Boolean isPointApplyingBasedSellingPrice;
 
     private String fileEbookUrl;
 
@@ -63,15 +66,17 @@ public class BookDetailsResponseDto {
     @Setter
     String thumbnailsName;
 
+    @Builder
+    @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     public BookDetailsResponseDto(Long productNo, String productName, String simpleDescription,
                                   String detailsDescription, Boolean isSelled,
-                                  Boolean isForceSoldOut,
+                                  Boolean isForceSoldOut, Boolean isSubscription,
                                   Integer stock, Integer increasePointPercent, Long rawPrice,
                                   Long fixedPrice, Double discountPercent,
-                                  String fileThumbnailsUrl,
+                                  String fileThumbnailsUrl, Boolean isPointApplying,
                                   String isbn, Integer pageCount, LocalDateTime bookCreatedAt,
                                   Boolean isEbook, String fileEbookUrl, String publisherName,
-                                  String authorName) {
+                                  String authorName, Boolean isPointApplyingBasedSellingPrice) {
         this.productNo = productNo;
         this.productName = productName;
         this.simpleDescription = simpleDescription;
@@ -91,5 +96,8 @@ public class BookDetailsResponseDto {
         this.fileEbookUrl = fileEbookUrl;
         this.publisherName = publisherName;
         this.authorName = authorName;
+        this.isPointApplyingBasedSellingPrice = isPointApplyingBasedSellingPrice;
+        this.isSubscription = isSubscription;
+        this.isPointApplying = isPointApplying;
     }
 }

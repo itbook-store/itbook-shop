@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import shop.itbook.itbookshop.book.BookDummy;
+import shop.itbook.itbookshop.book.dummy.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
@@ -24,7 +24,6 @@ import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.producttype.entity.ProductType;
 import shop.itbook.itbookshop.productgroup.producttype.repository.ProductTypeRepository;
 import shop.itbook.itbookshop.productgroup.producttypeenum.ProductTypeEnum;
-import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.dto.response.FindProductTypeResponseDto;
 import shop.itbook.itbookshop.productgroup.producttyperegistration.entity.ProductTypeRegistration;
 
@@ -111,6 +110,54 @@ class ProductTypeRegistrationRepositoryTest {
         Assertions.assertThat(
                 productTypeListByProductNo.get(0).getProductTypeName().getProductType())
             .isEqualTo(actualProductType.getProductTypeEnum().getProductType());
+    }
+
+    @Test
+    @DisplayName("<사용자> 상품유형 번호로 상품 리스트 조회 성공")
+    void findProductListUserWithProductTypeNoTest() {
+
+        Product actualProduct = productRepository.findById(product.getProductNo()).get();
+        ProductType actualProductType =
+            productTypeRepository.findById(productType.getProductTypeNo()).get();
+
+        ProductTypeRegistration productTypeRegistration1 =
+            new ProductTypeRegistration(actualProduct, actualProductType);
+        productTypeRegistrationRepository.save(productTypeRegistration1);
+
+
+        List<ProductDetailsResponseDto> productTypeListByProductNo =
+            productTypeRegistrationRepository.findProductListUserWithProductTypeNo(
+                PageRequest.of(0, Integer.MAX_VALUE),
+                actualProductType.getProductTypeNo()).getContent();
+
+        Assertions.assertThat(productTypeListByProductNo).hasSize(1);
+        Assertions.assertThat(
+                productTypeListByProductNo.get(0).getProductName())
+            .isEqualTo(actualProduct.getName());
+    }
+
+    @Test
+    @DisplayName("<관리자> 상품유형 번호로 상품 리스트 조회 성공")
+    void findProductListAdminWithProductTypeNoTest() {
+
+        Product actualProduct = productRepository.findById(product.getProductNo()).get();
+        ProductType actualProductType =
+            productTypeRepository.findById(productType.getProductTypeNo()).get();
+
+        ProductTypeRegistration productTypeRegistration1 =
+            new ProductTypeRegistration(actualProduct, actualProductType);
+        productTypeRegistrationRepository.save(productTypeRegistration1);
+
+
+        List<ProductDetailsResponseDto> productTypeListByProductNo =
+            productTypeRegistrationRepository.findProductListAdminWithProductTypeNo(
+                PageRequest.of(0, Integer.MAX_VALUE),
+                actualProductType.getProductTypeNo()).getContent();
+
+        Assertions.assertThat(productTypeListByProductNo).hasSize(1);
+        Assertions.assertThat(
+                productTypeListByProductNo.get(0).getProductName())
+            .isEqualTo(actualProduct.getName());
     }
 
 }

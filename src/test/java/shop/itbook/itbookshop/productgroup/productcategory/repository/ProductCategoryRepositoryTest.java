@@ -58,6 +58,7 @@ class ProductCategoryRepositoryTest {
         Category savedMainCategory = categoryRepository.save(dummyMainCategory);
 
         dummySubCategory.setCategoryName("sub");
+        dummySubCategory.setIsHidden(Boolean.FALSE);
         dummySubCategory.setParentCategory(savedMainCategory);
 
         entityManager.flush();

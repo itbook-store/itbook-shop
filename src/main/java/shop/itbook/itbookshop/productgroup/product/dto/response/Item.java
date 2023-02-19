@@ -9,8 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Item {
-
-
+    
     private SubInfo subInfo;
     private String title;
     private String author;

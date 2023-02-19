@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.paymentgroup.payment.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import shop.itbook.itbookshop.paymentgroup.payment.dto.response.PaymentResponseDto;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
 
 /**

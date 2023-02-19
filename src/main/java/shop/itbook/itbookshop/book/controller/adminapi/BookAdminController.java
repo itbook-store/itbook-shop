@@ -19,10 +19,9 @@ import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
-import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductNoResponseDto;
-import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.BookResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
@@ -56,7 +55,7 @@ public class BookAdminController {
         CommonResponseBody<Item> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.GET_SUCCESS.getMessage()), bookDetails);
+                    BookResultMessageEnum.GET_SUCCESS.getMessage()), bookDetails);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
@@ -77,7 +76,7 @@ public class BookAdminController {
         CommonResponseBody<BookBooleanResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.GET_SUCCESS.getMessage()), exists);
+                    BookResultMessageEnum.GET_SUCCESS.getMessage()), exists);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
@@ -98,7 +97,7 @@ public class BookAdminController {
         CommonResponseBody<BookBooleanResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductResultMessageEnum.GET_SUCCESS.getMessage()), exists);
+                    BookResultMessageEnum.GET_SUCCESS.getMessage()), exists);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);
     }
@@ -123,7 +122,7 @@ public class BookAdminController {
 
         CommonResponseBody<ProductNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
-                ProductResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
+                BookResultMessageEnum.ADD_SUCCESS.getMessage()), productPk);
 
         productSearchService.addSearchProduct(
             productService.findProductEntity(productPk.getProductNo()));
@@ -153,7 +152,7 @@ public class BookAdminController {
 
         CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
-                ProductResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
+                BookResultMessageEnum.MODIFY_SUCCESS.getMessage()), null);
 
         productSearchService.modifySearchProduct(productService.findProductEntity(productNo));
 

@@ -39,13 +39,13 @@ public class ProductServiceController {
      * @author 이하늬
      */
     @GetMapping
-    public ResponseEntity<CommonResponseBody<PageResponse<ProductDetailsResponseDto>>> productList(
+    public ResponseEntity productList(
         @PageableDefault Pageable pageable) {
 
         Page<ProductDetailsResponseDto> productList =
             productService.findProductListForUser(pageable);
 
-        CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
+        CommonResponseBody commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     ProductResultMessageEnum.GET_SUCCESS.getMessage()),
