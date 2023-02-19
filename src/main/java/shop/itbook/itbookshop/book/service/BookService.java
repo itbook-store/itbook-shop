@@ -1,9 +1,6 @@
 package shop.itbook.itbookshop.book.service;
 
-import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.dto.request.BookAddRequestDto;
 import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.book.dto.response.BookBooleanResponseDto;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
@@ -20,16 +17,6 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookReques
  */
 public interface BookService {
 
-    /**
-     * 모든 도서 조회를 담당하는 메서드입니다.
-     * isFiltered가 true인 경우 노출 여부가 true인 도서 리스트를 반환합니다.
-     * isFiltered가 false인 경우 모든 도서 리스트를 반환합니다.
-     *
-     * @param isFiltered 필터링 여부입니다.
-     * @return isFiltered에 따라 필터링한 도서 리스트를 반환합니다.
-     * @author 이하늬
-     */
-    List<BookDetailsResponseDto> findBookList(boolean isFiltered);
 
     /**
      * 상품이 도서일 경우 상품 번호를 받아 추가적으로 도서 정보를 등록하는 기능을 담당합니다.
@@ -99,6 +86,4 @@ public interface BookService {
      * @author 이하늬
      */
 
-    BookAddRequestDto toBookRequestDto(
-        ProductBookRequestDto requestDto);
 }

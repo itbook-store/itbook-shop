@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.productgroup.product.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -9,9 +10,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,16 +26,27 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.multipart.MultipartFile;
+import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
+import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.service.BookService;
+import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.service.CategoryService;
 import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.fileservice.FileService;
@@ -76,7 +93,7 @@ class ProductServiceTest {
     ProductRepository mockProductRepository;
 
     ProductAddRequestDto productAddRequestDto;
-    ProductAddRequestDto modifyProductAddRequestDto;
+    ProductModifyRequestDto productModifyRequestDto;
 
     MockMultipartFile mockImageFile;
     MockMultipartFile mockPdfFile;
@@ -92,13 +109,12 @@ class ProductServiceTest {
         mockPdfFile = new MockMultipartFile("pdf", "test.pdf", pdfContentType,
             new FileInputStream(path + "test.pdf"));
 
-        productAddRequestDto = ProductBookRequestDummy.getProductRequest();
-        modifyProductAddRequestDto = ProductBookRequestDummy.getProductRequest();
-        ReflectionTestUtils.setField(modifyProductAddRequestDto, "productName", "객체지향의 거짓과 오해");
+        productAddRequestDto = ProductDummy.getProductRequest();
+        productModifyRequestDto = ProductDummy.getProductModifyRequest();
+        ReflectionTestUtils.setField(productModifyRequestDto, "productName", "객체지향의 거짓과 오해");
     }
 
     @Test
-    @DisplayName("상품 등록 테스트")
     void addProductTest_success() {
         Product product = ProductTransfer.dtoToEntityAdd(productAddRequestDto);
         given(mockProductCategoryService.addProductCategory(any(Product.class), anyList()))
@@ -111,35 +127,84 @@ class ProductServiceTest {
         Assertions.assertThat(actual).isEqualTo(product.getProductNo());
     }
 
-//    @Test
-//    @DisplayName("상품 수정 테스트")
-//    void modifyProductTest_success() {
-//        Product product = mock(Product.class);
-//        given(mockProductRepository.findById(anyLong()))
-//            .willReturn(Optional.of(product));
-//        given(mockProductCategoryService.modifyProductCategory(any(Product.class), anyList()))
-//            .willReturn(CategoryDummy.getCategoryNoHiddenBook());
-//        given(mockProductRepository.save(any(Product.class)))
-//            .willReturn(ProductTransfer.dtoToEntityAdd(modifyProductAddRequestDto));
-//
-//        productService.modifyProduct(1L, modifyProductAddRequestDto, mockImageFile);
-//
-//        then(mockProductRepository).should().findById(anyLong());
-//        then(product).should().setName(anyString());
-//        then(product).should().setStock(anyInt());
-//        then(product).should().setRawPrice(anyLong());
-//        then(product).should().setIsForceSoldOut(anyBoolean());
-//    }
+    @Test
+    @DisplayName("상품 수정 테스트")
+    void modifyProductTest_success() {
+        Product product = mock(Product.class);
+        given(mockProductRepository.findById(anyLong()))
+            .willReturn(Optional.of(product));
+        given(mockProductCategoryService.modifyProductCategory(any(Product.class), anyList()))
+            .willReturn(CategoryDummy.getCategoryNoHiddenBook());
+        given(mockProductRepository.save(any(Product.class))).willReturn(product);
 
-//    @Test
-//    @DisplayName("상품 삭제 테스트")
-//    void deleteProductTest_success() {
-//        productService.removeProduct(1L);
-//
-//        then(mockProductRepository).should().save(1L);
-//        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-//        Assertions.assertThat(mockProductCategoryService.findCategoryList(pageable, 1L)).isNull();
-//    }
+        productService.modifyProduct(1L, productModifyRequestDto, mockImageFile);
+
+        then(mockProductRepository).should().findById(anyLong());
+        then(product).should().setName(anyString());
+        then(product).should().setStock(anyInt());
+        then(product).should().setRawPrice(anyLong());
+    }
+
+    @Test
+    @DisplayName("상품 삭제여부 수정 테스트")
+    void changeIsDeletedTest_success() {
+        Product product = mock(Product.class);
+        given(mockProductRepository.findById(anyLong()))
+            .willReturn(Optional.of(product));
+        given(mockProductRepository.save(any(Product.class))).willReturn(product);
+
+        productService.changeBooleanField(1L, "delete");
+
+        then(mockProductRepository).should().findById(anyLong());
+        then(product).should().setIsDeleted(anyBoolean());
+        then(mockProductRepository).should().save(product);
+    }
+
+    @Test
+    @DisplayName("상품 강제품절여부 수정 테스트")
+    void changeIsForceSoldOutTest_success() {
+        Product product = mock(Product.class);
+        given(mockProductRepository.findById(anyLong()))
+            .willReturn(Optional.of(product));
+        given(mockProductRepository.save(any(Product.class))).willReturn(product);
+
+        productService.changeBooleanField(1L, "isForceSoldOut");
+
+        then(mockProductRepository).should().findById(anyLong());
+        then(product).should().setIsForceSoldOut(anyBoolean());
+        then(mockProductRepository).should().save(product);
+
+    }
+
+    @Test
+    @DisplayName("상품 판매여부 수정 테스트")
+    void changeIsSelledTest_success() {
+        Product product = mock(Product.class);
+        given(mockProductRepository.findById(anyLong()))
+            .willReturn(Optional.of(product));
+        given(mockProductRepository.save(any(Product.class))).willReturn(product);
+
+        productService.changeBooleanField(1L, "isSelled");
+
+        then(mockProductRepository).should().findById(anyLong());
+        then(product).should().setIsSelled(anyBoolean());
+        then(mockProductRepository).should().save(product);
+    }
+
+    @Test
+    @DisplayName("상품 조회수 수정 테스트")
+    void changeDailyHitsTest_success() {
+        Product product = mock(Product.class);
+        given(mockProductRepository.findById(anyLong()))
+            .willReturn(Optional.of(product));
+        given(mockProductRepository.save(any(Product.class))).willReturn(product);
+
+        productService.changeDailyHits(1L);
+
+        then(mockProductRepository).should().findById(anyLong());
+        then(product).should().setDailyHits(anyLong());
+        then(mockProductRepository).should().save(product);
+    }
 
     @Test
     @DisplayName("상품 단건 조회 시 실패 테스트 - 상품이 없을 시 예외 발생")
@@ -164,5 +229,123 @@ class ProductServiceTest {
             .isEqualTo(product.getProductNo());
     }
 
+    @Test
+    @DisplayName("상품 상세정보 단건 조회 테스트")
+    void findProductTest_success() {
+        ProductDetailsResponseDto product = ProductDummy.getProductDetailsResponseDto();
 
+        given(mockProductRepository.findProductDetails(anyLong())).willReturn(Optional.of(product));
+
+        Optional<ProductDetailsResponseDto> actualProduct =
+            mockProductRepository.findProductDetails(1L);
+
+        Assertions.assertThat(actualProduct).isPresent();
+        Assertions.assertThat(actualProduct.get().getProductNo())
+            .isEqualTo(product.getProductNo());
+    }
+
+    @Test
+    @DisplayName("<관리자> 상품 리스트 조회 테스트")
+    void findProductListForAdmin_success() {
+        ProductDetailsResponseDto product1 = ProductDummy.getProductDetailsResponseDto();
+        ProductDetailsResponseDto product2 = ProductDummy.getProductDetailsResponseDto();
+
+        given(mockProductRepository.findProductListAdmin(any(Pageable.class))).willReturn(
+            new PageImpl<>(
+                List.of(product1, product2)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        // when
+        Page<ProductDetailsResponseDto> page =
+            productService.findProductListForAdmin(pageRequest);
+
+        List<ProductDetailsResponseDto> productList = page.getContent();
+
+
+        Assertions.assertThat(productList).hasSize(2);
+        Assertions.assertThat(productList.get(0).getProductNo())
+            .isEqualTo(product1.getProductNo());
+        Assertions.assertThat(productList.get(0).getProductName())
+            .isEqualTo(product1.getProductName());
+    }
+
+    @Test
+    @DisplayName("<사용자> 상품 리스트 조회 테스트")
+    void findProductListForUser_success() {
+        ProductDetailsResponseDto product1 = ProductDummy.getProductDetailsResponseDto();
+        ProductDetailsResponseDto product2 = ProductDummy.getProductDetailsResponseDto();
+
+        given(mockProductRepository.findProductListUser(any(Pageable.class))).willReturn(
+            new PageImpl<>(
+                List.of(product1, product2)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        Page<ProductDetailsResponseDto> page =
+            productService.findProductListForUser(pageRequest);
+
+        List<ProductDetailsResponseDto> productList = page.getContent();
+
+
+        Assertions.assertThat(productList).hasSize(2);
+        Assertions.assertThat(productList.get(0).getProductNo())
+            .isEqualTo(product1.getProductNo());
+        Assertions.assertThat(productList.get(0).getProductName())
+            .isEqualTo(product1.getProductName());
+    }
+
+    @Test
+    @DisplayName("<사용자> 상품 번호 리스트로 상품 리스트 조회 테스트")
+    void findProductListByProductNoListForUser_success() {
+        ProductDetailsResponseDto product1 = ProductDummy.getProductDetailsResponseDto();
+        ProductDetailsResponseDto product2 = ProductDummy.getProductDetailsResponseDto();
+
+        given(mockProductRepository.findProductListByProductNoListForUser(any(Pageable.class),
+            any(List.class))).willReturn(new PageImpl<>(List.of(product1, product2)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        List productNoList = new ArrayList();
+        productNoList.addAll(Arrays.asList(1L, 2L));
+
+        Page<ProductDetailsResponseDto> page =
+            productService.findProductListByProductNoListForUser(pageRequest, productNoList);
+
+        List<ProductDetailsResponseDto> productList = page.getContent();
+
+
+        Assertions.assertThat(productList).hasSize(2);
+        Assertions.assertThat(productList.get(0).getProductNo())
+            .isEqualTo(product1.getProductNo());
+        Assertions.assertThat(productList.get(0).getProductName())
+            .isEqualTo(product1.getProductName());
+    }
+
+    @Test
+    @DisplayName("<관리자> 상품 번호 리스트로 상품 리스트 조회 테스트")
+    void findProductListByProductNoListForAdmin_success() {
+        ProductDetailsResponseDto product1 = ProductDummy.getProductDetailsResponseDto();
+        ProductDetailsResponseDto product2 = ProductDummy.getProductDetailsResponseDto();
+
+        given(mockProductRepository.findProductListByProductNoListForAdmin(any(Pageable.class),
+            any(List.class))).willReturn(new PageImpl<>(List.of(product1, product2)));
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        List productNoList = new ArrayList();
+        productNoList.addAll(Arrays.asList(1L, 2L));
+
+        Page<ProductDetailsResponseDto> page =
+            productService.findProductListByProductNoListForAdmin(pageRequest, productNoList);
+
+        List<ProductDetailsResponseDto> productList = page.getContent();
+
+
+        Assertions.assertThat(productList).hasSize(2);
+        Assertions.assertThat(productList.get(0).getProductNo())
+            .isEqualTo(product1.getProductNo());
+        Assertions.assertThat(productList.get(0).getProductName())
+            .isEqualTo(product1.getProductName());
+    }
 }

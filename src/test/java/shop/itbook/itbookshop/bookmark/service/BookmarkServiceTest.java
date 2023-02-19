@@ -23,7 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import shop.itbook.itbookshop.book.BookDummy;
+import shop.itbook.itbookshop.book.dummy.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.bookmark.dto.request.BookmarkRequestDto;
 import shop.itbook.itbookshop.bookmark.dto.response.BookmarkResponseDto;
