@@ -34,14 +34,6 @@ public class OrderProductServiceImpl implements OrderProductService {
     public OrderProduct addOrderProduct(Order order, Product product, Integer productCnt,
                                         Long productPrice) {
 
-        Optional<OrderProduct> optOrderProduct = orderProductRepository.findByOrder(order);
-
-        if (optOrderProduct.isPresent()) {
-            OrderProduct orderProduct = optOrderProduct.get();
-            orderProduct.setProductPrice(productPrice);
-            return orderProduct;
-        }
-
         OrderProduct orderProduct = OrderProduct.builder()
             .order(order)
             .product(product)
