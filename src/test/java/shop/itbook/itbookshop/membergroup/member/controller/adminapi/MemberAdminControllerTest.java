@@ -116,6 +116,62 @@ class MemberAdminControllerTest {
     }
 
     @Test
+    void writerMemberList() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findWriterList(any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/writer/list").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void normalMemberList() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findNormalMemberList(any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/normal").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void blockMemberList() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findBlockMemberList(any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/block").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void withdrawMemberList() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findWithdrawMemberList(any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/withdraw").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
     @DisplayName("멤버 수정 테스트")
     void memberUpdate() throws Exception {
 
@@ -131,4 +187,81 @@ class MemberAdminControllerTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
+
+    @Test
+    void memberListBySearchWithMemberId() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findMemberListByMemberId(any(), any(), any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/search/정상회원/memberId/user").contentType(
+                    MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void memberListBySearchWithNickname() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findMemberListByNickname(any(), any(), any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/search/정상회원/nickname/유저").contentType(
+                    MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void memberListBySearchWithName() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findMemberListByName(any(), any(), any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/search/정상회원/name/유저").contentType(
+                    MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void memberListBySearchWithPhoneNumber() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findMemberListByPhoneNumber(any(), any(), any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/search/정상회원/phoneNumber/01000001111").contentType(
+                    MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void memberListBySearchWithEverything() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(MemberTransfer.entityToDto(member1), MemberTransfer.entityToDto(member2),
+                pageRequest, 10));
+
+        given(memberAdminService.findMemberListBySearchWord(any(), any(), any())).willReturn(page);
+
+        mvc.perform(get("/api/admin/members/search/정상회원/everything/user").contentType(
+                    MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+
 }

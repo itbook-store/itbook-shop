@@ -22,19 +22,13 @@ public class MemberStatusAdminServiceImpl implements MemberStatusAdminService {
 
     @Override
     public MemberStatusResponseDto findMemberStatus(String memberStatusName) {
-        return memberStatusRepository.querydslFindByName(memberStatusName)
-            .orElseThrow(MemberStatusNotFound::new);
-    }
-
-    @Override
-    public MemberStatusResponseDto findMemberStatusWithMemberStatusNo(int memberStatusNo) {
-        return memberStatusRepository.querydslFindByNo(memberStatusNo)
+        return memberStatusRepository.findByMemberStatusName(memberStatusName)
             .orElseThrow(MemberStatusNotFound::new);
     }
 
     @Override
     public List<MemberStatusResponseDto> findMemberStatusList() {
-        return memberStatusRepository.querydslFindAll();
+        return memberStatusRepository.findMemberStatusResponseAll();
     }
 
 }

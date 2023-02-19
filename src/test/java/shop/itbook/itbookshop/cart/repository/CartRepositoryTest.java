@@ -11,7 +11,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import shop.itbook.itbookshop.book.BookDummy;
+import shop.itbook.itbookshop.book.dummy.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.cart.dto.request.CartRequestDto;

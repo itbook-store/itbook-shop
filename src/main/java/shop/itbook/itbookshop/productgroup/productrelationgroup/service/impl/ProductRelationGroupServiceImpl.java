@@ -97,7 +97,7 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
             productRelationRepository.findProductRelationGroupByBasedProduct_ProductNoAndProduct_ProductNo(
                 basedProductNo, productNo);
 
-        productRelation.setIsDeleted(true);
+        productRelation.setIsDeleted(Boolean.TRUE);
         try {
             productRelationRepository.save(productRelation);
         } catch (DataIntegrityViolationException e) {
@@ -138,9 +138,7 @@ public class ProductRelationGroupServiceImpl implements ProductRelationGroupServ
         List<Long> productNoList =
             productRelationRepository.getRelationProductNoListWithBasedProductNoUser(productNo);
 
-        Page<ProductDetailsResponseDto> list =
-            productService.findProductListByProductNoListForUser(pageable, productNoList);
-        return list;
+        return productService.findProductListByProductNoListForUser(pageable, productNoList);
     }
 
 }

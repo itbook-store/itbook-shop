@@ -133,24 +133,5 @@ class PointHistoryServiceImplTest {
             .isEqualTo(true);
     }
 
-    @DisplayName("주문차감 포인트내역을 저장할때 본인 포인트보다 큰 값이 차감되려고 하는 정상적인 상황에서 LackOfPointException 이 잘 발생한다.(100원 포인트남은 상태에서 300원 차감 시도)")
-    @Test
-    void getSavedDecreasePointHistory_fail_LackOfPointException() {
-        // given
-        given(pointHistoryCommonService.findRecentlyPoint(any(Member.class)))
-            .willReturn(100L);
-
-        given(
-            pointIncreaseDecreaseContentService.findPointIncreaseDecreaseContentThroughContentEnum(
-                any(PointIncreaseDecreaseContentEnum.class)))
-            .willReturn(orderPointContent);
-
-        given(pointHistoryRepository.save(any(PointHistory.class)))
-            .willReturn(pointHistory);
-
-        // when then
-        assertThatExceptionOfType(LackOfPointException.class).isThrownBy(
-                () -> pointHistoryService.getSavedDecreasePointHistory(member, 300L, orderPointEnum))
-            .withMessageContaining(LackOfPointException.MESSAGE);
-    }
+    
 }

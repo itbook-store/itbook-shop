@@ -40,4 +40,21 @@ public class ReviewIncreasePointHistoryServiceImpl
 
         return reviewIncreasePointHistoryRepository.save(reviewIncreasePointHistory);
     }
+
+    // TODO jun : ReviewIncreaseDecreasePointHistory 로 prod, dev, java 이름 변경하기
+    @Override
+    @Transactional
+    public ReviewIncreasePointHistory savePointHistoryAboutReviewDecrease(Member member,
+                                                                          Review review,
+                                                                          Long pointToApply) {
+
+        PointHistory savedPointHistory =
+            pointHistoryService.getSavedDecreasePointHistory(member, pointToApply,
+                PointIncreaseDecreaseContentEnum.REVIEW);
+
+        ReviewIncreasePointHistory reviewDecreasePointHistory =
+            new ReviewIncreasePointHistory(savedPointHistory.getPointHistoryNo(), review);
+
+        return reviewIncreasePointHistoryRepository.save(reviewDecreasePointHistory);
+    }
 }

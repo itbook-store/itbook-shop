@@ -72,7 +72,7 @@ public class MembershipController {
 
         membershipService.removeMembership(memberNo);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     MembershipResultMessageEnum.MEMBERSHIP_DELETE_SUCCESS.getMessage()),

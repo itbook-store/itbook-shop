@@ -71,13 +71,7 @@ public class PointHistoryServiceImpl implements PointHistoryService {
         Long recentlyRemainedPoint = pointHistoryCommonService.findRecentlyPoint(member);
 
         if (isDecrease) {
-
-            long remainedPointToSave = recentlyRemainedPoint - pointToApply;
-            if (remainedPointToSave < 0) {
-                throw new LackOfPointException();
-            }
-
-            return remainedPointToSave;
+            return recentlyRemainedPoint - pointToApply;
         }
 
         return recentlyRemainedPoint + pointToApply;

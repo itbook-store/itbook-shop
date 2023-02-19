@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.membergroup.member.dto.response;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 멤버 정보를 반환할 Dto 클래스 입니다.
@@ -11,6 +12,7 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
 

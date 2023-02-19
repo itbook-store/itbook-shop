@@ -49,7 +49,6 @@ import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductExcep
 import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
-import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.productinquiry.exception.ProductInquiryComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
@@ -107,7 +106,6 @@ public class RestControllerAdvisor {
         MemberDestinationNotFoundException.class,
         ProductNotFoundException.class,
         BookNotFoundException.class,
-        ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
         InvalidTokenException.class,
         ReviewAlreadyRegisteredException.class,
