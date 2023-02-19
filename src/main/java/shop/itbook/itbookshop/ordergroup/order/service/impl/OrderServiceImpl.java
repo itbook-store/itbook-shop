@@ -67,6 +67,7 @@ import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
@@ -83,6 +84,7 @@ import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
@@ -141,7 +143,25 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public OrderDetailsResponseDto findOrderDetails(Long orderNo) {
-        return orderRepository.findOrderDetail(orderNo);
+
+        OrderDetailsResponseDto orderDetail = orderRepository.findOrderDetail(orderNo);
+
+        long sellingAmount = 0L;
+
+        for (OrderProductDetailResponseDto orderProductDetailResponseDto : orderDetail.getOrderProductDetailResponseDtoList()) {
+            Long fixedPrice = orderProductDetailResponseDto.getFixedPrice();
+
+            long sellingPrice = (fixedPrice - getDiscountedPrice(fixedPrice,
+                orderProductDetailResponseDto.getDiscountPercent())) *
+                orderProductDetailResponseDto.getCount();
+
+            orderProductDetailResponseDto.setSellingPrice(sellingPrice);
+            sellingAmount += sellingPrice;
+        }
+
+        orderDetail.setSellingAmount(sellingAmount);
+
+        return orderDetail;
     }
 
     @Override
@@ -385,9 +405,9 @@ public class OrderServiceImpl implements OrderService {
             Integer productCnt = subscriptionPeriod.orElseGet(productDetailsDto::getProductCnt);
             this.checkAndSetStock(subscriptionPeriod, product, productCnt);
 
-            long sellingPrice = product.getFixedPrice() -
-                getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent());
-            amountForDeliveryFeeCalc += sellingPrice;
+            long sellingPrice = (product.getFixedPrice() -
+                getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent()));
+            amountForDeliveryFeeCalc += sellingPrice * productCnt;
 
             long totalPriceOfSameProducts = sellingPrice * productCnt;
 
@@ -452,11 +472,11 @@ public class OrderServiceImpl implements OrderService {
 
         if (amountForDeliveryFeeCalc >= BASE_AMOUNT_FOR_DELIVERY_FEE_CALC) {
             order.setDeliveryFee(0L);
-            return amount;
+        } else {
+            order.setDeliveryFee(BASE_DELIVERY_FEE);
         }
 
-        order.setDeliveryFee(BASE_DELIVERY_FEE);
-        amount += BASE_DELIVERY_FEE;
+        amount += order.getDeliveryFee();
         return amount;
     }
 
@@ -468,7 +488,7 @@ public class OrderServiceImpl implements OrderService {
                 throw new ProductStockIsZeroException();
             }
 
-            product.setStock(--stock);
+            product.setStock(stock - productCnt);
         }
     }
 
@@ -770,7 +790,7 @@ public class OrderServiceImpl implements OrderService {
             if (Objects.equals(orderStatusEnum, OrderStatusEnum.WAIT_DELIVERY)) {
                 Product product = orderProduct.getProduct();
                 int stock = product.getStock();
-                product.setStock(++stock);
+                product.setStock(stock + orderProduct.getCount());
             }
 
             if (optionalCategoryCouponApply.isPresent()) {
@@ -788,8 +808,6 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
-
-//        return orderProductList;
     }
 
     private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {
@@ -940,7 +958,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             Integer stock = product.getStock();
-            product.setStock(++stock);
+            product.setStock(stock + orderProduct.getCount());
         }
 
         orderRepository.deleteById(orderNo);

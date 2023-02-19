@@ -368,26 +368,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QProductCouponApply qProductCouponApply = QProductCouponApply.productCouponApply;
         QCategoryCouponApply qCategoryCouponApply = QCategoryCouponApply.categoryCouponApply;
 
-        JPQLQuery<OrderStatusHistory> jpqlQuery = from(qOrderStatusHistory)
-            .leftJoin(qOrderStatusHistory2)
-            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
-                .and(qOrderStatusHistory.orderStatusHistoryNo
-                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
-                )
-            )
-
-            .innerJoin(qOrder)
-            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
-//            .leftJoin(qDelivery)
-//            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-
-//            .leftJoin(qOrderTotalCouponApply)
-//            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
-
-            .where(
-                qOrder.orderNo.eq(orderNo)
-                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
-            );
+        JPQLQuery<OrderStatusHistory> jpqlQuery =
+            getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder);
 
         OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
             .leftJoin(qDelivery)
@@ -421,7 +403,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             ).fetchOne();
 
         List<OrderProductDetailResponseDto> productDetailList =
-            jpqlQuery
+            getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder)
                 .innerJoin(qOrderProduct)
                 .on(qOrderProduct.order.orderNo.eq(qOrder.orderNo))
                 .leftJoin(qProductCouponApply)
@@ -443,13 +425,41 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
                     qCoupon.name.as("couponName"),
                     qCoupon.amount.as("couponAmount"),
-                    qCoupon.percent.as("couponPercent")
+                    qCoupon.percent.as("couponPercent"),
+                    qOrderProduct.product.fixedPrice,
+                    qOrderProduct.product.discountPercent
                 ))
                 .fetch();
 
         orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
         return orderDetailsResponseDto;
+    }
+
+    private JPQLQuery<OrderStatusHistory> getJpqlQuery(Long orderNo,
+                                                       QOrderStatusHistory qOrderStatusHistory,
+                                                       QOrderStatusHistory qOrderStatusHistory2,
+                                                       QOrder qOrder) {
+        return from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
+                )
+            )
+
+            .innerJoin(qOrder)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+//            .leftJoin(qDelivery)
+//            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+
+//            .leftJoin(qOrderTotalCouponApply)
+//            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+
+            .where(
+                qOrder.orderNo.eq(orderNo)
+                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
+            );
     }
 
     @Override

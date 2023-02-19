@@ -24,4 +24,8 @@ public class OrderProductDetailResponseDto {
     private Long couponAmount;
     private Integer couponPercent;
 
+    private Long fixedPrice;
+    private Double discountPercent;
+    private Long sellingPrice;
+
 }
