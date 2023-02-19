@@ -392,7 +392,7 @@ class MemberAdminServiceImplTest {
 
         Page<MemberExceptPwdResponseDto> page =
             memberAdminService.findMemberListByDateOfJoining(LocalDate.of(2022, 1, 1),
-                LocalDate.of(2022, 2, 20), "정상회원", pageRequest);
+                LocalDate.of(2025, 2, 20), "정상회원", pageRequest);
 
         // when
         List<MemberExceptPwdResponseDto> memberList = page.getContent();

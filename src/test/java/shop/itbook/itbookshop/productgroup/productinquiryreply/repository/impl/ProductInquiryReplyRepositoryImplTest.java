@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.productgroup.productinquiry.repository.impl;
+package shop.itbook.itbookshop.productgroup.productinquiryreply.repository.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.repository.MemberRepository;
@@ -22,20 +20,23 @@ import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRe
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
-import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryCountResponseDto;
-import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryOrderProductResponseDto;
-import shop.itbook.itbookshop.productgroup.productinquiry.dto.response.ProductInquiryResponseDto;
 import shop.itbook.itbookshop.productgroup.productinquiry.dummy.ProductInquiryDummy;
 import shop.itbook.itbookshop.productgroup.productinquiry.entity.ProductInquiry;
 import shop.itbook.itbookshop.productgroup.productinquiry.repository.ProductInquiryRepository;
+import shop.itbook.itbookshop.productgroup.productinquiryreply.dto.response.ProductInquiryReplyResponseDto;
+import shop.itbook.itbookshop.productgroup.productinquiryreply.dummy.ProductInquiryReplyDummy;
+import shop.itbook.itbookshop.productgroup.productinquiryreply.entity.ProductInquiryReply;
+import shop.itbook.itbookshop.productgroup.productinquiryreply.repository.ProductInquiryReplyRepository;
 
 /**
  * @author 노수연
  * @since 1.0
  */
 @DataJpaTest
-class ProductInquiryRepositoryImplTest {
+class ProductInquiryReplyRepositoryImplTest {
 
+    @Autowired
+    ProductInquiryReplyRepository productInquiryReplyRepository;
 
     @Autowired
     MemberStatusRepository memberStatusRepository;
@@ -52,13 +53,15 @@ class ProductInquiryRepositoryImplTest {
     @Autowired
     TestEntityManager entityManager;
 
+    ProductInquiryReply dummyProductInquiryReply;
     ProductInquiry dummyProductInquiry;
     Product dummyProduct;
     Member dummyMember;
     MemberStatus dummyMemberStatus;
     Membership dummyMembership;
+
     @Autowired
-    private ProductInquiryRepository productInquiryRepository;
+    ProductInquiryRepository productInquiryRepository;
 
     @BeforeEach
     void setUp() {
@@ -81,68 +84,22 @@ class ProductInquiryRepositoryImplTest {
         dummyProductInquiry.setMember(dummyMember);
         productInquiryRepository.save(dummyProductInquiry);
 
+        dummyProductInquiryReply = ProductInquiryReplyDummy.getProductInquiryReply();
+        dummyProductInquiryReply.setProductInquiry(dummyProductInquiry);
+        dummyProductInquiryReply.setMember(dummyMember);
+        productInquiryReplyRepository.save(dummyProductInquiryReply);
+
         entityManager.flush();
         entityManager.clear();
     }
 
     @Test
-    void findProductInquiryList() {
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<ProductInquiryResponseDto> page =
-            productInquiryRepository.findProductInquiryList(pageRequest);
+    void findProductInquiryReply() {
+        List<ProductInquiryReplyResponseDto> productInquiryReplyResponseDtos =
+            productInquiryReplyRepository.findProductInquiryReply(1L);
 
-        List<ProductInquiryResponseDto> productInquiryList = page.getContent();
-
-        assertThat(productInquiryList.size()).isEqualTo(1);
-
+        assertThat(productInquiryReplyResponseDtos.size()).isNotIn(-1);
     }
 
-    @Test
-    void productInquiryCount() {
-        ProductInquiryCountResponseDto productInquiryCountResponseDto =
-            productInquiryRepository.productInquiryCount();
 
-        assertThat(productInquiryCountResponseDto.getProductInquiryCount()).isEqualTo(1);
-    }
-
-    @Test
-    void productInquiryListOfPossibleOrderProducts() {
-
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<ProductInquiryOrderProductResponseDto> page =
-            productInquiryRepository.ProductInquiryListOfPossibleOrderProducts(pageRequest, 1L);
-
-        List<ProductInquiryOrderProductResponseDto> productInquiryList = page.getContent();
-
-        assertThat(productInquiryList.size()).isEqualTo(0);
-    }
-
-    @Test
-    void findProductInquiry() {
-        ProductInquiryResponseDto productInquiry = productInquiryRepository.findProductInquiry(1L);
-
-        assertThat(productInquiry.getTitle()).isEqualTo("문의합니다.");
-    }
-
-    @Test
-    void findProductInquiryListByProductNo() {
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<ProductInquiryResponseDto> page =
-            productInquiryRepository.findProductInquiryListByProductNo(pageRequest, 1L);
-
-        List<ProductInquiryResponseDto> productInquiryList = page.getContent();
-
-        assertThat(productInquiryList.size()).isEqualTo(0);
-    }
-
-    @Test
-    void findProductInquiryListByMemberNo() {
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<ProductInquiryResponseDto> page =
-            productInquiryRepository.findProductInquiryListByMemberNo(pageRequest, 1L);
-
-        List<ProductInquiryResponseDto> productInquiryList = page.getContent();
-
-        assertThat(productInquiryList.size()).isEqualTo(0);
-    }
 }

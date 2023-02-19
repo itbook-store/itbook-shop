@@ -240,7 +240,7 @@ class MemberRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 10);
         Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListByDateOfJoining(
             LocalDateTime.of(2023, 1, 1, 0, 0, 0),
-            LocalDateTime.of(2023, 2, 20, 0, 0, 0),
+            LocalDateTime.of(2030, 2, 20, 0, 0, 0),
             member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
             pageRequest);
 
