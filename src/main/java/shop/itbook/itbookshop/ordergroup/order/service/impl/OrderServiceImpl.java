@@ -358,7 +358,7 @@ public class OrderServiceImpl implements OrderService {
 
         // toss 정책 상 100원 이하 결제 막기.
         if (amount <= 100) {
-            throw new AmountException(amount);
+            throw new AmountException();
         }
 
         order.setAmount(amount);
