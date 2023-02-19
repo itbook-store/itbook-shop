@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.deliverygroup.delivery.repository.impl;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
-
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.List;
@@ -13,9 +11,6 @@ import shop.itbook.itbookshop.deliverygroup.delivery.dto.response.DeliveryWithSt
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.QDelivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.CustomDeliveryRepository;
-import shop.itbook.itbookshop.deliverygroup.deliverystatus.QDeliveryStatus;
-import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
-import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.QDeliveryStatusHistory;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
@@ -61,6 +56,8 @@ public class DeliveryRepositoryImpl extends QuerydslRepositorySupport implements
                     .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
             .innerJoin(qOrder)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+            .innerJoin(qDelivery)
+            .on(qDelivery.order.eq(qOrderStatusHistory.order))
             .where(qOrderStatusHistory.orderStatus.orderStatusEnum.eq(orderStatusEnum)
                 .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
             .select(Projections.fields(DeliveryWithStatusResponseDto.class,
