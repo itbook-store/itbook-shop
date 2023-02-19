@@ -3,11 +3,17 @@ package shop.itbook.itbookshop.coupongroup.productcoupon.repository;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
@@ -41,13 +47,17 @@ class ProductCouponRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
 
-    Coupon amountDummyCoupon;
+    Coupon amountDummyCoupon1;
+
+    Coupon amountDummyCoupon2;
 
     CouponType couponType;
 
     Product product1;
 
-    ProductCoupon productCoupon;
+    ProductCoupon productCoupon1;
+
+    ProductCoupon productCoupon2;
 
     @BeforeEach
     void setUp() {
@@ -60,33 +70,40 @@ class ProductCouponRepositoryTest {
         couponType = CouponTypeDummy.getCouponType();
         couponType = couponTypeRepository.save(couponType);
 
-        amountDummyCoupon = CouponDummy.getAmountCoupon();
-        amountDummyCoupon.setCouponType(couponType);
+        amountDummyCoupon1 = CouponDummy.getAmountCoupon();
+        amountDummyCoupon1.setCouponType(couponType);
 
-        couponRepository.save(amountDummyCoupon);
+        amountDummyCoupon2 = CouponDummy.getAmountCoupon();
+        amountDummyCoupon2.setCouponType(couponType);
 
-        productCoupon = new ProductCoupon(amountDummyCoupon.getCouponNo(), product1);
-        productCouponRepository.save(productCoupon);
+        couponRepository.save(amountDummyCoupon1);
+        couponRepository.save(amountDummyCoupon2);
+
+        productCoupon1 = new ProductCoupon(amountDummyCoupon1.getCouponNo(), product1);
+        productCoupon2 = new ProductCoupon(amountDummyCoupon2.getCouponNo(), product1);
+
+        productCouponRepository.save(productCoupon1);
+        productCouponRepository.save(productCoupon2);
         testEntityManager.flush();
         testEntityManager.clear();
     }
 
     @Test
     void findById(){
-        ProductCoupon productCoupon1 =
-            productCouponRepository.findById(productCoupon.getCouponNo()).orElseThrow();
+        ProductCoupon productCoupon =
+            productCouponRepository.findById(productCoupon1.getCouponNo()).orElseThrow();
 
-        assertThat(productCoupon1.getProduct().getName()).isEqualTo(product1.getName());
+        assertThat(productCoupon.getProduct().getName()).isEqualTo(product1.getName());
     }
 
     @Test
     void findByCouponNo_success(){
-        ProductCoupon productCoupon1 =
-            productCouponRepository.findByProductCouponByCouponNo(productCoupon.getCouponNo());
+        ProductCoupon productCoupon =
+            productCouponRepository.findByProductCouponByCouponNo(productCoupon1.getCouponNo());
 
         assertThat(productCoupon1.getProduct().getName()).isEqualTo(product1.getName());
         assertThat(productCoupon1.getProduct().getProductNo()).isEqualTo(product1.getProductNo());
-        assertThat(productCoupon1.getCouponNo()).isEqualTo(amountDummyCoupon.getCouponNo());
+        assertThat(productCoupon1.getCouponNo()).isEqualTo(amountDummyCoupon1.getCouponNo());
     }
 
     @Test
@@ -94,6 +111,40 @@ class ProductCouponRepositoryTest {
         ProductCoupon productCoupon1 =
             productCouponRepository.findByProductCouponByCouponNo(123L);
 
-        assertThat(productCoupon1).isEqualTo(null);
+        assertThat(productCoupon1).isNull();
+    }
+
+    @Test
+    @DisplayName("상품 쿠폰 리스트를 제대로 반환하는지 테스트입니다.")
+    void findCategoryCouponList_success(){
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<AdminCouponListResponseDto> page = productCouponRepository.findProductCouponPageList(pageRequest);
+
+        //when
+        List<AdminCouponListResponseDto> productCouponList = page.getContent();
+
+        //then
+        Assertions.assertThat(productCouponList.size()).isEqualTo(2);
+        Assertions.assertThat(productCouponList.get(1).getCouponType()).isEqualTo(couponType.getCouponTypeEnum().getCouponType());
+        Assertions.assertThat(productCouponList.get(1).getIsDuplicateUse()).isEqualTo(amountDummyCoupon1.getIsDuplicateUse());
+        Assertions.assertThat(productCouponList.get(1).getProductName()).isEqualTo(product1.getName());
+    }
+
+    @Test
+    @DisplayName("이 쿠폰이 상품 쿠폰인지 확인하는 테스트")
+    void findByProductCouponByCouponNo_success(){
+        ProductCoupon productCoupon = productCouponRepository.findByProductCouponByCouponNo(amountDummyCoupon1.getCouponNo());
+
+        assertThat(productCoupon.getProduct().getName()).isEqualTo(product1.getName());
+        assertThat(productCoupon.getProduct().getProductNo()).isEqualTo(product1.getProductNo());
+        assertThat(productCoupon.getCouponNo()).isEqualTo(amountDummyCoupon1.getCouponNo());
+    }
+
+    @Test
+    @DisplayName("이 쿠폰이 상품 쿠폰인지 확인하고 아무것도 없을때 테스트")
+    void findByProductCouponByCouponNo_fail(){
+        ProductCoupon productCoupon = productCouponRepository.findByProductCouponByCouponNo(123L);
+
+        assertThat(productCoupon).isNull();
     }
 }

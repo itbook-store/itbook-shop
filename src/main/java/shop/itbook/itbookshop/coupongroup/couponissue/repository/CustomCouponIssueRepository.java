@@ -60,6 +60,4 @@ public interface CustomCouponIssueRepository {
 
     Page<AdminCouponIssueListResponseDto> findCouponIssueSearchCouponCode(Pageable pageable,
                                                                           String couponCode);
-
-    Page<AdminCouponIssueListResponseDto> findAvailableCouponIssueList(Pageable pageable);
 }

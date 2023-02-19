@@ -11,7 +11,6 @@ import org.springframework.data.support.PageableExecutionUtils;
 import shop.itbook.itbookshop.category.entity.QCategory;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.QCategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.coupon.repository.CustomCouponRepository;
@@ -86,16 +85,14 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
 
-
-        JPQLQuery<Coupon> jpqlQuery = from(qCoupon)
+        return from(qCoupon)
             .select(qCoupon)
             .join(qCoupon.couponType, qCouponType)
             .where(qCoupon.couponType.couponTypeEnum.eq(couponTypeEnum))
             .where(qCoupon.couponCreatedAt.before(LocalDateTime.now()))
             .where(qCoupon.couponExpiredAt.after(LocalDateTime.now()))
-            .orderBy(qCoupon.couponNo.desc());
-
-        return jpqlQuery.fetch();
+            .orderBy(qCoupon.couponNo.desc())
+            .fetch();
     }
 
     @Override
