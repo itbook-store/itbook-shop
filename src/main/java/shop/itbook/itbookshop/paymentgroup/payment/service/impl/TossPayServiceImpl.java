@@ -34,7 +34,7 @@ public class TossPayServiceImpl implements PayService {
 
     @Value("${toss.payment.secret.key}")
     private String TEST_SECRET_KEY;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Override
     public PaymentResponseDto.PaymentDataResponseDto requestApprovePayment(
