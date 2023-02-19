@@ -33,6 +33,8 @@ import shop.itbook.itbookshop.deliverygroup.deliverystatus.repository.DeliverySt
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.repository.DeliveryStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
+import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
  * The type Delivery admin service impl test.
@@ -54,6 +56,11 @@ class DeliveryAdminServiceImplTest {
     DeliveryStatusRepository deliveryStatusRepository;
     @MockBean
     DeliveryStatusHistoryRepository deliveryStatusHistoryRepository;
+    @MockBean
+    OrderStatusHistoryService orderStatusHistoryService;
+    @MockBean
+    OrderRepository orderRepository;
+
     @MockBean
     ServerConfig serverConfig;
 
