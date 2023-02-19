@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.membergroup.member.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +68,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("멤버 아이디로 특정 멤버를 찾기")
-    void findByMemberId() {
+    void findByMemberNo() {
 
         // when
         MemberExceptPwdResponseDto
@@ -79,7 +80,7 @@ class MemberRepositoryTest {
 
     @Test
     @DisplayName("멤버아이디로 멤버 모든 정보 가져오기")
-    void findByMemberIdAllInfo() {
+    void findByMemberNoAllInfo() {
 
         // when
         MemberResponseDto testMember =
@@ -90,8 +91,16 @@ class MemberRepositoryTest {
     }
 
     @Test
+    void findByMemberId() {
+        MemberResponseDto testMember =
+            memberRepository.findByMemberId(member.getMemberId()).orElseThrow();
+
+        assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
+    }
+
+    @Test
     @DisplayName("멤버아이디로 멤버 모든 정보 가져오기")
-    void findByMemberIdReceiveMember() {
+    void findByMemberNoReceiveMember() {
 
         // when
         Member testMember =
@@ -100,6 +109,196 @@ class MemberRepositoryTest {
         // then
         assertThat(testMember.getMemberId()).isEqualTo(member.getMemberId());
 
+    }
+
+    @Test
+    void findWriterList() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findWriterList(pageRequest);
+
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findMemberList() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberList(pageRequest);
+
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findNormalMemberList() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findNormalMemberList(pageRequest);
+
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findBlockMemberList() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findBlockMemberList(pageRequest);
+
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(0);
+    }
+
+    @Test
+    void findWithdrawMemberList() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page =
+            memberRepository.findWithdrawMemberList(pageRequest);
+
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(0);
+    }
+
+    @Test
+    void existsByEmailAndIsSocial() {
+        assertThat(memberRepository.existsByEmailAndIsSocial(member.getEmail())).isEqualTo(true);
+    }
+
+    @Test
+    void existsByMemberIdAndIsSocial() {
+        assertThat(memberRepository.existsByMemberIdAndIsSocial(member.getEmail())).isEqualTo(
+            false);
+    }
+
+    @Test
+    void findMemberListByMemberId() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListByMemberId(
+            member.getMemberId(), member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
+            pageRequest);
+
+        //when
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findMemberListByNickname() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListByNickname(
+            member.getNickname(), member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
+            pageRequest);
+
+        //when
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findMemberListByName() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListByName(
+            member.getName(), member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
+            pageRequest);
+
+        //when
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findMemberListByPhoneNumber() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListByPhoneNumber(
+            member.getPhoneNumber(),
+            member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
+            pageRequest);
+
+        //when
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findMemberListByDateOfJoining() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListByDateOfJoining(
+            LocalDateTime.of(2023, 1, 1, 0, 0, 0),
+            LocalDateTime.of(2030, 2, 20, 0, 0, 0),
+            member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
+            pageRequest);
+
+        //when
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findMemberListBySearchWord() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<MemberExceptPwdResponseDto> page = memberRepository.findMemberListBySearchWord(
+            member.getPhoneNumber(),
+            member.getMemberStatus().getMemberStatusEnum().getMemberStatus(),
+            pageRequest);
+
+        //when
+        List<MemberExceptPwdResponseDto> memberList = page.getContent();
+
+        //then
+        assertThat(memberList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findBlockMemberByMemberNo() {
+        assertThat(memberRepository.findBlockMemberByMemberNo(member.getMemberNo())).isNull();
+    }
+
+    @Test
+    void memberCountBy() {
+
+        Long memberCnt = memberRepository.memberCountBy();
+
+        assertThat(memberCnt).isEqualTo(1);
+
+    }
+
+    @Test
+    void memberCountByStatusName() {
+        Long memberCnt = memberRepository.memberCountByStatusName(
+            member.getMemberStatus().getMemberStatusEnum().getMemberStatus());
+
+        assertThat(memberCnt).isEqualTo(1);
+    }
+
+    @Test
+    void memberCountByMembershipGrade() {
+        Long memberCnt = memberRepository.memberCountByMembershipGrade(
+            member.getMembership().getMembershipGrade());
+
+        assertThat(memberCnt).isEqualTo(1);
+    }
+
+    void existsByNameAndFindNameWithMemberId() {
+        assertThat(memberRepository.existsByNameAndFindNameWithMemberId(member.getMemberId(),
+            member.getName())).isTrue();
     }
 
     @Test

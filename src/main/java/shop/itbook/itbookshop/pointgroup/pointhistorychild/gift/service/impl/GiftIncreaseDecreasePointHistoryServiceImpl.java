@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.pointgroup.pointhistory.entity.PointHistory;
+import shop.itbook.itbookshop.pointgroup.pointhistory.exception.LackOfPointException;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.PointHistoryService;
+import shop.itbook.itbookshop.pointgroup.pointhistory.service.find.commonapi.PointHistoryCommonService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.repository.GiftIncreaseDecreasePointHistoryRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.service.GiftIncreaseDecreasePointHistoryService;
@@ -27,6 +29,7 @@ public class GiftIncreaseDecreasePointHistoryServiceImpl
     private final PointHistoryService pointHistoryService;
     private final GiftIncreaseDecreasePointHistoryRepository
         giftIncreaseDecreasePointHistoryRepository;
+    private final PointHistoryCommonService pointHistoryCommonService;
 
     @Override
     @Transactional
@@ -47,6 +50,13 @@ public class GiftIncreaseDecreasePointHistoryServiceImpl
                                                                   boolean isDecrease) {
         PointHistory savedPointHistory;
         if (isDecrease) {
+
+            Long recentlyRemainedPoint = pointHistoryCommonService.findRecentlyPoint(mainMember);
+            long remainedPointToSave = recentlyRemainedPoint - pointToApply;
+            if (remainedPointToSave < 0) {
+                throw new LackOfPointException();
+            }
+
             savedPointHistory = pointHistoryService.getSavedDecreasePointHistory(mainMember,
                 pointToApply,
                 PointIncreaseDecreaseContentEnum.GIFT);

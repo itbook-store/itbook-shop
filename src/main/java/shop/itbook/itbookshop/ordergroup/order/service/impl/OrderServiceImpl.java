@@ -732,7 +732,7 @@ public class OrderServiceImpl implements OrderService {
         // 주문번호로 주문총액상품쿠폰 있는지 확인하고 있으면 사용전상태로 변경
         this.changeOrderTotalAmountCouponStatusByCancel(orderNo);
 
-        // 먼저 주문취소차감 api 만들기 -> 포인트 적립금액 있는지 확인해서 주문취소차감
+        // 포인트 적립금액 있는지 확인해서 주문취소차감
         this.addOrderCancelIncreaseDecreasePointHistory(order,
             PointHistoryServiceImpl.DECREASE_POINT_HISTORY);
 

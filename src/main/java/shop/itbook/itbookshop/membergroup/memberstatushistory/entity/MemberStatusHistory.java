@@ -45,10 +45,10 @@ public class MemberStatusHistory {
     @JoinColumn(name = "member_status_no", nullable = false)
     private MemberStatus memberStatus;
 
-    @Column(name = "member_status_history_created_at", nullable = false, columnDefinition = "default now()")
+    @Column(name = "member_status_history_created_at", nullable = false)
     private LocalDateTime memberStatusHistoryCreatedAt;
 
-    @Column(name = "status_changed_reason", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "status_changed_reason", nullable = false)
     private String statusChangedReason;
 
 

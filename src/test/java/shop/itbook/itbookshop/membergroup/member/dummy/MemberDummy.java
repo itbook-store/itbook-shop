@@ -24,7 +24,7 @@ public class MemberDummy {
             .email("user1000@test.com")
             .memberCreatedAt(LocalDateTime.now())
             .isSocial(false)
-            .isWriter(false)
+            .isWriter(true)
             .build();
     }
 
