@@ -327,12 +327,10 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
         Long memberNo, Long productNo) {
 
         QCoupon qCoupon = QCoupon.coupon;
-        QCouponType qCouponType = QCouponType.couponType;
         QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
         QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
         QMember qMember = QMember.member;
         QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
-        QProductCategory qProductCategory = QProductCategory.productCategory;
 
         return from(qCouponIssue)
             .select(Projections.fields(OrderCouponSimpleListResponseDto.class,
@@ -537,41 +535,6 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
 
         return PageableExecutionUtils.getPage(couponIssueListResponseDtoList, pageable,
             jpqlQuery::fetchCount);
-    }
-
-    @Override
-    public Page<AdminCouponIssueListResponseDto> findAvailableCouponIssueList(Pageable pageable) {
-
-        QCoupon qCoupon = QCoupon.coupon;
-        QCouponType qCouponType = QCouponType.couponType;
-        QCouponIssue qCouponIssue = QCouponIssue.couponIssue;
-        QUsageStatus qUsageStatus = QUsageStatus.usageStatus;
-        QMember qMember = QMember.member;
-        QProductCoupon qProductCoupon = QProductCoupon.productCoupon;
-        QProduct qProduct = QProduct.product;
-        QCategoryCoupon qCategoryCoupon = QCategoryCoupon.categoryCoupon;
-        QCategory qCategory = QCategory.category;
-        QCategory qParentCategory = new QCategory("parentCategory");
-
-        JPQLQuery<Long> jpqlQuery = from(qCouponIssue)
-            .select(qCouponIssue.count());
-
-        JPQLQuery<AdminCouponIssueListResponseDto> adminCouponIssueListResponseDtoJpqlQuery
-            = getAdminCouponIssueListJpqlQuery(qCoupon, qCouponType, qCouponIssue, qUsageStatus,
-            qMember, qProductCoupon, qProduct, qCategoryCoupon, qCategory, qParentCategory);
-
-        List<AdminCouponIssueListResponseDto> couponIssueListResponseDtoList =
-            adminCouponIssueListResponseDtoJpqlQuery
-                .where(qUsageStatus.usageStatusName.eq(UsageStatusEnum.AVAILABLE))
-                .where(qCouponIssue.couponExpiredAt.after(LocalDateTime.now()))
-                .where(qCouponIssue.couponUsageCreatedAt.isNull())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-
-        return PageableExecutionUtils.getPage(couponIssueListResponseDtoList, pageable,
-            jpqlQuery::fetchOne);
-
     }
 
     private JPQLQuery<AdminCouponIssueListResponseDto> getAdminCouponIssueListJpqlQuery(

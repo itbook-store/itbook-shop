@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.coupongroup.coupon.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.transfer.CouponTransfer;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
 /**
@@ -68,7 +70,9 @@ public class CouponServiceImpl implements CouponService {
     public Page<AdminCouponListResponseDto> findByCouponAtCouponTypeList(Pageable pageable,
                                                                          String couponType) {
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
-
+        if (Objects.isNull(couponTypeEnum)) {
+            throw new CouponTypeNotFoundException();
+        }
         return couponRepository.findByCouponAtCouponTypeList(pageable, couponTypeEnum);
     }
 
@@ -97,7 +101,8 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(String couponType) {
+    public List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(
+        String couponType) {
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
         return couponRepository.findByAvailableCouponDtoByCouponType(couponTypeEnum);
     }
