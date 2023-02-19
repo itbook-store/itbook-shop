@@ -26,4 +26,14 @@ public class OrderSubscriptionDetailsResponseDto {
     private Long deliveryNo;
     private LocalDate selectedDeliveryDate;
     private String trackingNo;
+
+    // 주문 총액 쿠폰
+    private String totalCouponName;
+    private Long totalCouponAmount;
+    private Integer totalCouponPercent;
+
+    // 개별 적용 쿠폰
+    private String couponName;
+    private Long couponAmount;
+    private Integer couponPercent;
 }
