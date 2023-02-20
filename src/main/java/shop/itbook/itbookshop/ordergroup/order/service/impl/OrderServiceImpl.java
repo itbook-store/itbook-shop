@@ -34,7 +34,6 @@ import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
-import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
@@ -53,6 +52,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
@@ -876,6 +876,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void orderPurchaseComplete(Long orderNo) {
+
+        OrderStatusHistory orderStatusHistoryByOrderNo =
+            orderStatusHistoryService.findOrderStatusHistoryByOrderNo(orderNo);
+
+        if (!orderStatusHistoryByOrderNo.getOrderStatus().getOrderStatusEnum()
+            .equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
+            throw new NotAllowedPurchaseComplete();
+        }
 
         Order order = findOrderEntity(orderNo);
 

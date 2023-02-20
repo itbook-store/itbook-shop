@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -430,5 +431,31 @@ class OrderRepositoryTest {
 
         // then
         assertThat(orderDetail.getOrderNo()).isEqualTo(order.getOrderNo());
+    }
+
+    @DisplayName("가장 최신 상태의 Order 객체 찾아오는 쿼리 테스트")
+    @Test
+    void findOrderOfLatestStatusTest() {
+        //given
+        Order order = orderRepository.save(OrderDummy.getOrder());
+        OrderSubscription orderSubscription =
+            OrderSubscriptionDummy.createOrderSubscription(order);
+
+        orderSubscriptionRepository.save(orderSubscription);
+
+        OrderStatus orderStatus = OrderStatusDummy.createByEnum(OrderStatusEnum.PAYMENT_COMPLETE);
+        orderStatusRepository.save(orderStatus);
+
+        OrderStatusHistory orderStatusHistory =
+            OrderStatusHistoryDummy.createOrderStatusHistory(order, orderStatus);
+        orderStatusHistoryRepository.save(orderStatusHistory);
+
+        // when
+        Optional<Order> orderOfLatestStatus =
+            orderRepository.findOrderOfLatestStatus(order.getOrderNo());
+
+        // then
+        assertThat(orderOfLatestStatus.get().getOrderNo()).isEqualTo(order.getOrderNo());
+
     }
 }

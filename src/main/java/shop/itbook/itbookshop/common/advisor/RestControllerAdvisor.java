@@ -20,7 +20,6 @@ import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCoup
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponQuantityExhaustedException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
-import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
@@ -35,6 +34,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisExceptio
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
@@ -127,7 +127,8 @@ public class RestControllerAdvisor {
         ObjectStroageFileUploadException.class,
         NotMatchCouponException.class,
         ProductInquiryComeCloseOtherMemberException.class,
-        AmountException.class
+        AmountException.class,
+        NotAllowedPurchaseComplete.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {
