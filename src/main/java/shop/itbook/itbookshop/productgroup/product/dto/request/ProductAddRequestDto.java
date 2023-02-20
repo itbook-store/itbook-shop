@@ -48,7 +48,7 @@ public class ProductAddRequestDto {
 
     @Min(value = 0, message = "적립율은 0% 이상이어야 합니다.")
     @Max(value = 100, message = "적립율은 최대 100%입니다.")
-    private Integer increasePointPercent;
+    private Double increasePointPercent;
 
     @NotNull(message = "null을 허용하지 않습니다.")
     @Min(value = 0, message = "매입원가는 0원 이상이어야 합니다.")
@@ -61,7 +61,7 @@ public class ProductAddRequestDto {
     @Min(value = 0, message = "할인율은 0% 이상이어야 합니다.")
     @Max(value = 100, message = "할인율은 최대 100%입니다.")
     private Double discountPercent;
-    
+
     @NotNull(message = "null을 허용하지 않습니다.")
     private Boolean isPointApplying;
 
