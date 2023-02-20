@@ -28,7 +28,7 @@ public class ProductBookRequestDummy {
             .isForceSoldOut(Boolean.FALSE)
             .stock(1)
             .categoryNoList(categoryList)
-            .increasePointPercent(1)
+            .increasePointPercent(1.0)
             .rawPrice(12000L)
             .fixedPrice(20000L)
             .discountPercent(10.0)
@@ -45,5 +45,5 @@ public class ProductBookRequestDummy {
             .isSubscription(false)
             .build();
     }
-    
+
 }

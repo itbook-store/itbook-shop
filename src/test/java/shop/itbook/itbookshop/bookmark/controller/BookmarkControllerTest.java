@@ -159,7 +159,7 @@ class BookmarkControllerTest {
             .andExpect(jsonPath("$.result.content[0].productDetailsResponseDto.stock", equalTo(1)))
             .andExpect(
                 jsonPath("$.result.content[0].productDetailsResponseDto.increasePointPercent",
-                    equalTo(1)))
+                    equalTo(1.0)))
             .andExpect(
                 jsonPath("$.result.content[0].productDetailsResponseDto.rawPrice", equalTo(12000)))
             .andExpect(jsonPath("$.result.content[0].productDetailsResponseDto.fixedPrice",

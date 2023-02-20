@@ -126,7 +126,8 @@ class CartControllerTest {
                 jsonPath("$.result[0].productDetailsResponseDto.isForceSoldOut", equalTo(false)))
             .andExpect(jsonPath("$.result[0].productDetailsResponseDto.stock", equalTo(1)))
             .andExpect(
-                jsonPath("$.result[0].productDetailsResponseDto.increasePointPercent", equalTo(1)))
+                jsonPath("$.result[0].productDetailsResponseDto.increasePointPercent",
+                    equalTo(1.0)))
             .andExpect(jsonPath("$.result[0].productDetailsResponseDto.rawPrice", equalTo(12000)))
             .andExpect(jsonPath("$.result[0].productDetailsResponseDto.fixedPrice", equalTo(20000)))
             .andExpect(
