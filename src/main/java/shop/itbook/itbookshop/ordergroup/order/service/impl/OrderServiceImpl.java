@@ -223,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderNonMember orderNonMember =
-            new OrderNonMember(order, 12345678L);
+            new OrderNonMember(order, "123456789012345678901234567890123456");
         orderNonMemberRepository.save(orderNonMember);
     }
 
@@ -787,7 +787,8 @@ public class OrderServiceImpl implements OrderService {
                 categoryCouponApplyRepository.findByOrderProduct_OrderProductNo(
                     orderProduct.getOrderProductNo());
 
-            if (Objects.equals(orderStatusEnum, OrderStatusEnum.WAIT_DELIVERY)) {
+            if (Objects.equals(orderStatusEnum, OrderStatusEnum.WAIT_DELIVERY) ||
+                Objects.equals(orderStatusEnum, OrderStatusEnum.PAYMENT_COMPLETE)) {
                 Product product = orderProduct.getProduct();
                 int stock = product.getStock();
                 product.setStock(stock + orderProduct.getCount());

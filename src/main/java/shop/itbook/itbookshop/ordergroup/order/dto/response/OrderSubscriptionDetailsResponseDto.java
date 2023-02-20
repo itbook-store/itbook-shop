@@ -36,4 +36,7 @@ public class OrderSubscriptionDetailsResponseDto {
     private String couponName;
     private Long couponAmount;
     private Integer couponPercent;
+
+    // 비회원
+    private String nonMemberOrderCode;
 }

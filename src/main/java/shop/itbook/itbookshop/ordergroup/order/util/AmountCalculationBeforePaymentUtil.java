@@ -9,6 +9,10 @@ import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
  * @since 1.0
  */
 public class AmountCalculationBeforePaymentUtil {
+
+    private AmountCalculationBeforePaymentUtil() {
+    }
+
     public static Coupon getAvailableCoupon(CouponIssue couponIssue,
                                             long basePriceToCompareAboutStandardAmount) {
 
