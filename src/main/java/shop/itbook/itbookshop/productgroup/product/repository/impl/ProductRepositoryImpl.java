@@ -157,7 +157,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
 
-        return PageableExecutionUtils.getPage(productList, pageable, productListQuery::fetchCount);
+        return PageableExecutionUtils.getPage(productList, pageable, () ->
+            getProductListByProductNoList(productNoList, qProduct, qBook).fetch().size());
     }
 
     private JPQLQuery<ProductDetailsResponseDto> getProductListByProductNoList(
