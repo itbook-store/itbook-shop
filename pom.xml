@@ -133,7 +133,7 @@
 
         <dependency>
             <groupId>toast-logncrash-logback-sdk</groupId>
-            <artifactId>toast-logncrash-logback</artifactId>
+            <artifactId>toast-logncrash-logback-sdk</artifactId>
             <version>3.0.5</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/lib/toast-logncrash-logback-sdk-3.0.5.jar</systemPath>
