@@ -14,10 +14,10 @@ public class CardTransfer {
     }
 
     /**
-     * dto로 넘어온 값을 상품 엔티티로 변환하는 기능을 하는 메서드입니다.
+     * dto로 넘어온 값을 카드 엔티티로 변환하는 기능을 하는 메서드입니다.
      *
      * @param responseDto 엔티티에 담을 dto입니다.
-     * @return 엔티티로 변환된 상품 엔티티입니다.
+     * @return 엔티티로 변환된 카드 엔티티입니다.
      * @author
      */
     public static Card dtoToEntity(PaymentResponseDto.PaymentDataResponseDto responseDto) {
