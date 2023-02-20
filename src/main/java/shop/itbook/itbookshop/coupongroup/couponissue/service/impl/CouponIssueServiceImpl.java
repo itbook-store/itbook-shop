@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,7 +40,6 @@ import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberServic
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.coupon.service.CouponIncreasePointHistoryService;
-import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 
 /**
  * @author 송다혜
@@ -256,8 +256,14 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     public void saveCouponApplyAboutCategoryAndProduct(Long couponIssueNo, Long orderProductNo) {
         CouponIssue couponIssue = couponIssueRepository.findByIdFetchJoin(couponIssueNo);
         usingCouponIssue(couponIssueNo);
-        OrderProduct orderProduct = orderProductRepository.findById(orderProductNo).orElseThrow(
-            ProductNotFoundException::new);
+
+        Optional<OrderProduct> optionalOrderProduct =
+            orderProductRepository.findById(orderProductNo);
+        OrderProduct orderProduct = null;
+        if (optionalOrderProduct.isPresent()) {
+            orderProduct = optionalOrderProduct.get();
+        }
+
         if (productCouponService.findByProductCoupon(couponIssue.getCoupon().getCouponNo()) !=
             null) {
             productCouponApplyService.saveProductCouponApplyAndChangeCouponIssue(couponIssueNo,

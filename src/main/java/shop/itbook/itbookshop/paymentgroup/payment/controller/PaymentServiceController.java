@@ -40,9 +40,6 @@ public class PaymentServiceController {
         @RequestBody PaymentApproveRequestDto paymentApproveRequestDto,
         @PathVariable Long orderNo, HttpSession session) {
 
-//        List<Long> couponIssueNoListWhenOrderPayCompletion =
-//            (List<Long>) session.getAttribute("couponIssueNoListWhenOrderPayCompletion_" + orderNo);
-
         OrderResponseDto responseDto =
             paymentService.requestPayment(paymentApproveRequestDto, orderNo,
                 session);
