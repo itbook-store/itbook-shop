@@ -38,5 +38,5 @@ public class OrderDetailsResponseDto {
 
     @Setter
     private Long sellingAmount;
-
+    private String nonMemberOrderCode;
 }

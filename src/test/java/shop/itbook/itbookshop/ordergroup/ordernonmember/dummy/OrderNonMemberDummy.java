@@ -11,6 +11,6 @@ public class OrderNonMemberDummy {
     // 인자에 더미 객체를 넣어 주세요
     public static OrderNonMember createOrderNonMember(Order order) {
 
-        return new OrderNonMember(order, 123L);
+        return new OrderNonMember(order, "123L");
     }
 }

@@ -50,4 +50,9 @@ public interface CustomOrderRepository {
 
     List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
         Long orderNo);
+
+    OrderDetailsResponseDto findOrderDetailOfNonMember(Long orderNo);
+
+    List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsOfNonMember(
+        Long orderNo);
 }
