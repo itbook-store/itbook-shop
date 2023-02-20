@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
@@ -47,8 +48,14 @@ public class AuthAspect {
     @Before("@annotation(shop.itbook.itbookshop.auth.annotation.IsAdmin)")
     public void authIsAdmin() {
 
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+
+        if (Objects.isNull(requestAttributes)) {
+            return;
+        }
+
         HttpServletRequest request =
-            ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            ((ServletRequestAttributes) requestAttributes).getRequest();
 
         String tokenMemberRole = request.getHeader(TOKEN_HEADER_MEMBER_ROLE);
 
@@ -69,11 +76,16 @@ public class AuthAspect {
     @Before("@annotation(shop.itbook.itbookshop.auth.annotation.IsUser)")
     public void authIsUser() {
 
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (Objects.isNull(requestAttributes)) {
+            return;
+        }
         HttpServletRequest request =
-            ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            ((ServletRequestAttributes) requestAttributes).getRequest();
 
         String tokenMemberNo = request.getHeader(TOKEN_HEADER_MEMBER_NO);
         String tokenMemberRole = request.getHeader(TOKEN_HEADER_MEMBER_ROLE);
+
 
         checkValidHeader(tokenMemberNo, tokenMemberRole);
 
@@ -90,12 +102,13 @@ public class AuthAspect {
         Map<String, String> pathVariables = (Map<String, String>) request
             .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
 
-        if (pathVariables.containsKey("memberNo")) {
-            if (!tokenMemberNo.equals(pathVariables.get("memberNo"))) {
-                throw new InvalidAuthRequestException();
-            }
+        if (!pathVariables.containsKey("memberNo")) {
+            return;
         }
 
+        if (!tokenMemberNo.equals(pathVariables.get("memberNo"))) {
+            throw new InvalidAuthRequestException();
+        }
     }
 
     private void checkValidHeader(String tokenMemberNo, String tokenMemberRole) {
