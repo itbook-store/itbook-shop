@@ -1,23 +1,18 @@
 package shop.itbook.itbookshop.fileservice;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -71,10 +66,8 @@ public class FileService {
         try {
             InputStream inputStream = multipartFile.getInputStream();
             return this.uploadObject(tokenId, containerName, folderPath, savedName, inputStream);
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | IOException e) {
             throw new ObjectStroageFileUploadException();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
 
     }
@@ -143,27 +136,6 @@ public class FileService {
 
         return url;
     }
-
-//    public void downloadFile(String url) {
-//
-//        Token token = tokenManager.getToken();
-//
-//        String tokenId = token.getId();
-//
-//        ObjectService objectService = new ObjectService(storageUrl, tokenId);
-//        try {
-//            InputStream inputStream = objectService.downloadObject(url);
-//            byte[] buffer = new byte[inputStream.available()];
-//            inputStream.read(buffer);
-//            String uuid = url.substring(url.lastIndexOf("/") + 1);
-//            File target = new File(downloadPath + "/" + uuid);
-//            OutputStream outputStream = new FileOutputStream(target);
-//            outputStream.write(buffer);
-//            outputStream.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
 }

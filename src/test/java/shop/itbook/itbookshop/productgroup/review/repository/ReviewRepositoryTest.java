@@ -30,6 +30,7 @@ import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.review.dto.response.ReviewResponseDto;
+import shop.itbook.itbookshop.productgroup.review.dto.response.UnwrittenReviewOrderProductResponseDto;
 import shop.itbook.itbookshop.productgroup.review.dummy.ReviewDummy;
 import shop.itbook.itbookshop.productgroup.review.entity.Review;
 
@@ -124,5 +125,36 @@ class ReviewRepositoryTest {
         List<ReviewResponseDto> reviewList = page.getContent();
 
         assertThat(reviewList.size()).isEqualTo(1);
+    }
+
+    @Test
+    void findReviewListByProductNo() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<ReviewResponseDto> page = reviewRepository.findReviewListByProductNo(pageRequest,
+            dummyReview.getMember().getMemberNo());
+
+        List<ReviewResponseDto> reviewList = page.getContent();
+
+        assertThat(reviewList.size()).isNotIn(-1);
+    }
+
+    @Test
+    void findUnwrittenReviewOrderProductList() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<UnwrittenReviewOrderProductResponseDto> page =
+            reviewRepository.findUnwrittenReviewOrderProductList(pageRequest,
+                dummyReview.getMember().getMemberNo());
+
+        List<UnwrittenReviewOrderProductResponseDto> reviewList = page.getContent();
+
+        assertThat(reviewList.size()).isEqualTo(0);
+    }
+
+    @Test
+    void existsByOrderProductNo() {
+
+        Boolean isExists = reviewRepository.existsByOrderProductNo(1L);
+
+        assertThat(isExists).isFalse();
     }
 }
