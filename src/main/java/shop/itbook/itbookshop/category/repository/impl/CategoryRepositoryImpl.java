@@ -55,6 +55,10 @@ public class CategoryRepositoryImpl extends QuerydslRepositorySupport implements
             () -> from(qCategory).fetchCount());
     }
 
+    /**
+     * @param pageable
+     * @return
+     */
     public Page<CategoryListResponseDto> findCategoryListByNotEmployee(Pageable pageable) {
 
         QCategory qCategory = QCategory.category;

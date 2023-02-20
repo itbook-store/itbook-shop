@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.common.advisor;
 
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCoup
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponQuantityExhaustedException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
-import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
@@ -77,6 +77,7 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NotChildCategoryException.class,
         PointContentNotFoundException.class,
+        ConstraintViolationException.class,
         LackOfPointException.class,
         CanNotSaveRedisException.class,
         OrderSubscriptionNotFirstSequenceException.class,
