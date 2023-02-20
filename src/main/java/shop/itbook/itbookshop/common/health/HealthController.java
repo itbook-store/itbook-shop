@@ -24,27 +24,17 @@ public class HealthController {
     private static final String OK_MESSAGE = "\"result\" : \"now server status is OK 200\"";
     private static final String INTERNAL_MESSAGE =
         "\"result\" : \"now server status is INTERNAL 500\"";
+    
+    @GetMapping(value = "/monitor/l7check/change/ok")
+    public ResponseEntity<CommonResponseBody<Void>> changeHealthStatusOk() {
 
-
-    @GetMapping("/monitor/l7check")
-    public ResponseEntity<Void> health() {
-
-        if (Boolean.TRUE.equals(isOk)) {
-            return ResponseEntity.ok().build();
-        }
-
-        return ResponseEntity.internalServerError().build();
+        this.isOk = OK;
+        return ResponseEntity.ok(
+            new CommonResponseBody<>(new CommonResponseBody.CommonHeader(OK_MESSAGE), null));
     }
 
-    @PutMapping(value = "/monitor/l7check")
-    public ResponseEntity<CommonResponseBody<CommonResponseBody.CommonHeader>> healthStatusModify(
-        @RequestParam(required = false) String healthStatus) {
-
-        if (Objects.isNull(healthStatus)) {
-            this.isOk = OK;
-            return ResponseEntity.ok(
-                new CommonResponseBody<>(new CommonResponseBody.CommonHeader(OK_MESSAGE), null));
-        }
+    @GetMapping(value = "/monitor/l7check/change/error")
+    public ResponseEntity<CommonResponseBody<Void>> changeHealthStatusError() {
 
         this.isOk = INTERNAL;
         return ResponseEntity.ok(
