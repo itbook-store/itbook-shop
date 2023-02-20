@@ -62,6 +62,10 @@ jobs:
           script_stop: true
           script: "./startup.sh"
 
+      - name: Sleep for 80 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '80s'
         ### phase 2
 
       - name : ready for deploy seconds server (excute shell script)
