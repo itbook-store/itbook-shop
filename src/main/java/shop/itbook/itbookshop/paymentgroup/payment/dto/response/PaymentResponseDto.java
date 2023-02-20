@@ -38,9 +38,11 @@ public class PaymentResponseDto {
         private Receipt receipt;
         private Checkout checkout;
         private Cancels[] cancels;
+        private EasyPayResponseDto easyPay;
         private String country;
         private Failure failure;
         private Long vat;
+        private Long totalAmount;
     }
 
     @Getter
@@ -67,6 +69,16 @@ public class PaymentResponseDto {
         private String canceledAt;
         private Long cancelAmount;
         private String cancelReason;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EasyPayResponseDto {
+        private String provider;
+        private Long amount;
+        private String discountAmount;
     }
 
     @Getter

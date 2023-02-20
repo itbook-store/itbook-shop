@@ -309,6 +309,7 @@ public class OrderServiceImpl implements OrderService {
                 .paymentStatus(payment.getPaymentStatus())
                 .order(order)
                 .card(payment.getCard())
+                .easypay(payment.getEasypay())
                 .totalAmount(0L)
                 .paymentKey(payment.getPaymentKey())
                 .orderId(payment.getOrderId())
