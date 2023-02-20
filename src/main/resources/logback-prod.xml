@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration>
+
+    <appender name="user-logger" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- Logback의 AsyncAppender 옵션 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <param name="includeCallerData" value="false"/>
+        <param name="queueSize" value="2048"/>
+        <param name="neverBlock" value="true"/>
+        <param name="maxFlushTime" value="60000"/>
+
+        <!-- Log & Crash Logback SDK의 LogNCrashHttpAppender 옵션 -->
+        <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
+            <param name="appKey" value="h98AoVSn5I3rIctz"/>
+            <param name="logSource" value="${spring.profiles.active}"/>
+            <param name="version" value="1.0.0"/>
+            <param name="logType" value="log"/>
+            <param name="debug" value="true"/>
+            <param name="category" value="itbook-shop"/>
+            <param name="errorCodeType" value="action"/>
+        </appender>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="user-logger"/>
+    </root>
+
+</Configuration>
