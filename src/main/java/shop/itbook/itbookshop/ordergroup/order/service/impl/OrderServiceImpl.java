@@ -534,15 +534,14 @@ public class OrderServiceImpl implements OrderService {
 
             if (product.getIsPointApplyingBasedSellingPrice()) {
 
-                // TODO jun : double로 바뀌면 1.0 곱한거 로직 빼기
                 Long resultPoint = increasePoint + getDiscountedPrice(totalPriceAboutSellingPrice,
-                    product.getIncreasePointPercent() * 1.0);
+                    product.getIncreasePointPercent());
                 order.setIncreasePoint(resultPoint);
             } else {
 
                 Long resultPoint = increasePoint +
                     getDiscountedPrice(totalPriceAboutSellingPriceWithCouponApplied,
-                        product.getIncreasePointPercent() * 1.0);
+                        product.getIncreasePointPercent());
                 order.setIncreasePoint(resultPoint);
             }
         }

@@ -45,7 +45,7 @@ class ProductSearchRepositoryTest {
             .isForceSoldOut(false)
             .thumbnailUrl("testUrl")
             .fixedPrice(20000L)
-            .increasePointPercent(1)
+            .increasePointPercent(1.0)
             .discountPercent(10.0)
             .rawPrice(12000L)
             .build();
