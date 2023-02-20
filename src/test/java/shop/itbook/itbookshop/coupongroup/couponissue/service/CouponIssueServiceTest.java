@@ -2,6 +2,8 @@ package shop.itbook.itbookshop.coupongroup.couponissue.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec.CategoryCouponApplyService;
@@ -67,7 +70,6 @@ class CouponIssueServiceTest {
     OrderProductRepository orderProductRepository;
 
 
-
 //    @Test
 //    void addCouponIssueByCoupon(){
 //
@@ -81,92 +83,135 @@ class CouponIssueServiceTest {
 //    void makeCouponIssue(){
 //
 //    }
+//
+//    @Test
+//    void findCouponIssueListByMemberNo() {
+//
+//    }
+//
+//    @Test
+//    void changePeriodExpiredByMemberNo() {
+//
+//    }
+//
+//    @Test
+//    void usePointCouponAndCreatePointHistory() {
+//
+//    }
 
-    @Test
-    void findCouponIssueListByMemberNo(){
-
-    }
-
-    @Test
-    void changePeriodExpiredByMemberNo(){
-
-    }
-
-    @Test
-    void usePointCouponAndCreatePointHistory(){
-
-    }
     @Test
     @DisplayName("유저가 사용 가능한 모든 쿠폰을 불러오는지 테스트")
     void findMemberAvailableCouponIssuesList() {
 
         //given
         given(couponIssueRepository.findAvailableProductCouponIssueByMemberNo(anyLong()))
-            .willReturn(List.of(new ProductCouponIssueListResponseDto(), new ProductCouponIssueListResponseDto()));
+            .willReturn(List.of(new ProductCouponIssueListResponseDto(),
+                new ProductCouponIssueListResponseDto()));
         given(couponIssueRepository.findAvailableOrderTotalCouponIssueByMemberNo(anyLong()))
-            .willReturn(List.of(new OrderTotalCouponIssueResponseListDto(), new OrderTotalCouponIssueResponseListDto()));
+            .willReturn(List.of(new OrderTotalCouponIssueResponseListDto(),
+                new OrderTotalCouponIssueResponseListDto()));
         given(couponIssueRepository.findAvailableCategoryCouponIssueByMemberNo(anyLong()))
-            .willReturn(List.of(new CategoryCouponIssueListResponseDto(), new CategoryCouponIssueListResponseDto()));
+            .willReturn(List.of(new CategoryCouponIssueListResponseDto(),
+                new CategoryCouponIssueListResponseDto()));
 
         //when
-        CouponIssueListByGroupResponseDto actual = couponIssueService.findMemberAvailableCouponIssuesList(anyLong());
+        CouponIssueListByGroupResponseDto actual =
+            couponIssueService.findMemberAvailableCouponIssuesList(anyLong());
 
         //then
         assertThat(actual.getCategoryCouponList()).hasSize(2);
         assertThat(actual.getProductCouponList()).hasSize(2);
         assertThat(actual.getOrderTotalCouponList()).hasSize(2);
     }
+//
+//    @Test
+//    void findAvailableProductCategoryCouponByMemberNoAndProductNo() {
+//
+//    }
+//
+//    @Test
+//    void findAvailableOrderTotalCouponByMemberNo() {
+//
+//    }
+//
+//    @Test
+//    void findAllCouponIssue() {
+//
+//    }
+//
+//    @Test
+//    void findCouponIssueByCouponIssueNo() {
+//
+//    }
+//
+//    @Test
+//    void usingCouponIssue() {
+//
+//    }
+//
+//    @Test
+//    void cancelCouponIssue() {
+//
+//    }
+//
+//    @Test
+//    void saveCouponApplyAboutCategoryAndProduct() {
+//
+//    }
 
     @Test
-    void findAvailableProductCategoryCouponByMemberNoAndProductNo(){
-
-    }
-
-    @Test
-    void findAvailableOrderTotalCouponByMemberNo(){
-
-    }
-
-    @Test
-    void findAllCouponIssue(){
-
-    }
-
-    @Test
-    void findCouponIssueByCouponIssueNo(){
-
-    }
-
-    @Test
-    void usingCouponIssue(){
-
-    }
-
-    @Test
-    void cancelCouponIssue(){
-
-    }
-
-    @Test
-    void saveCouponApplyAboutCategoryAndProduct(){
-
-    }
-
-    @Test
-    void findCouponIssueSearch_memberId(){
+    void findCouponIssueSearch_memberId() {
         Pageable pageable = Pageable.unpaged();
-//        Page<AdminCouponIssueListResponseDto> couponIssueList = List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto())
-    }
-    @Test
-    void findCouponIssueSearch_couponName(){
+        Page<AdminCouponIssueListResponseDto> couponIssueList =
+            new PageImpl<>(List.of(new AdminCouponIssueListResponseDto(), new AdminCouponIssueListResponseDto()));
 
-    }
-    @Test
-    void findCouponIssueSearch_couponCode(){
+        given(couponIssueRepository.findCouponIssueSearchMemberId(eq(pageable), anyString())).willReturn(couponIssueList);
 
-    }
-    @Test
-    void findCouponIssueSearch_default(){
+        Page<AdminCouponIssueListResponseDto> result =
+            couponIssueService.findCouponIssueSearch(pageable, "memberId", "memberId");
 
+        assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void findCouponIssueSearch_couponName() {
+        Pageable pageable = Pageable.unpaged();
+        Page<AdminCouponIssueListResponseDto> couponIssueList =
+            new PageImpl<>(List.of(new AdminCouponIssueListResponseDto(), new AdminCouponIssueListResponseDto()));
+
+        given(couponIssueRepository.findCouponIssueSearchCouponName(eq(pageable), anyString())).willReturn(couponIssueList);
+
+        Page<AdminCouponIssueListResponseDto> result =
+            couponIssueService.findCouponIssueSearch(pageable, "couponName", "couponName");
+
+        assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void findCouponIssueSearch_couponCode() {
+        Pageable pageable = Pageable.unpaged();
+        Page<AdminCouponIssueListResponseDto> couponIssueList =
+            new PageImpl<>(List.of(new AdminCouponIssueListResponseDto(), new AdminCouponIssueListResponseDto()));
+
+        given(couponIssueRepository.findCouponIssueSearchCouponCode(eq(pageable), anyString())).willReturn(couponIssueList);
+
+        Page<AdminCouponIssueListResponseDto> result =
+            couponIssueService.findCouponIssueSearch(pageable, "couponCode", "couponCode");
+
+        assertThat(result).hasSize(2);
+    }
+
+    @Test
+    void findCouponIssueSearch_default() {
+        Pageable pageable = Pageable.unpaged();
+        Page<AdminCouponIssueListResponseDto> couponIssueList =
+            new PageImpl<>(List.of(new AdminCouponIssueListResponseDto(), new AdminCouponIssueListResponseDto()));
+
+        given(couponIssueRepository.findAllCouponIssue(pageable)).willReturn(couponIssueList);
+
+        Page<AdminCouponIssueListResponseDto> result =
+            couponIssueService.findCouponIssueSearch(pageable, "default", "default");
+
+        assertThat(result).hasSize(2);
     }
 }
