@@ -223,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderNonMember orderNonMember =
-            new OrderNonMember(order, 12345678L);
+            new OrderNonMember(order, "123456789012345678901234567890123456");
         orderNonMemberRepository.save(orderNonMember);
     }
 
