@@ -26,20 +26,20 @@ jobs:
       - name : Run SonarQube
         run : mvn sonar:sonar -Dsonar.projectKey=github-action -Dsonar.host.url=${{secrets.SONAR_HOST}} -Dsonar.login=${{secrets.SONAR_TOKEN}}
 
-      - name : ready for deploy first server (excute shell script)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_IP }}
-          username: ${{ secrets.SSH_ID }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script_stop: true
-          script: "./ready_server1.sh"
+#      - name : ready for deploy first server (excute shell script)
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SSH_IP }}
+#          username: ${{ secrets.SSH_ID }}
+#          key: ${{ secrets.SSH_KEY }}
+#          port: ${{ secrets.SSH_PORT }}
+#          script_stop: true
+#          script: "./ready_server1.sh"
 
-      - name: Sleep for 60 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '60s'
+#      - name: Sleep for 60 seconds
+#        uses: jakejarvis/wait-action@master
+#        with:
+#          time: '60s'
 
       - name : upload file to server1
         uses: appleboy/scp-action@master
@@ -62,23 +62,27 @@ jobs:
           script_stop: true
           script: "./startup.sh"
 
+#      - name: Sleep for 80 seconds
+#        uses: jakejarvis/wait-action@master
+#        with:
+#          time: '80s'
         ### phase 2
 
-      - name : ready for deploy seconds server (excute shell script)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_IP2 }}
-          username: ${{ secrets.SSH_ID2 }}
-          key: ${{ secrets.SSH_KEY2 }}
-          port: ${{ secrets.SSH_PORT2 }}
-          script_stop: true
-          script: "./ready_server2.sh"
+#      - name : ready for deploy seconds server (excute shell script)
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SSH_IP2 }}
+#          username: ${{ secrets.SSH_ID2 }}
+#          key: ${{ secrets.SSH_KEY2 }}
+#          port: ${{ secrets.SSH_PORT2 }}
+#          script_stop: true
+#          script: "./ready_server2.sh"
 
 
-      - name: Sleep for 60 seconds
-        uses: jakejarvis/wait-action@master
-        with:
-          time: '60s'
+#      - name: Sleep for 60 seconds
+#        uses: jakejarvis/wait-action@master
+#        with:
+#          time: '60s'
 
       - name : upload file
         uses: appleboy/scp-action@master
