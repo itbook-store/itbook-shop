@@ -9,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.book.exception.BookNotFoundException;
 import shop.itbook.itbookshop.book.service.AladinApiService;
-import shop.itbook.itbookshop.productgroup.product.dto.response.BookResponse;
 import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 
 /**
