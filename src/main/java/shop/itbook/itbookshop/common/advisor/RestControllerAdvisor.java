@@ -36,6 +36,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
@@ -128,6 +129,8 @@ public class RestControllerAdvisor {
         ObjectStroageFileUploadException.class,
         NotMatchCouponException.class,
         ProductInquiryComeCloseOtherMemberException.class,
+        AmountException.class,
+        NotAllowedPurchaseComplete.class,
         AmountException.class,
         InvalidOrderException.class,
         InvalidOrderCodeException.class

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,9 @@ import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeExcepti
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
+import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
@@ -374,7 +377,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
             .leftJoin(qDelivery)
             .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-
             .leftJoin(qOrderTotalCouponApply)
             .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
             .leftJoin(qCouponIssue)
@@ -419,6 +421,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qCoupon.couponNo.eq(qCouponIssue.coupon.couponNo))
                 .select(Projections.fields(OrderProductDetailResponseDto.class,
                     qOrderProduct.orderProductNo,
+                    qOrderProduct.product.productNo,
                     qOrderProduct.product.name.as("productName"),
                     qOrderProduct.count,
                     qOrderProduct.productPrice,
@@ -434,6 +437,28 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
         return orderDetailsResponseDto;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Order> findOrderOfLatestStatus(Long orderNo) {
+        QOrder qOrder = QOrder.order;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+
+        return Optional.of(from(qOrder)
+            .innerJoin(qOrderStatusHistory)
+            .on(qOrder.orderNo.eq(qOrderStatusHistory.order.orderNo))
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.orderStatusHistoryNo.eq(
+                    qOrderStatusHistory2.orderStatusHistoryNo)
+                .and(qOrderStatusHistory.order.orderNo.lt(qOrderStatusHistory2.order.orderNo)))
+            .where(qOrder.orderNo.eq(orderNo))
+            .orderBy(qOrderStatusHistory.orderStatusHistoryNo.desc())
+            .fetchFirst());
+
     }
 
     private JPQLQuery<OrderStatusHistory> getJpqlQuery(Long orderNo,
@@ -548,7 +573,10 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
                 // orderProduct
                 qOrderProduct.orderProductNo,
+                qOrderProduct.product.productNo,
                 qOrderProduct.product.name.as("productName"),
+                qOrderProduct.product.fixedPrice,
+                qOrderProduct.product.discountPercent,
                 qOrderProduct.count,
                 qOrderProduct.productPrice,
                 qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),

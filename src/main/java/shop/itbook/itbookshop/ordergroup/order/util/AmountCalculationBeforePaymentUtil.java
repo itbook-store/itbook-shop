@@ -20,7 +20,7 @@ public class AmountCalculationBeforePaymentUtil {
 
         Long standardAmount = coupon.getStandardAmount();
         if (basePriceToCompareAboutStandardAmount < standardAmount) {
-            throw new CanNotApplyCouponException();
+            throw new CanNotApplyCouponException("최소주문 금액을 넘지 못해서 쿠폰을 적용할수 없습니다.");
         }
 
         return coupon;
