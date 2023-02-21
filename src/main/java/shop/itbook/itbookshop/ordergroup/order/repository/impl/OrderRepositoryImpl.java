@@ -25,10 +25,10 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
-import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
-import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
+import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
@@ -370,7 +370,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
             .leftJoin(qDelivery)
             .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-
             .leftJoin(qOrderTotalCouponApply)
             .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
             .leftJoin(qCouponIssue)
@@ -415,6 +414,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qCoupon.couponNo.eq(qCouponIssue.coupon.couponNo))
                 .select(Projections.fields(OrderProductDetailResponseDto.class,
                     qOrderProduct.orderProductNo,
+                    qOrderProduct.product.productNo,
                     qOrderProduct.product.name.as("productName"),
                     qOrderProduct.count,
                     qOrderProduct.productPrice,
@@ -544,6 +544,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
                 // orderProduct
                 qOrderProduct.orderProductNo,
+                qOrderProduct.product.productNo,
                 qOrderProduct.product.name.as("productName"),
                 qOrderProduct.count,
                 qOrderProduct.productPrice,

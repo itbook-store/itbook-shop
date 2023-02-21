@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.ordergroup.orderproduct.dto;
 
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrderProductDetailResponseDto {
     private Long orderProductNo;
+    private Long productNo;
     private String productName;
     private Integer count;
     private Long productPrice;
