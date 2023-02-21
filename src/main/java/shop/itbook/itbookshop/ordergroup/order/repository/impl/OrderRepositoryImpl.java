@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -436,6 +437,28 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
         return orderDetailsResponseDto;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Order> findOrderOfLatestStatus(Long orderNo) {
+        QOrder qOrder = QOrder.order;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+
+        return Optional.of(from(qOrder)
+            .innerJoin(qOrderStatusHistory)
+            .on(qOrder.orderNo.eq(qOrderStatusHistory.order.orderNo))
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.orderStatusHistoryNo.eq(
+                    qOrderStatusHistory2.orderStatusHistoryNo)
+                .and(qOrderStatusHistory.order.orderNo.lt(qOrderStatusHistory2.order.orderNo)))
+            .where(qOrder.orderNo.eq(orderNo))
+            .orderBy(qOrderStatusHistory.orderStatusHistoryNo.desc())
+            .fetchFirst());
+
     }
 
     private JPQLQuery<OrderStatusHistory> getJpqlQuery(Long orderNo,

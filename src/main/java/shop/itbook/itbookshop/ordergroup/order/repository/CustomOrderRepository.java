@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -47,6 +48,15 @@ public interface CustomOrderRepository {
      * @return 주문상세 DTO
      */
     OrderDetailsResponseDto findOrderDetail(Long orderNo);
+
+    /**
+     * 가장 최신상태의 주문 엔티티를 가져오는 쿼리 입니다.
+     *
+     * @param orderNo 주문 번호
+     * @return 가장 최신상태의 주문 엔티티 (Optional)
+     * @author 강명관
+     */
+    Optional<Order> findOrderOfLatestStatus(Long orderNo);
 
     List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsResponseDto(
         Long orderNo);
