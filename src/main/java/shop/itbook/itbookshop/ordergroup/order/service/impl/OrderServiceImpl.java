@@ -44,8 +44,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
@@ -353,6 +353,8 @@ public class OrderServiceImpl implements OrderService {
             productsTotalAmount.getSellingAmount(), productsTotalAmount.getCouponAppliedAmount(),
             order.getOrderNo());
 
+        amount += order.getDeliveryFee();
+
         if (optionalMemberNo.isPresent()) {
             amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
         }
@@ -476,8 +478,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             order.setDeliveryFee(BASE_DELIVERY_FEE);
         }
-
-        amount += order.getDeliveryFee();
 
         return new ProductsTotalAmount(sumTotalPriceOfSameProducts, amount);
     }
