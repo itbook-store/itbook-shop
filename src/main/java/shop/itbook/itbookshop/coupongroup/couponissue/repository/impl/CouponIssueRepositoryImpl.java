@@ -73,7 +73,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-        return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchOne);
+        return PageableExecutionUtils.getPage(couponList, pageable, jpqlQuery::fetchCount);
     }
 
     @Override
@@ -152,6 +152,7 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCouponIssue.couponIssueNo,
                 qCoupon.name, qCoupon.code,
                 qCoupon.amount, qCoupon.percent, qCoupon.point,
+                qCoupon.standardAmount, qCoupon.maxDiscountAmount,
                 qProduct.productNo, qProduct.name.as("productName"),
                 qCategory.categoryNo, qCategory.categoryName,
                 qParentCategory.categoryName.as("parentCategoryName"),
@@ -343,7 +344,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCouponIssue.couponIssueNo,
                 qCoupon.couponNo, qCoupon.name,
                 qCoupon.code, qCoupon.amount,
-                qCoupon.percent))
+                qCoupon.percent,
+                qCoupon.standardAmount, qCoupon.maxDiscountAmount))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCouponIssue.member, qMember)
@@ -372,8 +374,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .select(Projections.fields(OrderCouponSimpleListResponseDto.class,
                 qCouponIssue.couponIssueNo,
                 qCoupon.couponNo, qCoupon.name,
-                qCoupon.code, qCoupon.amount,
-                qCoupon.percent))
+                qCoupon.code, qCoupon.amount, qCoupon.percent,
+                qCoupon.standardAmount, qCoupon.maxDiscountAmount))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCouponIssue.member, qMember)
@@ -403,8 +405,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
             .select(Projections.fields(OrderCouponSimpleListResponseDto.class,
                 qCouponIssue.couponIssueNo,
                 qCoupon.couponNo, qCoupon.name,
-                qCoupon.code, qCoupon.amount,
-                qCoupon.percent))
+                qCoupon.code, qCoupon.amount, qCoupon.percent,
+                qCoupon.standardAmount, qCoupon.maxDiscountAmount))
             .join(qCouponIssue.coupon, qCoupon)
             .join(qCouponIssue.usageStatus, qUsageStatus)
             .join(qCouponIssue.member, qMember)
@@ -554,7 +556,8 @@ public class CouponIssueRepositoryImpl extends QuerydslRepositorySupport impleme
                 qCouponIssue.couponIssueNo,
                 qMember.memberNo, qMember.memberId,
                 qCoupon.couponNo, qCoupon.name, qCoupon.code,
-                qCoupon.point,
+                qCoupon.point, qCoupon.amount, qCoupon.percent,
+                qCoupon.standardAmount, qCoupon.maxDiscountAmount,
                 qCouponType.couponTypeEnum.stringValue().as("couponType"),
                 qProduct.productNo, qProduct.name.as("productName"),
                 qCategory.categoryNo, qCategory.categoryName,

@@ -19,4 +19,6 @@ public class OrderCouponSimpleListResponseDto {
     private String code;
     private Long amount;
     private Integer percent;
+    private Long standardAmount;
+    private Long maxDiscountAmount;
 }

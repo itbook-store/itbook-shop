@@ -133,6 +133,9 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     @Override
     public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(
         Pageable pageable, Long memberNo, String usageStatus) {
+        if (Objects.isNull(usageStatus)) {
+            usageStatus = "any";
+        }
         switch (usageStatus) {
             case "사용가능":
                 return couponIssueRepository.findAvailableCouponIssueListByMemberNo(pageable,
