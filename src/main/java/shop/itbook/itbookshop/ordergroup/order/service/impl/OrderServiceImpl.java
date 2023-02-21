@@ -54,6 +54,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
@@ -850,6 +851,14 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void orderPurchaseComplete(Long orderNo) {
 
+        OrderStatusHistory orderStatusHistoryByOrderNo =
+            orderStatusHistoryService.findOrderStatusHistoryByOrderNo(orderNo);
+
+        if (!orderStatusHistoryByOrderNo.getOrderStatus().getOrderStatusEnum()
+            .equals(OrderStatusEnum.DELIVERY_COMPLETED)) {
+            throw new NotAllowedPurchaseComplete();
+        }
+
         Order order = findOrderEntity(orderNo);
 
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PURCHASE_COMPLETE);
@@ -886,26 +895,6 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
                                                                                Long memberNo) {
         return orderRepository.findAllSubscriptionOrderListByMember(pageable, memberNo);
-    }
-
-    public void findSubscriptionOrderDetailList(Long orderNo) {
-
-        OrderSubscription orderSubscription =
-            orderSubscriptionRepository.findByOrder_OrderNo(orderNo)
-                .orElseThrow(OrderNotFoundException::new);
-
-        Long startOrderNo = orderSubscription.getOrderNo();
-        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
-
-        List<Long> orderNoList = new ArrayList<>();
-
-        orderNoList.add(startOrderNo);
-        for (int i = 1; i < subscriptionPeriod; i++) {
-            orderNoList.add(startOrderNo + i);
-        }
-
-        List<Order> ordersByOrderNoIn = orderRepository.findOrdersByOrderNoIn(orderNoList);
-
     }
 
     @Override

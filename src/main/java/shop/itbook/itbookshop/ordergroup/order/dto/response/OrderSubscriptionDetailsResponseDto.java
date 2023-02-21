@@ -16,6 +16,7 @@ import lombok.Setter;
 public class OrderSubscriptionDetailsResponseDto {
     private Long orderNo;
     private Long orderProductNo;
+    private Long productNo;
     private String productName;
     private Integer count;
     private Long productPrice;
