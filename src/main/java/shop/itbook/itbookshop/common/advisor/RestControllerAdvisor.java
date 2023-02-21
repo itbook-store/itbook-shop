@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.common.advisor;
 
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +80,7 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NotChildCategoryException.class,
         PointContentNotFoundException.class,
+        ConstraintViolationException.class,
         LackOfPointException.class,
         CanNotSaveRedisException.class,
         OrderSubscriptionNotFirstSequenceException.class,

@@ -12,9 +12,16 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.category.dto.CategoryNoAndProductNoDto;
 import shop.itbook.itbookshop.category.dto.response.CategoryListResponseDto;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
+import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
+import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 
 @DataJpaTest
 class CategoryRepositoryTest {
@@ -23,11 +30,25 @@ class CategoryRepositoryTest {
     CategoryRepository categoryRepository;
 
     @Autowired
+    ProductRepository productRepository;
+
+    @Autowired
+    ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
     TestEntityManager testEntityManager;
 
     Category categoryDummyBook;
 
     Category categoryDummyStuff;
+
+    Product dummyProduct1;
+    Product dummyProduct2;
+    Category dummySubCategory;
+    Category dummyMainCategory;
+    Product savedProduct1;
+    ProductCategory dummyProductCategory1;
+
 
     @BeforeEach
     void setUp() {
@@ -40,6 +61,17 @@ class CategoryRepositoryTest {
         categoryRepository.save(categoryDummyStuff);
 
         categoryDummyStuff.setParentCategory(categoryDummyBook);
+
+        dummyProduct1 = ProductDummy.getProductSuccess();
+        dummyProduct2 = ProductDummy.getProductSuccess();
+
+        savedProduct1 = productRepository.save(dummyProduct1);
+
+
+        dummyProductCategory1 =
+            new ProductCategory(savedProduct1, categoryDummyStuff);
+
+        productCategoryRepository.save(dummyProductCategory1);
 
         testEntityManager.flush();
         testEntityManager.clear();
@@ -87,6 +119,8 @@ class CategoryRepositoryTest {
             .isEqualTo(categoryDummyStuff.getIsHidden());
         assertThat(actual.getParentCategoryNo())
             .isNull();
+        assertThat(categoryList.getTotalElements()).isEqualTo(2);
+
     }
 
 
@@ -226,5 +260,72 @@ class CategoryRepositoryTest {
         Category category = categoryRepository.findById(categoryDummyBook.getCategoryNo()).get();
         assertThat(category.getSequence())
             .isEqualTo(sequence + 1);
+    }
+
+    @DisplayName("부모 도서가 하나 자식도서 하나있을때 부모도서가 숨김상태면 자식도서까지 아무것도 조회되지 않는다.")
+    @Test
+    void findCategoryListByNotEmployee() {
+        // given
+        PageRequest pageable = PageRequest.of(0, 10);
+
+        // when
+        Page<CategoryListResponseDto> page =
+            categoryRepository.findCategoryListByNotEmployee(pageable);
+        List<CategoryListResponseDto> content = page.getContent();
+
+        // then
+        assertThat(content).hasSize(0);
+    }
+
+    @DisplayName("해당 대분류안의 소분류로 상품이 등록되었을때 대분류와 상품의 번호가 잘반환된다.")
+    @Test
+    void getMainCategoryNoAndProductNoForSettingCount() {
+
+        // given when
+        List<CategoryNoAndProductNoDto> mainCategoryNoAndProductNoForSettingCount =
+            categoryRepository.getMainCategoryNoAndProductNoForSettingCount(
+                List.of(categoryDummyBook.getCategoryNo()));
+
+        // then
+        CategoryNoAndProductNoDto actual = mainCategoryNoAndProductNoForSettingCount.get(0);
+        assertThat(mainCategoryNoAndProductNoForSettingCount)
+            .hasSize(1);
+        assertThat(actual.getCategoryNo())
+            .isEqualTo(categoryDummyBook.getCategoryNo());
+        assertThat(actual.getProductNo())
+            .isEqualTo(savedProduct1.getProductNo());
+    }
+
+    @DisplayName("대분류 카테고리에 해당하는 상품이 존재하는 경우에 잘가져온다.")
+    @Test
+    void getMainCategoryNoAndProductNoDtoForContainsProducts() {
+
+        // given when
+        CategoryNoAndProductNoDto actual =
+            categoryRepository.getMainCategoryNoAndProductNoDtoForContainsProducts(
+                categoryDummyBook.getCategoryNo());
+
+        // then
+        assertThat(actual.getCategoryNo())
+            .isEqualTo(categoryDummyBook.getCategoryNo());
+    }
+
+    @DisplayName("자식카테고리에 상품이 포함되어있는지 확인하여 포함된 자식카테고리 번호와 상품번호리스트를 잘가져온다.")
+    @Test
+    void getSubCategoryNoAndProductNoDtoForContainsProducts() {
+
+        // given when
+        List<CategoryNoAndProductNoDto> subCategoryNoAndProductNoDtoForContainsProducts =
+            categoryRepository.getSubCategoryNoAndProductNoDtoForContainsProducts(
+                categoryDummyStuff.getCategoryNo());
+
+        // then
+        CategoryNoAndProductNoDto actual = subCategoryNoAndProductNoDtoForContainsProducts.get(0);
+
+        assertThat(subCategoryNoAndProductNoDtoForContainsProducts).hasSize(1);
+        assertThat(actual.getProductNo())
+            .isEqualTo(savedProduct1.getProductNo());
+        assertThat(actual.getCategoryNo())
+            .isEqualTo(categoryDummyStuff.getCategoryNo());
     }
 }
