@@ -70,7 +70,7 @@ public class Product {
 
     @Column(name = "increase_point_percent", nullable = false,
         columnDefinition = "integer default 0")
-    private Integer increasePointPercent;
+    private Double increasePointPercent;
 
     @Column(name = "discount_percent", nullable = false)
     private Double discountPercent;
@@ -117,7 +117,7 @@ public class Product {
     @Builder
     public Product(String name, String simpleDescription, String detailsDescription, Integer stock,
                    LocalDateTime productCreatedAt, Boolean isSelled, Boolean isForceSoldOut,
-                   String thumbnailUrl, Long fixedPrice, Integer increasePointPercent,
+                   String thumbnailUrl, Long fixedPrice, Double increasePointPercent,
                    Double discountPercent, Long rawPrice, Boolean isPointApplyingBasedSellingPrice,
                    Boolean isPointApplying, Boolean isSubscription) {
         this.name = name;

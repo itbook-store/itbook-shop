@@ -2,13 +2,11 @@ package shop.itbook.itbookshop.productgroup.product.repository.elasticsearchrepo
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -45,7 +43,7 @@ class ProductSearchRepositoryTest {
             .isForceSoldOut(false)
             .thumbnailUrl("testUrl")
             .fixedPrice(20000L)
-            .increasePointPercent(1)
+            .increasePointPercent(1.0)
             .discountPercent(10.0)
             .rawPrice(12000L)
             .build();

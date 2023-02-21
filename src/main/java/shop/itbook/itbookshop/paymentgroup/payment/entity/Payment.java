@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
+import shop.itbook.itbookshop.paymentgroup.easypay.entity.Easypay;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
 
 /**
@@ -45,7 +46,7 @@ public class Payment {
     private Long paymentNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payment_status_no", nullable = false, columnDefinition = "varchar(255)")
+    @JoinColumn(name = "payment_status_no", nullable = false)
     private PaymentStatus paymentStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,8 +54,12 @@ public class Payment {
     private Order order;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_no", nullable = false, columnDefinition = "varchar(20)")
+    @JoinColumn(name = "card_no")
     private Card card;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "easypay_no")
+    private Easypay easypay;
 
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
@@ -106,13 +111,14 @@ public class Payment {
     @SuppressWarnings("java:S107") // 생성자 필드 갯수가 많아 추가
     @Builder
 
-    public Payment(PaymentStatus paymentStatus, Order order, Card card,
+    public Payment(PaymentStatus paymentStatus, Order order, Card card, Easypay easypay,
                    Long totalAmount, String paymentKey, String orderId, String orderName,
                    String receiptUrl, LocalDateTime requestedAt, LocalDateTime approvedAt,
                    String country, String checkoutUrl, Long vat) {
         this.paymentStatus = paymentStatus;
         this.order = order;
         this.card = card;
+        this.easypay = easypay;
         this.totalAmount = totalAmount;
         this.paymentKey = paymentKey;
         this.orderId = orderId;
