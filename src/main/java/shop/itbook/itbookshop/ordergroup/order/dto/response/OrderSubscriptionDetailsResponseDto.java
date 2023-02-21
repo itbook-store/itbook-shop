@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.dto.response;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 주문 구독의 상세 정보를 담은 Dto 입니다.
@@ -11,12 +12,17 @@ import lombok.Getter;
  * @since 1.0
  */
 @Getter
+@Setter
 public class OrderSubscriptionDetailsResponseDto {
     private Long orderNo;
     private Long orderProductNo;
+    private Long productNo;
     private String productName;
     private Integer count;
     private Long productPrice;
+    private Long fixedPrice;
+    private Double discountPercent;
+    private Long sellingAmount;
     private String fileThumbnailsUrl;
     private OrderDestinationDto orderDestinationDto;
     private String orderStatus;
