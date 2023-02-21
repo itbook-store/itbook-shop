@@ -1,14 +1,14 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
-import java.util.Objects;
 import javax.validation.Valid;
-import javax.validation.ValidationException;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +37,7 @@ import shop.itbook.itbookshop.common.response.PageResponse;
 @RestController
 @RequestMapping("/api/admin/categories")
 @RequiredArgsConstructor
+@Validated
 public class CategoryAdminController {
 
     private final CategoryService categoryService;
@@ -211,11 +212,7 @@ public class CategoryAdminController {
     @PutMapping("/{categoryNo}/main-sequence")
     public ResponseEntity<CommonResponseBody<Void>> mainCategorySequenceModify(
         @PathVariable Integer categoryNo,
-        @RequestParam Integer sequence) {
-
-        if (Objects.isNull(sequence) || sequence <= 0) {
-            throw new ValidationException("sequence 번호는 null일수 없으며 최솟값이 1입니다.");
-        }
+        @RequestParam @Min(value = 1, message = "순서는 최솟값이 1입니다.") Integer sequence) {
 
         categoryService.modifyMainSequence(categoryNo, sequence);
 

@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.category.controller.adminapi;
 
-
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -50,7 +50,6 @@ class CategoryAdminControllerTest {
 
     @Autowired
     ObjectMapper objectMapper;
-
 
     @DisplayName("저장에 관련한 요청이 잘들어오고 PK 값이(1) 잘 반환된다.")
     @Test
@@ -249,6 +248,20 @@ class CategoryAdminControllerTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 
         verify(categoryService).modifyMainSequence(anyInt(), anyInt());
+    }
+
+    @DisplayName("sequence가 null인경우 ConstraintViolationException 발생한다.")
+    @Test
+    void mainCategorySequenceModify_fail_ConstraintViolationException() throws Exception {
+
+        mvc.perform(
+                put("/api/admin/categories/1/main-sequence?sequence=-1"))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.result", equalTo(null)))
+            .andExpect(
+                jsonPath("$.header.resultMessage",
+                    containsString("순서는 최솟값이 1입니다.")));
     }
 
     @DisplayName("url에 맞게 잘 요청되고 200 상태값이 잘 반환되며 service 메서드도 정상적으로 호출된다.")

@@ -31,9 +31,9 @@ public class OrderNonMember {
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE})
     @PrimaryKeyJoinColumn(name = "order_no")
     private Order order;
-    
+
     @Column(name = "non_member_order_code", nullable = false)
-    private Long nonMemberOrderCode;
+    private String nonMemberOrderCode;
 
     /**
      * 주문 번호를 식별자키로 설정하는 생성자입니다.
@@ -41,7 +41,7 @@ public class OrderNonMember {
      * @param order              주문 엔티티
      * @param nonMemberOrderCode 주문확인을 위한 코드
      */
-    public OrderNonMember(Order order, Long nonMemberOrderCode) {
+    public OrderNonMember(Order order, String nonMemberOrderCode) {
         this.orderNo = order.getOrderNo();
         this.order = order;
         this.nonMemberOrderCode = nonMemberOrderCode;

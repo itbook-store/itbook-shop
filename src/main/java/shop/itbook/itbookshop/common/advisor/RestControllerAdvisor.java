@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.common.advisor;
 
+import javax.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import shop.itbook.itbookshop.coupongroup.couponissue.exception.AlreadyAddedCoup
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponIssueNotFoundException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.CouponQuantityExhaustedException;
 import shop.itbook.itbookshop.coupongroup.couponissue.exception.NotPointCouponException;
-import shop.itbook.itbookshop.coupongroup.couponissue.exception.UnableToCreateCouponException;
 import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
@@ -33,13 +33,16 @@ import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDest
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
+import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
+import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.util.CanNotApplyCouponException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.exception.PaymentStatusNotFoundException;
@@ -77,6 +80,7 @@ public class RestControllerAdvisor {
         CategoryContainsProductsException.class,
         NotChildCategoryException.class,
         PointContentNotFoundException.class,
+        ConstraintViolationException.class,
         LackOfPointException.class,
         CanNotSaveRedisException.class,
         OrderSubscriptionNotFirstSequenceException.class,
@@ -125,7 +129,11 @@ public class RestControllerAdvisor {
         ObjectStroageFileUploadException.class,
         NotMatchCouponException.class,
         ProductInquiryComeCloseOtherMemberException.class,
-        AmountException.class
+        AmountException.class,
+        NotAllowedPurchaseComplete.class,
+        AmountException.class,
+        InvalidOrderException.class,
+        InvalidOrderCodeException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

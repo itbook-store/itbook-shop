@@ -34,7 +34,7 @@ public class BookDetailsResponseDto {
 
     private Integer stock;
 
-    private Integer increasePointPercent;
+    private Double increasePointPercent;
 
     private Long rawPrice;
 
@@ -71,7 +71,7 @@ public class BookDetailsResponseDto {
     public BookDetailsResponseDto(Long productNo, String productName, String simpleDescription,
                                   String detailsDescription, Boolean isSelled,
                                   Boolean isForceSoldOut, Boolean isSubscription,
-                                  Integer stock, Integer increasePointPercent, Long rawPrice,
+                                  Integer stock, Double increasePointPercent, Long rawPrice,
                                   Long fixedPrice, Double discountPercent,
                                   String fileThumbnailsUrl, Boolean isPointApplying,
                                   String isbn, Integer pageCount, LocalDateTime bookCreatedAt,

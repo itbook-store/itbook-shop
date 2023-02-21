@@ -3,8 +3,11 @@ package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,6 +32,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;
 
 /**
  * 주문과 관련된 요청을 처리하는 컨트롤러 입니다.
@@ -71,27 +76,6 @@ public class OrderController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
-    /**
-     * 비회원 주문 조회 요청을 처리합니다.
-     *
-     * @param pageable 페이징을 위한 객체
-     * @param orderNo  주문 조회할 주문 번호
-     * @return 비회원이 주문한 건의 상세 정보 Dto 를 담은 응답 객체
-     */
-// TODO: 2023/02/10 비회원 주문조회
-    public ResponseEntity<CommonResponseBody<Void>> orderNonMemberList(
-        @PageableDefault Pageable pageable, @PathVariable("orderNo") Long orderNo
-    ) {
-
-        CommonResponseBody<Void> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_LIST_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage()
-                ), null
-            );
-
-        return ResponseEntity.ok().body(commonResponseBody);
-    }
 
     /**
      * 결제 전, 주문 데이터 등록의 요청을 받아 처리합니다.

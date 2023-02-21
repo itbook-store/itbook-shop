@@ -11,6 +11,8 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
+import shop.itbook.itbookshop.paymentgroup.easypay.entity.Easypay;
+import shop.itbook.itbookshop.paymentgroup.easypay.service.EasypayService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentCanceledRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;
@@ -43,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PayService tossPayService;
     private final CardService cardService;
+    private final EasypayService easypayService;
     private final PaymentCancelService paymentCancelService;
     private final PaymentStatusService paymentStatusService;
     private final OrderService orderService;
@@ -58,19 +61,23 @@ public class PaymentServiceImpl implements PaymentService {
     public OrderResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
                                            Long orderNo, HttpSession session) {
 
-        PaymentResponseDto.PaymentDataResponseDto response;
-        Payment payment;
-
         if (paymentApproveRequestDto.getAmount() < 100L) {
             throw new InvalidPaymentException("100원 미만의 결제는 불가능합니다.");
         }
 
-        response = tossPayService.requestApprovePayment(paymentApproveRequestDto);
+        PaymentResponseDto.PaymentDataResponseDto response =
+            tossPayService.requestApprovePayment(paymentApproveRequestDto);
 
-        payment = PaymentTransfer.dtoToEntity(response);
-        if (!Objects.isNull(response.getCard())) {
+        Payment payment = PaymentTransfer.dtoToEntity(response);
+
+        if (Objects.nonNull(response.getCard())) {
             Card card = cardService.addCard(response);
             payment.setCard(card);
+        }
+
+        if (Objects.nonNull(response.getEasyPay())) {
+            Easypay easypay = easypayService.addEasyPay(response);
+            payment.setEasypay(easypay);
         }
 
         if (!Objects.equals(payment.getTotalAmount(), paymentApproveRequestDto.getAmount())) {

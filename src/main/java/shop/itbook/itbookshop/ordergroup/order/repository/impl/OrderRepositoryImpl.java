@@ -7,15 +7,12 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.QCategoryCouponApply;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
-import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.QOrderTotalCouponApply;
-import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.QProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.QCategoryCouponApply;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.QCoupon;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.QCouponIssue;
@@ -31,9 +28,14 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdm
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
+import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeException;
+import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
+import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
+import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.QOrderStatus;
@@ -41,6 +43,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.QOrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.QOrderSubscription;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.productgroup.product.entity.QProduct;
 
 /**
@@ -374,7 +377,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
             .leftJoin(qDelivery)
             .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-
             .leftJoin(qOrderTotalCouponApply)
             .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
             .leftJoin(qCouponIssue)
@@ -419,6 +421,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qCoupon.couponNo.eq(qCouponIssue.coupon.couponNo))
                 .select(Projections.fields(OrderProductDetailResponseDto.class,
                     qOrderProduct.orderProductNo,
+                    qOrderProduct.product.productNo,
                     qOrderProduct.product.name.as("productName"),
                     qOrderProduct.count,
                     qOrderProduct.productPrice,
@@ -436,6 +439,28 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         return orderDetailsResponseDto;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Order> findOrderOfLatestStatus(Long orderNo) {
+        QOrder qOrder = QOrder.order;
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+
+        return Optional.of(from(qOrder)
+            .innerJoin(qOrderStatusHistory)
+            .on(qOrder.orderNo.eq(qOrderStatusHistory.order.orderNo))
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.orderStatusHistoryNo.eq(
+                    qOrderStatusHistory2.orderStatusHistoryNo)
+                .and(qOrderStatusHistory.order.orderNo.lt(qOrderStatusHistory2.order.orderNo)))
+            .where(qOrder.orderNo.eq(orderNo))
+            .orderBy(qOrderStatusHistory.orderStatusHistoryNo.desc())
+            .fetchFirst());
+
+    }
+
     private JPQLQuery<OrderStatusHistory> getJpqlQuery(Long orderNo,
                                                        QOrderStatusHistory qOrderStatusHistory,
                                                        QOrderStatusHistory qOrderStatusHistory2,
@@ -444,22 +469,11 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .leftJoin(qOrderStatusHistory2)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
                 .and(qOrderStatusHistory.orderStatusHistoryNo
-                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)
-                )
-            )
-
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
             .innerJoin(qOrder)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
-//            .leftJoin(qDelivery)
-//            .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
-
-//            .leftJoin(qOrderTotalCouponApply)
-//            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
-
-            .where(
-                qOrder.orderNo.eq(orderNo)
-                    .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
-            );
+            .where(qOrder.orderNo.eq(orderNo)
+                .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()));
     }
 
     @Override
@@ -486,7 +500,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QCoupon qCouponNotTotal = new QCoupon("coupon2");
 
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
-        QProduct qProduct = QProduct.product;
 
         Integer subscriptionPeriod = from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
@@ -560,7 +573,10 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
                 // orderProduct
                 qOrderProduct.orderProductNo,
+                qOrderProduct.product.productNo,
                 qOrderProduct.product.name.as("productName"),
+                qOrderProduct.product.fixedPrice,
+                qOrderProduct.product.discountPercent,
                 qOrderProduct.count,
                 qOrderProduct.productPrice,
                 qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
@@ -573,5 +589,158 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qCouponNotTotal.amount.as("couponAmount"),
                 qCouponNotTotal.percent.as("couponPercent")
             )).fetch();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public OrderDetailsResponseDto findOrderDetailOfNonMember(Long orderNo) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+        QDelivery qDelivery = QDelivery.delivery;
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+
+        QOrderNonMember qOrderNonMember = QOrderNonMember.orderNonMember;
+
+        checkValidOrderNo(orderNo, qOrder);
+
+        JPQLQuery<OrderStatusHistory> jpqlQuery =
+            getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder);
+        try {
+
+            OrderDetailsResponseDto orderDetailsResponseDto = jpqlQuery
+                .leftJoin(qDelivery)
+                .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .innerJoin(qOrderNonMember)
+                .on(qOrderNonMember.order.eq(qOrder))
+                .select(Projections.fields(OrderDetailsResponseDto.class,
+                        qOrder.orderNo,
+                        qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                        qOrder.orderCreatedAt,
+                        qOrder.amount,
+                        qOrder.deliveryFee,
+                        qDelivery.deliveryNo,
+                        qDelivery.trackingNo,
+                        qOrderNonMember.nonMemberOrderCode,
+                        Projections.fields(OrderDestinationDto.class,
+                            qOrder.recipientName.as("recipientName"),
+                            qOrder.recipientPhoneNumber.as("recipientPhoneNumber"),
+                            qOrder.postcode.as("postcode"),
+                            qOrder.roadNameAddress.as("roadNameAddress"),
+                            qOrder.recipientAddressDetails.as("recipientAddressDetails")
+                        ).as("orderDestinationDto")
+                    )
+                ).fetchOne();
+
+            List<OrderProductDetailResponseDto> productDetailList =
+                getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder)
+                    .innerJoin(qOrderProduct)
+                    .on(qOrderProduct.order.orderNo.eq(qOrder.orderNo))
+                    .select(Projections.fields(OrderProductDetailResponseDto.class,
+                        qOrderProduct.orderProductNo,
+                        qOrderProduct.product.name.as("productName"),
+                        qOrderProduct.count,
+                        qOrderProduct.productPrice,
+                        qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
+                        qOrderProduct.product.fixedPrice,
+                        qOrderProduct.product.discountPercent
+                    ))
+                    .fetch();
+
+            orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
+
+            return orderDetailsResponseDto;
+        } catch (Exception e) {
+            throw new InvalidOrderCodeException();
+        }
+
+    }
+
+    @Override
+    public List<OrderSubscriptionDetailsResponseDto> findOrderSubscriptionDetailsOfNonMember(
+        Long orderNo) {
+
+        QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
+        QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
+        QOrder qOrder = QOrder.order;
+
+        QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
+        QOrderSubscription qOrderSubscription = QOrderSubscription.orderSubscription;
+
+        QDelivery qDelivery = QDelivery.delivery;
+
+        QOrderNonMember qOrderNonMember = QOrderNonMember.orderNonMember;
+
+        checkValidOrderNo(orderNo, qOrder);
+
+        Integer subscriptionPeriod = from(qOrderStatusHistory)
+            .leftJoin(qOrderStatusHistory2)
+            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                .and(qOrderStatusHistory.orderStatusHistoryNo
+                    .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+            .innerJoin(qOrderSubscription)
+            .on(qOrderSubscription.orderNo.eq(orderNo))
+            .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull()
+                .and(qOrderStatusHistory.order.orderNo.eq(orderNo)))
+            .select(qOrderSubscription.subscriptionPeriod)
+            .fetchOne();
+
+        try {
+            return from(qOrderStatusHistory)
+                .leftJoin(qOrderStatusHistory2)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+                    .and(qOrderStatusHistory.orderStatusHistoryNo
+                        .lt(qOrderStatusHistory2.orderStatusHistoryNo)))
+                .innerJoin(qOrder)
+                .on(qOrderStatusHistory.order.orderNo.eq(qOrder.orderNo))
+                .leftJoin(qDelivery)
+                .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
+                .innerJoin(qOrderSubscription)
+                .on(qOrderSubscription.orderNo.eq(qOrder.orderNo))
+                .innerJoin(qOrderNonMember)
+                .on(qOrderNonMember.order.eq(qOrder))
+                .innerJoin(qOrderProduct)
+                .on(qOrderProduct.order.eq(qOrder))
+                .where(
+                    qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
+                        .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
+                .select(Projections.fields(OrderSubscriptionDetailsResponseDto.class,
+                    Projections.fields(OrderDestinationDto.class,
+                        qOrder.recipientName,
+                        qOrder.recipientPhoneNumber,
+                        qOrder.postcode,
+                        qOrder.roadNameAddress,
+                        qOrder.recipientAddressDetails
+                    ).as("orderDestinationDto"),
+                    qOrder.orderNo,
+                    qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
+                    qOrder.orderCreatedAt,
+                    qOrder.amount,
+                    qOrder.deliveryFee,
+                    qDelivery.deliveryNo,
+                    qDelivery.trackingNo,
+                    qOrder.selectedDeliveryDate,
+                    qOrderNonMember.nonMemberOrderCode,
+
+                    qOrderProduct.orderProductNo,
+                    qOrderProduct.product.name.as("productName"),
+                    qOrderProduct.count,
+                    qOrderProduct.productPrice,
+                    qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl")
+                )).fetch();
+        } catch (Exception e) {
+            throw new InvalidOrderException();
+        }
+    }
+
+    private void checkValidOrderNo(Long orderNo, QOrder qOrder) {
+        if (Objects.isNull(from(qOrder)
+            .where(qOrder.orderNo.eq(orderNo))
+            .fetch())) {
+            throw new OrderNotFoundException();
+        }
     }
 }
