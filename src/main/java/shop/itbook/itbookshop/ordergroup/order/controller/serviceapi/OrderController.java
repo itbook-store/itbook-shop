@@ -34,6 +34,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewR
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 
 /**
  * 주문과 관련된 요청을 처리하는 컨트롤러 입니다.
@@ -118,6 +119,10 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
+
+        if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
+            throw new InvalidOrderException();
+        }
 
         Optional<Long> optMemberNo = Optional.empty();
 

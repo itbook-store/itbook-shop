@@ -112,6 +112,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
+
+        // 주문 취소 처리
         orderService.processBeforeOrderCancelPayment(
             paymentCanceledRequestDto.getOrderNo());
 

@@ -44,8 +44,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
@@ -238,45 +238,55 @@ public class OrderServiceImpl implements OrderService {
     public OrderPaymentDto addOrderSubscriptionBeforePayment(OrderAddRequestDto orderAddRequestDto,
                                                              Optional<Long> memberNo) {
 
-        if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
-            throw new InvalidOrderException();
-        }
 
-        int sequence = 1;
+        Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
+        order.setSelectedDeliveryDate(LocalDate.now().plusMonths(1).withDayOfMonth(1));
+        orderRepository.save(order);
 
-        OrderPaymentDto orderPaymentDto = null;
+        OrderSubscription orderSubscription = OrderSubscription.builder().order(order)
+            .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
+            .sequence(1).subscriptionPeriod(orderAddRequestDto.getSubscriptionPeriod())
+            .build();
 
-        while (sequence <= orderAddRequestDto.getSubscriptionPeriod()) {
+        orderSubscriptionRepository.save(orderSubscription);
 
-            Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
-            order.setSelectedDeliveryDate(LocalDate.now().plusMonths(sequence).withDayOfMonth(1));
-            orderRepository.save(order);
+        // 주문_상태_이력 테이블 저장
+        orderStatusHistoryService.addOrderStatusHistory(order,
+            OrderStatusEnum.WAITING_FOR_PAYMENT);
 
-            OrderSubscription orderSubscription = OrderSubscription.builder().order(order)
-                .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
-                .sequence(sequence).subscriptionPeriod(orderAddRequestDto.getSubscriptionPeriod())
-                .build();
-            orderSubscriptionRepository.save(orderSubscription);
+        // 회원, 비회원 구분해서 저장
+        checkMemberAndSaveOrder(order, memberNo);
 
-            // 주문_상태_이력 테이블 저장
-            orderStatusHistoryService.addOrderStatusHistory(order,
+        OrderPaymentDto orderPaymentDto =
+            getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, memberNo);
+
+        Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
+
+        ProductDetailsDto productDetailsDto =
+            orderAddRequestDto.getProductDetailsDtoList().get(0);
+        Product product = productService.findProductEntity(
+            productDetailsDto.getProductNo());
+
+        for (int i = 2; i <= subscriptionPeriod; i++) {
+            Order orderChild = OrderTransfer.addDtoToEntity(orderAddRequestDto);
+            orderChild.setSelectedDeliveryDate(LocalDate.now().plusMonths(i).withDayOfMonth(1));
+            orderRepository.save(orderChild);
+
+            OrderSubscription orderSubscriptionChild =
+                OrderSubscription
+                    .builder()
+                    .order(orderChild)
+                    .subscriptionStartDate(LocalDate.now().plusMonths(1).withDayOfMonth(1))
+                    .sequence(i)
+                    .subscriptionPeriod(orderAddRequestDto.getSubscriptionPeriod())
+                    .build();
+
+            orderSubscriptionRepository.save(orderSubscriptionChild);
+            orderStatusHistoryService.addOrderStatusHistory(orderChild,
                 OrderStatusEnum.WAITING_FOR_PAYMENT);
 
-            // 회원, 비회원 구분해서 저장
-            checkMemberAndSaveOrder(order, memberNo);
-
-            sequence++;
-
-            OrderPaymentDto temp =
-                getOrderPaymentDtoForMakingPayment(orderAddRequestDto, order, memberNo);
-
-            if (Objects.isNull(orderPaymentDto)) {
-                orderPaymentDto = temp;
-            }
-        }
-
-        if (Objects.isNull(orderPaymentDto)) {
-            throw new InvalidOrderException();
+            orderProductService.addOrderProduct(order, product, 0,
+                0L);
         }
 
         return orderPaymentDto;
@@ -342,6 +352,8 @@ public class OrderServiceImpl implements OrderService {
         amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto,
             productsTotalAmount.getSellingAmount(), productsTotalAmount.getCouponAppliedAmount(),
             order.getOrderNo());
+
+        amount += order.getDeliveryFee();
 
         if (optionalMemberNo.isPresent()) {
             amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
@@ -467,8 +479,6 @@ public class OrderServiceImpl implements OrderService {
             order.setDeliveryFee(BASE_DELIVERY_FEE);
         }
 
-        amount += order.getDeliveryFee();
-
         return new ProductsTotalAmount(sumTotalPriceOfSameProducts, amount);
     }
 
@@ -555,11 +565,11 @@ public class OrderServiceImpl implements OrderService {
 
     private long calculateAmountAboutOrderTotalAmountCoupon(OrderAddRequestDto orderAddRequestDto,
                                                             long sellingAmount,
-                                                            long coupontAppliedAmount,
+                                                            long couponAppliedAmount,
                                                             Long orderNo) {
         Coupon coupon = this.getCoupon(orderAddRequestDto.getOrderTotalCouponNo(), sellingAmount);
         if (Objects.isNull(coupon)) {
-            return coupontAppliedAmount;
+            return couponAppliedAmount;
         }
 
         checkMismatchAboutTypeOfOrderTotalCoupon(coupon);
@@ -575,8 +585,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return AmountCalculationBeforePaymentUtil.getTotalPriceWithCouponApplied(coupon,
-            coupontAppliedAmount,
-            coupontAppliedAmount);
+            couponAppliedAmount,
+            couponAppliedAmount);
     }
 
     private void checkMismatchAboutTypeOfOrderTotalCoupon(Coupon coupon) {
