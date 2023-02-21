@@ -1,11 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi.nonmember;
 
 import java.util.List;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Length;
@@ -54,7 +50,7 @@ public class OrderNonMemberController {
         CommonResponseBody<OrderDetailsResponseDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_LIST_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage()
+                    OrderResultMessageEnum.ORDER_DETAILS_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage()
                 ), orderDetailsResponseDto
             );
 
@@ -73,7 +69,7 @@ public class OrderNonMemberController {
         CommonResponseBody<List<OrderSubscriptionDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_LIST_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage()
+                    OrderResultMessageEnum.ORDER_DETAILS_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage()
                 ), orderSubscriptionDetailsResponseDtoList
             );
 
