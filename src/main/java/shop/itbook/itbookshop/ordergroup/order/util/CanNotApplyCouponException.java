@@ -10,4 +10,8 @@ public class CanNotApplyCouponException extends RuntimeException {
     public CanNotApplyCouponException() {
         super(MESSAGE);
     }
+
+    public CanNotApplyCouponException(String message) {
+        super(message);
+    }
 }
