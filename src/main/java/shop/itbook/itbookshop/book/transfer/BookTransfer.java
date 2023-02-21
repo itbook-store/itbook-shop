@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.book.transfer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import lombok.NoArgsConstructor;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 
@@ -13,8 +12,11 @@ import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookReques
  * @author 이하늬
  * @since 1.0
  */
-@NoArgsConstructor
 public class BookTransfer {
+
+    private BookTransfer() {
+    }
+
     /**
      * dto로 넘어온 값을 도서 엔티티로 변환하는 기능을 하는 메서드입니다.
      *

@@ -55,7 +55,9 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qProduct.isPointApplyingBasedSellingPrice,
                     qProduct.isPointApplying, qProduct.isSubscription, qProduct.isDeleted,
                     qProduct.dailyHits))
-                .where(qCategory.categoryNo.eq(categoryNo).and(qProduct.isSelled.eq(true)));
+                .where(qCategory.categoryNo.eq(categoryNo)
+                    .and(qProduct.isSelled.eq(true)
+                        .and(qProduct.isDeleted.eq(false))));
 
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
@@ -87,7 +89,8 @@ public class ProductCategoryRepositoryImpl extends QuerydslRepositorySupport
                     qParentCategory.categoryName,
                     qParentCategory.isHidden, qParentCategory.level,
                     qParentCategory.sequence))
-                .where(qProductCategory.product.productNo.eq(productNo));
+                .where(qProductCategory.product.productNo.eq(productNo))
+                .where(qProductCategory.category.isHidden.eq(false));
 
         List<CategoryDetailsResponseDto> categoryList = categoryListQuery
             .offset(pageable.getOffset())

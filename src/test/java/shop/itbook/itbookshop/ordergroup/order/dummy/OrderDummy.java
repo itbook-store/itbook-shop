@@ -25,6 +25,7 @@ public class OrderDummy {
             .increasePoint(0L)
             .decreasePoint(0L)
             .deliveryFee(0L)
+            .amount(0L)
             .build();
     }
 }

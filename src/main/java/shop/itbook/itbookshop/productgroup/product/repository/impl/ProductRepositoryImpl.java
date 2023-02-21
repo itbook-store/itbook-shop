@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.repository.impl;
 
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -142,8 +141,7 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
 
-        return PageableExecutionUtils.getPage(productList, pageable,
-            () -> from(qProduct).fetchCount());
+        return PageableExecutionUtils.getPage(productList, pageable, productListQuery::fetchCount);
     }
 
     @Override
@@ -159,7 +157,8 @@ public class ProductRepositoryImpl extends QuerydslRepositorySupport
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
 
-        return PageableExecutionUtils.getPage(productList, pageable, productListQuery::fetchCount);
+        return PageableExecutionUtils.getPage(productList, pageable, () ->
+            getProductListByProductNoList(productNoList, qProduct, qBook).fetch().size());
     }
 
     private JPQLQuery<ProductDetailsResponseDto> getProductListByProductNoList(

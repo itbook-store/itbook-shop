@@ -14,9 +14,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dto.response.MemberStatus
 @NoRepositoryBean
 public interface CustomMemberStatusRepository {
 
-    Optional<MemberStatusResponseDto> querydslFindByName(String memberStatusName);
+    Optional<MemberStatusResponseDto> findByMemberStatusName(String memberStatusName);
 
-    Optional<MemberStatusResponseDto> querydslFindByNo(int memberStatusNo);
-
-    List<MemberStatusResponseDto> querydslFindAll();
+    List<MemberStatusResponseDto> findMemberStatusResponseAll();
 }

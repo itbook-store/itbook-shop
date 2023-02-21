@@ -1,14 +1,19 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
+import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -25,6 +32,8 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
+import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;
 
 /**
  * 주문과 관련된 요청을 처리하는 컨트롤러 입니다.
@@ -67,27 +76,6 @@ public class OrderController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
-    /**
-     * 비회원 주문 조회 요청을 처리합니다.
-     *
-     * @param pageable 페이징을 위한 객체
-     * @param orderNo  주문 조회할 주문 번호
-     * @return 비회원이 주문한 건의 상세 정보 Dto 를 담은 응답 객체
-     */
-// TODO: 2023/02/10 비회원 주문조회
-    public ResponseEntity<CommonResponseBody<Void>> orderNonMemberList(
-        @PageableDefault Pageable pageable, @PathVariable("orderNo") Long orderNo
-    ) {
-
-        CommonResponseBody<Void> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_LIST_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage()
-                ), null
-            );
-
-        return ResponseEntity.ok().body(commonResponseBody);
-    }
 
     /**
      * 결제 전, 주문 데이터 등록의 요청을 받아 처리합니다.
@@ -113,29 +101,6 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
-            );
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
-    }
-
-    /**
-     * 주문의 결제 재진행을 요청을 처리합니다.
-     *
-     * @param orderNo            주문 번호
-     * @param orderAddRequestDto 주문시 작성한 정보를 담은 Dto
-     * @return 주문 추가 후 결제를 위한 정보를 담은 응답 객체
-     * @author 정재원 *
-     */
-    @PostMapping("/re-order/{orderNo}")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> reOrder(
-        @PathVariable("orderNo") Long orderNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto) {
-
-        CommonResponseBody<OrderPaymentDto> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.reOrderBeforePayment(orderAddRequestDto, orderNo)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -191,7 +156,7 @@ public class OrderController {
      *
      * @param orderNo 취소 처리할 주문 번호
      * @return 성공시 ok 응답 객체
-     * @author 정재원 *
+     * @author 정재원
      */
     @PostMapping("/cancel/{orderNo}")
     public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
@@ -213,7 +178,7 @@ public class OrderController {
      *
      * @param orderNo the order no
      * @return the response entity
-     * @author 정재원 *
+     * @author 정재원
      */
     @GetMapping("/details/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderDetailsResponseDto>> orderDetails(
@@ -230,10 +195,30 @@ public class OrderController {
     }
 
     /**
+     * 주문 구독 상세 보기
+     *
+     * @param orderNo 구독 시작 주문 번호
+     * @return 주문 구독 리스트
+     */
+    @GetMapping("/details-sub/{orderNo}")
+    public ResponseEntity<CommonResponseBody<List<OrderSubscriptionDetailsResponseDto>>> orderSubscriptionDetails(
+        @PathVariable("orderNo") Long orderNo) {
+
+        CommonResponseBody<List<OrderSubscriptionDetailsResponseDto>> commonResponseBody =
+            new CommonResponseBody<>(
+                new CommonResponseBody.CommonHeader(
+                    OrderResultMessageEnum.ORDER_SUBSCRIPTION_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
+                ), orderService.findOrderSubscriptionDetailsResponseDto(orderNo)
+            );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    /**
      * 주문 구매 확정뱐경 메서드 입니다.
      *
      * @param orderNo 주문번호
-     * @return 공용응답객체
+     * @return 공용응답객체 response entity
      * @author 강명관
      */
     @PostMapping("/purchase-complete/{orderNo}")
@@ -274,6 +259,20 @@ public class OrderController {
                 OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage()
             ), new PageResponse<>(allSubscriptionOrderListByMember)
             );
+
+        return ResponseEntity.ok().body(commonResponseBody);
+    }
+
+    @DeleteMapping("/{orderNo}/with-stock-rollback")
+    public ResponseEntity<CommonResponseBody<SuccessfulResponseDto>> orderDeleteAndStockRollBack(
+        @PathVariable Long orderNo) {
+
+        orderService.deleteOrderAndRollBackStock(orderNo);
+
+        CommonResponseBody<SuccessfulResponseDto> commonResponseBody = new CommonResponseBody<>(
+            new CommonResponseBody.CommonHeader(
+                OrderResultMessageEnum.ORDER_DELETE_AND_STOCK_ROLL_BACK_SUCCESS_MESSAGE.getResultMessage()),
+            new SuccessfulResponseDto(Boolean.TRUE));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

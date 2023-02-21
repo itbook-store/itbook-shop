@@ -24,6 +24,7 @@ import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegiste
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.repository.ReviewRepository;
+import shop.itbook.itbookshop.productgroup.review.reviewPointEnum.ReviewPointEnum;
 import shop.itbook.itbookshop.productgroup.review.service.ReviewService;
 import shop.itbook.itbookshop.productgroup.review.transfer.ReviewTransfer;
 
@@ -88,9 +89,8 @@ public class ReviewServiceImpl implements ReviewService {
             review.setImage(uploadAndSetFile(images));
             reviewNo = reviewRepository.save(review).getOrderProductNo();
 
-            // TODO jun : 메타 데이터의 포인트 값 가져오기
             reviewIncreasePointHistoryService.savePointHistoryAboutReviewIncrease(member, review,
-                100L);
+                Long.parseLong(ReviewPointEnum.REVIEW_POINT.getReviewPoint()));
 
         } catch (DataIntegrityViolationException e) {
             throw e;
@@ -146,6 +146,14 @@ public class ReviewServiceImpl implements ReviewService {
             reviewRepository.findById(orderProductNo).orElseThrow(ReviewNotFoundException::new);
 
         review.setStarPoint(-1);
+        review.setContent("삭제된 리뷰입니다.");
+        review.setImage(
+            "https://api-storage.cloud.toast.com/v1/AUTH_fcb81f74e379456b8ca0e091d351a7af/itbook-test/review/0a8ca476-4a6b-4963-ac60-8c0e6bd6d8ed.png");
+
+        Member member = memberService.findMemberByMemberNo(review.getMember().getMemberNo());
+
+        reviewIncreasePointHistoryService.savePointHistoryAboutReviewDecrease(member, review,
+            Long.parseLong(ReviewPointEnum.REVIEW_POINT.getReviewPoint()) * -1);
     }
 
     /**

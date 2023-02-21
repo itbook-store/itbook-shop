@@ -27,7 +27,7 @@ import shop.itbook.itbookshop.fileservice.dto.TokenRequestDto;
 @Data
 @Service
 public class TokenService {
-    private final String AUTH_URL =
+    private static final String AUTH_URL =
         "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
     private final RestTemplate restTemplate = new RestTemplate();
     private final RedisTemplate<String, String> redisTemplate;
@@ -62,7 +62,8 @@ public class TokenService {
             = restTemplate.exchange(AUTH_URL, HttpMethod.POST, httpEntity,
             ItBookObjectStorageToken.class);
 
-        Token itBookObjectStorageToken = response.getBody().getAccess().getToken();
+        Token itBookObjectStorageToken =
+            Objects.requireNonNull(response.getBody()).getAccess().getToken();
 
         if (Objects.isNull(itBookObjectStorageToken)) {
             throw new InvalidTokenException(

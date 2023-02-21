@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.productgroup.product.entity;
 
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,8 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.Mapping;
 import org.springframework.data.elasticsearch.annotations.Setting;
 
@@ -55,7 +52,7 @@ public class SearchProduct {
     private Long fixedPrice;
 
     @Column
-    private Integer increasePointPercent;
+    private Double increasePointPercent;
 
     @Column
     private Double discountPercent;
@@ -85,7 +82,7 @@ public class SearchProduct {
                          String detailsDescription, Integer stock, Boolean isSelled,
                          Boolean isForceSoldOut,
                          String thumbnailUrl, Long fixedPrice,
-                         Integer increasePointPercent, Double discountPercent, Long rawPrice) {
+                         Double increasePointPercent, Double discountPercent, Long rawPrice) {
         this.productNo = productNo;
         this.name = name;
         this.simpleDescription = simpleDescription;

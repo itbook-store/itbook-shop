@@ -36,4 +36,7 @@ public class OrderDetailsResponseDto {
     @Setter
     private List<OrderProductDetailResponseDto> orderProductDetailResponseDtoList;
 
+    @Setter
+    private Long sellingAmount;
+    private String nonMemberOrderCode;
 }

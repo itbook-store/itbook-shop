@@ -32,6 +32,7 @@ import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDest
 import shop.itbook.itbookshop.membergroup.membership.exception.MembershipNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
+import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
@@ -40,6 +41,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.NotStatusOfOrderCancel;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.util.CanNotApplyCouponException;
+import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentCancelException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.exception.PaymentStatusNotFoundException;
@@ -49,7 +51,6 @@ import shop.itbook.itbookshop.productgroup.product.exception.InvalidProductExcep
 import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
-import shop.itbook.itbookshop.productgroup.productcategory.exception.ProductCategoryNotFoundException;
 import shop.itbook.itbookshop.productgroup.productinquiry.exception.ProductInquiryComeCloseOtherMemberException;
 import shop.itbook.itbookshop.productgroup.producttype.exception.ProductTypeNotFoundException;
 import shop.itbook.itbookshop.productgroup.review.exception.ReviewAlreadyRegisteredException;
@@ -107,7 +108,6 @@ public class RestControllerAdvisor {
         MemberDestinationNotFoundException.class,
         ProductNotFoundException.class,
         BookNotFoundException.class,
-        ProductCategoryNotFoundException.class,
         ProductTypeNotFoundException.class,
         InvalidTokenException.class,
         ReviewAlreadyRegisteredException.class,
@@ -128,7 +128,10 @@ public class RestControllerAdvisor {
         NotMatchCouponException.class,
         ProductInquiryComeCloseOtherMemberException.class,
         AmountException.class,
-        NotAllowedPurchaseComplete.class
+        NotAllowedPurchaseComplete.class,
+        AmountException.class,
+        InvalidOrderException.class,
+        InvalidOrderCodeException.class
     })
     public ResponseEntity<CommonResponseBody<Void>> badRequestException400(
         Exception e) {

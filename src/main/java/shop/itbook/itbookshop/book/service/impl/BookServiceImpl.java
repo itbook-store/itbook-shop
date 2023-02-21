@@ -3,16 +3,13 @@ package shop.itbook.itbookshop.book.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.book.dto.request.BookAddRequestDto;
 import shop.itbook.itbookshop.book.dto.request.BookModifyRequestDto;
 import shop.itbook.itbookshop.book.dto.response.BookBooleanResponseDto;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
@@ -51,24 +48,6 @@ public class BookServiceImpl implements BookService {
     @Value("${object.storage.folder-path.thumbnail}")
     private String folderPathThumbnail;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<BookDetailsResponseDto> findBookList(boolean isFiltered) {
-        List<BookDetailsResponseDto> bookList = bookRepository.findBookList();
-        for (BookDetailsResponseDto book : bookList) {
-            setExtraFields(book);
-        }
-
-        if (isFiltered) {
-            return bookList.stream()
-                .filter(product -> product.getIsSelled() == Boolean.TRUE)
-                .collect(Collectors.toList());
-        }
-
-        return bookList;
-    }
 
     private void setExtraFields(BookDetailsResponseDto book) {
         book.setSelledPrice(
@@ -177,35 +156,20 @@ public class BookServiceImpl implements BookService {
             .orElseThrow(BookNotFoundException::new);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public BookAddRequestDto toBookRequestDto(
-        ProductBookRequestDto requestDto) {
-        return BookAddRequestDto.builder()
-            .isbn(requestDto.getIsbn())
-            .pageCount(requestDto.getPageCount())
-            .bookCreatedAt(requestDto.getBookCreatedAt())
-            .isEbook(requestDto.getIsEbook())
-            .ebookUrl(requestDto.getFileEbookUrl())
-            .publisherName(requestDto.getPublisherName())
-            .authorName(requestDto.getAuthorName())
-            .build();
-    }
-
     public Book updateBook(BookModifyRequestDto requestDto, Long productNo, Product product) {
         Book book = this.findBookEntity(productNo);
 
-        DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate ld = LocalDate.parse(requestDto.getBookCreatedAt(), DATEFORMATTER);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate ld = LocalDate.parse(requestDto.getBookCreatedAt(), dateFormatter);
         LocalDateTime date = LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
 
         book.setProduct(product);
         book.setIsbn(requestDto.getIsbn());
         book.setPageCount(requestDto.getPageCount());
         book.setBookCreatedAt(date);
-        if (!Objects.isNull(requestDto.getFileEbookUrl())) {
+        if (!Objects.isNull(requestDto.getFileEbookUrl()) &&
+            Objects.equals(requestDto.getIsEbook(), Boolean.TRUE)) {
+            book.setIsEbook(Boolean.TRUE);
             book.setEbookUrl(requestDto.getFileEbookUrl());
         }
         book.setPublisherName(requestDto.getPublisherName());

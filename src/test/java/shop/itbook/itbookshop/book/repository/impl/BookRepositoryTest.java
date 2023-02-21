@@ -7,11 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import shop.itbook.itbookshop.book.BookDummy;
 import shop.itbook.itbookshop.book.dto.response.BookDetailsResponseDto;
+import shop.itbook.itbookshop.book.dummy.BookDummy;
 import shop.itbook.itbookshop.book.entity.Book;
 import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
@@ -33,20 +32,18 @@ class BookRepositoryTest {
     @Autowired
     TestEntityManager entityManager;
 
-    Product dummyProductSuccess;
+    Product dummyProduct;
 
-    Book dummyBookSuccess;
-
-//    static final Integer DATA_SIZE = 5;
+    Book dummyBook;
 
 
     @BeforeEach
     void setUp() {
-        dummyProductSuccess = ProductDummy.getProductSuccess();
-        Product savedProduct = productRepository.save(dummyProductSuccess);
-        dummyBookSuccess = BookDummy.getBookSuccess();
-        dummyBookSuccess.setProductNo(savedProduct.getProductNo());
-        bookRepository.save(dummyBookSuccess);
+        dummyProduct = ProductDummy.getProductSuccess();
+        Product savedProduct = productRepository.save(dummyProduct);
+        dummyBook = BookDummy.getBookSuccess();
+        dummyBook.setProductNo(savedProduct.getProductNo());
+        bookRepository.save(dummyBook);
 
         entityManager.flush();
         entityManager.clear();
@@ -57,28 +54,42 @@ class BookRepositoryTest {
     void Find_Book_ByProductNo() {
 
         Optional<Book> book =
-            bookRepository.findById(dummyBookSuccess.getProductNo());
+            bookRepository.findById(dummyBook.getProductNo());
 
         Assertions.assertThat(book).isPresent();
         Assertions.assertThat(book.get().getProductNo())
-            .isEqualTo(dummyBookSuccess.getProductNo());
+            .isEqualTo(dummyBook.getProductNo());
+    }
+
+    @Test
+    @DisplayName("도서(상품) 번호로 도서 및 상품 상세 정보 조회 성공 테스트")
+    void Find_BookDetails_ByProductNo() {
+
+        Optional<BookDetailsResponseDto> book =
+            bookRepository.findBook(dummyBook.getProductNo());
+
+        Assertions.assertThat(book).isPresent();
+        Assertions.assertThat(book.get().getProductNo())
+            .isEqualTo(dummyBook.getProductNo());
+        Assertions.assertThat(book.get().getIsbn())
+            .isEqualTo(dummyBook.getIsbn());
     }
 
     @Test
     @DisplayName("도서 수정 테스트")
     void Modify_Book() {
-        dummyBookSuccess.setIsbn("modify-isbn");
-        bookRepository.save(dummyBookSuccess);
+        dummyBook.setIsbn("modify-isbn");
+        bookRepository.save(dummyBook);
         Assertions.assertThatNoException();
-        Assertions.assertThat(dummyBookSuccess.getIsbn()).isEqualTo("modify-isbn");
+        Assertions.assertThat(dummyBook.getIsbn()).isEqualTo("modify-isbn");
     }
 
     @Test
     @DisplayName("도서 삭제 테스트")
     void Delete_Book_ByProductNo() {
-        bookRepository.deleteById(dummyBookSuccess.getProductNo());
+        bookRepository.deleteById(dummyBook.getProductNo());
         Optional<Book> book =
-            bookRepository.findById(dummyBookSuccess.getProductNo());
+            bookRepository.findById(dummyBook.getProductNo());
         Assertions.assertThat(book).isNotPresent();
     }
 
@@ -88,12 +99,12 @@ class BookRepositoryTest {
 
         List<BookDetailsResponseDto> bookList = bookRepository.findBookList();
         Assertions.assertThat(bookList).isNotEmpty();
-//        BookDetailsResponseDto productDetailsResponseDtoActual = bookList.get(DATA_SIZE);
-//
-//        Assertions.assertThat(bookList).hasSize(DATA_SIZE + 1);
-//        Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
-//            .isEqualTo(dummyBookSuccess.getProductNo());
-//        Assertions.assertThat(productDetailsResponseDtoActual.getIsbn())
-//            .isEqualTo(dummyBookSuccess.getIsbn());
+        BookDetailsResponseDto productDetailsResponseDtoActual = bookList.get(0);
+
+        Assertions.assertThat(bookList).hasSize(1);
+        Assertions.assertThat(productDetailsResponseDtoActual.getProductNo())
+            .isEqualTo(dummyBook.getProductNo());
+        Assertions.assertThat(productDetailsResponseDtoActual.getIsbn())
+            .isEqualTo(dummyBook.getIsbn());
     }
 }

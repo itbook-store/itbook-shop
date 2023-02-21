@@ -9,6 +9,10 @@ import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
  * @since 1.0
  */
 public class AmountCalculationBeforePaymentUtil {
+
+    private AmountCalculationBeforePaymentUtil() {
+    }
+
     public static Coupon getAvailableCoupon(CouponIssue couponIssue,
                                             long basePriceToCompareAboutStandardAmount) {
 
@@ -20,10 +24,6 @@ public class AmountCalculationBeforePaymentUtil {
         }
 
         return coupon;
-    }
-
-    public static boolean isUnavailableCoupon(Coupon coupon) {
-        return Objects.isNull(coupon);
     }
 
     public static long subAmountToDiscountedPriceAndNegativeCheck(long amount,

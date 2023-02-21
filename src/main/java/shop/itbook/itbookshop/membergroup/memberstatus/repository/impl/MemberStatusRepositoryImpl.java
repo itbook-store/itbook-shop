@@ -26,7 +26,7 @@ public class MemberStatusRepositoryImpl implements CustomMemberStatusRepository 
     QMemberStatus qMemberStatus = QMemberStatus.memberStatus;
 
     @Override
-    public Optional<MemberStatusResponseDto> querydslFindByName(String memberStatusName) {
+    public Optional<MemberStatusResponseDto> findByMemberStatusName(String memberStatusName) {
         return Optional.of(jpaQueryFactory.select(
                 Projections.constructor(MemberStatusResponseDto.class,
                     qMemberStatus.memberStatusNo, qMemberStatus.memberStatusEnum.stringValue())
@@ -35,16 +35,7 @@ public class MemberStatusRepositoryImpl implements CustomMemberStatusRepository 
     }
 
     @Override
-    public Optional<MemberStatusResponseDto> querydslFindByNo(int memberStatusNo) {
-        return Optional.of(jpaQueryFactory.select(
-                Projections.constructor(MemberStatusResponseDto.class,
-                    qMemberStatus.memberStatusNo, qMemberStatus.memberStatusEnum.stringValue())
-            ).from(qMemberStatus).where(qMemberStatus.memberStatusNo.eq(memberStatusNo)).fetch()
-            .get(0));
-    }
-
-    @Override
-    public List<MemberStatusResponseDto> querydslFindAll() {
+    public List<MemberStatusResponseDto> findMemberStatusResponseAll() {
         return jpaQueryFactory.select(
                 Projections.constructor(MemberStatusResponseDto.class,
                     qMemberStatus.memberStatusNo, qMemberStatus.memberStatusEnum.stringValue()))

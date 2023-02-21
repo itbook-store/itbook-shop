@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -211,5 +212,84 @@ class ReviewControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void reviewDetailsForModify() throws Exception {
+        ReviewResponseDto reviewResponseDto = ReviewResponseDto
+            .builder()
+            .orderProductNo(1L)
+            .productNo(1L)
+            .productName("객체지향과 자바")
+            .memberNo(1L)
+            .starPoint(3)
+            .content("최고입니다.")
+            .image("testUrl")
+            .build();
+
+        given(reviewService.findReviewByIdAndMemberNo(anyLong(), anyLong())).willReturn(
+            reviewResponseDto);
+
+        mvc.perform(get("/api/reviews/modify-form/1/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void reviewDelete() throws Exception {
+        reviewService.deleteReview(1L);
+
+        mvc.perform(put("/api/reviews/1/delete")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void reviewModify() throws Exception {
+        ReviewRequestDto reviewRequestDto = new ReviewRequestDto();
+        ReflectionTestUtils.setField(reviewRequestDto, "orderProductNo", 1L);
+        ReflectionTestUtils.setField(reviewRequestDto, "productNo", 1L);
+        ReflectionTestUtils.setField(reviewRequestDto, "memberNo", 1L);
+        ReflectionTestUtils.setField(reviewRequestDto, "starPoint", 3);
+        ReflectionTestUtils.setField(reviewRequestDto, "content", "최고입니다.");
+        ReflectionTestUtils.setField(reviewRequestDto, "image", "testUrl");
+
+        reviewService.modifyReview(1L, reviewRequestDto, null);
+
+        mvc.perform(put("/api/reviews/1/modify")
+                .contentType(MediaType.IMAGE_PNG_VALUE)
+                .accept(MediaType.IMAGE_PNG_VALUE)
+                .content(objectMapper.writeValueAsString(reviewRequestDto)))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void reviewListByProductNo() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(dummyReview, pageRequest, 10));
+
+        given(reviewService.findReviewListByProductNo(any(), any())).willReturn(page);
+
+        mvc.perform(get("/api/reviews/list/product/1").contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void unwrittenReviewOrderProductList() throws Exception {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(
+            List.of(dummyReview, pageRequest, 10));
+
+        given(reviewService.findUnwrittenReviewOrderProductList(any(), any())).willReturn(page);
+
+        mvc.perform(
+                get("/api/reviews/unwritten-list/member/1").contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
     }
 }

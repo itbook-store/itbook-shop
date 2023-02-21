@@ -133,6 +133,19 @@ class MemberServiceImplTest {
     }
 
     @Test
+    void findMemberByMemberNo() {
+        member = MemberDummy.getMember1();
+        member.setMembership(membership);
+        member.setMemberStatus(normalMemberStatus);
+
+        given(memberRepository.findById(1L)).willReturn(Optional.of(member));
+
+        Member testMember = memberService.findMemberByMemberNo(1L);
+
+        assertThat(testMember.getMemberId()).isEqualTo("user1000");
+    }
+
+    @Test
     void findMember() {
         given(memberRepository.findByMemberNoAllInfo(1L)).willReturn(Optional.of(member1));
 

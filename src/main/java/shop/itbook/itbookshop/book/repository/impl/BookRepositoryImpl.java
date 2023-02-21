@@ -36,10 +36,13 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .select(Projections.constructor(BookDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
+                    qProduct.isSubscription,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qProduct.isPointApplying,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,
-                    qBook.publisherName, qBook.authorName));
+                    qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice));
         return bookList.fetch();
     }
 
@@ -57,10 +60,13 @@ public class BookRepositoryImpl extends QuerydslRepositorySupport implements Boo
                 .select(Projections.constructor(BookDetailsResponseDto.class,
                     qProduct.productNo, qProduct.name, qProduct.simpleDescription,
                     qProduct.detailsDescription, qProduct.isSelled, qProduct.isForceSoldOut,
+                    qProduct.isSubscription,
                     qProduct.stock, qProduct.increasePointPercent, qProduct.rawPrice,
                     qProduct.fixedPrice, qProduct.discountPercent, qProduct.thumbnailUrl,
+                    qProduct.isPointApplying,
                     qBook.isbn, qBook.pageCount, qBook.bookCreatedAt, qBook.isEbook, qBook.ebookUrl,
-                    qBook.publisherName, qBook.authorName))
+                    qBook.publisherName, qBook.authorName,
+                    qProduct.isPointApplyingBasedSellingPrice))
                 .where(qProduct.productNo.eq(productNo));
         return Optional.ofNullable(book.fetchOne());
     }
