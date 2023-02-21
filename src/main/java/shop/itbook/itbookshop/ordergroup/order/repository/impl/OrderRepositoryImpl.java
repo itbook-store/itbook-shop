@@ -575,6 +575,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderProduct.orderProductNo,
                 qOrderProduct.product.productNo,
                 qOrderProduct.product.name.as("productName"),
+                qOrderProduct.product.fixedPrice,
+                qOrderProduct.product.discountPercent,
                 qOrderProduct.count,
                 qOrderProduct.productPrice,
                 qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
