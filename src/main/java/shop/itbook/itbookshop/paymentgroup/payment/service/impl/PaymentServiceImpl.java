@@ -8,7 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
 import shop.itbook.itbookshop.paymentgroup.easypay.entity.Easypay;

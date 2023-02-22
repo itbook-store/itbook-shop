@@ -1,9 +1,10 @@
-package shop.itbook.itbookshop.ordergroup.order.service;
+package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
@@ -13,6 +14,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdm
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
 
 /**
  * 주문 관련 비즈니스 로직을 담당합니다.
@@ -48,6 +50,10 @@ public interface OrderService {
      * @author 정재원
      */
     boolean isSubscription(Long orderNo);
+
+    OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
+                                          InfoForPrePaymentProcess infoForPrePaymentProcess,
+                                          Long memberNo);
 
     /**
      * 결제 전 주문을 추가합니다.
