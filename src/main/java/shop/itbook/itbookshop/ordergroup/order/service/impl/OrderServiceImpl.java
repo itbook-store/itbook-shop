@@ -62,9 +62,11 @@ import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderbeforepaymentenum.OrderBeforePaymentEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
@@ -87,6 +89,7 @@ import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.ordercancel.service.OrderCancelIncreasePointHistoryService;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
@@ -196,10 +199,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
         InfoForPrePaymentProcess infoForPrePaymentProcess,
-        OrderBeforePaymentEnum orderBeforePaymentEnum) {
+        OrderFactoryEnum orderFactoryEnum) {
 
         OrderBeforePayment orderBeforePayment = orderFactory.getOrderBeforePayment(
-            orderBeforePaymentEnum);
+            orderFactoryEnum);
         return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
     }
 
@@ -626,6 +629,36 @@ public class OrderServiceImpl implements OrderService {
         String randomUuidString = UUID.randomUUID().toString();
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
         return UUID.fromString(randomUuidString).toString();
+    }
+
+    public Order processAfterOrderPaymentSuccessRefactor(Long orderNo) {
+
+        OrderFactoryEnum orderFactoryEnum;
+
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
+        OrderProduct orderProduct =
+            orderProductService.findOrderProductsEntityByOrderNo(orderNo).get(0);
+        Product product =
+            productService.findProductEntity(orderProduct.getProduct().getProductNo());
+
+        if (product.getIsSubscription()) {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.구독회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
+            }
+        } else {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.일반회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.일반비회원주문;
+            }
+        }
+
+        Order order = orderRepository.findById(orderNo).orElseThrow();
+        OrderAfterPaymentSuccess orderAfterPayment =
+            orderFactory.getOrderAfterPaymentSuccess(orderFactoryEnum);
+        return orderAfterPayment.success(order);
     }
 
     /**
