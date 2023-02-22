@@ -15,9 +15,9 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
         this.saveOrderAndSub(infoForPrePaymentProcess.getOrderAddRequestDto(),
             infoForPrePaymentProcess.getSequence());
-        this.saveOrderPerson();
+        this.saveOrderPerson(infoForPrePaymentProcess);
         this.saveOrderProduct();
-        this.calculateTotalAmount();
+        this.calculateTotalAmount(infoForPrePaymentProcess);
         this.saveOrderAndSub(infoForPrePaymentProcess.getOrderAddRequestDto(),
             infoForPrePaymentProcess.getSequence());
 
@@ -36,8 +36,9 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
     }
 
     @Override
-    public abstract void saveOrderPerson();
+    public abstract void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     @Override
-    public abstract void calculateTotalAmount();
+    public abstract OrderPaymentDto calculateTotalAmount(
+        InfoForPrePaymentProcess infoForPrePaymentProcess);
 }

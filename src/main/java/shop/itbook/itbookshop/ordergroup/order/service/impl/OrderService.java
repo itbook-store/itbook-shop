@@ -52,8 +52,7 @@ public interface OrderService {
     boolean isSubscription(Long orderNo);
 
     OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
-                                          InfoForPrePaymentProcess infoForPrePaymentProcess,
-                                          Long memberNo);
+                                          InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     /**
      * 결제 전 주문을 추가합니다.
