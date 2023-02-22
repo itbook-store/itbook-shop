@@ -14,17 +14,17 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderb
 @RequiredArgsConstructor
 public class OrderFactory {
 
-    private final Map<String, OrderBeforePayment> orderFactoryMap;
+    private final Map<String, OrderBeforePayment> orderBeforePaymentMap;
 
     public OrderBeforePayment getOrderBeforePayment(OrderBeforePaymentEnum orderBeforePaymentEnum) {
         if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.구독회원주문)) {
-            return orderFactoryMap.get("subscriptionOrderMemberService");
+            return orderBeforePaymentMap.get("subscriptionOrderMemberService");
         } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.구독비회원주문)) {
-            return orderFactoryMap.get("subscriptionOrderNonMemberService");
+            return orderBeforePaymentMap.get("subscriptionOrderNonMemberService");
         } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.일반회원주문)) {
-            return orderFactoryMap.get("generalOrderMemberService");
+            return orderBeforePaymentMap.get("generalOrderMemberService");
         } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.일반비회원주문)) {
-            return orderFactoryMap.get("generalOrderNonMemberService");
+            return orderBeforePaymentMap.get("generalOrderNonMemberService");
         }
 
         throw new RuntimeException("OrderBeforePayment 구현체가 존재하지 않습니다. type : " +
