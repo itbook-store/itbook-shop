@@ -30,7 +30,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderbeforepaymentenum.OrderBeforePaymentEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 
@@ -89,11 +89,11 @@ public class OrderController {
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
 
-        OrderBeforePaymentEnum orderBeforePaymentEnum;
+        OrderFactoryEnum orderFactoryEnum;
         if (Objects.isNull(memberNo)) {
-            orderBeforePaymentEnum = OrderBeforePaymentEnum.일반비회원주문;
+            orderFactoryEnum = OrderFactoryEnum.일반비회원주문;
         } else {
-            orderBeforePaymentEnum = OrderBeforePaymentEnum.일반회원주문;
+            orderFactoryEnum = OrderFactoryEnum.일반회원주문;
         }
 
         InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
@@ -121,7 +121,7 @@ public class OrderController {
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
                 infoForPrePaymentProcess,
-                orderBeforePaymentEnum)
+                orderFactoryEnum)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -147,11 +147,11 @@ public class OrderController {
         InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
         infoForPrePaymentProcess.setOrderAddRequestDto(orderAddRequestDto);
 
-        OrderBeforePaymentEnum orderBeforePaymentEnum;
+        OrderFactoryEnum orderFactoryEnum;
         if (Objects.isNull(memberNo)) {
-            orderBeforePaymentEnum = OrderBeforePaymentEnum.구독비회원주문;
+            orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
         } else {
-            orderBeforePaymentEnum = OrderBeforePaymentEnum.구독회원주문;
+            orderFactoryEnum = OrderFactoryEnum.구독회원주문;
         }
 
 //        CommonResponseBody<OrderPaymentDto> commonResponseBody =
@@ -167,7 +167,7 @@ public class OrderController {
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
                 infoForPrePaymentProcess,
-                orderBeforePaymentEnum)
+                orderFactoryEnum)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

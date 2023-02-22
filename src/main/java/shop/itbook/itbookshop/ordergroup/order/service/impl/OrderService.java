@@ -14,7 +14,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdm
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderbeforepaymentenum.OrderBeforePaymentEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 
 /**
  * 주문 관련 비즈니스 로직을 담당합니다.
@@ -53,7 +53,7 @@ public interface OrderService {
 
     OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
         InfoForPrePaymentProcess infoForPrePaymentProcess,
-        OrderBeforePaymentEnum orderBeforePaymentEnum);
+        OrderFactoryEnum orderFactoryEnum);
 
     /**
      * 결제 전 주문을 추가합니다.
@@ -114,6 +114,8 @@ public interface OrderService {
      * @author 정재원
      */
     Order processAfterOrderPaymentSuccess(Long orderNo);
+
+    Order processAfterOrderPaymentSuccessRefactor(Long orderNo);
 
 
     /**

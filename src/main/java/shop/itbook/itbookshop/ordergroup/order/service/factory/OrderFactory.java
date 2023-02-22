@@ -3,8 +3,9 @@ package shop.itbook.itbookshop.ordergroup.order.service.factory;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderbeforepaymentenum.OrderBeforePaymentEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 
 /**
  * @author 최겸준
@@ -15,21 +16,40 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderb
 public class OrderFactory {
 
     private final Map<String, OrderBeforePayment> orderBeforePaymentMap;
+    private final Map<String, OrderAfterPaymentSuccess> orderAfterPaymentSuccessMap;
 
-    public OrderBeforePayment getOrderBeforePayment(OrderBeforePaymentEnum orderBeforePaymentEnum) {
-        if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.구독회원주문)) {
+    public OrderBeforePayment getOrderBeforePayment(OrderFactoryEnum orderFactoryEnum) {
+        if (orderFactoryEnum.equals(OrderFactoryEnum.구독회원주문)) {
             return orderBeforePaymentMap.get("subscriptionOrderBeforePaymentMemberService");
-        } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.구독비회원주문)) {
+        } else if (orderFactoryEnum.equals(OrderFactoryEnum.구독비회원주문)) {
             return orderBeforePaymentMap.get("subscriptionOrderBeforePaymentNonMemberService");
-        } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.일반회원주문)) {
+        } else if (orderFactoryEnum.equals(OrderFactoryEnum.일반회원주문)) {
             return orderBeforePaymentMap.get("generalOrderBeforePaymentMemberService");
-        } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.일반비회원주문)) {
+        } else if (orderFactoryEnum.equals(OrderFactoryEnum.일반비회원주문)) {
             return orderBeforePaymentMap.get("generalOrderBeforePaymentNonMemberService");
         }
 
-        throw new RuntimeException("OrderBeforePayment 구현체가 존재하지 않습니다. type : " +
-            orderBeforePaymentEnum);
+        throw new RuntimeException("구현체가 존재하지 않습니다. type : " +
+            orderFactoryEnum);
     }
 
 
+    public OrderAfterPaymentSuccess getOrderAfterPaymentSuccess(OrderFactoryEnum orderFactoryEnum) {
+
+        if (orderFactoryEnum.equals(OrderFactoryEnum.구독회원주문)) {
+            return orderAfterPaymentSuccessMap.get(
+                "subscriptionOrderAfterPaymentSuccessMemberService");
+        } else if (orderFactoryEnum.equals(OrderFactoryEnum.구독비회원주문)) {
+            return orderAfterPaymentSuccessMap.get(
+                "subscriptionOrderAfterPaymentSuccessNonMemberService");
+        } else if (orderFactoryEnum.equals(OrderFactoryEnum.일반회원주문)) {
+            return orderAfterPaymentSuccessMap.get("generalOrderAfterPaymentSuccessMemberService");
+        } else if (orderFactoryEnum.equals(OrderFactoryEnum.일반비회원주문)) {
+            return orderAfterPaymentSuccessMap.get(
+                "generalOrderAfterPaymentSuccessNonMemberService");
+        }
+
+        throw new RuntimeException("구현체가 존재하지 않습니다. type : " +
+            orderFactoryEnum);
+    }
 }
