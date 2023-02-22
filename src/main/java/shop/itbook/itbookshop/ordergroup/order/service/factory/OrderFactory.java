@@ -3,7 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.factory;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.OrderAfterPaymentSuccess;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 

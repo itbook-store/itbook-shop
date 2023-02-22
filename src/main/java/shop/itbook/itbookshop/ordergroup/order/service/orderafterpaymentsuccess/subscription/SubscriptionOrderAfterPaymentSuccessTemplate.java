@@ -1,9 +1,8 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.subscription;
+package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.subscription;
 
 import lombok.RequiredArgsConstructor;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.OrderAfterPaymentSuccess;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 

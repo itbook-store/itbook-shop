@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.subscription;
+package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.general;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.service.OrderTotalCouponApplyService;
+import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
@@ -23,8 +24,8 @@ import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIn
  * @since 1.0
  */
 @Service
-public class SubscriptionOrderAfterPaymentSuccessMemberService
-    extends SubscriptionOrderAfterPaymentSuccessTemplate {
+public class GeneralOrderAfterPaymentSuccessMemberService
+    extends GeneralOrderAfterPaymentSuccessTemplate {
 
     private final RedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
@@ -33,13 +34,15 @@ public class SubscriptionOrderAfterPaymentSuccessMemberService
     private final OrderMemberRepository orderMemberRepository;
     private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
 
-    public SubscriptionOrderAfterPaymentSuccessMemberService(
-        OrderStatusHistoryService orderStatusHistoryService, RedisTemplate redisTemplate,
-        ObjectMapper objectMapper, CouponIssueService couponIssueService,
+
+    public GeneralOrderAfterPaymentSuccessMemberService(
+        OrderStatusHistoryService orderStatusHistoryService,
+        DeliveryService deliveryService, RedisTemplate redisTemplate, ObjectMapper objectMapper,
+        CouponIssueService couponIssueService,
         OrderTotalCouponApplyService orderTotalCouponApplyService,
         OrderMemberRepository orderMemberRepository,
         OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService) {
-        super(orderStatusHistoryService);
+        super(orderStatusHistoryService, deliveryService);
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
         this.couponIssueService = couponIssueService;
@@ -78,7 +81,6 @@ public class SubscriptionOrderAfterPaymentSuccessMemberService
 
         usingCouponIssue(productAndCategoryCouponApplyDto, orderTotalCouponApplyDto, order);
         savePointHistoryAboutMember(order);
-
     }
 
     private void usingCouponIssue(CouponApplyDto productAndCategoryCouponApplyDto,
