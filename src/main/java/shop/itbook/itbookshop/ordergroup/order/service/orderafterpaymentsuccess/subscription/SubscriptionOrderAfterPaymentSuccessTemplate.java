@@ -20,7 +20,7 @@ public abstract class SubscriptionOrderAfterPaymentSuccessTemplate implements
     public Order success(Order order) {
 
         changeOrderStatus(order);
-        startUsageProcessing();
+        startUsageProcessing(order);
         return order;
     }
 
@@ -30,5 +30,5 @@ public abstract class SubscriptionOrderAfterPaymentSuccessTemplate implements
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
     }
 
-    protected abstract void startUsageProcessing();
+    protected abstract void startUsageProcessing(Order order);
 }
