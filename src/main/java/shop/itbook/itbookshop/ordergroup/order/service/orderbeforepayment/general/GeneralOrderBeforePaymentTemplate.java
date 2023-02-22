@@ -1,10 +1,9 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
 
 import lombok.RequiredArgsConstructor;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
-import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 
 /**
  * @author 최겸준
@@ -15,16 +14,15 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
 
     @Override
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-        this.saveOrderAndSub(infoForPrePaymentProcess);
+        this.saveOrder(infoForPrePaymentProcess);
         this.saveOrderPerson(infoForPrePaymentProcess);
         this.saveOrderProduct();
-        this.calculateTotalAmount(infoForPrePaymentProcess);
 
-        return null;
+        return this.calculateTotalAmount(infoForPrePaymentProcess);
     }
 
     @Override
-    public void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    public void saveOrder(InfoForPrePaymentProcess infoForPrePaymentProcess) {
     }
 
     public void saveOrderProduct() {

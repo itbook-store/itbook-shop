@@ -28,7 +28,7 @@ public class InfoForPrePaymentProcess {
         this.memberNo = memberNo;
     }
 
-    public InfoForPrePaymentProcess(OrderAddRequestDto orderAddRequestDto) {
-        this.orderAddRequestDto = orderAddRequestDto;
+    public InfoForPrePaymentProcess(Long memberNo) {
+        this.memberNo = memberNo;
     }
 }

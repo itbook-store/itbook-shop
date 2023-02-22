@@ -1,20 +1,14 @@
-package shop.itbook.itbookshop.ordergroup.order.service.subscription;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.subscription;
 
 import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl.BASE_AMOUNT_FOR_DELIVERY_FEE_CALC;
 import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl.BASE_DELIVERY_FEE;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -22,16 +16,11 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
-import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
-import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
-import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
-import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
@@ -41,7 +30,7 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
  * @since 1.0
  */
 @Service
-public class SubscriptionOrderNonMemberService
+public class SubscriptionOrderBeforePaymentNonMemberService
     extends SubscriptionOrderBeforePaymentTemplate {
 
     private final OrderNonMemberRepository orderNonMemberRepository;
@@ -54,13 +43,16 @@ public class SubscriptionOrderNonMemberService
     @Value("${payment.origin.url}")
     public String ORIGIN_URL;
 
-    public SubscriptionOrderNonMemberService(OrderNonMemberRepository orderNonMemberRepository,
-                                             OrderRepository orderRepository,
-                                             OrderSubscriptionRepository orderSubscriptionRepository,
-                                             OrderStatusHistoryService orderStatusHistoryService,
-                                             ProductService productService,
-                                             OrderProductService orderProductService) {
-        super(orderRepository, orderSubscriptionRepository, orderStatusHistoryService);
+    public SubscriptionOrderBeforePaymentNonMemberService(
+        OrderNonMemberRepository orderNonMemberRepository,
+        OrderRepository orderRepository,
+        OrderSubscriptionRepository orderSubscriptionRepository,
+        OrderStatusHistoryService orderStatusHistoryService,
+        ProductService productService,
+        OrderProductService orderProductService) {
+
+        super(orderRepository, orderSubscriptionRepository, orderStatusHistoryService,
+            orderProductService, productService);
         this.orderNonMemberRepository = orderNonMemberRepository;
         this.orderRepository = orderRepository;
         this.orderSubscriptionRepository = orderSubscriptionRepository;
@@ -126,7 +118,7 @@ public class SubscriptionOrderNonMemberService
         long amountForDeliveryFeeCalc = 0L;
         long sumTotalPriceOfSameProducts = 0L;
         for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
-
+            // TODO jun : for문 주문구독일때는 없애야함
             Product product = productService.findProductEntity(productDetailsDto.getProductNo());
 
             long sellingPrice = (product.getFixedPrice() -

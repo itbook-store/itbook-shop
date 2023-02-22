@@ -1,8 +1,7 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
 
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
-import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 
 /**
@@ -10,15 +9,10 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
  * @since 1.0
  */
 @Service
-public class GeneralOrderMemberService extends GeneralOrderBeforePaymentTemplate {
+public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePaymentTemplate {
 
     @Override
     public void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-
-    }
-
-    @Override
-    public void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess) {
 
     }
 
