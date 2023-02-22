@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
@@ -26,14 +26,14 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
 
     @Override
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-        this.saveOrderAndSub(infoForPrePaymentProcess);
+        this.saveOrder(infoForPrePaymentProcess);
         this.saveOrderPerson(infoForPrePaymentProcess);
         this.saveOrderProduct();
         return this.calculateTotalAmount(infoForPrePaymentProcess);
     }
 
     @Override
-    public void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    public void saveOrder(InfoForPrePaymentProcess infoForPrePaymentProcess) {
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order =
             OrderTransfer.addDtoToEntity(infoForPrePaymentProcess.getOrderAddRequestDto());

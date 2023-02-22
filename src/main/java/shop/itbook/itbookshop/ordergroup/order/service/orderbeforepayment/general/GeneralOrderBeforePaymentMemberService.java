@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -52,7 +52,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @since 1.0
  */
 @Service
-public class GeneralOrderMemberService extends GeneralOrderBeforePaymentTemplate {
+public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePaymentTemplate {
 
     private final MemberService memberService;
     private final ProductService productService;
@@ -79,17 +79,19 @@ public class GeneralOrderMemberService extends GeneralOrderBeforePaymentTemplate
     public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
     public static final long BASE_DELIVERY_FEE = 3000L;
 
-    public GeneralOrderMemberService(MemberService memberService, ProductService productService,
-                                     OrderProductService orderProductService,
-                                     OrderStatusHistoryService orderStatusHistoryService,
-                                     OrderMemberRepository orderMemberRepository,
-                                     OrderRepository orderRepository,
-                                     CategoryCouponRepository categoryCouponRepository,
-                                     ProductCategoryRepository productCategoryRepository,
-                                     ProductCouponRepository productCouponRepository,
-                                     CouponIssueRepository couponIssueRepository,
-                                     OrderTotalCouponRepository orderTotalCouponRepository,
-                                     RedisTemplate redisTemplate, ObjectMapper objectMapper) {
+    public GeneralOrderBeforePaymentMemberService(MemberService memberService,
+                                                  ProductService productService,
+                                                  OrderProductService orderProductService,
+                                                  OrderStatusHistoryService orderStatusHistoryService,
+                                                  OrderMemberRepository orderMemberRepository,
+                                                  OrderRepository orderRepository,
+                                                  CategoryCouponRepository categoryCouponRepository,
+                                                  ProductCategoryRepository productCategoryRepository,
+                                                  ProductCouponRepository productCouponRepository,
+                                                  CouponIssueRepository couponIssueRepository,
+                                                  OrderTotalCouponRepository orderTotalCouponRepository,
+                                                  RedisTemplate redisTemplate,
+                                                  ObjectMapper objectMapper) {
 
         super(orderRepository, orderStatusHistoryService);
         this.memberService = memberService;

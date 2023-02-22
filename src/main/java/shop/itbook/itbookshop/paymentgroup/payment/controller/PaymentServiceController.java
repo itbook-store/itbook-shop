@@ -1,12 +1,8 @@
 package shop.itbook.itbookshop.paymentgroup.payment.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.util.List;
-import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.service.general.GeneralOrderMemberService;
-import shop.itbook.itbookshop.ordergroup.order.service.general.GeneralOrderNonMemberService;
-import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderMemberService;
-import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderNonMemberService;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentCanceledRequestDto;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.response.OrderResponseDto;

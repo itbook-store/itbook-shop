@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
 
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
@@ -11,9 +11,9 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  * @since 1.0
  */
 @Service
-public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTemplate {
+public class GeneralOrderBeforePaymentNonMemberService extends GeneralOrderBeforePaymentTemplate {
 
-    public GeneralOrderNonMemberService(
+    public GeneralOrderBeforePaymentNonMemberService(
         OrderRepository orderRepository,
         OrderStatusHistoryService orderStatusHistoryService) {
         super(orderRepository, orderStatusHistoryService);
