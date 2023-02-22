@@ -1,9 +1,21 @@
 package shop.itbook.itbookshop.fileservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.fileservice.dto.ItBookObjectStorageToken;
-import shop.itbook.itbookshop.fileservice.dto.Token;
 import shop.itbook.itbookshop.fileservice.exception.TokenFailureMessage;
 import shop.itbook.itbookshop.fileservice.dto.TokenRequestDto;
 
@@ -26,10 +37,11 @@ import shop.itbook.itbookshop.fileservice.dto.TokenRequestDto;
  */
 @Data
 @Service
+@RequiredArgsConstructor
 public class TokenService {
     private static final String AUTH_URL =
         "https://api-identity.infrastructure.cloud.toast.com/v2.0/tokens";
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
     private final RedisTemplate<String, String> redisTemplate;
     public static final String TOKEN_NAME = "ITBOOK-OBJECTSTORAGE_TOKEN";
     @Value("${object.storage.tenant-id}")
@@ -45,7 +57,7 @@ public class TokenService {
      * @return 발급 받은 오브젝트 스토리지 토큰을 반환합니다.
      * @author 이하늬
      */
-    public Token requestToken() {
+    public ItBookObjectStorageToken.Access.Token requestToken() {
 
         TokenRequestDto tokenRequest = new TokenRequestDto();
         tokenRequest.getAuth().setTenantId(tenantId);
@@ -55,14 +67,13 @@ public class TokenService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 
-        HttpEntity<TokenRequestDto> httpEntity
-            = new HttpEntity<>(tokenRequest, headers);
+        HttpEntity<TokenRequestDto> httpEntity = new HttpEntity<>(tokenRequest, headers);
 
         ResponseEntity<ItBookObjectStorageToken> response
             = restTemplate.exchange(AUTH_URL, HttpMethod.POST, httpEntity,
             ItBookObjectStorageToken.class);
 
-        Token itBookObjectStorageToken =
+        ItBookObjectStorageToken.Access.Token itBookObjectStorageToken =
             Objects.requireNonNull(response.getBody()).getAccess().getToken();
 
         if (Objects.isNull(itBookObjectStorageToken)) {
@@ -70,7 +81,55 @@ public class TokenService {
                 TokenFailureMessage.INVALID_TOKEN_MESSAGE.getMessage());
         }
 
+        saveTokenInRedis(itBookObjectStorageToken);
+
         return itBookObjectStorageToken;
+    }
+
+    private void saveTokenInRedis(ItBookObjectStorageToken.Access.Token itBookObjectStorageToken) {
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            redisTemplate.opsForValue()
+                .set(TOKEN_NAME, mapper.registerModule(new JavaTimeModule())
+                    .writeValueAsString(itBookObjectStorageToken));
+            long duration =
+                Duration.between(LocalDateTime.now(), itBookObjectStorageToken.getExpires())
+                    .getSeconds();
+            redisTemplate.expire(TOKEN_NAME, duration, TimeUnit.SECONDS);
+        } catch (JsonProcessingException e) {
+            throw new InvalidTokenException(
+                TokenFailureMessage.FAILURE_REQUEST_TOKEN_MESSAGE.getMessage());
+        }
+    }
+
+    /**
+     * 레디스에서 토큰을 가져오는 메서드입니다.
+     *
+     * @return 레디스에서 얻은 값을 반환합니다.
+     * @author 이하늬
+     */
+    public ItBookObjectStorageToken.Access.Token getToken() {
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        mapper.enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+        try {
+            ItBookObjectStorageToken.Access.Token token =
+                mapper.readValue(redisTemplate.opsForValue().get(TOKEN_NAME),
+                    ItBookObjectStorageToken.Access.Token.class);
+
+            if (Objects.isNull(token)) {
+                throw new InvalidTokenException(
+                    TokenFailureMessage.INVALID_TOKEN_MESSAGE.getMessage());
+            }
+
+            return token;
+        } catch (IOException | IllegalArgumentException e) {
+            throw new InvalidTokenException(
+                TokenFailureMessage.INVALID_TOKEN_MESSAGE.getMessage());
+        }
     }
 
 }

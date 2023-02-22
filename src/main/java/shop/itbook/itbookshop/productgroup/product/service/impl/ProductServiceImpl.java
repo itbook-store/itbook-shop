@@ -61,13 +61,6 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
         } catch (DataIntegrityViolationException e) {
-//            Throwable rootCause = e.getRootCause();
-//            String message = Objects.requireNonNull(rootCause).getMessage();
-//
-//            if (message.contains("name") || message.contains("")) {
-//                throw new InvalidInputException();
-//            }
-
             throw new InvalidInputException();
 
         }
@@ -237,6 +230,7 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
         if (Objects.nonNull(requestDto.getFileThumbnailsUrl())) {
+            fileService.deleteFile(product.getThumbnailUrl());
             product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         }
         product.setFixedPrice(requestDto.getFixedPrice());
@@ -267,6 +261,7 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
         if (Objects.nonNull(requestDto.getFileThumbnailsUrl())) {
+            fileService.deleteFile(product.getThumbnailUrl());
             product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         }
         product.setFixedPrice(requestDto.getFixedPrice());

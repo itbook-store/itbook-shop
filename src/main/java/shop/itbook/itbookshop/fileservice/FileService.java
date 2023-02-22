@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.fileservice;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,7 +20,8 @@ import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.fileservice.dto.Token;
+import shop.itbook.itbookshop.fileservice.dto.ItBookObjectStorageToken;
+import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
 import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
 
 
@@ -55,7 +57,13 @@ public class FileService {
      * @author 이하늬
      */
     public String uploadFile(MultipartFile multipartFile, String folderPath) {
-        Token token = tokenService.requestToken();
+        ItBookObjectStorageToken.Access.Token token;
+
+        try {
+            token = tokenService.getToken();
+        } catch (InvalidTokenException e) {
+            token = tokenService.requestToken();
+        }
         String tokenId = token.getId();
 
         String fileName = multipartFile.getOriginalFilename();
@@ -75,18 +83,16 @@ public class FileService {
     /**
      * 파일 삭제 기능을 담당하는 메서드입니다.
      *
-     * @param containerName the container name
-     * @param objectName    the object name
-     * @param folderPath    업로드할 폴더 경로입니다.
+     * @param url 삭제할 파일의 저장 url입니다.
      * @return 업로드 된 파일의 url입니다.
      * @author 이하늬
      */
-    public void deleteFile(String containerName, String objectName, String folderPath) {
+    public void deleteFile(String url) {
 
-        Token token = tokenService.requestToken();
+        ItBookObjectStorageToken.Access.Token token = tokenService.requestToken();
         String tokenId = token.getId();
 
-        String url = this.getUrl(containerName, folderPath, objectName);
+//        String url = this.getUrl(containerName, folderPath, objectName);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Auth-Token", tokenId);
