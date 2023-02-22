@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.subscription;
 
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
-import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
 
@@ -13,21 +12,19 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
 
     @Override
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-        this.saveOrderAndSub(infoForPrePaymentProcess.getOrderAddRequestDto(),
-            infoForPrePaymentProcess.getSequence());
-        this.saveOrderPerson();
+        this.saveOrderAndSub(infoForPrePaymentProcess);
+        this.saveOrderPerson(infoForPrePaymentProcess);
         this.saveOrderProduct();
-        this.calculateTotalAmount();
-        this.saveOrderAndSub(infoForPrePaymentProcess.getOrderAddRequestDto(),
-            infoForPrePaymentProcess.getSequence());
+        this.calculateTotalAmount(infoForPrePaymentProcess);
+        this.saveOrderAndSub(infoForPrePaymentProcess);
 
         return null;
     }
 
     ;
 
-    public void saveOrderAndSub(OrderAddRequestDto orderAddRequestDto, Long sequence) {
-
+    @Override
+    public void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess) {
     }
 
     @Override
@@ -36,8 +33,9 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
     }
 
     @Override
-    public abstract void saveOrderPerson();
+    public abstract void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     @Override
-    public abstract void calculateTotalAmount();
+    public abstract OrderPaymentDto calculateTotalAmount(
+        InfoForPrePaymentProcess infoForPrePaymentProcess);
 }
