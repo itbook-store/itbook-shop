@@ -1,9 +1,7 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.general;
 
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
-import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -11,9 +9,9 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  * @since 1.0
  */
 @Service
-public class GeneralOrderAfterPaymentSuccessMemberService
+public class GeneralOrderAfterPaymentSuccessNonMemberService
     extends GeneralOrderAfterPaymentSuccessTemplate {
-    public GeneralOrderAfterPaymentSuccessMemberService(
+    public GeneralOrderAfterPaymentSuccessNonMemberService(
         OrderStatusHistoryService orderStatusHistoryService,
         DeliveryService deliveryService) {
         super(orderStatusHistoryService, deliveryService);

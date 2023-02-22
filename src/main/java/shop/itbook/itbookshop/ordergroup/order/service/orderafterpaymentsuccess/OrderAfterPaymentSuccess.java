@@ -1,7 +1,6 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderafterpayment.success;
+package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess;
 
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 
 /**
  * @author 최겸준
