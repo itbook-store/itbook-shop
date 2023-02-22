@@ -189,9 +189,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
-                                                 InfoForPrePaymentProcess infoForPrePaymentProcess,
-                                                 Long memberNo) {
+                                                 InfoForPrePaymentProcess infoForPrePaymentProcess) {
 
         return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
     }

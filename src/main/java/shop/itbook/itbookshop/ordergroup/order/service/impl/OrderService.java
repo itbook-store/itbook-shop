@@ -52,14 +52,12 @@ public interface OrderService {
     boolean isSubscription(Long orderNo);
 
     OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
-                                          InfoForPrePaymentProcess infoForPrePaymentProcess,
-                                          Long memberNo);
+                                          InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     /**
      * 결제 전 주문을 추가합니다.
      *
      * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
-     * @param memberNo           회원 번호. 비회원일 경우 null
      * @return 결제 요청에 사용될 정보를 담은 Dto
      * @author 정재원
      */

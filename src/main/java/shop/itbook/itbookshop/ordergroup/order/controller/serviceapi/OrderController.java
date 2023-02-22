@@ -52,12 +52,10 @@ public class OrderController {
 
     private final OrderService orderService;
     private OrderBeforePayment orderBeforePayment;
-    private GeneralOrderMemberService generalOrderMemberService;
-    private GeneralOrderNonMemberService generalOrderNonMemberService;
-
-    private SubscriptionOrderMemberService subscriptionOrderMemberService;
-
-    private SubscriptionOrderNonMemberService subscriptionOrderNonMemberService;
+    private final GeneralOrderMemberService generalOrderMemberService;
+    private final GeneralOrderNonMemberService generalOrderNonMemberService;
+    private final SubscriptionOrderMemberService subscriptionOrderMemberService;
+    private final SubscriptionOrderNonMemberService subscriptionOrderNonMemberService;
 
     /**
      * 주문 목록을 여러 정보와 함께 조회 합니다.
@@ -86,7 +84,6 @@ public class OrderController {
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
-
     /**
      * 결제 전, 주문 데이터 등록의 요청을 받아 처리합니다.
      *
@@ -113,8 +110,7 @@ public class OrderController {
         }
 
         orderService.addOrderBeforePayment(orderBeforePayment,
-            new InfoForPrePaymentProcess(orderAddRequestDto, null), memberNo);
-
+            new InfoForPrePaymentProcess(orderAddRequestDto, memberNo));
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
@@ -135,7 +131,7 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionBeforePayment(
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> subscriptionOrderBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
 
@@ -143,26 +139,28 @@ public class OrderController {
             throw new InvalidOrderException();
         }
 
-        if (Objects.isNull(request.getAttribute("memberNo"))) {
-            orderBeforePayment = subscriptionOrderMemberService;
-        } else {
+        if (Objects.isNull(memberNo)) {
             orderBeforePayment = subscriptionOrderNonMemberService;
+        } else {
+            orderBeforePayment = subscriptionOrderMemberService;
         }
 
         orderService.addOrderBeforePayment(orderBeforePayment,
-            new InfoForPrePaymentProcess(orderAddRequestDto, null), memberNo);
+            new InfoForPrePaymentProcess(orderAddRequestDto, memberNo));
 
-        Optional<Long> optMemberNo = Optional.empty();
-
-        if (Objects.nonNull(memberNo)) {
-            optMemberNo = Optional.of(memberNo);
-        }
+//        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+//            new CommonResponseBody<>(
+//                new CommonResponseBody.CommonHeader(
+//                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+//                ), orderService.addOrderSubscriptionBeforePayment(orderAddRequestDto, optMemberNo)
+//            );
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderSubscriptionBeforePayment(orderAddRequestDto, optMemberNo)
+                ), orderService.addOrderBeforePayment(orderBeforePayment,
+                new InfoForPrePaymentProcess(orderAddRequestDto))
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
