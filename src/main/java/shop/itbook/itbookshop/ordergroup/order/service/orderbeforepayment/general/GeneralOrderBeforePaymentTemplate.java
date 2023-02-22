@@ -14,7 +14,7 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
 
     @Override
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-        this.saveOrderAndSub(infoForPrePaymentProcess);
+        this.saveOrder(infoForPrePaymentProcess);
         this.saveOrderPerson(infoForPrePaymentProcess);
         this.saveOrderProduct();
 
@@ -22,7 +22,7 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
     }
 
     @Override
-    public void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    public void saveOrder(InfoForPrePaymentProcess infoForPrePaymentProcess) {
     }
 
     public void saveOrderProduct() {

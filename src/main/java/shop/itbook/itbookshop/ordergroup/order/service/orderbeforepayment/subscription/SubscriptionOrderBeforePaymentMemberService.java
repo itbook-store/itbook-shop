@@ -45,6 +45,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductServic
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
@@ -91,7 +92,8 @@ public class SubscriptionOrderBeforePaymentMemberService
         CouponIssueRepository couponIssueRepository,
         OrderTotalCouponRepository orderTotalCouponRepository) {
 
-        super(orderRepository, orderSubscriptionRepository, orderStatusHistoryService);
+        super(orderRepository, orderSubscriptionRepository, orderStatusHistoryService,
+            orderProductService, productService);
 
         this.memberService = memberService;
         this.orderMemberRepository = orderMemberRepository;
@@ -196,8 +198,10 @@ public class SubscriptionOrderBeforePaymentMemberService
 
         for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
             Product product = productEntityList.stream()
-                .filter(a -> (a.getProductNo() == productDetailsDto.getProductNo())).findFirst()
-                .get();
+                .filter(productEntity -> Objects.equals(productEntity.getProductNo(),
+                    productDetailsDto.getProductNo()))
+                .findFirst()
+                .orElseThrow(ProductNotFoundException::new);
 
             long sellingPrice = (product.getFixedPrice() -
                 getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent()));

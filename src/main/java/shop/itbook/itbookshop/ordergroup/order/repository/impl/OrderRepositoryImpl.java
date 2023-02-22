@@ -370,6 +370,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
         QProductCouponApply qProductCouponApply = QProductCouponApply.productCouponApply;
         QCategoryCouponApply qCategoryCouponApply = QCategoryCouponApply.categoryCouponApply;
+        QOrderNonMember qOrderNonMember = QOrderNonMember.orderNonMember;
 
         JPQLQuery<OrderStatusHistory> jpqlQuery =
             getJpqlQuery(orderNo, qOrderStatusHistory, qOrderStatusHistory2, qOrder);
@@ -383,6 +384,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .on(qCouponIssue.couponIssueNo.eq(qOrderTotalCouponApply.couponIssueNo))
             .leftJoin(qCoupon)
             .on(qCoupon.couponNo.eq(qCouponIssue.coupon.couponNo))
+            .leftJoin(qOrderNonMember)
+            .on(qOrderNonMember.order.eq(qOrder))
             .select(Projections.fields(OrderDetailsResponseDto.class,
                     qOrder.orderNo,
                     qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
@@ -394,6 +397,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qCoupon.name.as("couponName"),
                     qCoupon.amount.as("totalCouponAmount"),
                     qCoupon.percent.as("totalCouponPercent"),
+                    qOrderNonMember.nonMemberOrderCode,
                     Projections.fields(OrderDestinationDto.class,
                         qOrder.recipientName.as("recipientName"),
                         qOrder.recipientPhoneNumber.as("recipientPhoneNumber"),

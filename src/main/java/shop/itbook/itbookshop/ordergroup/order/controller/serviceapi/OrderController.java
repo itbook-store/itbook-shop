@@ -138,7 +138,7 @@ public class OrderController {
     @PostMapping("/subscription")
     public ResponseEntity<CommonResponseBody<OrderPaymentDto>> subscriptionOrderBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
         if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
             throw new InvalidOrderException();

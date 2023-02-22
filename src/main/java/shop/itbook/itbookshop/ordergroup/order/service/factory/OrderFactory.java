@@ -18,13 +18,13 @@ public class OrderFactory {
 
     public OrderBeforePayment getOrderBeforePayment(OrderBeforePaymentEnum orderBeforePaymentEnum) {
         if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.구독회원주문)) {
-            return orderBeforePaymentMap.get("subscriptionOrderMemberService");
+            return orderBeforePaymentMap.get("subscriptionOrderBeforePaymentMemberService");
         } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.구독비회원주문)) {
-            return orderBeforePaymentMap.get("subscriptionOrderNonMemberService");
+            return orderBeforePaymentMap.get("subscriptionOrderBeforePaymentNonMemberService");
         } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.일반회원주문)) {
-            return orderBeforePaymentMap.get("generalOrderMemberService");
+            return orderBeforePaymentMap.get("generalOrderBeforePaymentMemberService");
         } else if (orderBeforePaymentEnum.equals(OrderBeforePaymentEnum.일반비회원주문)) {
-            return orderBeforePaymentMap.get("generalOrderNonMemberService");
+            return orderBeforePaymentMap.get("generalOrderBeforePaymentNonMemberService");
         }
 
         throw new RuntimeException("OrderBeforePayment 구현체가 존재하지 않습니다. type : " +
