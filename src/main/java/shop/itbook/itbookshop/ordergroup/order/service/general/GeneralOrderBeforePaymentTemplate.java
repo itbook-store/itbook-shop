@@ -15,15 +15,15 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
 
     @Override
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-        this.saveOrderAndSub(infoForPrePaymentProcess.getOrderAddRequestDto());
-        this.saveOrderPerson();
+        this.saveOrderAndSub(infoForPrePaymentProcess);
+        this.saveOrderPerson(infoForPrePaymentProcess);
         this.saveOrderProduct();
-        this.calculateTotalAmount();
 
-        return null;
+        return this.calculateTotalAmount(infoForPrePaymentProcess);
     }
 
-    public void saveOrderAndSub(OrderAddRequestDto orderAddRequestDto) {
+    @Override
+    public void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess) {
     }
 
     public void saveOrderProduct() {
@@ -31,8 +31,9 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
     }
 
     @Override
-    public abstract void saveOrderPerson();
+    public abstract void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     @Override
-    public abstract void calculateTotalAmount();
+    public abstract OrderPaymentDto calculateTotalAmount(
+        InfoForPrePaymentProcess infoForPrePaymentProcess);
 }

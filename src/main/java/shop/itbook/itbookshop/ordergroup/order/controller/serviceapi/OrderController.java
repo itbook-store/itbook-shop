@@ -31,6 +31,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.general.GeneralOrderMemberService;
 import shop.itbook.itbookshop.ordergroup.order.service.general.GeneralOrderNonMemberService;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
@@ -52,12 +53,10 @@ public class OrderController {
 
     private final OrderService orderService;
     private OrderBeforePayment orderBeforePayment;
-    private GeneralOrderMemberService generalOrderMemberService;
-    private GeneralOrderNonMemberService generalOrderNonMemberService;
-
-    private SubscriptionOrderMemberService subscriptionOrderMemberService;
-
-    private SubscriptionOrderNonMemberService subscriptionOrderNonMemberService;
+    private final GeneralOrderMemberService generalOrderMemberService;
+    private final GeneralOrderNonMemberService generalOrderNonMemberService;
+    private final SubscriptionOrderMemberService subscriptionOrderMemberService;
+    private final SubscriptionOrderNonMemberService subscriptionOrderNonMemberService;
 
     /**
      * 주문 목록을 여러 정보와 함께 조회 합니다.
@@ -112,9 +111,8 @@ public class OrderController {
             optMemberNo = Optional.of(memberNo);
         }
 
-        orderService.addOrderBeforePayment(orderBeforePayment,
-            new InfoForPrePaymentProcess(orderAddRequestDto, null), memberNo);
-
+//        orderService.addOrderBeforePayment(orderBeforePayment,
+//            new InfoForPrePaymentProcess(orderAddRequestDto, memberNo));
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
@@ -135,7 +133,7 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionBeforePayment(
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> subscriptionOrderBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
 
@@ -143,14 +141,6 @@ public class OrderController {
             throw new InvalidOrderException();
         }
 
-        if (Objects.isNull(request.getAttribute("memberNo"))) {
-            orderBeforePayment = subscriptionOrderMemberService;
-        } else {
-            orderBeforePayment = subscriptionOrderNonMemberService;
-        }
-
-        orderService.addOrderBeforePayment(orderBeforePayment,
-            new InfoForPrePaymentProcess(orderAddRequestDto, null), memberNo);
 
         Optional<Long> optMemberNo = Optional.empty();
 
@@ -158,11 +148,14 @@ public class OrderController {
             optMemberNo = Optional.of(memberNo);
         }
 
+        InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
+        infoForPrePaymentProcess.setOrderAddRequestDto(orderAddRequestDto);
+
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderSubscriptionBeforePayment(orderAddRequestDto, optMemberNo)
+                ), orderService.addOrderBeforePayment(infoForPrePaymentProcess)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

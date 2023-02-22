@@ -63,6 +63,10 @@ import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFir
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderFactory;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderNonMemberService;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
@@ -138,6 +142,8 @@ public class OrderServiceImpl implements OrderService {
     public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
     public static final long BASE_DELIVERY_FEE = 3000L;
 
+    public final OrderFactory orderFactory;
+
     /**
      * {@inheritDoc}
      */
@@ -189,10 +195,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
-                                                 InfoForPrePaymentProcess infoForPrePaymentProcess,
-                                                 Long memberNo) {
+    @Transactional
+    public OrderPaymentDto addOrderBeforePayment(
+        InfoForPrePaymentProcess infoForPrePaymentProcess) {
 
+
+        OrderFactoryEnum orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
+
+        if (Objects.nonNull(infoForPrePaymentProcess.getMemberNo())) {
+            orderFactoryEnum = OrderFactoryEnum.구독회원주문;
+        }
+
+        OrderBeforePayment orderBeforePayment = orderFactory.getInstance(orderFactoryEnum);
         return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
     }
 

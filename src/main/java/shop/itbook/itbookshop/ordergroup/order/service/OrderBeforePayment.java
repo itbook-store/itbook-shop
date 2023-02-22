@@ -11,9 +11,11 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 public interface OrderBeforePayment {
     OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
-    void saveOrderPerson();
+    void saveOrderAndSub(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     void saveOrderProduct();
 
-    void calculateTotalAmount();
+    void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess);
+
+    OrderPaymentDto calculateTotalAmount(InfoForPrePaymentProcess infoForPrePaymentProcess);
 }
