@@ -1,18 +1,14 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.subscription;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
+import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl.BASE_AMOUNT_FOR_DELIVERY_FEE_CALC;
+import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl.BASE_DELIVERY_FEE;
+
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -20,14 +16,12 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
-import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
-import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -36,31 +30,36 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
  * @since 1.0
  */
 @Service
-@Transactional(readOnly = true)
-public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTemplate {
+public class SubscriptionOrderBeforePaymentNonMemberService
+    extends SubscriptionOrderBeforePaymentTemplate {
 
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final OrderRepository orderRepository;
+    private final OrderSubscriptionRepository orderSubscriptionRepository;
+    private final OrderStatusHistoryService orderStatusHistoryService;
     private final ProductService productService;
     private final OrderProductService orderProductService;
+
     @Value("${payment.origin.url}")
     public String ORIGIN_URL;
 
-    public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
-    public static final long BASE_DELIVERY_FEE = 3000L;
+    public SubscriptionOrderBeforePaymentNonMemberService(
+        OrderNonMemberRepository orderNonMemberRepository,
+        OrderRepository orderRepository,
+        OrderSubscriptionRepository orderSubscriptionRepository,
+        OrderStatusHistoryService orderStatusHistoryService,
+        ProductService productService,
+        OrderProductService orderProductService) {
 
-    public GeneralOrderNonMemberService(OrderRepository orderRepository,
-                                        OrderStatusHistoryService orderStatusHistoryService,
-                                        OrderNonMemberRepository orderNonMemberRepository,
-                                        ProductService productService,
-                                        OrderProductService orderProductService) {
-        super(orderRepository, orderStatusHistoryService);
-        this.orderRepository = orderRepository;
+        super(orderRepository, orderSubscriptionRepository, orderStatusHistoryService,
+            orderProductService, productService);
         this.orderNonMemberRepository = orderNonMemberRepository;
+        this.orderRepository = orderRepository;
+        this.orderSubscriptionRepository = orderSubscriptionRepository;
+        this.orderStatusHistoryService = orderStatusHistoryService;
         this.productService = productService;
         this.orderProductService = orderProductService;
     }
-
 
     @Override
     @Transactional
@@ -68,7 +67,6 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
         OrderNonMember orderNonMember =
             new OrderNonMember(infoForPrePaymentProcess.getOrder(), UUID.randomUUID().toString());
         orderNonMemberRepository.save(orderNonMember);
-
     }
 
     @Override
@@ -84,9 +82,12 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
         List<ProductDetailsDto> productDetailsDtoList =
             orderAddRequestDto.getProductDetailsDtoList();
 
+        Integer subscriptionPeriod = orderAddRequestDto.getSubscriptionPeriod();
+
         ProductsTotalAmount productsTotalAmount =
             this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
-                productDetailsDtoList);
+                productDetailsDtoList, subscriptionPeriod);
+
         amount = productsTotalAmount.getSellingAmount();
         amount += order.getDeliveryFee();
 
@@ -107,7 +108,8 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
     private ProductsTotalAmount calculateAmountAboutOrderProductCoupon(Order order,
                                                                        StringBuilder stringBuilder,
                                                                        long amount,
-                                                                       List<ProductDetailsDto> productDetailsDtoList) {
+                                                                       List<ProductDetailsDto> productDetailsDtoList,
+                                                                       Integer subscriptionPeriod) {
 
         // TODO jun : 상품 번호들로 한번에 가져오는 로직추가
 //        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
@@ -116,15 +118,14 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
         long amountForDeliveryFeeCalc = 0L;
         long sumTotalPriceOfSameProducts = 0L;
         for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
-
+            // TODO jun : for문 주문구독일때는 없애야함
             Product product = productService.findProductEntity(productDetailsDto.getProductNo());
-            Integer productCnt = productDetailsDto.getProductCnt();
-            this.checkAndSetStock(product, productCnt);
+
             long sellingPrice = (product.getFixedPrice() -
                 getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent()));
-            amountForDeliveryFeeCalc += sellingPrice * productCnt;
+            amountForDeliveryFeeCalc += sellingPrice * subscriptionPeriod;
 
-            long totalPriceOfSameProducts = sellingPrice * productCnt;
+            long totalPriceOfSameProducts = sellingPrice * subscriptionPeriod;
             sumTotalPriceOfSameProducts += totalPriceOfSameProducts;
             amount += totalPriceOfSameProducts;
 
@@ -132,9 +133,8 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
                 stringBuilder.append(product.getName());
             }
 
-            orderProductService.addOrderProduct(order, product, productCnt,
+            orderProductService.addOrderProduct(order, product, subscriptionPeriod,
                 totalPriceOfSameProducts);
-
         }
 
         if (productDetailsDtoList.size() > 1) {
@@ -150,6 +150,10 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
         return new ProductsTotalAmount(sumTotalPriceOfSameProducts, amount);
     }
 
+    private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
+        return (long) (priceToApply * (discountPercent / 100));
+    }
+
     private String createOrderUUID(Order order) {
 
         String orderNoString = String.valueOf(order.getOrderNo());
@@ -157,18 +161,4 @@ public class GeneralOrderNonMemberService extends GeneralOrderBeforePaymentTempl
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
         return UUID.fromString(randomUuidString).toString();
     }
-
-    private static void checkAndSetStock(Product product, Integer productCnt) {
-        Integer stock = product.getStock();
-        if (Objects.equals(stock, 0) || productCnt > stock) {
-            throw new ProductStockIsZeroException();
-        }
-
-        product.setStock(stock - productCnt);
-    }
-
-    private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
-        return (long) (priceToApply * (discountPercent / 100));
-    }
 }
-

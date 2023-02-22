@@ -133,4 +133,6 @@ public interface ProductService {
     boolean canSellProduct(Long productNo, Integer productCnt);
 
     void changeDailyHits(Long productNo);
+
+    List<Product> findProductEntityList(List<Long> productNoList);
 }
