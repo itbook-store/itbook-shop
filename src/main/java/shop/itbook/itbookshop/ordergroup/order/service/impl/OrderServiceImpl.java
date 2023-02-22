@@ -65,6 +65,7 @@ import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancel;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
@@ -747,6 +748,38 @@ public class OrderServiceImpl implements OrderService {
                 order, increasePoint);
         }
     }
+
+
+    public void processBeforeOrderCancelPaymentRefactor(Long orderNo) {
+        OrderFactoryEnum orderFactoryEnum;
+
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
+        OrderProduct orderProduct =
+            orderProductService.findOrderProductsEntityByOrderNo(orderNo).get(0);
+        Product product =
+            productService.findProductEntity(orderProduct.getProduct().getProductNo());
+
+        if (product.getIsSubscription()) {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.구독회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
+            }
+        } else {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.일반회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.일반비회원주문;
+            }
+        }
+
+        Order order = orderRepository.findById(orderNo).orElseThrow();
+        OrderBeforePaymentCancel orderBeforePaymentCancel =
+            orderFactory.getOrderBeforePaymentCancel(orderFactoryEnum);
+
+        orderBeforePaymentCancel.cancel(order);
+    }
+
 
     /**
      * {@inheritDoc}
