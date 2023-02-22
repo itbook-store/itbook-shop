@@ -39,6 +39,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
@@ -61,7 +62,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
@@ -79,7 +80,6 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.paymentgroup.payment.entity.Payment;
-import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidPaymentException;
 import shop.itbook.itbookshop.paymentgroup.payment.repository.PaymentRepository;
 import shop.itbook.itbookshop.pointgroup.pointhistory.service.impl.PointHistoryServiceImpl;
@@ -189,11 +189,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
+                                                 InfoForPrePaymentProcess infoForPrePaymentProcess,
+                                                 Long memberNo) {
+
+        return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
+    }
+
+    @Override
     public Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
                                                                                 Long memberNo) {
 
         return orderRepository.getOrderListOfMemberWithStatus(pageable, memberNo);
     }
+
 
     /**
      * {@inheritDoc}

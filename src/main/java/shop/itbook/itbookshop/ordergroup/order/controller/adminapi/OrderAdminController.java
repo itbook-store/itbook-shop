@@ -13,7 +13,7 @@ import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 
 /**
  * 관리자의 주문 엔티티와 관련된 요청을 받아 처리합니다.
