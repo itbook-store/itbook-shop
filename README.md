@@ -5,7 +5,11 @@
 
 # 서비스 플로우
 ## ci/cd 아키텍쳐
+![CI-CD](https://user-images.githubusercontent.com/97177686/220620249-b22b2ae2-c8e0-497f-9ad3-828f43b3cebd.jpg)
+
 ## 서비스 구조
+![잇북 아키텍처](https://user-images.githubusercontent.com/97177686/220620303-8926e17b-96dc-4642-9000-91c31eaa07f7.png)
+
 ## erd
 ![itbook-shop-v0 0 3 (1)](https://user-images.githubusercontent.com/97177686/220506308-b95b045c-9fa4-42d6-ad9d-42881cadfa48.png)
 
