@@ -22,7 +22,7 @@ public abstract class GeneralOrderAfterPaymentSuccessTemplate implements OrderAf
 
         this.changeOrderStatus(order);
         this.changeDeliveryStatus(order);
-        this.startUsageProcessing();
+        this.startUsageProcessing(order);
         return order;
     }
 
@@ -35,5 +35,5 @@ public abstract class GeneralOrderAfterPaymentSuccessTemplate implements OrderAf
         deliveryService.registerDelivery(order);
     }
 
-    protected abstract void startUsageProcessing();
+    protected abstract void startUsageProcessing(Order order);
 }

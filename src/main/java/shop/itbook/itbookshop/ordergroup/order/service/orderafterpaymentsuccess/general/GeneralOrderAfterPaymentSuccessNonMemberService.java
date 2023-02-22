@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess
 
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
+import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -18,7 +19,7 @@ public class GeneralOrderAfterPaymentSuccessNonMemberService
     }
 
     @Override
-    protected void startUsageProcessing() {
+    protected void startUsageProcessing(Order order) {
 
     }
 }
