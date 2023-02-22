@@ -101,6 +101,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (orderService.isSubscription(orderNo)) {
             orderService.addOrderSubscriptionAfterPayment(orderNo);
         }
+
         return new OrderResponseDto(payment.getOrder().getOrderNo(), payment.getTotalAmount());
     }
 
