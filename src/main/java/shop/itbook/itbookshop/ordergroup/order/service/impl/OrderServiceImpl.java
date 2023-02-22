@@ -62,11 +62,9 @@ import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderFactory;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderFactoryEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderMemberService;
-import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderNonMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.orderbeforepaymentenum.OrderBeforePaymentEnum;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
@@ -196,17 +194,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderPaymentDto addOrderBeforePayment(
-        InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
+        InfoForPrePaymentProcess infoForPrePaymentProcess,
+        OrderBeforePaymentEnum orderBeforePaymentEnum) {
 
-
-        OrderFactoryEnum orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
-
-        if (Objects.nonNull(infoForPrePaymentProcess.getMemberNo())) {
-            orderFactoryEnum = OrderFactoryEnum.구독회원주문;
-        }
-
-        OrderBeforePayment orderBeforePayment = orderFactory.getInstance(orderFactoryEnum);
+        OrderBeforePayment orderBeforePayment = orderFactory.getOrderBeforePayment(
+            orderBeforePaymentEnum);
         return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
     }
 
@@ -223,8 +216,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                                 Optional<Long> memberNo) {
+    public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
+        OrderAddRequestDto orderAddRequestDto,
+        Optional<Long> memberNo) {
 
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);

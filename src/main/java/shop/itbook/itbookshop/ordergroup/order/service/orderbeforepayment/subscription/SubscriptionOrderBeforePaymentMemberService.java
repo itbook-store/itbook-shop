@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.subscription;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.subscription;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -56,7 +54,8 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @since 1.0
  */
 @Service
-public class SubscriptionOrderMemberService extends SubscriptionOrderBeforePaymentTemplate {
+public class SubscriptionOrderBeforePaymentMemberService
+    extends SubscriptionOrderBeforePaymentTemplate {
 
     @Value("${payment.origin.url}")
     public String ORIGIN_URL;
@@ -79,7 +78,7 @@ public class SubscriptionOrderMemberService extends SubscriptionOrderBeforePayme
     private final CouponIssueRepository couponIssueRepository;
     private final OrderTotalCouponRepository orderTotalCouponRepository;
 
-    public SubscriptionOrderMemberService(
+    public SubscriptionOrderBeforePaymentMemberService(
         OrderRepository orderRepository,
         OrderSubscriptionRepository orderSubscriptionRepository,
         OrderStatusHistoryService orderStatusHistoryService, MemberService memberService,

@@ -34,6 +34,7 @@ import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.Delivery
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;

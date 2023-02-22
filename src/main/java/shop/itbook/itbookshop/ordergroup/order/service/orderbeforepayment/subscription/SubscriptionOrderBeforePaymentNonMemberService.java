@@ -1,7 +1,6 @@
-package shop.itbook.itbookshop.ordergroup.order.service.subscription;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.subscription;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
@@ -13,14 +12,14 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubsc
  * @since 1.0
  */
 @Service
-public class SubscriptionOrderNonMemberService
+public class SubscriptionOrderBeforePaymentNonMemberService
     extends SubscriptionOrderBeforePaymentTemplate {
 
     private final OrderRepository orderRepository;
     private final OrderSubscriptionRepository orderSubscriptionRepository;
     private final OrderStatusHistoryService orderStatusHistoryService;
 
-    public SubscriptionOrderNonMemberService(
+    public SubscriptionOrderBeforePaymentNonMemberService(
         OrderRepository orderRepository, OrderSubscriptionRepository orderSubscriptionRepository,
         OrderStatusHistoryService orderStatusHistoryService) {
         super(orderRepository, orderSubscriptionRepository, orderStatusHistoryService);

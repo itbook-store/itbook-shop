@@ -1,10 +1,9 @@
-package shop.itbook.itbookshop.ordergroup.order.service.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
 
 import lombok.RequiredArgsConstructor;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
-import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 
 /**
  * @author 최겸준
