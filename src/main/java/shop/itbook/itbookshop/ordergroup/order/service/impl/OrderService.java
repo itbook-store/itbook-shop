@@ -94,6 +94,8 @@ public interface OrderService {
      */
     void processBeforeOrderCancelPayment(Long orderNo);
 
+    void processBeforeOrderCancelPaymentRefactor(Long orderNo);
+
     /**
      * 회원의 주문 리스트를 조회합니다.
      * 다양한 상태들이 포함됩니다.

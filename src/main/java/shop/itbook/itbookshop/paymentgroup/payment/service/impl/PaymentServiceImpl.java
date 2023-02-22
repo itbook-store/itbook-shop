@@ -101,6 +101,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (orderService.isSubscription(orderNo)) {
             orderService.addOrderSubscriptionAfterPayment(orderNo);
         }
+
         return new OrderResponseDto(payment.getOrder().getOrderNo(), payment.getTotalAmount());
     }
 
@@ -115,7 +116,9 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment;
 
         // 주문 취소 처리
-        orderService.processBeforeOrderCancelPayment(
+//        orderService.processBeforeOrderCancelPayment(
+//            paymentCanceledRequestDto.getOrderNo());
+        orderService.processBeforeOrderCancelPaymentRefactor(
             paymentCanceledRequestDto.getOrderNo());
 
         response = tossPayService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
