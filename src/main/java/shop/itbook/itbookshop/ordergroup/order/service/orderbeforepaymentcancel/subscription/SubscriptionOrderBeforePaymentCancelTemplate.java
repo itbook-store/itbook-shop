@@ -38,8 +38,8 @@ public abstract class SubscriptionOrderBeforePaymentCancelTemplate
 
         checkOrderStatus(order.getOrderNo());
 
-        changeOrderStatusAboutOrderCancel(order);
         startUsageProcessing(order);
+        changeOrderStatusAboutOrderCancel(order);
     }
 
     @Override
@@ -61,10 +61,12 @@ public abstract class SubscriptionOrderBeforePaymentCancelTemplate
 
         Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
         List<Long> subScriptionOrderNoList = new ArrayList<>();
+
+        orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
+
         for (long i = 1L; i < subscriptionPeriod; i++) {
             subScriptionOrderNoList.add(order.getOrderNo() + i);
         }
-
 
         List<Order> orderList = orderRepository.findOrdersByOrderNoIn(subScriptionOrderNoList);
         OrderStatus orderStatus =
