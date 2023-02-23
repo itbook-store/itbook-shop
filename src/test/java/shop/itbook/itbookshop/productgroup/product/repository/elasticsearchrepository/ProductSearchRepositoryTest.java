@@ -68,4 +68,14 @@ class ProductSearchRepositoryTest {
             productSearchRepository.findByName(pageable, "테스트").getContent();
         assertThat(searchProducts).hasSize(1);
     }
+
+
+    @Test
+    @Disabled
+    void deleteByIdTest() {
+
+        productSearchRepository.deleteById(elasticProduct.getProductNo());
+
+        assertThat(productSearchRepository.findById(elasticProduct.getProductNo())).isEmpty();
+    }
 }

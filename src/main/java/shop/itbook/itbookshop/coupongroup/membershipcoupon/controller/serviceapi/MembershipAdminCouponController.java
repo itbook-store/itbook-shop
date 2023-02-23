@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.coupongroup.membershipcoupon.controller.serviceapi;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.request.CouponIssueNoRequest;
-import shop.itbook.itbookshop.coupongroup.couponissue.resultmessageenum.CouponIssueResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response.MembershipCouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.resultmessageenum.MembershipCouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.service.MembershipCouponService;
