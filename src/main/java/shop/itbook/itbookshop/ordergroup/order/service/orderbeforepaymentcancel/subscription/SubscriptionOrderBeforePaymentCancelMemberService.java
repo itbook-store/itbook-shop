@@ -109,13 +109,6 @@ public class SubscriptionOrderBeforePaymentCancelMemberService
                 categoryCouponApplyRepository.findByOrderProduct_OrderProductNo(
                     orderProduct.getOrderProductNo());
 
-            if (Objects.equals(orderStatusEnum, OrderStatusEnum.WAIT_DELIVERY) ||
-                Objects.equals(orderStatusEnum, OrderStatusEnum.PAYMENT_COMPLETE)) {
-                Product product = orderProduct.getProduct();
-                int stock = product.getStock();
-                product.setStock(stock + orderProduct.getCount());
-            }
-
             if (optionalCategoryCouponApply.isPresent()) {
                 CategoryCouponApply categoryCouponApply = optionalCategoryCouponApply.get();
                 couponIssueService.cancelCouponIssue(

@@ -33,9 +33,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeExcepti
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.entity.QOrder;
 import shop.itbook.itbookshop.ordergroup.order.repository.CustomOrderRepository;
-import shop.itbook.itbookshop.ordergroup.ordermember.entity.QOrderMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.QOrderNonMember;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.QOrderProduct;
@@ -389,6 +387,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .on(qOrderNonMember.order.eq(qOrder))
             .select(Projections.fields(OrderDetailsResponseDto.class,
                     qOrder.orderNo,
+                    qOrderStatusHistory.orderStatusCreatedAt,
                     qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                     qOrder.orderCreatedAt,
                     qOrder.amount,
@@ -532,7 +531,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
         return from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
-            .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
+            .on(qOrderStatusHistory.order.eq(qOrderStatusHistory2.order)
                 .and(qOrderStatusHistory.orderStatusHistoryNo
                     .lt(qOrderStatusHistory2.orderStatusHistoryNo)
                 )
@@ -548,7 +547,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
             // 주문 총액 쿠폰
             .leftJoin(qOrderTotalCouponApply)
-            .on(qOrder.orderNo.eq(qOrderTotalCouponApply.order.orderNo))
+            .on(qOrder.eq(qOrderTotalCouponApply.order))
             .leftJoin(qCouponIssueTotal)
             .on(qCouponIssueTotal.couponIssueNo.eq(qOrderTotalCouponApply.couponIssueNo))
             .leftJoin(qCouponTotal)
@@ -565,7 +564,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .leftJoin(qCouponNotTotal)
             .on(qCouponNotTotal.couponNo.eq(qCouponIssueNotTotal.coupon.couponNo))
             .where(
-                qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
+                qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod - 1)
                     .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
             .select(Projections.fields(OrderSubscriptionDetailsResponseDto.class,
                 Projections.fields(OrderDestinationDto.class,
@@ -576,6 +575,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrder.recipientAddressDetails
                 ).as("orderDestinationDto"),
                 qOrder.orderNo,
+                qOrderStatusHistory.orderStatusCreatedAt,
                 qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                 qOrder.orderCreatedAt,
                 qOrder.amount,
@@ -630,6 +630,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qOrderNonMember.order.eq(qOrder))
                 .select(Projections.fields(OrderDetailsResponseDto.class,
                         qOrder.orderNo,
+                        qOrderStatusHistory.orderStatusCreatedAt,
                         qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                         qOrder.orderCreatedAt,
                         qOrder.amount,
@@ -728,6 +729,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                         qOrder.recipientAddressDetails
                     ).as("orderDestinationDto"),
                     qOrder.orderNo,
+                    qOrderStatusHistory.orderStatusCreatedAt,
                     qOrderStatusHistory.orderStatus.orderStatusEnum.stringValue().as("orderStatus"),
                     qOrder.orderCreatedAt,
                     qOrder.amount,

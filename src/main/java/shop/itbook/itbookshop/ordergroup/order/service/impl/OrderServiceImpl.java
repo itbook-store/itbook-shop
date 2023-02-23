@@ -996,7 +996,6 @@ public class OrderServiceImpl implements OrderService {
         List<OrderSubscriptionDetailsResponseDto> orderSubscriptionDetailsResponseDtoList =
             orderRepository.findOrderSubscriptionDetailsResponseDto(orderNo);
 
-
         OrderSubscriptionDetailsResponseDto orderSubscription =
             orderSubscriptionDetailsResponseDtoList.get(0);
 
