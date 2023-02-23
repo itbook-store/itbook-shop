@@ -20,6 +20,8 @@ public class UserCouponIssueListResponseDto {
     private Long amount;
     private Integer percent;
     private Long point;
+    private Long standardAmount;
+    private Long maxDiscountAmount;
     private String couponType;
     private String usageStatusName;
     private LocalDateTime couponIssueCreatedAt;

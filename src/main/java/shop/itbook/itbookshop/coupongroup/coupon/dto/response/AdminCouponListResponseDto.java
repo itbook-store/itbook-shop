@@ -20,6 +20,8 @@ public class AdminCouponListResponseDto {
     private Long amount;
     private Integer percent;
     private Long point;
+    private Long standardAmount;
+    private Long maxDiscountAmount;
     private LocalDateTime couponCreatedAt;
     private LocalDateTime couponExpiredAt;
     private Integer totalQuantity;

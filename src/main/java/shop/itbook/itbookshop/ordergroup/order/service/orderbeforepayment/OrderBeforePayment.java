@@ -13,8 +13,6 @@ public interface OrderBeforePayment {
 
     void saveOrder(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
-    void saveOrderProduct();
-
     void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess);
 
     OrderPaymentDto calculateTotalAmount(InfoForPrePaymentProcess infoForPrePaymentProcess);

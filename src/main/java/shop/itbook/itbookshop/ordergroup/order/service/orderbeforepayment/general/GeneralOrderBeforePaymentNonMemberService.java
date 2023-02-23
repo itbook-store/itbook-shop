@@ -110,7 +110,7 @@ public class GeneralOrderBeforePaymentNonMemberService extends GeneralOrderBefor
 
             Product product = productService.findProductEntity(productDetailsDto.getProductNo());
             Integer productCnt = productDetailsDto.getProductCnt();
-            this.checkAndSetStock(product, productCnt);
+
             long sellingPrice = (product.getFixedPrice() -
                 getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent()));
             amountForDeliveryFeeCalc += sellingPrice * productCnt;
@@ -147,15 +147,6 @@ public class GeneralOrderBeforePaymentNonMemberService extends GeneralOrderBefor
         String randomUuidString = UUID.randomUUID().toString();
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
         return UUID.fromString(randomUuidString).toString();
-    }
-
-    private static void checkAndSetStock(Product product, Integer productCnt) {
-        Integer stock = product.getStock();
-        if (Objects.equals(stock, 0) || productCnt > stock) {
-            throw new ProductStockIsZeroException();
-        }
-
-        product.setStock(stock - productCnt);
     }
 
     private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {

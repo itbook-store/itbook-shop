@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.productcoupon.dto.request.ProductCouponRequestDto;

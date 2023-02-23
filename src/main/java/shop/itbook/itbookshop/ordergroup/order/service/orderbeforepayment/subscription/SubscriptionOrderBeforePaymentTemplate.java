@@ -39,7 +39,6 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
 
         this.saveOrder(infoForPrePaymentProcess);
         this.saveOrderPerson(infoForPrePaymentProcess);
-        this.saveOrderProduct();
         OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(infoForPrePaymentProcess);
         this.saveOrderSubscription(infoForPrePaymentProcess);
 
@@ -104,11 +103,6 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
             orderProductService.addOrderProduct(orderChild, product, 0,
                 0L);
         }
-
-    }
-
-    @Override
-    public void saveOrderProduct() {
 
     }
 
