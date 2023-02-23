@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.nonmember.impl;
 
-import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl.setSellingPriceOfDetailsDto;
+import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudServiceImpl.setSellingPriceOfDetailsDto;
 
 import java.util.List;
 import java.util.Objects;
