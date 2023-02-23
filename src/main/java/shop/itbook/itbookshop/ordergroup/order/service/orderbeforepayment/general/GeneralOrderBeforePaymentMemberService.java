@@ -123,18 +123,10 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
     public OrderPaymentDto calculateTotalAmount(InfoForPrePaymentProcess infoForPrePaymentProcess) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        Long memberNo = infoForPrePaymentProcess.getMemberNo();
-
         long amount = 0L;
         List<ProductDetailsDto> productDetailsDtoList =
             infoForPrePaymentProcess.getOrderAddRequestDto().getProductDetailsDtoList();
 
-        Optional<Integer> subscriptionPeriod = Optional.empty();
-        if (Objects.nonNull(
-            infoForPrePaymentProcess.getOrderAddRequestDto().getSubscriptionPeriod())) {
-            subscriptionPeriod = Optional.of(
-                infoForPrePaymentProcess.getOrderAddRequestDto().getSubscriptionPeriod());
-        }
 
         ProductsTotalAmount productsTotalAmount =
             this.calculateAmountAboutOrderProductCoupon(infoForPrePaymentProcess.getOrder(),
@@ -194,7 +186,6 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
 
         List<InfoForCouponIssueApply> infoForCouponIssueApplyList = new ArrayList<>();
 
-
         // TODO jun : 상품 번호들로 한번에 가져오는 로직추가
 //        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
 //            productService.findProductEntityListByProductNoList();
@@ -205,7 +196,6 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
 
             Product product = productService.findProductEntity(productDetailsDto.getProductNo());
             Integer productCnt = productDetailsDto.getProductCnt();
-            this.checkAndSetStock(product, productCnt);
 
             long sellingPrice = (product.getFixedPrice() -
                 getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent()));
@@ -237,7 +227,7 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
             long discountedPrice =
                 totalPriceOfSameProducts - totalPriceOfSameProductsWithCouponApplied;
 
-            amount = AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(
+            amount = AmountCalculationBeforePaymentUtil.getDiscountedAmountAfterNegativeCheck(
                 amount, discountedPrice);
 
             OrderProduct orderProduct =
@@ -277,17 +267,6 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
         }
 
         return new ProductsTotalAmount(sumTotalPriceOfSameProducts, amount);
-    }
-
-    private static void checkAndSetStock(Product product,
-                                         Integer productCnt) {
-
-        Integer stock = product.getStock();
-        if (Objects.equals(stock, 0) || productCnt > stock) {
-            throw new ProductStockIsZeroException();
-        }
-
-        product.setStock(stock - productCnt);
     }
 
     private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
@@ -363,6 +342,7 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
                                                             long sellingAmount,
                                                             long couponAppliedAmount,
                                                             Long orderNo) {
+
         Coupon coupon = this.getCoupon(orderAddRequestDto.getOrderTotalCouponNo(), sellingAmount);
         if (Objects.isNull(coupon)) {
             return couponAppliedAmount;
@@ -395,7 +375,7 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
 
     private long calculateAmountAboutPoint(long amount, long pointToBeDiscounted) {
 
-        return AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(amount,
+        return AmountCalculationBeforePaymentUtil.getDiscountedAmountAfterNegativeCheck(amount,
             pointToBeDiscounted);
     }
 

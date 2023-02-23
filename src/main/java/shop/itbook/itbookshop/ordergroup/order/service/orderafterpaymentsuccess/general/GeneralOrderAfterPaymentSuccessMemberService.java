@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,8 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
+import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
+import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIncreaseDecreasePointHistoryService;
 
@@ -33,7 +36,7 @@ public class GeneralOrderAfterPaymentSuccessMemberService
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
     private final OrderMemberRepository orderMemberRepository;
     private final OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService;
-
+    private final OrderProductService orderProductService;
 
     public GeneralOrderAfterPaymentSuccessMemberService(
         OrderStatusHistoryService orderStatusHistoryService,
@@ -41,18 +44,21 @@ public class GeneralOrderAfterPaymentSuccessMemberService
         CouponIssueService couponIssueService,
         OrderTotalCouponApplyService orderTotalCouponApplyService,
         OrderMemberRepository orderMemberRepository,
-        OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService) {
-        super(orderStatusHistoryService, deliveryService);
+        OrderIncreaseDecreasePointHistoryService orderIncreaseDecreasePointHistoryService,
+        OrderProductService orderProductService) {
+        super(orderStatusHistoryService, deliveryService, orderProductService);
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
         this.couponIssueService = couponIssueService;
         this.orderTotalCouponApplyService = orderTotalCouponApplyService;
         this.orderMemberRepository = orderMemberRepository;
         this.orderIncreaseDecreasePointHistoryService = orderIncreaseDecreasePointHistoryService;
+        this.orderProductService = orderProductService;
     }
 
     @Override
     protected void startUsageProcessing(Order order) {
+
         String productAndCategoryCouponApplyDtoJson = (String) redisTemplate.opsForHash()
             .get("productAndCategoryCouponApplyDto", String.valueOf(order.getOrderNo()));
 
@@ -104,7 +110,7 @@ public class GeneralOrderAfterPaymentSuccessMemberService
 
         Optional<OrderMember> optionalOrderMember =
             orderMemberRepository.findById(order.getOrderNo());
-        if (!optionalOrderMember.isPresent()) {
+        if (optionalOrderMember.isEmpty()) {
             return;
         }
 

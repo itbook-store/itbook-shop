@@ -20,9 +20,8 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResp
 @NoArgsConstructor
 @Builder
 public class OrderDetailsResponseDto {
-    //    private PaymentCardResponseDto paymentCardResponseDto;
-
     private Long orderNo;
+    private LocalDateTime orderStatusCreatedAt;
     private String orderStatus;
     private LocalDateTime orderCreatedAt;
     private Long amount;
@@ -39,4 +38,6 @@ public class OrderDetailsResponseDto {
     @Setter
     private Long sellingAmount;
     private String nonMemberOrderCode;
+    @Setter
+    private Long couponAmount;
 }

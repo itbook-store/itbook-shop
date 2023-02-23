@@ -39,7 +39,6 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
 
         this.saveOrder(infoForPrePaymentProcess);
         this.saveOrderPerson(infoForPrePaymentProcess);
-        this.saveOrderProduct();
         OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(infoForPrePaymentProcess);
         this.saveOrderSubscription(infoForPrePaymentProcess);
 
@@ -83,6 +82,7 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
         Order order = infoForPrePaymentProcess.getOrder();
 
         for (int i = 2; i <= subscriptionPeriod; i++) {
+
             Order orderChild = OrderTransfer.addDtoToEntity(orderAddRequestDto);
             orderChild.setSelectedDeliveryDate(LocalDate.now().plusMonths(i).withDayOfMonth(1));
             orderRepository.save(orderChild);
@@ -100,14 +100,9 @@ public abstract class SubscriptionOrderBeforePaymentTemplate implements OrderBef
             orderStatusHistoryService.addOrderStatusHistory(orderChild,
                 OrderStatusEnum.WAITING_FOR_PAYMENT);
 
-            orderProductService.addOrderProduct(order, product, 0,
+            orderProductService.addOrderProduct(orderChild, product, 0,
                 0L);
         }
-
-    }
-
-    @Override
-    public void saveOrderProduct() {
 
     }
 

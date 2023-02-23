@@ -10,16 +10,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
@@ -49,10 +56,11 @@ class CouponAdminControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Test
-    void coupon_add_success_test() throws Exception {
-        //given
-        CouponRequestDto couponRequestDto = new CouponRequestDto();
+    CouponRequestDto couponRequestDto;
+
+    @BeforeEach
+    void setup(){
+        couponRequestDto = new CouponRequestDto();
         ReflectionTestUtils.setField(couponRequestDto, "couponType", "일반쿠폰");
         ReflectionTestUtils.setField(couponRequestDto, "name", "쿠폰이름");
         ReflectionTestUtils.setField(couponRequestDto, "amount", 1000L);
@@ -67,7 +75,10 @@ class CouponAdminControllerTest {
         ReflectionTestUtils.setField(couponRequestDto, "code", UUID.randomUUID().toString());
         ReflectionTestUtils.setField(couponRequestDto, "isDuplicateUse", false);
         ReflectionTestUtils.setField(couponRequestDto, "totalQuantity", 0);
-
+    }
+    @Test
+    void coupon_add_success_test() throws Exception {
+        //given
         given(couponService.addCoupon(any(CouponRequestDto.class))).willReturn(0L);
 
         //when then
@@ -78,5 +89,21 @@ class CouponAdminControllerTest {
             .andExpect(status().isCreated())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.result.couponNo", equalTo(0)));
+    }
+
+    @Test
+    void couponList() {
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto()), pageRequest, 10);
+
+    }
+
+    @Test
+    void couponTypeList() {
+    }
+
+    @Test
+    void couponTypeListAll() {
     }
 }

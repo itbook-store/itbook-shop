@@ -26,8 +26,8 @@ public class AmountCalculationBeforePaymentUtil {
         return coupon;
     }
 
-    public static long subAmountToDiscountedPriceAndNegativeCheck(long amount,
-                                                                  long discountedPrice) {
+    public static long getDiscountedAmountAfterNegativeCheck(long amount,
+                                                             long discountedPrice) {
         amount -= discountedPrice;
         if (amount < 0) {
             amount = 0;

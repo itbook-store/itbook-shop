@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -14,8 +15,9 @@ public class GeneralOrderAfterPaymentSuccessNonMemberService
     extends GeneralOrderAfterPaymentSuccessTemplate {
     public GeneralOrderAfterPaymentSuccessNonMemberService(
         OrderStatusHistoryService orderStatusHistoryService,
-        DeliveryService deliveryService) {
-        super(orderStatusHistoryService, deliveryService);
+        DeliveryService deliveryService,
+        OrderProductService orderProductService) {
+        super(orderStatusHistoryService, deliveryService, orderProductService);
     }
 
     @Override

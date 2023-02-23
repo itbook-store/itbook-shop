@@ -24,69 +24,17 @@ public class OrderFactory {
 
     public OrderBeforePayment getOrderBeforePayment(
         OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum) {
-//        if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.구독회원주문)) {
-//            return orderBeforePaymentMap.get("subscriptionOrderBeforePaymentMemberService");
-//        } else if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.구독비회원주문)) {
-//            return orderBeforePaymentMap.get("subscriptionOrderBeforePaymentNonMemberService");
-//        } else if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.일반회원주문)) {
-//            return orderBeforePaymentMap.get("generalOrderBeforePaymentMemberService");
-//        } else if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.일반비회원주문)) {
-//            return orderBeforePaymentMap.get("generalOrderBeforePaymentNonMemberService");
-//        }
-//
-//        throw new RuntimeException("구현체가 존재하지 않습니다. type : " +
-//            orderAfterPaymentSuccessFactoryEnum);
         return orderBeforePaymentMap.get(orderBeforePaymentFactoryEnum.getBeanName());
     }
 
 
     public OrderAfterPaymentSuccess getOrderAfterPaymentSuccess(
         OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum) {
-
-
-//        if (orderFactoryEnum.equals(OrderFactoryEnum.구독회원주문)) {
-//            return orderAfterPaymentSuccessMap.get(
-//                "subscriptionOrderAfterPaymentSuccessMemberService");
-//        } else if (orderFactoryEnum.equals(OrderFactoryEnum.구독비회원주문)) {
-//            return orderAfterPaymentSuccessMap.get(
-//                "subscriptionOrderAfterPaymentSuccessNonMemberService");
-//        } else if (orderFactoryEnum.equals(OrderFactoryEnum.일반회원주문)) {
-//            return orderAfterPaymentSuccessMap.get("subscriptionOrderAfterPaymentSuccessNonMemberService");
-//        } else if (orderFactoryEnum.equals(OrderFactoryEnum.일반비회원주문)) {
-//            return orderAfterPaymentSuccessMap.get(
-//                "generalOrderAfterPaymentSuccessNonMemberService");
-//        }
-
         return orderAfterPaymentSuccessMap.get(orderAfterPaymentSuccessFactoryEnum.getBeanName());
     }
 
     public OrderBeforePaymentCancel getOrderBeforePaymentCancel(
         OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum) {
-
-//        if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.구독회원주문)) {
-//            return orderBeforePaymentCancelMap.get(
-//                "subscriptionOrderBeforePaymentCancelMemberService");
-//        } else if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.구독비회원주문)) {
-//            return orderBeforePaymentCancelMap.get(
-//                "subscriptionOrderBeforePaymentCancelNonMemberService");
-//        } else if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.일반회원주문)) {
-//            return orderBeforePaymentCancelMap.get("generalOrderBeforePaymentCancelMemberService");
-//        } else if (orderAfterPaymentSuccessFactoryEnum.equals(
-//            OrderAfterPaymentSuccessFactoryEnum.일반비회원주문)) {
-//            return orderBeforePaymentCancelMap.get(
-//                "generalOrderBeforePaymentCancelNonMemberService");
-//        }
-//
-//        throw new RuntimeException("구현체가 존재하지 않습니다. type : " +
-//            orderAfterPaymentSuccessFactoryEnum);
         return orderBeforePaymentCancelMap.get(orderBeforePaymentCancelFactoryEnum.getBeanName());
-
     }
 }

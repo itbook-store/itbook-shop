@@ -54,6 +54,8 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
+                qCoupon.standardAmount,
+                qCoupon.maxDiscountAmount,
                 qCoupon.couponCreatedAt,
                 qCoupon.couponExpiredAt,
                 qCoupon.totalQuantity,
@@ -96,7 +98,8 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(CouponTypeEnum couponTypeEnum) {
+    public List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(
+        CouponTypeEnum couponTypeEnum) {
 
         QCoupon qCoupon = QCoupon.coupon;
         QCouponType qCouponType = QCouponType.couponType;
@@ -117,6 +120,8 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
+                qCoupon.standardAmount,
+                qCoupon.maxDiscountAmount,
                 qCoupon.totalQuantity,
                 qCoupon.issuedQuantity,
                 qCoupon.isDuplicateUse,
@@ -139,6 +144,7 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
             .orderBy(qCoupon.couponNo.desc())
             .fetch();
     }
+
     /**
      * 쿠폰 종류별로 페이지네이션 하여 가져오는 메소드입니다.
      *
@@ -171,6 +177,8 @@ public class CouponRepositoryImpl extends QuerydslRepositorySupport implements
                 qCoupon.amount,
                 qCoupon.percent,
                 qCoupon.point,
+                qCoupon.standardAmount,
+                qCoupon.maxDiscountAmount,
                 qCoupon.totalQuantity,
                 qCoupon.issuedQuantity,
                 qCoupon.isDuplicateUse,

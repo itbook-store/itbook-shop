@@ -12,7 +12,6 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
 
 /**
