@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.coupongroup.categorycouponapply.serviec;
 
-import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 
 /**

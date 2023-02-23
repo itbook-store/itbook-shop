@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.coupongroup.couponissue.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
 
 /**
