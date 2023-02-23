@@ -15,7 +15,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 @RequiredArgsConstructor
 public abstract class GeneralOrderBeforePaymentCancelTemplate implements OrderBeforePaymentCancel {
 
-    private OrderStatusHistoryService orderStatusHistoryService;
+    private final OrderStatusHistoryService orderStatusHistoryService;
 
     @Override
     public void cancel(Order order) {
