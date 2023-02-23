@@ -62,7 +62,13 @@ import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderSubscriptionNotFirstSequenceException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancel;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
@@ -138,6 +144,8 @@ public class OrderServiceImpl implements OrderService {
     public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
     public static final long BASE_DELIVERY_FEE = 3000L;
 
+    public final OrderFactory orderFactory;
+
     /**
      * {@inheritDoc}
      */
@@ -189,10 +197,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderPaymentDto addOrderBeforePayment(OrderBeforePayment orderBeforePayment,
-                                                 InfoForPrePaymentProcess infoForPrePaymentProcess,
-                                                 Long memberNo) {
+    @Transactional
+    public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
+        InfoForPrePaymentProcess infoForPrePaymentProcess,
+        OrderFactoryEnum orderFactoryEnum) {
 
+        OrderBeforePayment orderBeforePayment = orderFactory.getOrderBeforePayment(
+            orderFactoryEnum);
         return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
     }
 
@@ -209,8 +220,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public OrderPaymentDto addOrderBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                                 Optional<Long> memberNo) {
+    public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
+        OrderAddRequestDto orderAddRequestDto,
+        Optional<Long> memberNo) {
 
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order = OrderTransfer.addDtoToEntity(orderAddRequestDto);
@@ -620,6 +632,36 @@ public class OrderServiceImpl implements OrderService {
         return UUID.fromString(randomUuidString).toString();
     }
 
+    public Order processAfterOrderPaymentSuccessRefactor(Long orderNo) {
+
+        OrderFactoryEnum orderFactoryEnum;
+
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
+        OrderProduct orderProduct =
+            orderProductService.findOrderProductsEntityByOrderNo(orderNo).get(0);
+        Product product =
+            productService.findProductEntity(orderProduct.getProduct().getProductNo());
+
+        if (product.getIsSubscription()) {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.구독회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
+            }
+        } else {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.일반회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.일반비회원주문;
+            }
+        }
+
+        Order order = orderRepository.findById(orderNo).orElseThrow();
+        OrderAfterPaymentSuccess orderAfterPayment =
+            orderFactory.getOrderAfterPaymentSuccess(orderFactoryEnum);
+        return orderAfterPayment.success(order);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -708,6 +750,38 @@ public class OrderServiceImpl implements OrderService {
                 order, increasePoint);
         }
     }
+
+
+    public void processBeforeOrderCancelPaymentRefactor(Long orderNo) {
+        OrderFactoryEnum orderFactoryEnum;
+
+        Optional<OrderMember> optionalOrderMember = orderMemberRepository.findById(orderNo);
+        OrderProduct orderProduct =
+            orderProductService.findOrderProductsEntityByOrderNo(orderNo).get(0);
+        Product product =
+            productService.findProductEntity(orderProduct.getProduct().getProductNo());
+
+        if (product.getIsSubscription()) {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.구독회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.구독비회원주문;
+            }
+        } else {
+            if (optionalOrderMember.isPresent()) {
+                orderFactoryEnum = OrderFactoryEnum.일반회원주문;
+            } else {
+                orderFactoryEnum = OrderFactoryEnum.일반비회원주문;
+            }
+        }
+
+        Order order = orderRepository.findById(orderNo).orElseThrow();
+        OrderBeforePaymentCancel orderBeforePaymentCancel =
+            orderFactory.getOrderBeforePaymentCancel(orderFactoryEnum);
+
+        orderBeforePaymentCancel.cancel(order);
+    }
+
 
     /**
      * {@inheritDoc}

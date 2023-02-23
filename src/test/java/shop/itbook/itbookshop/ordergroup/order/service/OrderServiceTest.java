@@ -34,6 +34,7 @@ import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.Delivery
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceImpl;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
@@ -125,6 +126,8 @@ class OrderServiceTest {
     @MockBean
     ObjectMapper objectMapper;
 
+    @MockBean
+    OrderFactory orderFactory;
 
     @Test
     @DisplayName("사용자의 주문 목록을 여러 정보와 함께 조회 성공")
