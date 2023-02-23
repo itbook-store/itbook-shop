@@ -21,8 +21,8 @@ public abstract class GeneralOrderBeforePaymentCancelTemplate implements OrderBe
     public void cancel(Order order) {
 
         checkOrderStatus(order.getOrderNo());
-        changeOrderStatusAboutOrderCancel(order);
         startUsageProcessing(order);
+        changeOrderStatusAboutOrderCancel(order);
     }
 
     @Override

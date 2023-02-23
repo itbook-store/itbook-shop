@@ -234,7 +234,7 @@ public class SubscriptionOrderBeforePaymentMemberService
             long discountedPrice =
                 totalPriceOfSameProducts - totalPriceOfSameProductsWithCouponApplied;
 
-            amount = AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(
+            amount = AmountCalculationBeforePaymentUtil.getDiscountedAmountAfterNegativeCheck(
                 amount, discountedPrice);
 
             OrderProduct orderProduct =
@@ -390,7 +390,7 @@ public class SubscriptionOrderBeforePaymentMemberService
 
     private long calculateAmountAboutPoint(long amount, long pointToBeDiscounted) {
 
-        return AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(amount,
+        return AmountCalculationBeforePaymentUtil.getDiscountedAmountAfterNegativeCheck(amount,
             pointToBeDiscounted);
     }
 
