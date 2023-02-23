@@ -98,9 +98,9 @@ public class PaymentServiceImpl implements PaymentService {
             throw new InvalidInputException();
         }
 
-        if (orderService.isSubscription(orderNo)) {
-            orderService.addOrderSubscriptionAfterPayment(orderNo);
-        }
+//        if (orderService.isSubscription(orderNo)) {
+//            orderService.addOrderSubscriptionAfterPayment(orderNo);
+//        }
 
         return new OrderResponseDto(payment.getOrder().getOrderNo(), payment.getTotalAmount());
     }

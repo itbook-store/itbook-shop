@@ -173,43 +173,6 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
-    /**
-     * 구독 주문 완료 후 결제 정보 저장 요청을 받아 처리합니다.
-     *
-     * @param orderNo 주문 번호(null 일 경우 비회원)
-     * @return 응답 객체
-     * @author 정재원
-     */
-    @PostMapping("/subscription/completion")
-    public ResponseEntity<CommonResponseBody<Void>> orderSubscriptionAfterPayment(
-        @RequestParam("orderNo") Long orderNo) {
-
-        orderService.addOrderSubscriptionAfterPayment(orderNo);
-
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 결제 전 주문 취소 요청을 처리합니다.
-     *
-     * @param orderNo 취소 처리할 주문 번호
-     * @return 성공시 ok 응답 객체
-     * @author 정재원
-     */
-    @PostMapping("/cancel/{orderNo}")
-    public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
-        @PathVariable("orderNo") Long orderNo) {
-
-        orderService.processBeforeOrderCancelPayment(orderNo);
-
-        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(
-                OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
-            ), null
-        );
-
-        return ResponseEntity.ok().body(commonResponseBody);
-    }
 
     /**
      * Order details response entity.

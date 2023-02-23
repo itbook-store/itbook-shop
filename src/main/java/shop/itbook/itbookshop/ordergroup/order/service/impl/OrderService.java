@@ -55,45 +55,6 @@ public interface OrderService {
         InfoForPrePaymentProcess infoForPrePaymentProcess,
         OrderFactoryEnum orderFactoryEnum);
 
-    /**
-     * 결제 전 주문을 추가합니다.
-     *
-     * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
-     * @param memberNo           회원 번호. 비회원일 경우 null
-     * @return 결제 요청에 사용될 정보를 담은 Dto
-     * @author 정재원
-     */
-    OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
-        OrderAddRequestDto orderAddRequestDto,
-        Optional<Long> memberNo);
-
-    /**
-     * 결제 전 구독 주문을 추가합니다.
-     *
-     * @param orderAddRequestDto 주문서에서 받아온 주문 정보 Dto
-     * @param memberNo           회원 번호. 비회원일 경우 null
-     * @return 결제 요청에 사용될 정보를 담은 Dto
-     * @author 정재원
-     */
-    OrderPaymentDto addOrderSubscriptionBeforePayment(OrderAddRequestDto orderAddRequestDto,
-                                                      Optional<Long> memberNo);
-
-    /**
-     * 결제 완료 후 구독 주문의 결제 정보를 등록합니다.
-     *
-     * @param orderNo 구독 시작 번호
-     * @author 정재원
-     */
-    void addOrderSubscriptionAfterPayment(Long orderNo);
-
-    /**
-     * Process after order cancel payment success.
-     *
-     * @param orderNo the order no
-     * @author 정재원
-     */
-    void processBeforeOrderCancelPayment(Long orderNo);
-
     void processBeforeOrderCancelPaymentRefactor(Long orderNo);
 
     /**
@@ -107,15 +68,6 @@ public interface OrderService {
      */
     Page<OrderListMemberViewResponseDto> findOrderListOfMemberWithStatus(Pageable pageable,
                                                                          Long memberNo);
-
-    /**
-     * 결제 완료후 로직 처리를 진행합니다.
-     *
-     * @param orderNo 결제 완료 처리할 주문 번호
-     * @return 결제 완료된 주문 엔티티의 인스턴스
-     * @author 정재원
-     */
-    Order processAfterOrderPaymentSuccess(Long orderNo);
 
     Order processAfterOrderPaymentSuccessRefactor(Long orderNo);
 
