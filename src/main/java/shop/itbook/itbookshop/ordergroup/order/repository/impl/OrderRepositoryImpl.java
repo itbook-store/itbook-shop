@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -440,6 +441,17 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
         orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
+        if (Objects.nonNull(orderDetailsResponseDto.getTotalCouponPercent())) {
+            long orderProductCouponAppliedAmount =
+                orderDetailsResponseDto.getOrderProductDetailResponseDtoList().stream().mapToLong(
+                    OrderProductDetailResponseDto::getProductPrice
+                ).sum();
+
+            long totalCouponPercentAmount = (long) (orderProductCouponAppliedAmount
+                * (orderDetailsResponseDto.getTotalCouponPercent() * 0.01));
+
+            orderDetailsResponseDto.setCouponAmount(totalCouponPercentAmount);
+        }
         return orderDetailsResponseDto;
     }
 
@@ -571,10 +583,10 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qDelivery.deliveryNo,
                 qDelivery.trackingNo,
                 qOrder.selectedDeliveryDate,
-                // Coupon
-                qOrderTotalCouponApply.couponIssue.coupon.name.as("couponName"),
-                qOrderTotalCouponApply.couponIssue.coupon.amount.as("totalCouponAmount"),
-                qOrderTotalCouponApply.couponIssue.coupon.percent.as("totalCouponPercent"),
+                // 주문 총액 쿠폰
+                qCouponTotal.name.as("couponName"),
+                qCouponTotal.amount.as("totalCouponAmount"),
+                qCouponTotal.percent.as("totalCouponPercent"),
                 // orderProduct
                 qOrderProduct.orderProductNo,
                 qOrderProduct.product.productNo,
@@ -584,10 +596,6 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qOrderProduct.count,
                 qOrderProduct.productPrice,
                 qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
-                // 주문 총액 쿠폰
-                qCouponTotal.name.as("totalCouponName"),
-                qCouponTotal.amount.as("totalCouponAmount"),
-                qCouponTotal.percent.as("totalCouponPercent"),
                 // 개별 적용 쿠폰
                 qCouponNotTotal.name.as("couponName"),
                 qCouponNotTotal.amount.as("couponAmount"),
