@@ -28,7 +28,6 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
     public OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess) {
         this.saveOrder(infoForPrePaymentProcess);
         this.saveOrderPerson(infoForPrePaymentProcess);
-        this.saveOrderProduct();
         return this.calculateTotalAmount(infoForPrePaymentProcess);
     }
 
@@ -43,11 +42,6 @@ public abstract class GeneralOrderBeforePaymentTemplate implements OrderBeforePa
 
         // 주문_상태_이력 테이블 저장
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAITING_FOR_PAYMENT);
-    }
-
-    @Override
-    public void saveOrderProduct() {
-
     }
 
     @Override

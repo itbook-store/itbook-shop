@@ -65,8 +65,6 @@ import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancel;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
@@ -461,7 +459,7 @@ public class OrderServiceImpl implements OrderService {
             long discountedPrice =
                 totalPriceOfSameProducts - totalPriceOfSameProductsWithCouponApplied;
 
-            amount = AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(
+            amount = AmountCalculationBeforePaymentUtil.getDiscountedAmountAfterNegativeCheck(
                 amount, discountedPrice);
 
             OrderProduct orderProduct =
@@ -620,7 +618,7 @@ public class OrderServiceImpl implements OrderService {
 
     private long calculateAmountAboutPoint(long amount, long pointToBeDiscounted) {
 
-        return AmountCalculationBeforePaymentUtil.subAmountToDiscountedPriceAndNegativeCheck(amount,
+        return AmountCalculationBeforePaymentUtil.getDiscountedAmountAfterNegativeCheck(amount,
             pointToBeDiscounted);
     }
 
@@ -996,7 +994,6 @@ public class OrderServiceImpl implements OrderService {
         List<OrderSubscriptionDetailsResponseDto> orderSubscriptionDetailsResponseDtoList =
             orderRepository.findOrderSubscriptionDetailsResponseDto(orderNo);
 
-
         OrderSubscriptionDetailsResponseDto orderSubscription =
             orderSubscriptionDetailsResponseDtoList.get(0);
 
@@ -1020,18 +1017,6 @@ public class OrderServiceImpl implements OrderService {
             if (!orderRepository.existsById(orderNo)) {
                 throw new OrderNotFoundException();
             }
-        }
-
-        for (OrderProduct orderProduct : orderProductList) {
-            Product product =
-                productService.findProductEntity(orderProduct.getProduct().getProductNo());
-
-            if (product.getIsSubscription()) {
-                break;
-            }
-
-            Integer stock = product.getStock();
-            product.setStock(stock + orderProduct.getCount());
         }
 
         orderRepository.deleteById(orderNo);

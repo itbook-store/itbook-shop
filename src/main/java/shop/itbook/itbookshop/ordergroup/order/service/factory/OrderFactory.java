@@ -35,7 +35,6 @@ public class OrderFactory {
             orderFactoryEnum);
     }
 
-
     public OrderAfterPaymentSuccess getOrderAfterPaymentSuccess(OrderFactoryEnum orderFactoryEnum) {
 
         if (orderFactoryEnum.equals(OrderFactoryEnum.구독회원주문)) {
