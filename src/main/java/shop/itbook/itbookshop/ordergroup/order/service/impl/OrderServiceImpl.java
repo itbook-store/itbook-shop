@@ -515,7 +515,7 @@ public class OrderServiceImpl implements OrderService {
         if (optionalCategoryCoupon.isPresent()) {
             Integer categoryNoAboutCoupon =
                 optionalCategoryCoupon.get().getCategory().getCategoryNo();
-            Optional<ProductCategory> optionalProductCategory = productCategoryRepository.findById(
+            Optional<ProductCategory> optionalProductCategory =  productCategoryRepository.findById(
                 new ProductCategory.Pk(product.getProductNo(), categoryNoAboutCoupon));
             if (optionalProductCategory.isEmpty()) {
                 throw new MismatchCategoryNoWhenCouponApplyException();
