@@ -36,6 +36,8 @@ import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCo
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
@@ -161,8 +163,9 @@ public class GeneralOrderBeforePaymentMemberService extends GeneralOrderBeforePa
         return OrderPaymentDto.builder().orderNo(infoForPrePaymentProcess.getOrder().getOrderNo())
             .orderId(this.createOrderUUID(infoForPrePaymentProcess.getOrder()))
             .orderName(stringBuilder.toString()).amount(amount)
-            .successUrl(
-                ORIGIN_URL + "orders/success/" + infoForPrePaymentProcess.getOrder().getOrderNo())
+            .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
+                infoForPrePaymentProcess.getOrder().getOrderNo(),
+                OrderAfterPaymentSuccessFactoryEnum.일반회원주문.name()))
             .failUrl(ORIGIN_URL + "orders/fail" + infoForPrePaymentProcess.getOrder().getOrderNo())
             .build();
 

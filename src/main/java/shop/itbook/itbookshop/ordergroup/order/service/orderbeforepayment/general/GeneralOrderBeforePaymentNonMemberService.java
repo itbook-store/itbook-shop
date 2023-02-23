@@ -15,6 +15,8 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
@@ -91,7 +93,9 @@ public class GeneralOrderBeforePaymentNonMemberService extends GeneralOrderBefor
 
         return OrderPaymentDto.builder().orderNo(order.getOrderNo())
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
-            .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
+            .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
+                infoForPrePaymentProcess.getOrder().getOrderNo(),
+                OrderAfterPaymentSuccessFactoryEnum.일반비회원주문.name()))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
     }
 

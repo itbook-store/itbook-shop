@@ -37,6 +37,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenC
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
@@ -153,7 +154,9 @@ public class SubscriptionOrderBeforePaymentMemberService
 
         return OrderPaymentDto.builder().orderNo(order.getOrderNo())
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
-            .successUrl(ORIGIN_URL + "orders/success/" + order.getOrderNo())
+            .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
+                infoForPrePaymentProcess.getOrder().getOrderNo(),
+                OrderAfterPaymentSuccessFactoryEnum.구독회원주문.name()))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
 
     }

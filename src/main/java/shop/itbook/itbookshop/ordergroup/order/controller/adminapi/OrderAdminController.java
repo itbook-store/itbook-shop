@@ -13,6 +13,7 @@ import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 
 /**
@@ -27,6 +28,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 public class OrderAdminController {
 
     private final OrderService orderService;
+    private final OrderCrudService orderCrudService;
 
     /**
      * 관리자의 주문 목록 조회 요청을 받아 처리하는 합니다.
@@ -41,7 +43,7 @@ public class OrderAdminController {
         CommonResponseBody<PageResponse<OrderListAdminViewResponseDto>> response =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
                 OrderResultMessageEnum.ORDER_LIST_OF_ADMIN_FIND_SUCCESS_MESSAGE.getResultMessage()),
-                new PageResponse<>(orderService.findOrderListAdmin(pageable)));
+                new PageResponse<>(orderCrudService.findOrderListAdmin(pageable)));
 
         return ResponseEntity.ok().body(response);
     }
@@ -60,7 +62,7 @@ public class OrderAdminController {
     ) {
 
         Page<OrderSubscriptionAdminListDto> allSubscriptionOrderListByAdmin =
-            orderService.findAllSubscriptionOrderListByAdmin(pageable);
+            orderCrudService.findAllSubscriptionOrderListByAdmin(pageable);
 
         CommonResponseBody<PageResponse<OrderSubscriptionAdminListDto>> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(

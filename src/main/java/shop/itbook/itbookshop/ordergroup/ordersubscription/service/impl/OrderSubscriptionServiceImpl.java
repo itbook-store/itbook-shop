@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.service.OrderSubscriptionService;
@@ -18,9 +17,7 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.service.OrderSubscrip
 @RequiredArgsConstructor
 @Service
 public class OrderSubscriptionServiceImpl implements OrderSubscriptionService {
-
     private final OrderSubscriptionRepository orderSubscriptionRepository;
-    private final OrderRepository orderRepository;
 
     @Override
     public void registerOrderSubscription(Order order, Integer subscriptionPeriod) {
@@ -38,5 +35,13 @@ public class OrderSubscriptionServiceImpl implements OrderSubscriptionService {
             orderSubscriptionRepository.save(orderSubscription);
             sequence++;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isSubscription(Long orderNo) {
+        return orderSubscriptionRepository.findByOrder_OrderNo(orderNo).isPresent();
     }
 }
