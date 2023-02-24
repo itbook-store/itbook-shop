@@ -584,7 +584,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qDelivery.trackingNo,
                 qOrder.selectedDeliveryDate,
                 // 주문 총액 쿠폰
-                qCouponTotal.name.as("couponName"),
+                qCouponTotal.name.as("totalCouponName"),
                 qCouponTotal.amount.as("totalCouponAmount"),
                 qCouponTotal.percent.as("totalCouponPercent"),
                 // orderProduct
