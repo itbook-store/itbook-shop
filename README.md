@@ -20,6 +20,10 @@
 
 <img width="1277" alt="스크린샷 2023-02-22 오전 11 32 00" src="https://user-images.githubusercontent.com/97177686/220506047-1a240f62-b604-4710-a60e-bedd15dd9893.png">
 
+## WBS
+
+<img width="878" alt="스크린샷 2023-02-24 오전 11 34 03" src="https://user-images.githubusercontent.com/45487307/221078047-288ca762-775b-4f41-9f07-04ef8729b023.png">
+
 
 # 주요기능
 ## 인프라
