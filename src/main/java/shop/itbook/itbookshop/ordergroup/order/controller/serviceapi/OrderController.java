@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
@@ -31,7 +31,6 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
@@ -100,8 +99,9 @@ public class OrderController {
             orderBeforePaymentFactoryEnum = OrderBeforePaymentFactoryEnum.일반회원주문;
         }
 
-        InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
-        infoForPrePaymentProcess.setOrderAddRequestDto(orderAddRequestDto);
+        InfoForProcessOrderBeforePayment
+            infoForProcessOrderBeforePayment = new InfoForProcessOrderBeforePayment(memberNo);
+        infoForProcessOrderBeforePayment.setOrderAddRequestDto(orderAddRequestDto);
 
         Optional<Long> optMemberNo = Optional.empty();
 
@@ -124,7 +124,7 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
-                infoForPrePaymentProcess, orderBeforePaymentFactoryEnum)
+                infoForProcessOrderBeforePayment, orderBeforePaymentFactoryEnum)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -147,8 +147,9 @@ public class OrderController {
             throw new InvalidOrderException();
         }
 
-        InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
-        infoForPrePaymentProcess.setOrderAddRequestDto(orderAddRequestDto);
+        InfoForProcessOrderBeforePayment
+            infoForProcessOrderBeforePayment = new InfoForProcessOrderBeforePayment(memberNo);
+        infoForProcessOrderBeforePayment.setOrderAddRequestDto(orderAddRequestDto);
 
         OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum;
         if (Objects.isNull(memberNo)) {
@@ -169,7 +170,7 @@ public class OrderController {
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
                 ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
-                infoForPrePaymentProcess, orderBeforePaymentFactoryEnum)
+                infoForProcessOrderBeforePayment, orderBeforePaymentFactoryEnum)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);

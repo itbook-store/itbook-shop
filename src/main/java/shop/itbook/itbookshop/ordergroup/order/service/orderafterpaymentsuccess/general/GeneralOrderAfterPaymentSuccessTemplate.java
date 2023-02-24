@@ -24,26 +24,15 @@ public abstract class GeneralOrderAfterPaymentSuccessTemplate implements OrderAf
     private final DeliveryService deliveryService;
     private final OrderProductService orderProductService;
 
-    @Override
-    public Order success(Order order) {
-
-        this.changeOrderStatus(order);
-        this.changeDeliveryStatus(order);
-        this.checkAndSetStock(order);
-        this.startUsageProcessing(order);
-        return order;
-    }
-
-    @Override
-    public void changeOrderStatus(Order order) {
+    protected void changeOrderStatus(Order order) {
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.WAIT_DELIVERY);
     }
 
-    private void changeDeliveryStatus(Order order) {
+    protected void changeDeliveryStatus(Order order) {
         deliveryService.registerDelivery(order);
     }
 
-    private void checkAndSetStock(Order order) {
+    protected void checkAndSetStock(Order order) {
 
         List<OrderProduct> orderProductsByOrderNo =
             orderProductService.findOrderProductsEntityByOrderNo(order.getOrderNo());
@@ -64,6 +53,4 @@ public abstract class GeneralOrderAfterPaymentSuccessTemplate implements OrderAf
 
         product.setStock(stock - productCnt);
     }
-
-    protected abstract void startUsageProcessing(Order order);
 }

@@ -7,7 +7,5 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * @since 1.0
  */
 public interface OrderAfterPaymentSuccess {
-    Order success(Order order);
-
-    void changeOrderStatus(Order order);
+    Order processOrderAfterPaymentSuccess(Order order);
 }

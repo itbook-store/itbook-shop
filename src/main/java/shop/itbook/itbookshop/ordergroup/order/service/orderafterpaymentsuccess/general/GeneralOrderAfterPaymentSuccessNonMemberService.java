@@ -13,7 +13,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 @Service
 public class GeneralOrderAfterPaymentSuccessNonMemberService
     extends GeneralOrderAfterPaymentSuccessTemplate {
-    public GeneralOrderAfterPaymentSuccessNonMemberService(
+    GeneralOrderAfterPaymentSuccessNonMemberService(
         OrderStatusHistoryService orderStatusHistoryService,
         DeliveryService deliveryService,
         OrderProductService orderProductService) {
@@ -21,7 +21,12 @@ public class GeneralOrderAfterPaymentSuccessNonMemberService
     }
 
     @Override
-    protected void startUsageProcessing(Order order) {
+    public Order processOrderAfterPaymentSuccess(Order order) {
 
+        super.changeOrderStatus(order);
+        super.changeDeliveryStatus(order);
+        super.checkAndSetStock(order);
+
+        return order;
     }
 }

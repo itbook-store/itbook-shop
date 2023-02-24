@@ -16,19 +16,7 @@ public abstract class SubscriptionOrderAfterPaymentSuccessTemplate implements
 
     private final OrderStatusHistoryService orderStatusHistoryService;
 
-    @Override
-    public Order success(Order order) {
-
-        changeOrderStatus(order);
-        startUsageProcessing(order);
-        return order;
-    }
-
-
-    @Override
-    public void changeOrderStatus(Order order) {
+    protected void changeOrderStatus(Order order) {
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);
     }
-
-    protected abstract void startUsageProcessing(Order order);
 }

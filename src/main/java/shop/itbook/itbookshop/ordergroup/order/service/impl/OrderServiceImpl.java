@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
@@ -42,12 +42,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
-        InfoForPrePaymentProcess infoForPrePaymentProcess,
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
         OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum) {
 
         OrderBeforePayment orderBeforePayment = orderFactory.getOrderBeforePayment(
             orderBeforePaymentFactoryEnum);
-        return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
+        return orderBeforePayment.processOrderBeforePayment(infoForProcessOrderBeforePayment);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderCrudService.findOrderEntity(orderNo);
         OrderAfterPaymentSuccess orderAfterPayment =
             orderFactory.getOrderAfterPaymentSuccess(orderAfterPaymentSuccessFactoryEnum);
-        return orderAfterPayment.success(order);
+        return orderAfterPayment.processOrderAfterPaymentSuccess(order);
     }
 
     @Override

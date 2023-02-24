@@ -1,7 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
@@ -17,7 +17,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.Or
 public interface OrderService {
 
     OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
-        InfoForPrePaymentProcess infoForPrePaymentProcess,
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
         OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum);
 
     @Transactional

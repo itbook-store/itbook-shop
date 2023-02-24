@@ -11,13 +11,14 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 @Service
 public class SubscriptionOrderAfterPaymentSuccessNonMemberService
     extends SubscriptionOrderAfterPaymentSuccessTemplate {
-    public SubscriptionOrderAfterPaymentSuccessNonMemberService(
+    SubscriptionOrderAfterPaymentSuccessNonMemberService(
         OrderStatusHistoryService orderStatusHistoryService) {
         super(orderStatusHistoryService);
     }
 
     @Override
-    protected void startUsageProcessing(Order order) {
-
+    public Order processOrderAfterPaymentSuccess(Order order) {
+        super.changeOrderStatus(order);
+        return order;
     }
 }

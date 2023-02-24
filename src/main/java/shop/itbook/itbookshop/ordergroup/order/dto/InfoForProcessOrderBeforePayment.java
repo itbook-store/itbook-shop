@@ -16,19 +16,19 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InfoForPrePaymentProcess {
+public class InfoForProcessOrderBeforePayment {
     private OrderAddRequestDto orderAddRequestDto;
     private Long sequence;
     private Order order;
 
     private Long memberNo;
 
-    public InfoForPrePaymentProcess(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
+    public InfoForProcessOrderBeforePayment(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
         this.orderAddRequestDto = orderAddRequestDto;
         this.memberNo = memberNo;
     }
 
-    public InfoForPrePaymentProcess(Long memberNo) {
+    public InfoForProcessOrderBeforePayment(Long memberNo) {
         this.memberNo = memberNo;
     }
 }
