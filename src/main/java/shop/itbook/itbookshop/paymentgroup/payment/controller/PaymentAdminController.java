@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.paymentgroup.payment.dto.request.PaymentApproveRequestDto;
@@ -24,7 +25,7 @@ import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.Payme
  */
 @RestController
 @RequiredArgsConstructor
-public class PaymentServiceController {
+public class PaymentAdminController {
     private final PaymentService paymentService;
 
     /**
@@ -34,13 +35,13 @@ public class PaymentServiceController {
      * @return 결제 승인 시 반환 받은 Payment 객체입니다.
      * @author 이하늬
      */
-    @PostMapping("api/admin/payment/request-pay/{orderNo}")
+    @PostMapping("api/admin/payment/request-pay/{orderType}/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderResponseDto>> requestPayment(
         @RequestBody PaymentApproveRequestDto paymentApproveRequestDto,
-        @PathVariable Long orderNo, HttpSession session) {
+        @PathVariable String orderType, @PathVariable Long orderNo, HttpSession session) {
 
         OrderResponseDto responseDto =
-            paymentService.requestPayment(paymentApproveRequestDto, orderNo,
+            paymentService.requestPayment(paymentApproveRequestDto, orderType, orderNo,
                 session);
 
         CommonResponseBody<OrderResponseDto> commonResponseBody = new CommonResponseBody<>(
@@ -57,13 +58,14 @@ public class PaymentServiceController {
      * @return 결제 승인 시 반환 받은 Payment 객체입니다.
      * @author 이하늬
      */
-    @PostMapping("api/admin/payment/request-cancel")
+    @PostMapping(value = "api/admin/payment/request-cancel", params = "orderType")
     public ResponseEntity<CommonResponseBody<OrderResponseDto>> cancelPayment(
-        @RequestBody PaymentCanceledRequestDto paymentCanceledRequestDto)
+        @RequestBody PaymentCanceledRequestDto paymentCanceledRequestDto,
+        @RequestParam String orderType)
         throws JsonProcessingException {
 
         OrderResponseDto responseDto =
-            paymentService.cancelPayment(paymentCanceledRequestDto);
+            paymentService.cancelPayment(paymentCanceledRequestDto, orderType);
 
         CommonResponseBody<OrderResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

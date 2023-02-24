@@ -20,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
+import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 import shop.itbook.itbookshop.pointgroup.pointhistory.dto.response.PointHistoryListResponseDto;
 import shop.itbook.itbookshop.pointgroup.pointhistory.repository.PointHistoryRepository;
@@ -41,7 +42,7 @@ class PointHistoryAdminServiceImplTest {
     PointHistoryRepository pointHistoryRepository;
 
     @MockBean
-    OrderService orderService;
+    OrderCrudService orderCrudService;
     PointIncreaseDecreaseContentEnum couponPointEnum;
 
     PointIncreaseDecreaseContentEnum orderPointEnum;
