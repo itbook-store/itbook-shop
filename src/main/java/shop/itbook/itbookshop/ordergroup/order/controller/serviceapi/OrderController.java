@@ -30,12 +30,10 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.service.OrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.service.general.GeneralOrderMemberService;
-import shop.itbook.itbookshop.ordergroup.order.service.general.GeneralOrderNonMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
-import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderMemberService;
-import shop.itbook.itbookshop.ordergroup.order.service.subscription.SubscriptionOrderNonMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
 import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderException;
 
 /**
@@ -51,13 +49,7 @@ import shop.itbook.itbookshop.paymentgroup.payment.exception.InvalidOrderExcepti
 public class OrderController {
 
     private final OrderService orderService;
-    private OrderBeforePayment orderBeforePayment;
-    private GeneralOrderMemberService generalOrderMemberService;
-    private GeneralOrderNonMemberService generalOrderNonMemberService;
-
-    private SubscriptionOrderMemberService subscriptionOrderMemberService;
-
-    private SubscriptionOrderNonMemberService subscriptionOrderNonMemberService;
+    private final OrderCrudService orderCrudService;
 
     /**
      * 주문 목록을 여러 정보와 함께 조회 합니다.
@@ -74,7 +66,8 @@ public class OrderController {
         Pageable pageable, @PathVariable("memberNo") Long memberNo) {
 
         PageResponse<OrderListMemberViewResponseDto> pageResponse =
-            new PageResponse<>(orderService.findOrderListOfMemberWithStatus(pageable, memberNo));
+            new PageResponse<>(
+                orderCrudService.findOrderListOfMemberWithStatus(pageable, memberNo));
 
         CommonResponseBody<PageResponse<OrderListMemberViewResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
@@ -100,11 +93,15 @@ public class OrderController {
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
 
-        if (Objects.isNull(request.getAttribute("memberNo"))) {
-            orderBeforePayment = generalOrderNonMemberService;
+        OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum;
+        if (Objects.isNull(memberNo)) {
+            orderBeforePaymentFactoryEnum = OrderBeforePaymentFactoryEnum.일반비회원주문;
         } else {
-            orderBeforePayment = generalOrderMemberService;
+            orderBeforePaymentFactoryEnum = OrderBeforePaymentFactoryEnum.일반회원주문;
         }
+
+        InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
+        infoForPrePaymentProcess.setOrderAddRequestDto(orderAddRequestDto);
 
         Optional<Long> optMemberNo = Optional.empty();
 
@@ -112,15 +109,22 @@ public class OrderController {
             optMemberNo = Optional.of(memberNo);
         }
 
-        orderService.addOrderBeforePayment(orderBeforePayment,
-            new InfoForPrePaymentProcess(orderAddRequestDto, null), memberNo);
+//        orderService.addOrderBeforePayment(orderBeforePayment,
+//            new InfoForPrePaymentProcess(orderAddRequestDto, memberNo));
 
+//        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+//            new CommonResponseBody<>(
+//                new CommonResponseBody.CommonHeader(
+//                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+//                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
+//            );
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
+                ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
+                infoForPrePaymentProcess, orderBeforePaymentFactoryEnum)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -135,76 +139,42 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderSubscriptionBeforePayment(
+    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> subscriptionOrderBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
-        @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
+        @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
         if (Objects.isNull(orderAddRequestDto.getIsSubscription())) {
             throw new InvalidOrderException();
         }
 
-        if (Objects.isNull(request.getAttribute("memberNo"))) {
-            orderBeforePayment = subscriptionOrderMemberService;
+        InfoForPrePaymentProcess infoForPrePaymentProcess = new InfoForPrePaymentProcess(memberNo);
+        infoForPrePaymentProcess.setOrderAddRequestDto(orderAddRequestDto);
+
+        OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum;
+        if (Objects.isNull(memberNo)) {
+            orderBeforePaymentFactoryEnum = OrderBeforePaymentFactoryEnum.구독비회원주문;
         } else {
-            orderBeforePayment = subscriptionOrderNonMemberService;
+            orderBeforePaymentFactoryEnum = OrderBeforePaymentFactoryEnum.구독회원주문;
         }
 
-        orderService.addOrderBeforePayment(orderBeforePayment,
-            new InfoForPrePaymentProcess(orderAddRequestDto, null), memberNo);
-
-        Optional<Long> optMemberNo = Optional.empty();
-
-        if (Objects.nonNull(memberNo)) {
-            optMemberNo = Optional.of(memberNo);
-        }
+//        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+//            new CommonResponseBody<>(
+//                new CommonResponseBody.CommonHeader(
+//                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
+//                ), orderService.addOrderBeforePayment(orderAddRequestDto, Optional.of(memberNo))
+//            );
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.addOrderSubscriptionBeforePayment(orderAddRequestDto, optMemberNo)
+                ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
+                infoForPrePaymentProcess, orderBeforePaymentFactoryEnum)
             );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
     }
 
-    /**
-     * 구독 주문 완료 후 결제 정보 저장 요청을 받아 처리합니다.
-     *
-     * @param orderNo 주문 번호(null 일 경우 비회원)
-     * @return 응답 객체
-     * @author 정재원
-     */
-    @PostMapping("/subscription/completion")
-    public ResponseEntity<CommonResponseBody<Void>> orderSubscriptionAfterPayment(
-        @RequestParam("orderNo") Long orderNo) {
-
-        orderService.addOrderSubscriptionAfterPayment(orderNo);
-
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 결제 전 주문 취소 요청을 처리합니다.
-     *
-     * @param orderNo 취소 처리할 주문 번호
-     * @return 성공시 ok 응답 객체
-     * @author 정재원
-     */
-    @PostMapping("/cancel/{orderNo}")
-    public ResponseEntity<CommonResponseBody<Void>> orderCancelBeforePayment(
-        @PathVariable("orderNo") Long orderNo) {
-
-        orderService.processBeforeOrderCancelPayment(orderNo);
-
-        CommonResponseBody<Void> commonResponseBody = new CommonResponseBody<>(
-            new CommonResponseBody.CommonHeader(
-                OrderResultMessageEnum.ORDER_SHEET_SUCCESS_MESSAGE.getResultMessage()
-            ), null
-        );
-
-        return ResponseEntity.ok().body(commonResponseBody);
-    }
 
     /**
      * Order details response entity.
@@ -221,7 +191,7 @@ public class OrderController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.findOrderDetails(orderNo)
+                ), orderCrudService.findOrderDetails(orderNo)
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
@@ -241,7 +211,7 @@ public class OrderController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_SUBSCRIPTION_DETAILS_FIND_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.findOrderSubscriptionDetailsResponseDto(orderNo)
+                ), orderCrudService.findOrderSubscriptionDetailsResponseDto(orderNo)
             );
 
         return ResponseEntity.ok().body(commonResponseBody);
@@ -258,7 +228,7 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<Void>> orderStatusChangePurchaseComplete(
         @PathVariable(value = "orderNo") Long orderNo
     ) {
-        orderService.orderPurchaseComplete(orderNo);
+        orderCrudService.orderPurchaseComplete(orderNo);
 
         CommonResponseBody<Void> commonResponseBody =
             new CommonResponseBody<>(
@@ -285,7 +255,7 @@ public class OrderController {
     ) {
 
         Page<OrderSubscriptionListDto> allSubscriptionOrderListByMember =
-            orderService.findAllSubscriptionOrderListByMember(pageable, memberNo);
+            orderCrudService.findAllSubscriptionOrderListByMember(pageable, memberNo);
 
         CommonResponseBody<PageResponse<OrderSubscriptionListDto>> commonResponseBody =
             new CommonResponseBody<>(new CommonResponseBody.CommonHeader(
@@ -300,7 +270,7 @@ public class OrderController {
     public ResponseEntity<CommonResponseBody<SuccessfulResponseDto>> orderDeleteAndStockRollBack(
         @PathVariable Long orderNo) {
 
-        orderService.deleteOrderAndRollBackStock(orderNo);
+        orderCrudService.deleteOrderAndRollBackStock(orderNo);
 
         CommonResponseBody<SuccessfulResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(

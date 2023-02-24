@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.OrderCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
 import shop.itbook.itbookshop.coupongroup.coupon.exception.CouponNotFoundException;
@@ -97,13 +96,20 @@ public class CouponServiceImpl implements CouponService {
     public List<Coupon> findByAvailableCouponByCouponType(String couponType) {
 
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
+        if (Objects.isNull(couponTypeEnum)) {
+            throw new CouponTypeNotFoundException();
+        }
         return couponRepository.findByAvailableCouponByCouponType(couponTypeEnum);
     }
 
     @Override
     public List<AdminCouponListResponseDto> findByAvailableCouponDtoByCouponType(
         String couponType) {
+
         CouponTypeEnum couponTypeEnum = CouponTypeEnum.stringToEnum(couponType);
+        if (Objects.isNull(couponTypeEnum)) {
+            throw new CouponTypeNotFoundException();
+        }
         return couponRepository.findByAvailableCouponDtoByCouponType(couponTypeEnum);
     }
 

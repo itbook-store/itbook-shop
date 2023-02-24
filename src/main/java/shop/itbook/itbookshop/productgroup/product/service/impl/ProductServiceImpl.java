@@ -132,6 +132,11 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Override
+    public List<Product> findProductEntityList(List<Long> productNoList) {
+        return productRepository.findByProductNoIn(productNoList);
+    }
+
     /**
      * {@inheritDoc}
      */

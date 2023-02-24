@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentCancelFactoryEnum;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
 import shop.itbook.itbookshop.paymentgroup.easypay.entity.Easypay;
@@ -27,8 +29,8 @@ import shop.itbook.itbookshop.paymentgroup.payment.service.PaymentService;
 import shop.itbook.itbookshop.paymentgroup.payment.transfer.PaymentTransfer;
 import shop.itbook.itbookshop.paymentgroup.paymentcancel.service.PaymentCancelService;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.entity.PaymentStatus;
-import shop.itbook.itbookshop.paymentgroup.paymentstatus.service.PaymentStatusService;
 import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.PaymentStatusEnum;
+import shop.itbook.itbookshop.paymentgroup.paymentstatus.service.PaymentStatusService;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 
 /**
@@ -59,7 +61,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public OrderResponseDto requestPayment(PaymentApproveRequestDto paymentApproveRequestDto,
-                                           Long orderNo, HttpSession session) {
+                                           String orderType, Long orderNo, HttpSession session) {
 
         if (paymentApproveRequestDto.getAmount() < 100L) {
             throw new InvalidPaymentException("100원 미만의 결제는 불가능합니다.");
@@ -88,7 +90,13 @@ public class PaymentServiceImpl implements PaymentService {
             paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
         payment.setPaymentStatus(paymentStatus);
 
-        Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
+        OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum
+            = OrderAfterPaymentSuccessFactoryEnum.stringToOrderFactoryEnum(orderType);
+
+        Order order =
+            orderService.processAfterOrderPaymentSuccessRefactor(
+                orderAfterPaymentSuccessFactoryEnum, orderNo);
+//        Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
         payment.setOrder(order);
 
         try {
@@ -97,15 +105,18 @@ public class PaymentServiceImpl implements PaymentService {
             throw new InvalidInputException();
         }
 
-        if (orderService.isSubscription(orderNo)) {
-            orderService.addOrderSubscriptionAfterPayment(orderNo);
-        }
+//        if (orderService.isSubscription(orderNo)) {
+//            orderService.addOrderSubscriptionAfterPayment(orderNo);
+//        }
+
         return new OrderResponseDto(payment.getOrder().getOrderNo(), payment.getTotalAmount());
     }
 
+
     @Override
     @Transactional
-    public OrderResponseDto cancelPayment(PaymentCanceledRequestDto paymentCanceledRequestDto)
+    public OrderResponseDto cancelPayment(PaymentCanceledRequestDto paymentCanceledRequestDto,
+                                          String orderType)
         throws JsonProcessingException {
 
         String paymentKey = this.findPaymentKey(paymentCanceledRequestDto.getOrderNo());
@@ -113,9 +124,14 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
 
+        OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum
+            = OrderBeforePaymentCancelFactoryEnum.stringToOrderFactoryEnum(orderType);
+
         // 주문 취소 처리
-        orderService.processBeforeOrderCancelPayment(
-            paymentCanceledRequestDto.getOrderNo());
+//        orderService.processBeforeOrderCancelPayment(
+//            paymentCanceledRequestDto.getOrderNo());
+        orderService.processBeforeOrderCancelPaymentRefactor(
+            paymentCanceledRequestDto.getOrderNo(), orderBeforePaymentCancelFactoryEnum);
 
         response = tossPayService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
 

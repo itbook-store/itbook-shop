@@ -25,6 +25,7 @@ public class OrderSubscriptionDetailsResponseDto {
     private Long sellingAmount;
     private String fileThumbnailsUrl;
     private OrderDestinationDto orderDestinationDto;
+    private LocalDateTime orderStatusCreatedAt;
     private String orderStatus;
     private LocalDateTime orderCreatedAt;
     private Long amount;

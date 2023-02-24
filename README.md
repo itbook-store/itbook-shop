@@ -5,12 +5,26 @@
 
 # 서비스 플로우
 ## ci/cd 아키텍쳐
+![CI-CD](https://user-images.githubusercontent.com/97177686/220620249-b22b2ae2-c8e0-497f-9ad3-828f43b3cebd.jpg)
+
 ## 서비스 구조
+![잇북 아키텍처](https://user-images.githubusercontent.com/97177686/220620303-8926e17b-96dc-4642-9000-91c31eaa07f7.png)
+
 ## erd
 ![itbook-shop-v0 0 3 (1)](https://user-images.githubusercontent.com/97177686/220506308-b95b045c-9fa4-42d6-ad9d-42881cadfa48.png)
 
 ## 칸반보드
+<img width="1512" alt="image" src="https://user-images.githubusercontent.com/88138317/221077344-213b20ce-7c5c-4d10-8355-6dda791fbc63.png">
+<img width="1512" alt="image" src="https://user-images.githubusercontent.com/88138317/221077430-141fc63e-f5a7-4660-a0a3-6275038a0739.png">
+<img width="1512" alt="image" src="https://user-images.githubusercontent.com/88138317/221077650-26e996e8-309d-44b6-aae6-0edf42af5352.png">
+
 <img width="1277" alt="스크린샷 2023-02-22 오전 11 32 00" src="https://user-images.githubusercontent.com/97177686/220506047-1a240f62-b604-4710-a60e-bedd15dd9893.png">
+
+## WBS
+<img width="878" alt="스크린샷 2023-02-24 오전 11 34 03" src="https://user-images.githubusercontent.com/45487307/221078047-288ca762-775b-4f41-9f07-04ef8729b023.png">
+
+## 테스트 커버리지
+<img width="1016" alt="ReadMe테스트커버리지" src="https://user-images.githubusercontent.com/45487307/221078627-dc701497-ab4c-4c0c-b5e8-c468771e2edc.png">
 
 
 # 주요기능

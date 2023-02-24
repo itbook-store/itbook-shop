@@ -3,7 +3,6 @@ package shop.itbook.itbookshop.coupongroup.membershipcoupon.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.ServiceCouponListResponseDto;
 
 /**

@@ -70,7 +70,7 @@ public class CouponIssueServiceImpl implements CouponIssueService {
 
         Coupon coupon = couponService.findByCouponEntity(couponNo);
 
-        CouponIssue couponIssue = null;
+        CouponIssue couponIssue;
         try {
             couponIssue = makeCouponIssue(member, coupon);
             couponIssue = couponIssueRepository.save(couponIssue);
@@ -133,6 +133,9 @@ public class CouponIssueServiceImpl implements CouponIssueService {
     @Override
     public Page<UserCouponIssueListResponseDto> findCouponIssueListByMemberNo(
         Pageable pageable, Long memberNo, String usageStatus) {
+        if (Objects.isNull(usageStatus)) {
+            usageStatus = "any";
+        }
         switch (usageStatus) {
             case "사용가능":
                 return couponIssueRepository.findAvailableCouponIssueListByMemberNo(pageable,

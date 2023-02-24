@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.coupongroup.coupon.dto.response;
 
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +19,6 @@ public class OrderCouponSimpleListResponseDto {
     private String code;
     private Long amount;
     private Integer percent;
+    private Long standardAmount;
+    private Long maxDiscountAmount;
 }
