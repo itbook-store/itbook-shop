@@ -34,9 +34,9 @@ public interface CustomOrderRepository {
 
     List<Order> paymentCompleteSubscriptionProductStatusChangeWaitDelivery();
 
-    Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(Pageable pageable);
+    Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListOfAdmin(Pageable pageable);
 
-    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+    Page<OrderSubscriptionListDto> findAllSubscriptionOrderListOfMember(Pageable pageable,
                                                                         Long memberNo);
 
     Order findOrderByDeliveryNo(Long deliveryNo);
