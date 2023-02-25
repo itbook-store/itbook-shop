@@ -1,8 +1,7 @@
-package shop.itbook.itbookshop.fileservice;
+package shop.itbook.itbookshop.file.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NonNull;
@@ -20,9 +19,9 @@ import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import shop.itbook.itbookshop.fileservice.dto.ItBookObjectStorageToken;
-import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
-import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
+import shop.itbook.itbookshop.file.dto.ItBookObjectStorageToken;
+import shop.itbook.itbookshop.file.exception.InvalidTokenException;
+import shop.itbook.itbookshop.file.exception.ObjectStroageFileUploadException;
 
 
 /**
@@ -83,16 +82,13 @@ public class FileService {
     /**
      * 파일 삭제 기능을 담당하는 메서드입니다.
      *
-     * @param url 삭제할 파일의 저장 url입니다.
-     * @return 업로드 된 파일의 url입니다.
+     * @param url 삭제할 파일이 오브젝트 스토리지에 저장된 url입니다.
      * @author 이하늬
      */
     public void deleteFile(String url) {
 
         ItBookObjectStorageToken.Access.Token token = tokenService.requestToken();
         String tokenId = token.getId();
-
-//        String url = this.getUrl(containerName, folderPath, objectName);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Auth-Token", tokenId);

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.fileservice;
+package shop.itbook.itbookshop.file.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +14,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -23,10 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
-import shop.itbook.itbookshop.fileservice.dto.ItBookObjectStorageToken;
-import shop.itbook.itbookshop.fileservice.exception.TokenFailureMessage;
-import shop.itbook.itbookshop.fileservice.dto.TokenRequestDto;
+import shop.itbook.itbookshop.file.exception.InvalidTokenException;
+import shop.itbook.itbookshop.file.dto.ItBookObjectStorageToken;
+import shop.itbook.itbookshop.file.exception.TokenFailureMessage;
+import shop.itbook.itbookshop.file.dto.TokenRequestDto;
 
 /**
  * 애플리케이션 구동 시 동작시킬 토큰매니저 클래스입니다.

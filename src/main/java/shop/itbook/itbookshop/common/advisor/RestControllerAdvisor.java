@@ -25,8 +25,8 @@ import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoun
 import shop.itbook.itbookshop.coupongroup.membershipcoupon.exception.NotMatchCouponException;
 import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 import shop.itbook.itbookshop.deliverygroup.delivery.exception.DeliveryNoWaitStatusException;
-import shop.itbook.itbookshop.fileservice.exception.ObjectStroageFileUploadException;
-import shop.itbook.itbookshop.fileservice.exception.InvalidTokenException;
+import shop.itbook.itbookshop.file.exception.ObjectStroageFileUploadException;
+import shop.itbook.itbookshop.file.exception.InvalidTokenException;
 import shop.itbook.itbookshop.membergroup.member.exception.MemberNotFoundException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationComeCloseOtherMemberException;
 import shop.itbook.itbookshop.membergroup.memberdestination.exception.MemberDestinationNotFoundException;

@@ -22,7 +22,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
