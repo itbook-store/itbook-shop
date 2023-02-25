@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
@@ -57,7 +57,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  */
 @Service
 public class SubscriptionOrderBeforePaymentMemberService
-    extends SubscriptionOrderBeforePaymentTemplate {
+    extends AbstractSubscriptionOrderBeforePayment {
 
     @Value("${payment.origin.url}")
     public String ORIGIN_URL;
@@ -111,21 +111,50 @@ public class SubscriptionOrderBeforePaymentMemberService
         this.orderTotalCouponRepository = orderTotalCouponRepository;
     }
 
-
-    @Transactional
     @Override
-    public void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess) {
-        Member member = memberService.findMemberByMemberNo(infoForPrePaymentProcess.getMemberNo());
-        OrderMember orderMember = new OrderMember(infoForPrePaymentProcess.getOrder(), member);
+    public OrderPaymentDto processOrderBeforePayment(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+
+        super.saveOrder(infoForProcessOrderBeforePayment);
+
+        this.saveOrderPerson(infoForProcessOrderBeforePayment);
+
+        OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(
+            infoForProcessOrderBeforePayment);
+
+        super.saveOrderSubscription(infoForProcessOrderBeforePayment);
+
+        return orderPaymentDto;
+    }
+
+    @Override
+    @Transactional
+    protected void saveOrderPerson(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+
+        Member member =
+            memberService.findMemberByMemberNo(infoForProcessOrderBeforePayment.getMemberNo());
+        OrderMember orderMember =
+            new OrderMember(infoForProcessOrderBeforePayment.getOrder(), member);
         orderMemberRepository.save(orderMember);
     }
 
     @Override
-    public OrderPaymentDto calculateTotalAmount(InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    @Transactional
+    protected OrderPaymentDto calculateTotalAmount(
+
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        OrderAddRequestDto orderAddRequestDto = infoForPrePaymentProcess.getOrderAddRequestDto();
-        Order order = infoForPrePaymentProcess.getOrder();
+
+        OrderAddRequestDto orderAddRequestDto =
+            infoForProcessOrderBeforePayment.getOrderAddRequestDto();
+
+        orderAddRequestDto.getProductDetailsDtoList().get(0)
+            .setProductCnt(orderAddRequestDto.getSubscriptionPeriod());
+
+
+        Order order = infoForProcessOrderBeforePayment.getOrder();
 
         long amount = 0L;
         List<ProductDetailsDto> productDetailsDtoList =
@@ -134,14 +163,14 @@ public class SubscriptionOrderBeforePaymentMemberService
 
         ProductsTotalAmount productsTotalAmount =
             this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
-                productDetailsDtoList, orderAddRequestDto.getSubscriptionPeriod());
+                productDetailsDtoList);
 
         amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto,
             productsTotalAmount.getSellingAmount(), productsTotalAmount.getCouponAppliedAmount(),
             order.getOrderNo());
 
-        amount += order.getDeliveryFee();
         amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
+        amount += order.getDeliveryFee();
 
 
         // toss 정책 상 100원 이하 결제 막기.
@@ -155,7 +184,7 @@ public class SubscriptionOrderBeforePaymentMemberService
         return OrderPaymentDto.builder().orderNo(order.getOrderNo())
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
-                infoForPrePaymentProcess.getOrder().getOrderNo(),
+                infoForProcessOrderBeforePayment.getOrder().getOrderNo(),
                 OrderAfterPaymentSuccessFactoryEnum.구독회원주문.name()))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
 
@@ -180,8 +209,7 @@ public class SubscriptionOrderBeforePaymentMemberService
     private ProductsTotalAmount calculateAmountAboutOrderProductCoupon(Order order,
                                                                        StringBuilder stringBuilder,
                                                                        long amount,
-                                                                       List<ProductDetailsDto> productDetailsDtoList,
-                                                                       Integer subscriptionPeriod) {
+                                                                       List<ProductDetailsDto> productDetailsDtoList) {
 
         List<InfoForCouponIssueApply> infoForCouponIssueApplyList = new ArrayList<>();
 
@@ -206,11 +234,13 @@ public class SubscriptionOrderBeforePaymentMemberService
                 .findFirst()
                 .orElseThrow(ProductNotFoundException::new);
 
+            Integer productCnt = productDetailsDto.getProductCnt();
+
             long sellingPrice = (product.getFixedPrice() -
                 getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent()));
-            amountForDeliveryFeeCalc += sellingPrice * subscriptionPeriod;
+            amountForDeliveryFeeCalc += sellingPrice * productCnt;
 
-            long totalPriceOfSameProducts = sellingPrice * subscriptionPeriod;
+            long totalPriceOfSameProducts = sellingPrice * productCnt;
             sumTotalPriceOfSameProducts += totalPriceOfSameProducts;
             amount += totalPriceOfSameProducts;
 
@@ -222,7 +252,7 @@ public class SubscriptionOrderBeforePaymentMemberService
             Coupon coupon =
                 this.getCoupon(productDetailsDto.getCouponIssueNo(), totalPriceOfSameProducts);
             if (Objects.isNull(coupon)) {
-                orderProductService.addOrderProduct(order, product, subscriptionPeriod,
+                orderProductService.addOrderProduct(order, product, productCnt,
                     totalPriceOfSameProducts);
                 this.increasePointAboutOrderProduct(order, product, totalPriceOfSameProducts,
                     totalPriceOfSameProducts);
@@ -241,7 +271,7 @@ public class SubscriptionOrderBeforePaymentMemberService
                 amount, discountedPrice);
 
             OrderProduct orderProduct =
-                orderProductService.addOrderProduct(order, product, subscriptionPeriod,
+                orderProductService.addOrderProduct(order, product, productCnt,
                     totalPriceOfSameProductsWithCouponApplied);
 
             InfoForCouponIssueApply infoCouponIssueApply =
@@ -279,12 +309,6 @@ public class SubscriptionOrderBeforePaymentMemberService
         return new ProductsTotalAmount(sumTotalPriceOfSameProducts, amount);
     }
 
-//    private void calculateTotalAmount(List<Product> productEntityList) {
-//        productEntityList.stream().mapToLong(product ->
-//            product.getFixedPrice() -
-//                getDiscountedPrice(product.getFixedPrice(), product.getDiscountPercent());
-//        }).sum();
-//    }
 
     private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
         return (long) (priceToApply * (discountPercent / 100));

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.member;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,9 +7,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.entity.CategoryCoupon;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
 import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
@@ -35,6 +38,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenC
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
@@ -43,6 +47,7 @@ import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.productcategory.entity.ProductCategory;
 import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
@@ -51,8 +56,9 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
  * @author 최겸준
  * @since 1.0
  */
-@Service
-public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrderBeforePayment {
+@Slf4j
+@RequiredArgsConstructor
+public abstract class AbstractMemberOrderBeforePayment implements OrderBeforePayment {
 
     private final MemberService memberService;
     private final ProductService productService;
@@ -66,54 +72,34 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
     private final CouponIssueRepository couponIssueRepository;
     private final OrderTotalCouponRepository orderTotalCouponRepository;
 
-    @Value("${payment.origin.url}")
-    public String ORIGIN_URL;
-
     private final RedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
+
     public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
     public static final long BASE_DELIVERY_FEE = 3000L;
 
-    public GeneralOrderBeforePaymentMemberService(MemberService memberService,
-                                                  ProductService productService,
-                                                  OrderProductService orderProductService,
-                                                  OrderStatusHistoryService orderStatusHistoryService,
-                                                  OrderMemberRepository orderMemberRepository,
-                                                  OrderRepository orderRepository,
-                                                  CategoryCouponRepository categoryCouponRepository,
-                                                  ProductCategoryRepository productCategoryRepository,
-                                                  ProductCouponRepository productCouponRepository,
-                                                  CouponIssueRepository couponIssueRepository,
-                                                  OrderTotalCouponRepository orderTotalCouponRepository,
-                                                  RedisTemplate redisTemplate,
-                                                  ObjectMapper objectMapper) {
-
-        super(orderRepository, orderStatusHistoryService);
-        this.memberService = memberService;
-        this.productService = productService;
-        this.orderStatusHistoryService = orderStatusHistoryService;
-        this.orderProductService = orderProductService;
-        this.orderMemberRepository = orderMemberRepository;
-        this.orderRepository = orderRepository;
-        this.categoryCouponRepository = categoryCouponRepository;
-        this.productCategoryRepository = productCategoryRepository;
-        this.productCouponRepository = productCouponRepository;
-        this.couponIssueRepository = couponIssueRepository;
-        this.orderTotalCouponRepository = orderTotalCouponRepository;
-        this.redisTemplate = redisTemplate;
-        this.objectMapper = objectMapper;
-    }
+    @Value("${payment.origin.url}")
+    public String ORIGIN_URL;
 
     @Override
     public OrderPaymentDto processOrderBeforePayment(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
-        super.saveOrder(infoForProcessOrderBeforePayment);
+
+        this.saveOrder(infoForProcessOrderBeforePayment);
+
         this.saveOrderPerson(infoForProcessOrderBeforePayment);
-        return this.calculateTotalAmount(infoForProcessOrderBeforePayment);
+
+        OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(
+            infoForProcessOrderBeforePayment);
+
+        return orderPaymentDto;
     }
 
-    @Override
-    public void saveOrderPerson(InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    protected abstract void saveOrder(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment);
+
+    protected void saveOrderPerson(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
         Member member =
             memberService.findMemberByMemberNo(infoForProcessOrderBeforePayment.getMemberNo());
         OrderMember orderMember =
@@ -121,51 +107,52 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
         orderMemberRepository.save(orderMember);
     }
 
-    @Override
-    public OrderPaymentDto calculateTotalAmount(
+    @Transactional
+    protected OrderPaymentDto calculateTotalAmount(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+
         StringBuilder stringBuilder = new StringBuilder();
+
+        OrderAddRequestDto orderAddRequestDto =
+            infoForProcessOrderBeforePayment.getOrderAddRequestDto();
+
+        orderAddRequestDto.getProductDetailsDtoList().get(0)
+            .setProductCnt(orderAddRequestDto.getSubscriptionPeriod());
+
+
+        Order order = infoForProcessOrderBeforePayment.getOrder();
 
         long amount = 0L;
         List<ProductDetailsDto> productDetailsDtoList =
-            infoForProcessOrderBeforePayment.getOrderAddRequestDto().getProductDetailsDtoList();
+            orderAddRequestDto.getProductDetailsDtoList();
 
 
         ProductsTotalAmount productsTotalAmount =
-            this.calculateAmountAboutOrderProductCoupon(infoForProcessOrderBeforePayment.getOrder(),
-                stringBuilder, amount,
+            this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
                 productDetailsDtoList);
 
-        amount = this.calculateAmountAboutOrderTotalAmountCoupon(
-            infoForProcessOrderBeforePayment.getOrderAddRequestDto(),
+        amount = this.calculateAmountAboutOrderTotalAmountCoupon(orderAddRequestDto,
             productsTotalAmount.getSellingAmount(), productsTotalAmount.getCouponAppliedAmount(),
-            infoForProcessOrderBeforePayment.getOrder().getOrderNo());
+            order.getOrderNo());
 
-        amount += infoForProcessOrderBeforePayment.getOrder().getDeliveryFee();
+        amount = doProcessPointDecreaseAndGetAmount(orderAddRequestDto, order, amount);
+        amount += order.getDeliveryFee();
 
-        amount =
-            doProcessPointDecreaseAndGetAmount(
-                infoForProcessOrderBeforePayment.getOrderAddRequestDto(),
-                infoForProcessOrderBeforePayment.getOrder(), amount);
 
         // toss 정책 상 100원 이하 결제 막기.
         if (amount <= 100) {
             throw new AmountException();
         }
 
-        infoForProcessOrderBeforePayment.getOrder().setAmount(amount);
-        orderRepository.save(infoForProcessOrderBeforePayment.getOrder());
+        order.setAmount(amount);
+        orderRepository.save(order);
 
-        return OrderPaymentDto.builder()
-            .orderNo(infoForProcessOrderBeforePayment.getOrder().getOrderNo())
-            .orderId(this.createOrderUUID(infoForProcessOrderBeforePayment.getOrder()))
-            .orderName(stringBuilder.toString()).amount(amount)
+        return OrderPaymentDto.builder().orderNo(order.getOrderNo())
+            .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
                 infoForProcessOrderBeforePayment.getOrder().getOrderNo(),
-                OrderAfterPaymentSuccessFactoryEnum.일반회원주문.name()))
-            .failUrl(ORIGIN_URL + "orders/fail" +
-                infoForProcessOrderBeforePayment.getOrder().getOrderNo())
-            .build();
+                OrderAfterPaymentSuccessFactoryEnum.구독회원주문.name()))
+            .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
 
     }
 
@@ -173,11 +160,9 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
                                                     Order order, long amount) {
 
         Long decreasePoint = orderAddRequestDto.getDecreasePoint();
-
         if (Objects.equals(decreasePoint, 0L)) {
             return amount;
         }
-
         if (amount < decreasePoint) {
             decreasePoint = amount;
         }
@@ -194,15 +179,27 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
 
         List<InfoForCouponIssueApply> infoForCouponIssueApplyList = new ArrayList<>();
 
+
         // TODO jun : 상품 번호들로 한번에 가져오는 로직추가
 //        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
 //            productService.findProductEntityListByProductNoList();
 //        }
+
         long amountForDeliveryFeeCalc = 0L;
         long sumTotalPriceOfSameProducts = 0L;
-        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
 
-            Product product = productService.findProductEntity(productDetailsDto.getProductNo());
+        List<Long> productNoList =
+            productDetailsDtoList.stream().map(ProductDetailsDto::getProductNo)
+                .collect(Collectors.toList());
+        List<Product> productEntityList = productService.findProductEntityList(productNoList);
+
+        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
+            Product product = productEntityList.stream()
+                .filter(productEntity -> Objects.equals(productEntity.getProductNo(),
+                    productDetailsDto.getProductNo()))
+                .findFirst()
+                .orElseThrow(ProductNotFoundException::new);
+
             Integer productCnt = productDetailsDto.getProductCnt();
 
             long sellingPrice = (product.getFixedPrice() -
@@ -216,6 +213,7 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
             if (stringBuilder.length() == 0) {
                 stringBuilder.append(product.getName());
             }
+
 
             Coupon coupon =
                 this.getCoupon(productDetailsDto.getCouponIssueNo(), totalPriceOfSameProducts);
@@ -251,6 +249,7 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
                 totalPriceOfSameProductsWithCouponApplied);
         }
 
+
         if (!infoForCouponIssueApplyList.isEmpty()) {
             try {
                 redisTemplate.opsForHash()
@@ -276,12 +275,13 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
         return new ProductsTotalAmount(sumTotalPriceOfSameProducts, amount);
     }
 
-    private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
 
+    private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
         return (long) (priceToApply * (discountPercent / 100));
     }
 
     private void checkMismatchAboutRequestedProductAndCoupon(Product product, Coupon coupon) {
+
 
         Optional<CategoryCoupon> optionalCategoryCoupon =
             categoryCouponRepository.findById(coupon.getCouponNo());
@@ -335,6 +335,7 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
             return null;
         }
 
+
         Optional<CouponIssue> optionalCouponIssue = couponIssueRepository.findById(couponIssueNo);
 
         if (optionalCouponIssue.isEmpty()) {
@@ -350,7 +351,6 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
                                                             long sellingAmount,
                                                             long couponAppliedAmount,
                                                             Long orderNo) {
-
         Coupon coupon = this.getCoupon(orderAddRequestDto.getOrderTotalCouponNo(), sellingAmount);
         if (Objects.isNull(coupon)) {
             return couponAppliedAmount;
@@ -394,4 +394,6 @@ public class GeneralOrderBeforePaymentMemberService extends AbstractGeneralOrder
         randomUuidString = orderNoString + randomUuidString.substring(orderNoString.length());
         return UUID.fromString(randomUuidString).toString();
     }
+
+
 }

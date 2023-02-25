@@ -2,8 +2,8 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess
 
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.memberapply.DefaultMemberApplyWhenOrder;
-import shop.itbook.itbookshop.ordergroup.order.service.memberapply.MemberApplicableWhenOrder;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.memberapply.DefaultMemberApplyWhenOrderAfterPaymentSuccess;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.memberapply.MemberApplicableWhenOrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -12,12 +12,12 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  */
 @Service
 public class SubscriptionOrderAfterPaymentSuccessMemberService
-    extends SubscriptionOrderAfterPaymentSuccessTemplate {
-    private final MemberApplicableWhenOrder memberApplicableWhenOrder;
+    extends AbstractSubscriptionOrderAfterPaymentSuccess {
+    private final MemberApplicableWhenOrderAfterPaymentSuccess memberApplicableWhenOrder;
 
     SubscriptionOrderAfterPaymentSuccessMemberService(
         OrderStatusHistoryService orderStatusHistoryService,
-        DefaultMemberApplyWhenOrder memberApplicableWhenOrder) {
+        DefaultMemberApplyWhenOrderAfterPaymentSuccess memberApplicableWhenOrder) {
         super(orderStatusHistoryService);
 
         this.memberApplicableWhenOrder = memberApplicableWhenOrder;

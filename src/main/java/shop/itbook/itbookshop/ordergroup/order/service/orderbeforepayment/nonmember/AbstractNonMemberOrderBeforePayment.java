@@ -1,10 +1,18 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.general;
+package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.nonmember;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCouponRepository;
+import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
+import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
+import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
+import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
@@ -13,64 +21,74 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
+import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCategoryRepository;
 
 /**
  * @author 최겸준
  * @since 1.0
  */
-@Service
-@Transactional(readOnly = true)
-public class GeneralOrderBeforePaymentNonMemberService extends AbstractGeneralOrderBeforePayment {
+@Slf4j
+@RequiredArgsConstructor
+public abstract class AbstractNonMemberOrderBeforePayment implements OrderBeforePayment {
 
-    private final OrderNonMemberRepository orderNonMemberRepository;
-    private final OrderRepository orderRepository;
+    private final MemberService memberService;
     private final ProductService productService;
     private final OrderProductService orderProductService;
-    @Value("${payment.origin.url}")
-    public String ORIGIN_URL;
+    private final OrderStatusHistoryService orderStatusHistoryService;
+    private final OrderMemberRepository orderMemberRepository;
+    private final OrderRepository orderRepository;
+    private final CategoryCouponRepository categoryCouponRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final ProductCouponRepository productCouponRepository;
+    private final CouponIssueRepository couponIssueRepository;
+    private final OrderTotalCouponRepository orderTotalCouponRepository;
+    private final OrderNonMemberRepository orderNonMemberRepository;
+
+    private final RedisTemplate redisTemplate;
+    private final ObjectMapper objectMapper;
 
     public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
     public static final long BASE_DELIVERY_FEE = 3000L;
 
-    public GeneralOrderBeforePaymentNonMemberService(OrderRepository orderRepository,
-                                                     OrderStatusHistoryService orderStatusHistoryService,
-                                                     OrderNonMemberRepository orderNonMemberRepository,
-                                                     ProductService productService,
-                                                     OrderProductService orderProductService) {
-        super(orderRepository, orderStatusHistoryService);
-        this.orderRepository = orderRepository;
-        this.orderNonMemberRepository = orderNonMemberRepository;
-        this.productService = productService;
-        this.orderProductService = orderProductService;
-    }
+    @Value("${payment.origin.url}")
+    public String ORIGIN_URL;
 
     @Override
     public OrderPaymentDto processOrderBeforePayment(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
-        super.saveOrder(infoForProcessOrderBeforePayment);
+
+        this.saveOrder(infoForProcessOrderBeforePayment);
+
         this.saveOrderPerson(infoForProcessOrderBeforePayment);
-        return this.calculateTotalAmount(infoForProcessOrderBeforePayment);
+
+        OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(
+            infoForProcessOrderBeforePayment);
+
+        return orderPaymentDto;
     }
 
-    @Override
+    protected abstract void saveOrder(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment);
+
     @Transactional
-    protected void saveOrderPerson(
+    public void saveOrderPerson(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
         OrderNonMember orderNonMember =
             new OrderNonMember(infoForProcessOrderBeforePayment.getOrder(),
                 UUID.randomUUID().toString());
         orderNonMemberRepository.save(orderNonMember);
-
     }
 
-    @Override
+
     @Transactional
     public OrderPaymentDto calculateTotalAmount(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
@@ -86,7 +104,7 @@ public class GeneralOrderBeforePaymentNonMemberService extends AbstractGeneralOr
             orderAddRequestDto.getProductDetailsDtoList();
 
         ProductsTotalAmount productsTotalAmount =
-            this.calculateAmountAboutOrderProductCoupon(order, stringBuilder, amount,
+            this.calculateAmountAboutOrderProduct(order, stringBuilder, amount,
                 productDetailsDtoList);
         amount = productsTotalAmount.getSellingAmount();
         amount += order.getDeliveryFee();
@@ -107,10 +125,10 @@ public class GeneralOrderBeforePaymentNonMemberService extends AbstractGeneralOr
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
     }
 
-    private ProductsTotalAmount calculateAmountAboutOrderProductCoupon(Order order,
-                                                                       StringBuilder stringBuilder,
-                                                                       long amount,
-                                                                       List<ProductDetailsDto> productDetailsDtoList) {
+    private ProductsTotalAmount calculateAmountAboutOrderProduct(Order order,
+                                                                 StringBuilder stringBuilder,
+                                                                 long amount,
+                                                                 List<ProductDetailsDto> productDetailsDtoList) {
 
         // TODO jun : 상품 번호들로 한번에 가져오는 로직추가
 //        for (ProductDetailsDto productDetailsDto : productDetailsDtoList) {
@@ -137,7 +155,6 @@ public class GeneralOrderBeforePaymentNonMemberService extends AbstractGeneralOr
 
             orderProductService.addOrderProduct(order, product, productCnt,
                 totalPriceOfSameProducts);
-
         }
 
         if (productDetailsDtoList.size() > 1) {
@@ -164,5 +181,6 @@ public class GeneralOrderBeforePaymentNonMemberService extends AbstractGeneralOr
     private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
         return (long) (priceToApply * (discountPercent / 100));
     }
-}
 
+
+}

@@ -123,7 +123,7 @@ public class OrderController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
+                ), orderService.processOrderBeforePayment(
                 infoForProcessOrderBeforePayment, orderBeforePaymentFactoryEnum)
             );
 
@@ -169,7 +169,7 @@ public class OrderController {
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-                ), orderService.saveOrderBeforePaymentAndCreateOrderPaymentDto(
+                ), orderService.processOrderBeforePayment(
                 infoForProcessOrderBeforePayment, orderBeforePaymentFactoryEnum)
             );
 

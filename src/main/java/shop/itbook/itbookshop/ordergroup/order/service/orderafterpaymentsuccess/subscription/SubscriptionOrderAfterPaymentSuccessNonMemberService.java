@@ -10,7 +10,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  */
 @Service
 public class SubscriptionOrderAfterPaymentSuccessNonMemberService
-    extends SubscriptionOrderAfterPaymentSuccessTemplate {
+    extends AbstractSubscriptionOrderAfterPaymentSuccess {
     SubscriptionOrderAfterPaymentSuccessNonMemberService(
         OrderStatusHistoryService orderStatusHistoryService) {
         super(orderStatusHistoryService);

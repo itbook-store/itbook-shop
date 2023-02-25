@@ -5,11 +5,10 @@ import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderServiceI
 
 import java.util.List;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
@@ -32,7 +31,7 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
  */
 @Service
 public class SubscriptionOrderBeforePaymentNonMemberService
-    extends SubscriptionOrderBeforePaymentTemplate {
+    extends AbstractSubscriptionOrderBeforePayment {
 
     private final OrderNonMemberRepository orderNonMemberRepository;
     private final OrderRepository orderRepository;
@@ -63,19 +62,40 @@ public class SubscriptionOrderBeforePaymentNonMemberService
     }
 
     @Override
+    public OrderPaymentDto processOrderBeforePayment(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+
+        super.saveOrder(infoForProcessOrderBeforePayment);
+
+        this.saveOrderPerson(infoForProcessOrderBeforePayment);
+
+        OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(
+            infoForProcessOrderBeforePayment);
+
+        super.saveOrderSubscription(infoForProcessOrderBeforePayment);
+
+        return orderPaymentDto;
+    }
+
+
+    @Override
     @Transactional
-    public void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    protected void saveOrderPerson(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
         OrderNonMember orderNonMember =
-            new OrderNonMember(infoForPrePaymentProcess.getOrder(), UUID.randomUUID().toString());
+            new OrderNonMember(infoForProcessOrderBeforePayment.getOrder(),
+                UUID.randomUUID().toString());
         orderNonMemberRepository.save(orderNonMember);
     }
 
     @Override
     @Transactional
-    public OrderPaymentDto calculateTotalAmount(InfoForPrePaymentProcess infoForPrePaymentProcess) {
+    protected OrderPaymentDto calculateTotalAmount(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
 
-        OrderAddRequestDto orderAddRequestDto = infoForPrePaymentProcess.getOrderAddRequestDto();
-        Order order = infoForPrePaymentProcess.getOrder();
+        OrderAddRequestDto orderAddRequestDto =
+            infoForProcessOrderBeforePayment.getOrderAddRequestDto();
+        Order order = infoForProcessOrderBeforePayment.getOrder();
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -103,7 +123,7 @@ public class SubscriptionOrderBeforePaymentNonMemberService
         return OrderPaymentDto.builder().orderNo(order.getOrderNo())
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
-                infoForPrePaymentProcess.getOrder().getOrderNo(),
+                infoForProcessOrderBeforePayment.getOrder().getOrderNo(),
                 OrderAfterPaymentSuccessFactoryEnum.구독비회원주문.name()))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
     }

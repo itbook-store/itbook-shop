@@ -16,15 +16,15 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.Or
  */
 public interface OrderService {
 
-    OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
+    OrderPaymentDto processOrderBeforePayment(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
         OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum);
 
     @Transactional
-    Order processAfterOrderPaymentSuccessRefactor(
+    Order processOrderAfterPaymentSuccess(
         OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum, Long orderNo);
 
     @Transactional
-    void processBeforeOrderCancelPaymentRefactor(Long orderNo,
-                                                 OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum);
+    void processOrderBeforePaymentCancel(Long orderNo,
+                                         OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum);
 }

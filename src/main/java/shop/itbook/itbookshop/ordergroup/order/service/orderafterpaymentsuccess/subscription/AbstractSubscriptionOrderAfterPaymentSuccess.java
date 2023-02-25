@@ -11,7 +11,7 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  * @since 1.0
  */
 @RequiredArgsConstructor
-public abstract class SubscriptionOrderAfterPaymentSuccessTemplate implements
+public abstract class AbstractSubscriptionOrderAfterPaymentSuccess implements
     OrderAfterPaymentSuccess {
 
     private final OrderStatusHistoryService orderStatusHistoryService;

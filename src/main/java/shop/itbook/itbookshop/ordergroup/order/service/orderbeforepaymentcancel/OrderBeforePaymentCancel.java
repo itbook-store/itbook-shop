@@ -7,9 +7,5 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
  * @since 1.0
  */
 public interface OrderBeforePaymentCancel {
-    void cancel(Order order);
-
-    void checkOrderStatus(Long orderNo);
-
-    void changeOrderStatusAboutOrderCancel(Order order);
+    void processOrderBeforePaymentCancel(Order order);
 }

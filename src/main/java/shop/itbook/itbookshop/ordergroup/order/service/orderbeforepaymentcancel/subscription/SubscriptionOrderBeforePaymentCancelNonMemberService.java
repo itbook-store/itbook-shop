@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.subscription;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.service.OrderStatusService;
@@ -13,7 +14,8 @@ import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubsc
  */
 @Service
 public class SubscriptionOrderBeforePaymentCancelNonMemberService
-    extends SubscriptionOrderBeforePaymentCancelTemplate {
+    extends AbstractSubscriptionOrderBeforePaymentCancel {
+
     public SubscriptionOrderBeforePaymentCancelNonMemberService(
         OrderStatusHistoryService orderStatusHistoryService,
         OrderSubscriptionRepository orderSubscriptionRepository,
@@ -24,7 +26,10 @@ public class SubscriptionOrderBeforePaymentCancelNonMemberService
     }
 
     @Override
-    protected void startUsageProcessing(Order order) {
+    @Transactional
+    public void processOrderBeforePaymentCancel(Order order) {
 
+        super.checkOrderStatus(order.getOrderNo());
+        super.changeOrderStatusAboutOrderCancel(order);
     }
 }

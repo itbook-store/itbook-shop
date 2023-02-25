@@ -3,8 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.memberapply.DefaultMemberApplyWhenOrder;
-import shop.itbook.itbookshop.ordergroup.order.service.memberapply.MemberApplicableWhenOrder;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.memberapply.MemberApplicableWhenOrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
@@ -14,18 +13,18 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  */
 @Service
 public class GeneralOrderAfterPaymentSuccessMemberService
-    extends GeneralOrderAfterPaymentSuccessTemplate {
+    extends AbstractGeneralOrderAfterPaymentSuccess {
 
-    private final MemberApplicableWhenOrder memberApplicableWhenOrder;
+    private final MemberApplicableWhenOrderAfterPaymentSuccess memberApplicableWhenOrder;
 
-    GeneralOrderAfterPaymentSuccessMemberService(
-        OrderStatusHistoryService orderStatusHistoryService,
-        DeliveryService deliveryService,
+    public GeneralOrderAfterPaymentSuccessMemberService(
+        OrderStatusHistoryService orderStatusHistoryService, DeliveryService deliveryService,
+        MemberApplicableWhenOrderAfterPaymentSuccess memberApplicableWhenOrder,
         OrderProductService orderProductService,
-        DefaultMemberApplyWhenOrder memberApplicableWhenOrder) {
-
-        super(orderStatusHistoryService, deliveryService, orderProductService);
-        this.memberApplicableWhenOrder = memberApplicableWhenOrder;
+        MemberApplicableWhenOrderAfterPaymentSuccess memberApplicableWhenOrder1) {
+        super(orderStatusHistoryService, deliveryService, memberApplicableWhenOrder,
+            orderProductService);
+        this.memberApplicableWhenOrder = memberApplicableWhenOrder1;
     }
 
 

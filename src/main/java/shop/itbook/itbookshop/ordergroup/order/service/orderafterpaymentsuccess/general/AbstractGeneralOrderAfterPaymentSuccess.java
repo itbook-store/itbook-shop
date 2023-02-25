@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi.DeliveryService;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.ProductStockIsZeroException;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.memberapply.MemberApplicableWhenOrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
@@ -18,10 +19,12 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  * @since 1.0
  */
 @RequiredArgsConstructor
-public abstract class GeneralOrderAfterPaymentSuccessTemplate implements OrderAfterPaymentSuccess {
+public abstract class AbstractGeneralOrderAfterPaymentSuccess implements OrderAfterPaymentSuccess {
+
 
     private final OrderStatusHistoryService orderStatusHistoryService;
     private final DeliveryService deliveryService;
+    private final MemberApplicableWhenOrderAfterPaymentSuccess memberApplicableWhenOrder;
     private final OrderProductService orderProductService;
 
     protected void changeOrderStatus(Order order) {
@@ -53,4 +56,6 @@ public abstract class GeneralOrderAfterPaymentSuccessTemplate implements OrderAf
 
         product.setStock(stock - productCnt);
     }
+
+
 }

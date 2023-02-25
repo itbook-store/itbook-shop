@@ -13,20 +13,11 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
  * @since 1.0
  */
 @RequiredArgsConstructor
-public abstract class GeneralOrderBeforePaymentCancelTemplate implements OrderBeforePaymentCancel {
+public abstract class AbstractGeneralOrderBeforePaymentCancel implements OrderBeforePaymentCancel {
 
     private final OrderStatusHistoryService orderStatusHistoryService;
 
-    @Override
-    public void cancel(Order order) {
-
-        checkOrderStatus(order.getOrderNo());
-        startUsageProcessing(order);
-        changeOrderStatusAboutOrderCancel(order);
-    }
-
-    @Override
-    public void checkOrderStatus(Long orderNo) {
+    protected void checkOrderStatus(Long orderNo) {
         OrderStatusHistory orderStatusHistory =
             orderStatusHistoryService.findOrderStatusHistoryByOrderNo(orderNo);
         OrderStatusEnum orderStatusEnum = orderStatusHistory.getOrderStatus().getOrderStatusEnum();
@@ -37,10 +28,7 @@ public abstract class GeneralOrderBeforePaymentCancelTemplate implements OrderBe
         }
     }
 
-    @Override
-    public void changeOrderStatusAboutOrderCancel(Order order) {
+    protected void changeOrderStatusAboutOrderCancel(Order order) {
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.REFUND_COMPLETED);
     }
-
-    protected abstract void startUsageProcessing(Order order);
 }

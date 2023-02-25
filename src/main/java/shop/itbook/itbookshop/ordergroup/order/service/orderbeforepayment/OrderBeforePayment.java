@@ -1,6 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment;
 
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 
 /**
@@ -9,11 +9,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
  */
 public interface OrderBeforePayment {
 
-    OrderPaymentDto prePaymentProcess(InfoForPrePaymentProcess infoForPrePaymentProcess);
+    OrderPaymentDto processOrderBeforePayment(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment);
 
-    void saveOrder(InfoForPrePaymentProcess infoForPrePaymentProcess);
-
-    void saveOrderPerson(InfoForPrePaymentProcess infoForPrePaymentProcess);
-
-    OrderPaymentDto calculateTotalAmount(InfoForPrePaymentProcess infoForPrePaymentProcess);
 }
