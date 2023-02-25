@@ -22,7 +22,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
 import shop.itbook.itbookshop.productgroup.product.exception.NotSellableProductException;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.productgroup.product.repository.ProductRepository;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.transfer.ProductTransfer;
@@ -61,13 +61,6 @@ public class ProductServiceImpl implements ProductService {
             product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
         } catch (DataIntegrityViolationException e) {
-//            Throwable rootCause = e.getRootCause();
-//            String message = Objects.requireNonNull(rootCause).getMessage();
-//
-//            if (message.contains("name") || message.contains("")) {
-//                throw new InvalidInputException();
-//            }
-
             throw new InvalidInputException();
 
         }
@@ -242,6 +235,7 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
         if (Objects.nonNull(requestDto.getFileThumbnailsUrl())) {
+            fileService.deleteFile(product.getThumbnailUrl());
             product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         }
         product.setFixedPrice(requestDto.getFixedPrice());
@@ -272,6 +266,7 @@ public class ProductServiceImpl implements ProductService {
         product.setIsPointApplyingBasedSellingPrice(
             requestDto.getIsPointApplyingBasedSellingPrice());
         if (Objects.nonNull(requestDto.getFileThumbnailsUrl())) {
+            fileService.deleteFile(product.getThumbnailUrl());
             product.setThumbnailUrl(requestDto.getFileThumbnailsUrl());
         }
         product.setFixedPrice(requestDto.getFixedPrice());
