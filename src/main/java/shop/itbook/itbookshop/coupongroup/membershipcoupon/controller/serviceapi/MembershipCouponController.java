@@ -23,20 +23,20 @@ import shop.itbook.itbookshop.coupongroup.membershipcoupon.service.MembershipCou
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/membership-coupons")
-public class MembershipAdminCouponController {
+public class MembershipCouponController {
 
     private final MembershipCouponService membershipCouponService;
 
     @GetMapping("/list")
-    public ResponseEntity<CommonResponseBody<Map<String,List<MembershipCouponResponseDto>>>> addMembershipCoupon() {
+    public ResponseEntity<CommonResponseBody<Map<String, List<MembershipCouponResponseDto>>>> findMembershipCoupon() {
 
-        Map<String,List<MembershipCouponResponseDto>> membershipCouponNoResponseDto =
+        Map<String, List<MembershipCouponResponseDto>> membershipCouponNoResponseDto =
             membershipCouponService.findAvailableMembershipCouponList();
 
-        CommonResponseBody<Map<String,List<MembershipCouponResponseDto>>> commonResponseBody =
+        CommonResponseBody<Map<String, List<MembershipCouponResponseDto>>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    MembershipCouponResultMessageEnum.MEMBERSHIP_COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                    MembershipCouponResultMessageEnum.MEMBERSHIP_COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 membershipCouponNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);

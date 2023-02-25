@@ -17,6 +17,7 @@ import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListRes
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.CouponNoResponseDto;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dto.request.OrderTotalCouponRequestDto;
+import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.resultmessageenum.TotalCouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.service.OrderTotalCouponService;
 
 /**
@@ -38,7 +39,7 @@ public class OrderTotalCouponController {
 
         CommonResponseBody<CouponNoResponseDto> commonResponseBody = new CommonResponseBody<>(
             new CommonResponseBody.CommonHeader(
-                CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                TotalCouponResultMessageEnum.TOTAL_COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
             couponNoResponseDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commonResponseBody);
@@ -56,7 +57,7 @@ public class OrderTotalCouponController {
         CommonResponseBody<PageResponse<AdminCouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
+                    TotalCouponResultMessageEnum.TOTAL_COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
