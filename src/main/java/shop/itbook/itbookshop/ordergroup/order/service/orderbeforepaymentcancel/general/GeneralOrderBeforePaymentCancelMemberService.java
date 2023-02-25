@@ -54,7 +54,7 @@ public class GeneralOrderBeforePaymentCancelMemberService
         OrderTotalCouponApplyService orderTotalCouponApplyService,
         OrderMemberRepository orderMemberRepository,
         OrderCancelIncreasePointHistoryService orderCancelIncreasePointHistoryService) {
-        super(orderStatusHistoryService);
+        super(orderStatusHistoryService, orderProductService);
         this.orderProductService = orderProductService;
         this.orderStatusHistoryService = orderStatusHistoryService1;
         this.categoryCouponApplyRepository = categoryCouponApplyRepository;
@@ -73,12 +73,8 @@ public class GeneralOrderBeforePaymentCancelMemberService
         List<OrderProduct> orderProductList =
             orderProductService.findOrderProductsEntityByOrderNo(orderNo);
 
-
-        OrderStatusHistory orderStatusHistory =
-            orderStatusHistoryService.findOrderStatusHistoryByOrderNo(orderNo);
-        OrderStatusEnum orderStatusEnum = orderStatusHistory.getOrderStatus().getOrderStatusEnum();
         // 주문 상품번호리스트가져와서 각각 상품쿠폰, 카테고리 쿠폰 있는지 확인 후 있으면 사용전상태로 변경
-        this.changeCategoryAndProductCouponStatusByCancel(orderProductList, orderStatusEnum);
+        this.changeCategoryAndProductCouponStatusByCancel(orderProductList);
 
         // 주문번호로 주문총액상품쿠폰 있는지 확인하고 있으면 사용전상태로 변경
         this.changeOrderTotalAmountCouponStatusByCancel(orderNo);
@@ -92,22 +88,13 @@ public class GeneralOrderBeforePaymentCancelMemberService
             PointHistoryServiceImpl.INCREASE_POINT_HISTORY);
     }
 
-    private void changeCategoryAndProductCouponStatusByCancel(List<OrderProduct> orderProductList,
-                                                              OrderStatusEnum orderStatusEnum) {
-
+    private void changeCategoryAndProductCouponStatusByCancel(List<OrderProduct> orderProductList) {
 
         for (OrderProduct orderProduct : orderProductList) {
 
             Optional<CategoryCouponApply> optionalCategoryCouponApply =
                 categoryCouponApplyRepository.findByOrderProduct_OrderProductNo(
                     orderProduct.getOrderProductNo());
-
-            if (Objects.equals(orderStatusEnum, OrderStatusEnum.WAIT_DELIVERY) ||
-                Objects.equals(orderStatusEnum, OrderStatusEnum.PAYMENT_COMPLETE)) {
-                Product product = orderProduct.getProduct();
-                int stock = product.getStock();
-                product.setStock(stock + orderProduct.getCount());
-            }
 
             if (optionalCategoryCouponApply.isPresent()) {
                 CategoryCouponApply categoryCouponApply = optionalCategoryCouponApply.get();
@@ -126,7 +113,6 @@ public class GeneralOrderBeforePaymentCancelMemberService
     }
 
     private void changeOrderTotalAmountCouponStatusByCancel(Long orderNo) {
-
 
         Optional<OrderTotalCouponApply> optionalOrderTotalCouponApply =
             orderTotalCouponApplyRepositoy.findByOrder_OrderNo(orderNo);
@@ -151,7 +137,6 @@ public class GeneralOrderBeforePaymentCancelMemberService
         if (!isDecrease && Objects.equals(order.getDecreasePoint(), 0L)) {
             return;
         }
-
 
         Optional<OrderMember> optionalOrderMember =
             orderMemberRepository.findById(order.getOrderNo());
