@@ -93,6 +93,7 @@ public class TokenService {
                     .writeValueAsString(itBookObjectStorageToken));
             long duration =
                 Duration.between(LocalDateTime.now(), itBookObjectStorageToken.getExpires())
+                    .minusMinutes(5)
                     .getSeconds();
             redisTemplate.expire(TOKEN_NAME, duration, TimeUnit.SECONDS);
         } catch (JsonProcessingException e) {

@@ -107,8 +107,9 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("상품 등록 테스트")
     void addProductTest_success() {
-        Product product = ProductTransfer.dtoToEntityAdd(productAddRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productAddRequestDto);
         given(mockProductCategoryService.addProductCategory(any(Product.class), anyList()))
             .willReturn(CategoryDummy.getCategoryNoHiddenBook());
         given(mockProductRepository.save(any(Product.class)))
@@ -210,7 +211,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 엔티티 단건 조회 테스트")
     void findProductEntityTest_success() {
-        Product product = ProductTransfer.dtoToEntityAdd(productAddRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productAddRequestDto);
 
         given(mockProductRepository.findById(anyLong())).willReturn(Optional.of(product));
 

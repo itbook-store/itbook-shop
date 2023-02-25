@@ -22,7 +22,7 @@ public class ProductTransfer {
      * @return 엔티티로 변환된 상품 엔티티입니다.
      * @author
      */
-    public static Product dtoToEntityAdd(ProductAddRequestDto requestDto) {
+    public static Product dtoToEntity(ProductAddRequestDto requestDto) {
         return Product.builder()
             .name(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())
@@ -42,7 +42,7 @@ public class ProductTransfer {
             .build();
     }
 
-    public static Product dtoToEntityAdd(ProductBookRequestDto requestDto) {
+    public static Product dtoToEntity(ProductBookRequestDto requestDto) {
 
         return Product.builder().name(requestDto.getProductName())
             .simpleDescription(requestDto.getSimpleDescription())
@@ -53,6 +53,8 @@ public class ProductTransfer {
             .thumbnailUrl(requestDto.getFileThumbnailsUrl())
             .fixedPrice(requestDto.getFixedPrice())
             .productCreatedAt(LocalDateTime.now())
+            .isPointApplying(requestDto.getIsPointApplying())
+            .isPointApplyingBasedSellingPrice(requestDto.getIsPointApplyingBasedSellingPrice())
             .increasePointPercent(requestDto.getIncreasePointPercent())
             .discountPercent(requestDto.getDiscountPercent()).rawPrice(requestDto.getRawPrice())
             .build();

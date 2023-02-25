@@ -71,7 +71,7 @@ public class ProductServiceController {
         CommonResponseBody<PageResponse<ProductDetailsResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    ProductCategoryResultMessageEnum.GET_SUCCESS.getMessage()),
+                    ProductResultMessageEnum.GET_SUCCESS.getMessage()),
                 new PageResponse<>(productList));
 
         return ResponseEntity.status(HttpStatus.OK).body(commonResponseBody);

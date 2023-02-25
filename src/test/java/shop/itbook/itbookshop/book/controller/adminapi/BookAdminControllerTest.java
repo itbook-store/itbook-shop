@@ -92,7 +92,7 @@ class BookAdminControllerTest {
     }
 
     @Test
-    @DisplayName("POST 메서드 성공 테스트")
+    @DisplayName("도서 등록 성공 테스트")
     void addBookTest_success() throws Exception {
         Long testProductNo = 1L;
 
@@ -113,7 +113,7 @@ class BookAdminControllerTest {
     }
 
     @Test
-    @DisplayName("POST 메서드 실패 테스트 - notnull 컬럼인 isbn에 null 값 저장")
+    @DisplayName("도서 등록 실패 테스트 - notnull 컬럼인 isbn에 null 값 저장")
     void addBookTest_failure() throws Exception {
 
         mockMvc.perform(multipart("/api/admin/products/books")
@@ -125,7 +125,7 @@ class BookAdminControllerTest {
     }
 
     @Test
-    @DisplayName("PUT 메서드 성공 테스트")
+    @DisplayName("도서 수정 성공 테스트")
     void modifyBookTest_success() throws Exception {
         Long productNo = 1L;
 
