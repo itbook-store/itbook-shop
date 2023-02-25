@@ -25,7 +25,6 @@ import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.OrderTota
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
 import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
 import shop.itbook.itbookshop.coupongroup.usagestatus.repository.UsageStatusRepository;
-import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
@@ -35,21 +34,10 @@ import shop.itbook.itbookshop.coupongroup.categorycoupon.repository.CategoryCoup
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.dummy.CategoryCouponApplyDummy;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.entity.CategoryCouponApply;
 import shop.itbook.itbookshop.coupongroup.categorycouponapply.repository.CategoryCouponApplyRepository;
-import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
 import shop.itbook.itbookshop.coupongroup.couponissue.dummy.CouponIssueDummy;
-import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
-import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
-import shop.itbook.itbookshop.coupongroup.coupontype.dummy.CouponTypeDummy;
-import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
-import shop.itbook.itbookshop.coupongroup.coupontype.repository.CouponTypeRepository;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.dummy.OrderTotalCouponDummy;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
 import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.repository.OrderTotalCouponRepository;
 import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.dummy.OrderTotalCouponApplyDummy;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.OrderTotalCouponApply;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
 import shop.itbook.itbookshop.coupongroup.productcoupon.dummy.ProductCouponDummy;
 import shop.itbook.itbookshop.coupongroup.productcoupon.entity.ProductCoupon;
 import shop.itbook.itbookshop.coupongroup.productcoupon.repository.ProductCouponRepository;
@@ -57,8 +45,6 @@ import shop.itbook.itbookshop.coupongroup.productcouponapply.dummy.ProductCoupon
 import shop.itbook.itbookshop.coupongroup.productcouponapply.entity.ProductCouponApply;
 import shop.itbook.itbookshop.coupongroup.productcouponapply.repository.ProductCouponApplyRepository;
 import shop.itbook.itbookshop.coupongroup.usagestatus.dummy.UsageStatusDummy;
-import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
-import shop.itbook.itbookshop.coupongroup.usagestatus.repository.UsageStatusRepository;
 import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
 import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.delivery.repository.DeliveryRepository;
@@ -302,7 +288,7 @@ class OrderRepositoryTest {
 
         // when
         Page<OrderSubscriptionAdminListDto> allSubscriptionOrderList =
-            orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
+            orderRepository.findAllSubscriptionOrderListOfAdmin(pageable);
 
         // then
         assertThat(allSubscriptionOrderList.getContent().get(0).getOrderNo())
@@ -351,7 +337,7 @@ class OrderRepositoryTest {
 
         // when
         Page<OrderSubscriptionListDto> allSubscriptionOrderListByMember =
-            orderRepository.findAllSubscriptionOrderListByMember(pageable, member.getMemberNo());
+            orderRepository.findAllSubscriptionOrderListOfMember(pageable, member.getMemberNo());
 
         // then
         OrderSubscriptionListDto orderSubscriptionListDto =

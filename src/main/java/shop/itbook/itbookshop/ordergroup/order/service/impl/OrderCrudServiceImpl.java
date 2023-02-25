@@ -150,7 +150,7 @@ public class OrderCrudServiceImpl implements OrderCrudService {
     @Override
     public Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(
         Pageable pageable) {
-        return orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
+        return orderRepository.findAllSubscriptionOrderListOfAdmin(pageable);
     }
 
     /**
@@ -159,7 +159,7 @@ public class OrderCrudServiceImpl implements OrderCrudService {
     @Override
     public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
                                                                                Long memberNo) {
-        return orderRepository.findAllSubscriptionOrderListByMember(pageable, memberNo);
+        return orderRepository.findAllSubscriptionOrderListOfMember(pageable, memberNo);
     }
 
     @Override

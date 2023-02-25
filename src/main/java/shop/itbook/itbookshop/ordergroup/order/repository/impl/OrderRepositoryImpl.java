@@ -156,11 +156,12 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
         QOrderStatus qOrderStatus = QOrderStatus.orderStatus;
 
         QOrderMember qOrderMember = QOrderMember.orderMember;
+
         QMember qMember = QMember.member;
+
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
         QProduct qProduct = QProduct.product;
         QDelivery qDelivery = QDelivery.delivery;
-
 
         JPQLQuery<OrderListAdminViewResponseDto> jpqlQuery = from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
@@ -176,7 +177,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .innerJoin(qOrderProduct)
             .on(qOrderProduct.order.eq(qOrderStatusHistory.order))
             .innerJoin(qProduct)
-            .on(qProduct.eq(qOrderProduct.product))
+            .on(qProduct.eq(qOrderProduct.product).and(qProduct.isSubscription.isFalse()))
             .leftJoin(qDelivery)
             .on(qDelivery.order.eq(qOrderStatusHistory.order))
             .where(qOrderStatusHistory2.orderStatusHistoryNo.isNull())
@@ -233,7 +234,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListByAdmin(
+    public Page<OrderSubscriptionAdminListDto> findAllSubscriptionOrderListOfAdmin(
         Pageable pageable) {
         QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
@@ -259,7 +260,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
                 .leftJoin(qOrderMember)
                 .on(qOrder.orderNo.eq(qOrderMember.orderNo))
-                .innerJoin(qMember)
+                .leftJoin(qMember)
                 .on(qOrderMember.member.memberNo.eq(qMember.memberNo))
                 .innerJoin(qOrderProduct)
                 .on(qOrder.orderNo.eq(qOrderProduct.order.orderNo))
@@ -291,7 +292,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
     }
 
     @Override
-    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListByMember(Pageable pageable,
+    public Page<OrderSubscriptionListDto> findAllSubscriptionOrderListOfMember(Pageable pageable,
                                                                                Long memberNo) {
         QOrderStatusHistory qOrderStatusHistory = QOrderStatusHistory.orderStatusHistory;
         QOrderStatusHistory qOrderStatusHistory2 = new QOrderStatusHistory("qOrderStatusHistory2");
