@@ -1,8 +1,10 @@
-package shop.itbook.itbookshop.ordergroup.order.controller.adminapi;
+package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi.nonmember;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,63 +23,61 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import shop.itbook.itbookshop.ordergroup.order.controller.serviceapi.OrderController;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
-import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAdminController;
-import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
-import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
-import shop.itbook.itbookshop.productgroup.product.service.ProductService;
+import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
 
 /**
  * @author 이하늬
  * @since 1.0
  */
-@WebMvcTest(OrderAdminController.class)
-class OrderAdminControllerTest {
+@WebMvcTest(OrderNonMemberController.class)
+class OrderNonMemberControllerTest {
+
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
 
     @MockBean
-    OrderCrudService mockOrderCrudService;
+    OrderNonMemberService mockOrderNonmemberService;
 
     @Test
-    void orderListAdmin() throws Exception {
-        Order order = OrderDummy.getOrder();
-        Pageable pageable = PageRequest.of(0, 10);
-        Page page = new PageImpl(List.of(order), pageable, 10);
+    void orderNonMemberDetails() throws Exception {
+        OrderDetailsResponseDto orderDetailsResponseDto = new OrderDetailsResponseDto();
 
-        given(mockOrderCrudService.findOrderListAdmin(any(Pageable.class)))
-            .willReturn(page);
+        given(mockOrderNonmemberService.findNonMemberOrderDetails(anyLong(), anyString()))
+            .willReturn(orderDetailsResponseDto);
 
-        mockMvc.perform(get("/api/admin/orders/list"))
+        mockMvc.perform(get("/api/orders/details/1/non-member?orderCode=123"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
                 jsonPath("$.header.resultMessage",
                     equalTo(
-                        OrderResultMessageEnum.ORDER_LIST_OF_ADMIN_FIND_SUCCESS_MESSAGE.getResultMessage())));
+                        OrderResultMessageEnum.ORDER_DETAILS_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage())));
     }
 
     @Test
-    void orderSubscriptionListByAdmin() throws Exception {
-        Order order = OrderDummy.getOrder();
-        Pageable pageable = PageRequest.of(0, 10);
-        Page page = new PageImpl(List.of(order), pageable, 10);
+    void orderNonMemberDetailsSubscription() throws Exception {
+        OrderSubscriptionDetailsResponseDto orderDetailsResponseDto =
+            new OrderSubscriptionDetailsResponseDto();
 
-        given(mockOrderCrudService.findAllSubscriptionOrderListByAdmin(any(Pageable.class)))
-            .willReturn(page);
+        given(
+            mockOrderNonmemberService.findNonMemberSubscriptionOrderDetails(anyLong(), anyString()))
+            .willReturn(List.of(orderDetailsResponseDto));
 
-        mockMvc.perform(get("/api/admin/orders/list/subscription"))
+        mockMvc.perform(get("/api/orders/details/1/non-member/subscription?orderCode=123"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
                 jsonPath("$.header.resultMessage",
                     equalTo(
-                        OrderResultMessageEnum.ORDER_SUBSCRIPTION_LIST_OF_ADMIN_SUCCESS_MESSAGE.getResultMessage())));
+                        OrderResultMessageEnum.ORDER_DETAILS_OF_NON_MEMBER_FIND_SUCCESS_MESSAGE.getResultMessage())));
     }
 }

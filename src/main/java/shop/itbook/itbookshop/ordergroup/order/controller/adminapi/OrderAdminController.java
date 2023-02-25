@@ -27,7 +27,6 @@ import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
 @RequestMapping("/api/admin/orders")
 public class OrderAdminController {
 
-    private final OrderService orderService;
     private final OrderCrudService orderCrudService;
 
     /**
