@@ -27,7 +27,6 @@ public class OrderFactory {
         return orderBeforePaymentMap.get(orderBeforePaymentFactoryEnum.getBeanName());
     }
 
-
     public OrderAfterPaymentSuccess getOrderAfterPaymentSuccess(
         OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum) {
         return orderAfterPaymentSuccessMap.get(orderAfterPaymentSuccessFactoryEnum.getBeanName());

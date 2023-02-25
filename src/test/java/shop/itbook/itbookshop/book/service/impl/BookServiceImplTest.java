@@ -35,7 +35,7 @@ import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;

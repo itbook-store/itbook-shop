@@ -34,7 +34,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.service.CategoryService;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;

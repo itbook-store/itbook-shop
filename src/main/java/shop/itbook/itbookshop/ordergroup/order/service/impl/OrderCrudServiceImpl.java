@@ -201,9 +201,6 @@ public class OrderCrudServiceImpl implements OrderCrudService {
             if (product.getIsSubscription()) {
                 break;
             }
-
-            Integer stock = product.getStock();
-            product.setStock(stock + orderProduct.getCount());
         }
 
         orderRepository.deleteById(orderNo);
