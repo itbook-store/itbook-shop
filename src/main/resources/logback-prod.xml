@@ -19,7 +19,7 @@
 
         <!-- Logback의 AsyncAppender 옵션 -->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
+            <level>ERROR</level>
         </filter>
         <param name="includeCallerData" value="false"/>
         <param name="queueSize" value="2048"/>
@@ -29,7 +29,7 @@
         <!-- Log & Crash Logback SDK의 LogNCrashHttpAppender 옵션 -->
         <appender name="logNCrashHttp" class="com.toast.java.logncrash.logback.LogNCrashHttpAppender">
             <param name="appKey" value="h98AoVSn5I3rIctz"/>
-            <param name="logSource" value="${spring.profiles.active}"/>
+            <param name="logSource" value="prod"/>
             <param name="version" value="1.0.0"/>
             <param name="logType" value="log"/>
             <param name="debug" value="true"/>
