@@ -2,6 +2,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel
 
 import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
 
 /**
@@ -11,9 +12,12 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 @Service
 public class GeneralOrderBeforePaymentCancelNonMemberService
     extends GeneralOrderBeforePaymentCancelTemplate {
+
+
     public GeneralOrderBeforePaymentCancelNonMemberService(
-        OrderStatusHistoryService orderStatusHistoryService) {
-        super(orderStatusHistoryService);
+        OrderStatusHistoryService orderStatusHistoryService,
+        OrderProductService orderProductService) {
+        super(orderStatusHistoryService, orderProductService);
     }
 
     @Override
