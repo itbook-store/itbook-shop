@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.memberapply.orderbeforepayment;
+package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.memberapply;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +25,8 @@ import shop.itbook.itbookshop.pointgroup.pointhistorychild.order.service.OrderIn
  */
 @Service
 @RequiredArgsConstructor
-public class DefaultMemberApplyWhenOrderBeforePayment
-    implements MemberApplicableWhenOrderBeforePayment {
+public class DefaultMemberApplyWhenOrderAfterPaymentSuccess
+    implements MemberApplicableWhenOrderAfterPaymentSuccess {
 
     private final CouponIssueService couponIssueService;
     private final OrderTotalCouponApplyService orderTotalCouponApplyService;
