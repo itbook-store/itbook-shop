@@ -24,7 +24,6 @@ public abstract class SubscriptionOrderAfterPaymentSuccessTemplate implements
         return order;
     }
 
-
     @Override
     public void changeOrderStatus(Order order) {
         orderStatusHistoryService.addOrderStatusHistory(order, OrderStatusEnum.PAYMENT_COMPLETE);

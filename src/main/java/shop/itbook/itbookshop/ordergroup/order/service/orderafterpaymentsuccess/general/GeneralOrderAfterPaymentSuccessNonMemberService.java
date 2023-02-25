@@ -22,6 +22,6 @@ public class GeneralOrderAfterPaymentSuccessNonMemberService
 
     @Override
     protected void startUsageProcessing(Order order) {
-
+        
     }
 }
