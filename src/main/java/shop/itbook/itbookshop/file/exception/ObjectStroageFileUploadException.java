@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.fileservice.exception;
+package shop.itbook.itbookshop.file.exception;
 
 /**
  * 파일 업로드에 실패했을 때 발생시킬 예외 클래스입니다.

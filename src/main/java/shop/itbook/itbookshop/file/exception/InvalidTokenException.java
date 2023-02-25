@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.fileservice.exception;
+package shop.itbook.itbookshop.file.exception;
 
 /**
  * 토큰이 유효하지 않을 때 발생시킬 예외 클래스입니다.
