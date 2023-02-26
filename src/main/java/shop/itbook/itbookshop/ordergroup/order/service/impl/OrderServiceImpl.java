@@ -1,17 +1,17 @@
 package shop.itbook.itbookshop.ordergroup.order.service.impl;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForPrePaymentProcess;
+import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccess;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.service.factory.OrderFactory;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancel;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.processor.OrderAfterPaymentSuccessProcessor;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor.OrderBeforePaymentProcessor;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.processor.OrderBeforePaymentCancelProcessor;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentCancelFactoryEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
@@ -34,41 +34,48 @@ public class OrderServiceImpl implements OrderService {
      */
     @Value("${payment.origin.url}")
     public String ORIGIN_URL;
-
-    public static final long BASE_AMOUNT_FOR_DELIVERY_FEE_CALC = 20000L;
-    public static final long BASE_DELIVERY_FEE = 3000L;
-    public final OrderFactory orderFactory;
+    private final Map<String, OrderBeforePaymentProcessor> orderBeforePaymentProcessorMap;
+    private final Map<String, OrderAfterPaymentSuccessProcessor>
+        orderAfterPaymentSuccessProcessorMap;
+    private final Map<String, OrderBeforePaymentCancelProcessor>
+        orderBeforePaymentCancelProcessorMap;
 
     @Override
     @Transactional
-    public OrderPaymentDto saveOrderBeforePaymentAndCreateOrderPaymentDto(
-        InfoForPrePaymentProcess infoForPrePaymentProcess,
+    public OrderPaymentDto processOrderBeforePayment(
+        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
         OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum) {
 
-        OrderBeforePayment orderBeforePayment = orderFactory.getOrderBeforePayment(
-            orderBeforePaymentFactoryEnum);
-        return orderBeforePayment.prePaymentProcess(infoForPrePaymentProcess);
+        OrderBeforePaymentProcessor orderBeforePaymentProcessor =
+            orderBeforePaymentProcessorMap.get(orderBeforePaymentFactoryEnum.getBeanName());
+
+        return orderBeforePaymentProcessor.processOrderBeforePayment(
+            infoForProcessOrderBeforePayment);
     }
 
     @Override
     @Transactional
-    public Order processAfterOrderPaymentSuccessRefactor(
+    public Order processOrderAfterPaymentSuccess(
         OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum, Long orderNo) {
 
         Order order = orderCrudService.findOrderEntity(orderNo);
-        OrderAfterPaymentSuccess orderAfterPayment =
-            orderFactory.getOrderAfterPaymentSuccess(orderAfterPaymentSuccessFactoryEnum);
-        return orderAfterPayment.success(order);
+        OrderAfterPaymentSuccessProcessor orderAfterPaymentSuccessProcessor =
+            orderAfterPaymentSuccessProcessorMap.get(
+                orderAfterPaymentSuccessFactoryEnum.getBeanName());
+
+        return orderAfterPaymentSuccessProcessor.processOrderAfterPaymentSuccess(order);
     }
 
     @Override
     @Transactional
-    public void processBeforeOrderCancelPaymentRefactor(
+    public void processOrderBeforePaymentCancel(
         Long orderNo, OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum) {
 
         Order order = orderCrudService.findOrderEntity(orderNo);
-        OrderBeforePaymentCancel orderBeforePaymentCancel =
-            orderFactory.getOrderBeforePaymentCancel(orderBeforePaymentCancelFactoryEnum);
-        orderBeforePaymentCancel.cancel(order);
+        OrderBeforePaymentCancelProcessor orderBeforePaymentProcessor =
+            orderBeforePaymentCancelProcessorMap.get(
+                orderBeforePaymentCancelFactoryEnum.getBeanName());
+
+        orderBeforePaymentProcessor.processOrderBeforePayment(order);
     }
 }

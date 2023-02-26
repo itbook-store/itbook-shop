@@ -94,7 +94,7 @@ public class PaymentServiceImpl implements PaymentService {
             = OrderAfterPaymentSuccessFactoryEnum.stringToOrderFactoryEnum(orderType);
 
         Order order =
-            orderService.processAfterOrderPaymentSuccessRefactor(
+            orderService.processOrderAfterPaymentSuccess(
                 orderAfterPaymentSuccessFactoryEnum, orderNo);
 //        Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
         payment.setOrder(order);
@@ -130,7 +130,7 @@ public class PaymentServiceImpl implements PaymentService {
         // 주문 취소 처리
 //        orderService.processBeforeOrderCancelPayment(
 //            paymentCanceledRequestDto.getOrderNo());
-        orderService.processBeforeOrderCancelPaymentRefactor(
+        orderService.processOrderBeforePaymentCancel(
             paymentCanceledRequestDto.getOrderNo(), orderBeforePaymentCancelFactoryEnum);
 
         response = tossPayService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
