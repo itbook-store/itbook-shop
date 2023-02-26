@@ -34,7 +34,7 @@ public class PaymentDummy {
     }
 
     public static Easypay getEasypay() {
-        return new Easypay(1L, "간편결제", 15000L, 0L);
+        return new Easypay(null, "간편결제", 15000L, 0L);
     }
 
     public static PaymentCancel getPaymentCancel() {
