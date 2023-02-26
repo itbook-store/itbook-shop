@@ -2,9 +2,12 @@ package shop.itbook.itbookshop.productgroup.product.controller.elastic;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,7 +26,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.SearchProductNotFoundException;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductSearchResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 import shop.itbook.itbookshop.productgroup.product.service.elastic.ProductSearchService;
 
@@ -42,7 +49,7 @@ class ProductElasticControllerTest {
     private ProductService productService;
     private ProductSearchResponseDto responseDto;
 
-
+    private static String SEARCH_URL = "/api/products/search";
     @BeforeEach
     void setUp() {
         responseDto = new ProductSearchResponseDto(256L, "테테스트북구",
@@ -61,7 +68,7 @@ class ProductElasticControllerTest {
         given(productSearchService.searchProductByTitle(any(), anyString()))
             .willReturn(page);
 
-        mockMvc.perform(get("/api/products/search?name=테스트")
+        mockMvc.perform(get(SEARCH_URL+"?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
@@ -96,12 +103,58 @@ class ProductElasticControllerTest {
     void productSearchNameTest_fail() throws Exception {
         given(productSearchService.searchProductByTitle(any(), anyString())).willThrow(
             new SearchProductNotFoundException());
-        mockMvc.perform(get("/api/products/search?name=테스트")
+        mockMvc.perform(get(SEARCH_URL+"?name=테스트")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.header.resultMessage",
                 equalTo(SearchProductNotFoundException.MESSAGE)));
+
+    }
+
+    @Test
+    void getProductSearchByName() throws Exception {
+        List<ProductSearchResponseDto> searchList = List.of(responseDto, responseDto);
+
+        given(productSearchService.searchProductsByTitle(anyString()))
+            .willReturn(searchList);
+
+        mockMvc.perform(get(SEARCH_URL+"/list?name=테스트")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.result.[0].productNo", equalTo(256)))
+            .andExpect(jsonPath("$.result.[0].name", equalTo(responseDto.getName())));
+
+    }
+
+    @Test
+    void productRemove() throws Exception {
+
+        mockMvc.perform(delete(SEARCH_URL+"/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage", equalTo(ProductResultMessageEnum.DELETE_SUCCESS.getMessage())));
+
+    }
+
+
+    @Test
+    void productAdd() throws Exception {
+        Long productNo = 1L;
+        Product product = ProductDummy.getProductSuccess();
+        given(productService.findProductEntity(anyLong())).willReturn(product);
+        given(productSearchService.addSearchProduct(any())).willReturn(productNo);
+        mockMvc.perform(post(SEARCH_URL+"/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isCreated())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage", equalTo(ProductResultMessageEnum.ADD_SUCCESS.getMessage())))
+            .andExpect(jsonPath("$.result.productNo", equalTo(productNo.intValue())));
 
     }
 }

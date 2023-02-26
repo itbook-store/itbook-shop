@@ -101,7 +101,7 @@ public class CouponAdminController {
         CommonResponseBody<PageResponse<AdminCouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 pageResponse);
 
         return ResponseEntity.ok().body(commonResponseBody);
@@ -114,7 +114,7 @@ public class CouponAdminController {
         CommonResponseBody<List<AdminCouponListResponseDto>> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
-                    CouponResultMessageEnum.COUPON_SAVE_SUCCESS_MESSAGE.getSuccessMessage()),
+                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 couponService.findByAvailableCouponDtoByCouponType(couponType));
 
         return ResponseEntity.ok().body(commonResponseBody);

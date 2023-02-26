@@ -50,7 +50,6 @@ class ProductSearchRepositoryTest {
     }
 
     @Test
-    @Disabled
     void productSaveTest() {
         productSearchRepository.save(elasticProduct);
         Optional<SearchProduct> result =
@@ -61,7 +60,6 @@ class ProductSearchRepositoryTest {
     }
 
     @Test
-    @Disabled
     void productSearchTest() {
         Pageable pageable = PageRequest.of(0, 10);
         List<SearchProduct> searchProducts =
@@ -71,7 +69,6 @@ class ProductSearchRepositoryTest {
 
 
     @Test
-    @Disabled
     void deleteByIdTest() {
 
         productSearchRepository.deleteById(elasticProduct.getProductNo());

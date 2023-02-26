@@ -16,8 +16,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import shop.itbook.itbookshop.coupongroup.coupontype.coupontypeenum.CouponTypeEnum;
 import shop.itbook.itbookshop.coupongroup.coupontype.dummy.CouponTypeDummy;
 import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
+import shop.itbook.itbookshop.coupongroup.coupontype.exception.CouponTypeNotFoundException;
 import shop.itbook.itbookshop.coupongroup.coupontype.repository.CouponTypeRepository;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
+import shop.itbook.itbookshop.coupongroup.usagestatus.exception.UsageStatusNotFoundException;
 
 /**
  * @author 송다혜
@@ -42,5 +44,17 @@ class CouponTypeServiceImplTest {
 
         assertThat(couponTypeService.findCouponType(couponType.getCouponTypeEnum().getCouponType())
             .getCouponTypeEnum()).isEqualTo(couponType.getCouponTypeEnum());
+    }
+
+    @Test
+    void findCouponType_fail() {
+        CouponType couponType = new CouponType(1, CouponTypeEnum.MEMBERSHIP_COUPON);
+
+        given(couponTypeRepository.findByCouponTypeName(anyString())).willThrow(
+            new CouponTypeNotFoundException());
+
+        CouponTypeNotFoundException exception = assertThrows(CouponTypeNotFoundException.class,
+            ()-> couponTypeRepository.findByCouponTypeName("test"));
+        assertThat(exception.getMessage()).isEqualTo("쿠폰 타입이 존재하지 않습니다.");
     }
 }

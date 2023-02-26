@@ -2,7 +2,10 @@ package shop.itbook.itbookshop.coupongroup.coupon.controller.adminapi;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -27,7 +30,10 @@ import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.coupongroup.categorycoupon.service.CategoryCouponService;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.request.CouponRequestDto;
 import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDto;
+import shop.itbook.itbookshop.coupongroup.coupon.dto.response.AdminCouponListResponseDtoDummy;
+import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.coupon.service.CouponService;
+import shop.itbook.itbookshop.coupongroup.couponissue.resultmessageenum.CouponIssueResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 import shop.itbook.itbookshop.coupongroup.coupontype.service.CouponTypeService;
 
@@ -47,16 +53,12 @@ class CouponAdminControllerTest {
     @MockBean
     CouponService couponService;
 
-    @MockBean
-    CategoryCouponService categoryCouponService;
-
-    @MockBean
-    CouponIssueService couponIssueService;
-
     @Autowired
     ObjectMapper objectMapper;
 
     CouponRequestDto couponRequestDto;
+
+    private static String COUPON_URL = "/api/admin/coupons";
 
     @BeforeEach
     void setup(){
@@ -82,7 +84,7 @@ class CouponAdminControllerTest {
         given(couponService.addCoupon(any(CouponRequestDto.class))).willReturn(0L);
 
         //when then
-        mvc.perform(post("/api/admin/coupons/add")
+        mvc.perform(post(COUPON_URL+"/add")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(couponRequestDto)))
@@ -92,18 +94,63 @@ class CouponAdminControllerTest {
     }
 
     @Test
-    void couponList() {
-        //given
+    void couponList() throws Exception {
+        List<AdminCouponListResponseDto> couponList =
+            List.of(AdminCouponListResponseDtoDummy.getDto(1L), AdminCouponListResponseDtoDummy.getDto(3L));
         PageRequest pageRequest = PageRequest.of(0, 10);
-        Page page = new PageImpl(List.of(new AdminCouponListResponseDto(), new AdminCouponListResponseDto()), pageRequest, 10);
+        Page page = new PageImpl(couponList, pageRequest, 10);
+        given(couponService.findByCouponList(any()))
+            .willReturn(page);
+
+        mvc.perform(get(COUPON_URL))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage", equalTo(
+                CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage())))
+            .andExpect(jsonPath("$.result.content[0].couponNo", equalTo(1)))
+            .andExpect(jsonPath("$.result.content[0].name", equalTo("name")))
+            .andExpect(jsonPath("$.result.content[1].couponNo", equalTo(3)))
+            .andExpect(jsonPath("$.result.content[1].name", equalTo("name")));
 
     }
 
     @Test
-    void couponTypeList() {
+    void couponTypeList() throws Exception {
+        List<AdminCouponListResponseDto> couponList =
+            List.of(AdminCouponListResponseDtoDummy.getDto(1L), AdminCouponListResponseDtoDummy.getDto(3L));
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page page = new PageImpl(couponList, pageRequest, 10);
+        given(couponService.findByCouponAtCouponTypeList(any(), anyString()))
+            .willReturn(page);
+
+        mvc.perform(get(COUPON_URL+"/list/couponType"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.header.resultMessage", equalTo(
+                CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage())))
+            .andExpect(jsonPath("$.result.content[0].couponNo", equalTo(1)))
+            .andExpect(jsonPath("$.result.content[0].name", equalTo("name")))
+            .andExpect(jsonPath("$.result.content[1].couponNo", equalTo(3)))
+            .andExpect(jsonPath("$.result.content[1].name", equalTo("name")));
+
     }
 
     @Test
-    void couponTypeListAll() {
-    }
+    void couponTypeListAll() throws Exception {
+            List<AdminCouponListResponseDto> couponList =
+                List.of(AdminCouponListResponseDtoDummy.getDto(1L), AdminCouponListResponseDtoDummy.getDto(3L));
+            given(couponService.findByAvailableCouponDtoByCouponType(anyString()))
+                .willReturn(couponList);
+
+            mvc.perform(get(COUPON_URL+"/list/all/couponType"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.header.resultMessage", equalTo(
+                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage())))
+                .andExpect(jsonPath("$.result.[0].couponNo", equalTo(1)))
+                .andExpect(jsonPath("$.result.[0].name", equalTo("name")))
+                .andExpect(jsonPath("$.result.[1].couponNo", equalTo(3)))
+                .andExpect(jsonPath("$.result.[1].name", equalTo("name")));
+
+        }
 }
