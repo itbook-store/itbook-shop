@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.common.response.SuccessfulResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.결제_요청에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.service.base.OrderCrudService;
 import shop.itbook.itbookshop.ordergroup.order.service.base.OrderService;
@@ -88,7 +87,7 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> orderAddBeforePayment(
+    public ResponseEntity<CommonResponseBody<결제_요청에_필요한_정보_클래스>> orderAddBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto, HttpServletRequest request) {
 
@@ -99,12 +98,12 @@ public class OrderController {
             orderBeforePaymentEnum = OrderBeforePaymentEnum.일반회원주문;
         }
 
-        InfoForProcessOrderBeforePayment
-            infoForProcessOrderBeforePayment = new InfoForProcessOrderBeforePayment(memberNo);
+        결제전_처리전반에_필요한_정보_클래스
+            infoForProcessOrderBeforePayment = new 결제전_처리전반에_필요한_정보_클래스(memberNo);
         infoForProcessOrderBeforePayment.setOrderAddRequestDto(orderAddRequestDto);
-        
 
-        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+
+        CommonResponseBody<결제_요청에_필요한_정보_클래스> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
@@ -124,7 +123,7 @@ public class OrderController {
      * @author 정재원
      */
     @PostMapping("/subscription")
-    public ResponseEntity<CommonResponseBody<OrderPaymentDto>> subscriptionOrderBeforePayment(
+    public ResponseEntity<CommonResponseBody<결제_요청에_필요한_정보_클래스>> subscriptionOrderBeforePayment(
         @RequestParam(value = "memberNo", required = false) Long memberNo,
         @RequestBody OrderAddRequestDto orderAddRequestDto) {
 
@@ -132,8 +131,8 @@ public class OrderController {
             throw new InvalidOrderException();
         }
 
-        InfoForProcessOrderBeforePayment
-            infoForProcessOrderBeforePayment = new InfoForProcessOrderBeforePayment(memberNo);
+        결제전_처리전반에_필요한_정보_클래스
+            infoForProcessOrderBeforePayment = new 결제전_처리전반에_필요한_정보_클래스(memberNo);
         infoForProcessOrderBeforePayment.setOrderAddRequestDto(orderAddRequestDto);
 
         OrderBeforePaymentEnum orderBeforePaymentEnum;
@@ -150,7 +149,7 @@ public class OrderController {
 //                ), orderService.addOrderBeforePayment(orderAddRequestDto, Optional.of(memberNo))
 //            );
 
-        CommonResponseBody<OrderPaymentDto> commonResponseBody =
+        CommonResponseBody<결제_요청에_필요한_정보_클래스> commonResponseBody =
             new CommonResponseBody<>(
                 new CommonResponseBody.CommonHeader(
                     OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()

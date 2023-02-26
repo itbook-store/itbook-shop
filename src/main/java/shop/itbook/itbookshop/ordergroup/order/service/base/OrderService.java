@@ -1,8 +1,8 @@
 package shop.itbook.itbookshop.ordergroup.order.service.base;
 
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.결제_요청에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancelEnum;
@@ -16,8 +16,8 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderB
  */
 public interface OrderService {
 
-    OrderPaymentDto processOrderBeforePayment(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
+    결제_요청에_필요한_정보_클래스 processOrderBeforePayment(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment,
         OrderBeforePaymentEnum orderBeforePaymentEnum);
 
     @Transactional

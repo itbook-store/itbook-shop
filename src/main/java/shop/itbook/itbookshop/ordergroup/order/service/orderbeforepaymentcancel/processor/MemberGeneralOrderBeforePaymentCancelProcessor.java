@@ -3,14 +3,8 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor.OrderBeforePaymentProcessor;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.OrderBeforePaymentCancelServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.member.MemberOrderBeforePaymentCancelServiceImpl;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.OrderBeforePaymentCancelServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.general.GeneralOrderBeforePaymentCancelServiceImpl;
 
 /**
  * @author 최겸준

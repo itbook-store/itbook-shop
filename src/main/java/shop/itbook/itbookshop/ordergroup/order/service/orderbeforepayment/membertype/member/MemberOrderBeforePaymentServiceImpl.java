@@ -27,11 +27,11 @@ import shop.itbook.itbookshop.membergroup.member.entity.Member;
 import shop.itbook.itbookshop.membergroup.member.service.serviceapi.MemberService;
 import shop.itbook.itbookshop.ordergroup.order.dto.CouponApplyDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForCouponIssueApply;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.결제_요청에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.exception.CanNotSaveRedisException;
@@ -39,8 +39,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.MismatchCategoryNoWhenC
 import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCouponApplyException;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.회원_유형에_대한_결제전_처리_인터페이스;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
@@ -61,7 +60,7 @@ import shop.itbook.itbookshop.productgroup.productcategory.repository.ProductCat
 @RequiredArgsConstructor
 @Service
 public class MemberOrderBeforePaymentServiceImpl implements
-    OrderBeforePaymentServiceAboutMemberType {
+    회원_유형에_대한_결제전_처리_인터페이스 {
 
     private final MemberService memberService;
     private final ProductService productService;
@@ -85,19 +84,19 @@ public class MemberOrderBeforePaymentServiceImpl implements
 
     @Transactional
     @Override
-    public OrderPaymentDto processAboutMemberType(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    public 결제_요청에_필요한_정보_클래스 회원_유형에_대한_결제전_처리_진행(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         this.saveOrderPerson(infoForProcessOrderBeforePayment);
 
-        OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(
+        결제_요청에_필요한_정보_클래스 orderPaymentDto = this.calculateTotalAmount(
             infoForProcessOrderBeforePayment);
 
         return orderPaymentDto;
     }
 
     private void saveOrderPerson(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         Member member =
             memberService.findMemberByMemberNo(infoForProcessOrderBeforePayment.getMemberNo());
         OrderMember orderMember =
@@ -105,8 +104,8 @@ public class MemberOrderBeforePaymentServiceImpl implements
         orderMemberRepository.save(orderMember);
     }
 
-    private OrderPaymentDto calculateTotalAmount(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    private 결제_요청에_필요한_정보_클래스 calculateTotalAmount(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -141,7 +140,7 @@ public class MemberOrderBeforePaymentServiceImpl implements
         order.setAmount(amount);
         orderRepository.save(order);
 
-        return OrderPaymentDto.builder().orderNo(order.getOrderNo())
+        return 결제_요청에_필요한_정보_클래스.builder().orderNo(order.getOrderNo())
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
                 infoForProcessOrderBeforePayment.getOrder().getOrderNo(),

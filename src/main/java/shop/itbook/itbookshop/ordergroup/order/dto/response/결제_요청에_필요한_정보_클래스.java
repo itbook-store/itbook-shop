@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class 결제요청에필요한정보클래스 {
+public class 결제_요청에_필요한_정보_클래스 {
     private Long orderNo;
     private String orderId;
     private String orderName;
@@ -34,8 +34,8 @@ public class 결제요청에필요한정보클래스 {
      * @param failUrl    the fail url
      */
     @Builder
-    public 결제요청에필요한정보클래스(Long orderNo, String orderId, String orderName, Long amount,
-                         String successUrl, String failUrl) {
+    public 결제_요청에_필요한_정보_클래스(Long orderNo, String orderId, String orderName, Long amount,
+                             String successUrl, String failUrl) {
         this.orderNo = orderNo;
         this.orderId = orderId;
         this.orderName = orderName;

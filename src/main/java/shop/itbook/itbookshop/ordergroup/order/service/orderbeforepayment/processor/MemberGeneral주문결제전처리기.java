@@ -3,14 +3,8 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.proce
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.OrderAfterPaymentSuccessServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.member.MemberOrderAfterPaymentSuccessServiceImpl;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.OrderAfterPaymentSuccessServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.general.GeneralOrderAfterPaymentSuccessServiceImpl;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.member.MemberOrderBeforePaymentServiceImpl;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.general.GeneralOrderBeforePaymentServiceImpl;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.회원_유형에_대한_결제전_처리_인터페이스;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.주문_유형에_대한_결제전_처리기_인터페이스;
 
 /**
  * @author 최겸준
@@ -18,23 +12,24 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordert
  */
 @RequiredArgsConstructor
 @Component
-public class MemberGeneralOrderBeforePaymentProcessor extends OrderBeforePaymentProcessor {
+public class MemberGeneral주문결제전처리기 extends 주문결제전처리기 {
 
 
     @Qualifier("memberOrderBeforePaymentServiceImpl")
-    private final OrderBeforePaymentServiceAboutMemberType
+    private final 회원_유형에_대한_결제전_처리_인터페이스
         memberOrderBeforePaymentServiceImpl;
 
     @Qualifier("generalOrderBeforePaymentServiceImpl")
-    private final OrderBeforePaymentServiceAboutOrderType generalOrderBeforePaymentServiceImpl;
+    private final 주문_유형에_대한_결제전_처리기_인터페이스
+        generalOrderBeforePaymentServiceImpl;
 
     @Override
-    protected OrderBeforePaymentServiceAboutOrderType createOrderBeforePaymentServiceAboutOrderType() {
+    protected 주문_유형에_대한_결제전_처리기_인터페이스 주문유형에대한결제전처리기생성() {
         return generalOrderBeforePaymentServiceImpl;
     }
 
     @Override
-    protected OrderBeforePaymentServiceAboutMemberType createOrderBeforePaymentServiceAboutMemberType() {
+    protected 회원_유형에_대한_결제전_처리_인터페이스 회원_유형에_대한_결제전_처리기_생성() {
         return memberOrderBeforePaymentServiceImpl;
     }
 }

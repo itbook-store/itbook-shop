@@ -1,15 +1,13 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.general;
+package shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.ordertype.general;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
+import shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
@@ -30,13 +28,13 @@ public class GeneralOrderBeforePaymentServiceImpl
     @Override
     @Transactional
     public void processAboutOrderType(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         this.saveOrder(infoForProcessOrderBeforePayment);
 
         infoForProcessOrderBeforePayment.setOrderType("일반");
     }
 
-    private void saveOrder(InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    private void saveOrder(결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order =
             OrderTransfer.addDtoToEntity(infoForProcessOrderBeforePayment.getOrderAddRequestDto());

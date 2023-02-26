@@ -16,7 +16,7 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class 결제전처리전반에필요한정보클래스 {
+public class 결제전_처리전반에_필요한_정보_클래스 {
     private OrderAddRequestDto orderAddRequestDto;
     private Long sequence;
     private Order order;
@@ -25,12 +25,12 @@ public class 결제전처리전반에필요한정보클래스 {
 
     private String orderType;
 
-    public 결제전처리전반에필요한정보클래스(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
+    public 결제전_처리전반에_필요한_정보_클래스(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
         this.orderAddRequestDto = orderAddRequestDto;
         this.memberNo = memberNo;
     }
 
-    public 결제전처리전반에필요한정보클래스(Long memberNo) {
+    public 결제전_처리전반에_필요한_정보_클래스(Long memberNo) {
         this.memberNo = memberNo;
     }
 }

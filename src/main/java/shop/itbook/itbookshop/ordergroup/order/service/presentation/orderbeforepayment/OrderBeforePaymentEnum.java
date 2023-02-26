@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment;
+package shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment;
 
 import java.util.Arrays;
 import java.util.Optional;

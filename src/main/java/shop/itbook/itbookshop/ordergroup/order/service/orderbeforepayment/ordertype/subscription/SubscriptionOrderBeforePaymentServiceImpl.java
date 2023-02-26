@@ -4,13 +4,12 @@ import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.주문_유형에_대한_결제전_처리기_인터페이스;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
@@ -27,7 +26,7 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 @RequiredArgsConstructor
 @Service
 public class SubscriptionOrderBeforePaymentServiceImpl implements
-    OrderBeforePaymentServiceAboutOrderType {
+    주문_유형에_대한_결제전_처리기_인터페이스 {
 
     private final OrderRepository orderRepository;
     private final OrderSubscriptionRepository orderSubscriptionRepository;
@@ -37,8 +36,8 @@ public class SubscriptionOrderBeforePaymentServiceImpl implements
 
     @Override
     @Transactional
-    public void processAboutOrderType(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    public void 주문_유형에_대한_결제전_처리_진행(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         this.saveOrder(infoForProcessOrderBeforePayment);
         this.saveOrderSubscription(infoForProcessOrderBeforePayment);
 
@@ -50,7 +49,7 @@ public class SubscriptionOrderBeforePaymentServiceImpl implements
         infoForProcessOrderBeforePayment.setOrderType("구독");
     }
 
-    private void saveOrder(InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    private void saveOrder(결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         OrderAddRequestDto orderAddRequestDto =
             infoForProcessOrderBeforePayment.getOrderAddRequestDto();
@@ -74,7 +73,7 @@ public class SubscriptionOrderBeforePaymentServiceImpl implements
     }
 
     private void saveOrderSubscription(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         OrderAddRequestDto orderAddRequestDto =
             infoForProcessOrderBeforePayment.getOrderAddRequestDto();

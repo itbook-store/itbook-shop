@@ -1,12 +1,9 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor;
+package shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.processor;
 
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.OrderAfterPaymentSuccessServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.결제_요청에_필요한_정보_클래스;
+import shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
+import shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
 
 /**
  * @author 최겸준
@@ -14,8 +11,8 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordert
  */
 public abstract class OrderBeforePaymentProcessor {
 
-    public OrderPaymentDto processOrderBeforePayment(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    public 결제_요청에_필요한_정보_클래스 processOrderBeforePayment(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         OrderBeforePaymentServiceAboutOrderType
             orderBeforePaymentServiceAboutOrderType =
@@ -27,7 +24,7 @@ public abstract class OrderBeforePaymentProcessor {
         OrderBeforePaymentServiceAboutMemberType orderBeforePaymentServiceAboutMemberType =
             this.createOrderBeforePaymentServiceAboutMemberType();
 
-        OrderPaymentDto orderPaymentDto =
+        결제_요청에_필요한_정보_클래스 orderPaymentDto =
             orderBeforePaymentServiceAboutMemberType.processAboutMemberType(
                 infoForProcessOrderBeforePayment);
 

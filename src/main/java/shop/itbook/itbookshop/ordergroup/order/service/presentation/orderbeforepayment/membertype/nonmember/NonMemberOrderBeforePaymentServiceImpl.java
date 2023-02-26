@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.nonmember;
+package shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.membertype.nonmember;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,16 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.dto.ProductsTotalAmount;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.결제_요청에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.AmountException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.entity.OrderNonMember;
 import shop.itbook.itbookshop.ordergroup.ordernonmember.repository.OrderNonMemberRepository;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
@@ -46,26 +45,26 @@ public class NonMemberOrderBeforePaymentServiceImpl implements
 
     @Override
     @Transactional
-    public OrderPaymentDto processAboutMemberType(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    public 결제_요청에_필요한_정보_클래스 processAboutMemberType(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         this.saveOrderPerson(infoForProcessOrderBeforePayment);
 
-        OrderPaymentDto orderPaymentDto = this.calculateTotalAmount(
+        결제_요청에_필요한_정보_클래스 orderPaymentDto = this.calculateTotalAmount(
             infoForProcessOrderBeforePayment);
         return orderPaymentDto;
     }
 
     private void saveOrderPerson(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         OrderNonMember orderNonMember =
             new OrderNonMember(infoForProcessOrderBeforePayment.getOrder(),
                 UUID.randomUUID().toString());
         orderNonMemberRepository.save(orderNonMember);
     }
 
-    private OrderPaymentDto calculateTotalAmount(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    private 결제_요청에_필요한_정보_클래스 calculateTotalAmount(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
 
         OrderAddRequestDto orderAddRequestDto =
             infoForProcessOrderBeforePayment.getOrderAddRequestDto();
@@ -91,7 +90,7 @@ public class NonMemberOrderBeforePaymentServiceImpl implements
         order.setAmount(amount);
         orderRepository.save(order);
 
-        return OrderPaymentDto.builder().orderNo(order.getOrderNo())
+        return 결제_요청에_필요한_정보_클래스.builder().orderNo(order.getOrderNo())
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
                 infoForProcessOrderBeforePayment.getOrder().getOrderNo(),

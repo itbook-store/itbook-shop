@@ -1,7 +1,6 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype;
+package shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.ordertype;
 
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 
 /**
  * @author 최겸준
@@ -9,5 +8,5 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
  */
 public interface OrderBeforePaymentServiceAboutOrderType {
     void processAboutOrderType(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment);
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment);
 }

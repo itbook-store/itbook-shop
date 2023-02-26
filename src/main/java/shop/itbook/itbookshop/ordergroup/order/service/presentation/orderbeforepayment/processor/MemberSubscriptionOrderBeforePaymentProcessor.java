@@ -1,12 +1,10 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor;
+package shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.processor;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.subscription.SubscriptionOrderBeforePaymentServiceImpl;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.OrderBeforePaymentCancelServiceAboutOrderType;
+import shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
+import shop.itbook.itbookshop.ordergroup.order.service.presentation.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
 
 /**
  * @author 정재원

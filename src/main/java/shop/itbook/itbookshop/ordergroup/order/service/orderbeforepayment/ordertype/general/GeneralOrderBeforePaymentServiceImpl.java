@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
+import shop.itbook.itbookshop.ordergroup.order.dto.결제전_처리전반에_필요한_정보_클래스;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.주문_유형에_대한_결제전_처리기_인터페이스;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
@@ -22,21 +20,21 @@ import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusH
 @RequiredArgsConstructor
 @Service
 public class GeneralOrderBeforePaymentServiceImpl
-    implements OrderBeforePaymentServiceAboutOrderType {
+    implements 주문_유형에_대한_결제전_처리기_인터페이스 {
 
     private final OrderRepository orderRepository;
     private final OrderStatusHistoryService orderStatusHistoryService;
 
     @Override
     @Transactional
-    public void processAboutOrderType(
-        InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    public void 주문_유형에_대한_결제전_처리_진행(
+        결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         this.saveOrder(infoForProcessOrderBeforePayment);
 
         infoForProcessOrderBeforePayment.setOrderType("일반");
     }
 
-    private void saveOrder(InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
+    private void saveOrder(결제전_처리전반에_필요한_정보_클래스 infoForProcessOrderBeforePayment) {
         // 주문 엔티티 인스턴스 생성 후 저장
         Order order =
             OrderTransfer.addDtoToEntity(infoForProcessOrderBeforePayment.getOrderAddRequestDto());

@@ -1,6 +1,5 @@
 package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype;
 
-import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 
 /**
