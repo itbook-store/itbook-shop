@@ -78,7 +78,7 @@ public class PaymentResponseDto {
     public static class EasyPayResponseDto {
         private String provider;
         private Long amount;
-        private String discountAmount;
+        private Long discountAmount;
     }
 
     @Getter
