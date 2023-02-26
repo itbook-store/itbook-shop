@@ -11,8 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.converter.DeliveryStatusEnumConverter;
 import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.DeliveryStatusEnum;
+import shop.itbook.itbookshop.deliverygroup.deliverystatusenum.converter.DeliveryStatusEnumConverter;
 
 /**
  * 배송상태에 대한 엔티티입니다.
@@ -34,6 +34,6 @@ public class DeliveryStatus {
     private Integer deliveryStatusNo;
 
     @Convert(converter = DeliveryStatusEnumConverter.class)
-    @Column(name = "delivery_status_name", nullable = false, columnDefinition = "varchar(255)", unique = true)
+    @Column(name = "delivery_status_name", nullable = false, unique = true)
     private DeliveryStatusEnum deliveryStatusEnum;
 }

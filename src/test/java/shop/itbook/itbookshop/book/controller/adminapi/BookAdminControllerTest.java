@@ -28,6 +28,7 @@ import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
+import shop.itbook.itbookshop.productgroup.product.dto.response.Item;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
 import shop.itbook.itbookshop.productgroup.product.resultmessageenum.BookResultMessageEnum;
@@ -92,7 +93,7 @@ class BookAdminControllerTest {
     }
 
     @Test
-    @DisplayName("POST 메서드 성공 테스트")
+    @DisplayName("도서 등록 성공 테스트")
     void addBookTest_success() throws Exception {
         Long testProductNo = 1L;
 
@@ -113,7 +114,7 @@ class BookAdminControllerTest {
     }
 
     @Test
-    @DisplayName("POST 메서드 실패 테스트 - notnull 컬럼인 isbn에 null 값 저장")
+    @DisplayName("도서 등록 실패 테스트 - notnull 컬럼인 isbn에 null 값 저장")
     void addBookTest_failure() throws Exception {
 
         mockMvc.perform(multipart("/api/admin/products/books")
@@ -125,7 +126,7 @@ class BookAdminControllerTest {
     }
 
     @Test
-    @DisplayName("PUT 메서드 성공 테스트")
+    @DisplayName("도서 수정 성공 테스트")
     void modifyBookTest_success() throws Exception {
         Long productNo = 1L;
 
@@ -161,8 +162,9 @@ class BookAdminControllerTest {
     @Test
     void checkIsbnDuplicatedInDBTest() throws Exception {
 
+        String isbn = "9791156754039";
         mockMvc.perform(get("/api/admin/products/books/check-exist-db")
-                .param("isbn", "9791156754039")
+                .param("isbn", isbn)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -176,8 +178,27 @@ class BookAdminControllerTest {
     @Test
     void checkIsbnExistInAladinTest() throws Exception {
 
+        String isbn = "9791156754039";
         mockMvc.perform(get("/api/admin/products/books/check-exist-aladin")
-                .param("isbn", "9791156754039")
+                .param("isbn", isbn)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.header.resultMessage",
+                    equalTo(BookResultMessageEnum.GET_SUCCESS.getMessage())));
+    }
+
+    @DisplayName("알라딘API를 이용해 도서 부가정보 검색이 잘 되는지 테스트")
+    @Test
+    void bookSearchInAladinTest() throws Exception {
+        String isbn = "9791156754039";
+        Item item = new Item();
+        given(aladinApiService.getBookDetails(isbn)).willReturn(item);
+
+        mockMvc.perform(get("/api/admin/products/books/check-exist-aladin")
+                .param("isbn", isbn)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

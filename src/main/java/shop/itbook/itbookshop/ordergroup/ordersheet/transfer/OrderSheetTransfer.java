@@ -1,11 +1,9 @@
 package shop.itbook.itbookshop.ordergroup.ordersheet.transfer;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import shop.itbook.itbookshop.membergroup.memberdestination.dto.response.MemberDestinationResponseDto;
 import shop.itbook.itbookshop.ordergroup.ordersheet.dto.response.OrderSheetResponseDto;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
-import shop.itbook.itbookshop.productgroup.product.entity.Product;
 
 /**
  * 주문서의 entity 와 dto 간 변화를 담당하는 클래스입니다.

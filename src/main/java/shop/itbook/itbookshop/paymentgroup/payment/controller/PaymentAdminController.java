@@ -35,7 +35,7 @@ public class PaymentAdminController {
      * @return 결제 승인 시 반환 받은 Payment 객체입니다.
      * @author 이하늬
      */
-    @PostMapping("api/admin/payment/request-pay/{orderType}/{orderNo}")
+    @PostMapping("/api/admin/payment/request-pay/{orderType}/{orderNo}")
     public ResponseEntity<CommonResponseBody<OrderResponseDto>> requestPayment(
         @RequestBody PaymentApproveRequestDto paymentApproveRequestDto,
         @PathVariable String orderType, @PathVariable Long orderNo, HttpSession session) {
@@ -58,7 +58,7 @@ public class PaymentAdminController {
      * @return 결제 승인 시 반환 받은 Payment 객체입니다.
      * @author 이하늬
      */
-    @PostMapping(value = "api/admin/payment/request-cancel", params = "orderType")
+    @PostMapping(value = "/api/admin/payment/request-cancel", params = "orderType")
     public ResponseEntity<CommonResponseBody<OrderResponseDto>> cancelPayment(
         @RequestBody PaymentCanceledRequestDto paymentCanceledRequestDto,
         @RequestParam String orderType)

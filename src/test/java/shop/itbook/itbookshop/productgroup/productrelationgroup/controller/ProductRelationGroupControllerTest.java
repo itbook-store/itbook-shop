@@ -26,6 +26,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import shop.itbook.itbookshop.productgroup.product.controller.adminapi.ProductAdminController;
 import shop.itbook.itbookshop.productgroup.product.dto.response.ProductDetailsResponseDto;
+import shop.itbook.itbookshop.productgroup.product.dummy.ProductDummy;
+import shop.itbook.itbookshop.productgroup.product.entity.Product;
+import shop.itbook.itbookshop.productgroup.product.resultmessageenum.ProductResultMessageEnum;
 import shop.itbook.itbookshop.productgroup.productcategory.controller.service.ProductCategoryController;
 import shop.itbook.itbookshop.productgroup.productrelationgroup.service.ProductRelationGroupService;
 
@@ -107,14 +110,60 @@ class ProductRelationGroupControllerTest {
     }
 
     @Test
-    void allRelationProductListForAdmin() {
+    void allRelationProductListForAdmin() throws Exception {
+        Product product1 = ProductDummy.getProductSuccess();
+        Product product2 = ProductDummy.getProductSuccess();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(product1, product2), pageable, 10);
+
+        given(
+            productRelationGroupService.findProductRelationForAdmin(any(Pageable.class), anyLong()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/admin/products/relation/2"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.header.resultMessage",
+                    equalTo(ProductResultMessageEnum.GET_SUCCESS.getMessage())));
     }
 
     @Test
-    void productListExceptBasedProduct() {
+    void productListExceptBasedProduct() throws Exception {
+        Product product1 = ProductDummy.getProductSuccess();
+        Product product2 = ProductDummy.getProductSuccess();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(product1, product2), pageable, 10);
+
+        given(
+            productRelationGroupService.findAllMainProductRelationForAdmin(any(Pageable.class)))
+            .willReturn(page);
+
+        mvc.perform(get("/api/admin/products/relation"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.header.resultMessage",
+                    equalTo(ProductResultMessageEnum.GET_SUCCESS.getMessage())));
     }
 
     @Test
-    void testProductListExceptBasedProduct() {
+    void testProductListExceptBasedProduct() throws Exception {
+        Product product1 = ProductDummy.getProductSuccess();
+        Product product2 = ProductDummy.getProductSuccess();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page page = new PageImpl(List.of(product1, product2), pageable, 10);
+
+        given(
+            productRelationGroupService.findProductExceptBasedProductForAdmin(any(Pageable.class),
+                anyLong()))
+            .willReturn(page);
+
+        mvc.perform(get("/api/admin/products/relation/add-candidates/2"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(
+                jsonPath("$.header.resultMessage",
+                    equalTo(ProductResultMessageEnum.GET_SUCCESS.getMessage())));
     }
 }

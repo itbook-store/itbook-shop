@@ -47,7 +47,7 @@ public class BookAdminController {
      * @author 이하늬
      */
     @GetMapping(params = "isbn")
-    public ResponseEntity<CommonResponseBody<Item>> bookSearch(
+    public ResponseEntity<CommonResponseBody<Item>> searchBookDetailsInAladin(
         @RequestParam String isbn) {
 
         Item bookDetails = aladinApiService.getBookDetails(isbn);
@@ -112,7 +112,7 @@ public class BookAdminController {
      * @author 이하늬
      */
     @PostMapping
-    public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> BookAdd(
+    public ResponseEntity<CommonResponseBody<ProductNoResponseDto>> bookAdd(
         @RequestPart @Valid ProductBookRequestDto requestDto,
         @RequestPart MultipartFile thumbnails,
         @RequestPart(required = false) MultipartFile ebook) {

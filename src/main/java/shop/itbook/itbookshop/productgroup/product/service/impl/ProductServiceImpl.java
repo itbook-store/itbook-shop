@@ -58,11 +58,10 @@ public class ProductServiceImpl implements ProductService {
         String fileUrl = fileService.uploadFile(thumbnails, folderPathThumbnail);
         requestDto.setFileThumbnailsUrl(fileUrl);
         try {
-            product = productRepository.save(ProductTransfer.dtoToEntityAdd(requestDto));
+            product = productRepository.save(ProductTransfer.dtoToEntity(requestDto));
             productCategoryService.addProductCategory(product, requestDto.getCategoryNoList());
         } catch (DataIntegrityViolationException e) {
             throw new InvalidInputException();
-
         }
         return product.getProductNo();
     }

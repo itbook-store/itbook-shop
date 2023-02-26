@@ -14,7 +14,7 @@ import lombok.Setter;
  * @since 1.0
  */
 
-@AllArgsConstructor
+
 @NoArgsConstructor
 @Getter
 public class ProductDetailsResponseDto {

@@ -30,7 +30,7 @@ public class Easypay {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "easypay_no", nullable = false)
     private Long easypayNo;
-    
+
     @Column(name = "provider", nullable = false)
     private String provider;
 
@@ -38,5 +38,5 @@ public class Easypay {
     private Long amount;
 
     @Column(name = "discount_amount", nullable = false)
-    private String discountAmount;
+    private Long discountAmount;
 }

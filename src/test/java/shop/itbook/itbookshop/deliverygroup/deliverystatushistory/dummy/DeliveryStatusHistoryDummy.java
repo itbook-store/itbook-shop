@@ -1,10 +1,6 @@
 package shop.itbook.itbookshop.deliverygroup.deliverystatushistory.dummy;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDateTime;
-import shop.itbook.itbookshop.deliverygroup.delivery.dummy.DeliveryDummy;
-import shop.itbook.itbookshop.deliverygroup.delivery.entity.Delivery;
 import shop.itbook.itbookshop.deliverygroup.deliverystatus.dummy.DeliveryStatusDummy;
 import shop.itbook.itbookshop.deliverygroup.deliverystatushistory.entity.DeliveryStatusHistory;
 
@@ -18,6 +14,18 @@ public class DeliveryStatusHistoryDummy {
             .delivery(null)
             .historyLocation("testHistoryLocation")
             .deliveryStatus(DeliveryStatusDummy.getDummyWait())
+            .build();
+
+        testHistory.setDeliveryStatusCreatedAt(LocalDateTime.now());
+
+        return testHistory;
+    }
+
+    public static DeliveryStatusHistory getDeliveryStatusHistory2() {
+        DeliveryStatusHistory testHistory = DeliveryStatusHistory.builder()
+            .delivery(null)
+            .historyLocation("testHistoryLocation")
+            .deliveryStatus(DeliveryStatusDummy.getDummyCompleted())
             .build();
 
         testHistory.setDeliveryStatusCreatedAt(LocalDateTime.now());
