@@ -34,7 +34,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.service.CategoryService;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.membergroup.memberrole.service.MemberRoleService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductAddRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductModifyRequestDto;
@@ -107,8 +107,9 @@ class ProductServiceTest {
     }
 
     @Test
+    @DisplayName("상품 등록 테스트")
     void addProductTest_success() {
-        Product product = ProductTransfer.dtoToEntityAdd(productAddRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productAddRequestDto);
         given(mockProductCategoryService.addProductCategory(any(Product.class), anyList()))
             .willReturn(CategoryDummy.getCategoryNoHiddenBook());
         given(mockProductRepository.save(any(Product.class)))
@@ -210,7 +211,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("상품 엔티티 단건 조회 테스트")
     void findProductEntityTest_success() {
-        Product product = ProductTransfer.dtoToEntityAdd(productAddRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productAddRequestDto);
 
         given(mockProductRepository.findById(anyLong())).willReturn(Optional.of(product));
 

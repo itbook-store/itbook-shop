@@ -19,7 +19,7 @@ import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.exception.InvalidInputException;
@@ -167,11 +167,11 @@ public class BookServiceImpl implements BookService {
         book.setIsbn(requestDto.getIsbn());
         book.setPageCount(requestDto.getPageCount());
         book.setBookCreatedAt(date);
-        if (!Objects.isNull(requestDto.getFileEbookUrl()) &&
-            Objects.equals(requestDto.getIsEbook(), Boolean.TRUE)) {
-            book.setIsEbook(Boolean.TRUE);
-            book.setEbookUrl(requestDto.getFileEbookUrl());
-        }
+//        if (Objects.nonNull(requestDto.getFileEbookUrl()) &&
+//            Objects.equals(requestDto.getIsEbook(), Boolean.TRUE)) {
+//            book.setIsEbook(Boolean.TRUE);
+//            book.setEbookUrl(requestDto.getFileEbookUrl());
+//        }
         book.setPublisherName(requestDto.getPublisherName());
         book.setAuthorName(requestDto.getAuthorName());
         bookRepository.save(book);

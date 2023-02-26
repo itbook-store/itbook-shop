@@ -12,20 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import shop.itbook.itbookshop.coupongroup.coupon.dummy.CouponDummy;
-import shop.itbook.itbookshop.coupongroup.coupon.entity.Coupon;
-import shop.itbook.itbookshop.coupongroup.coupon.repository.CouponRepository;
-import shop.itbook.itbookshop.coupongroup.couponissue.entity.CouponIssue;
-import shop.itbook.itbookshop.coupongroup.couponissue.repository.CouponIssueRepository;
-import shop.itbook.itbookshop.coupongroup.coupontype.dummy.CouponTypeDummy;
-import shop.itbook.itbookshop.coupongroup.coupontype.entity.CouponType;
-import shop.itbook.itbookshop.coupongroup.coupontype.repository.CouponTypeRepository;
-import shop.itbook.itbookshop.coupongroup.ordertotalcoupon.entity.OrderTotalCoupon;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.entity.OrderTotalCouponApply;
-import shop.itbook.itbookshop.coupongroup.ordertotalcouponapply.repository.OrderTotalCouponApplyRepositoy;
-import shop.itbook.itbookshop.coupongroup.usagestatus.entity.UsageStatus;
-import shop.itbook.itbookshop.coupongroup.usagestatus.repository.UsageStatusRepository;
-import org.springframework.data.domain.Pageable;
 import shop.itbook.itbookshop.category.dummy.CategoryDummy;
 import shop.itbook.itbookshop.category.entity.Category;
 import shop.itbook.itbookshop.category.repository.CategoryRepository;
@@ -72,6 +58,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.dummy.MemberStatusDummy;
 import shop.itbook.itbookshop.membergroup.memberstatus.entity.MemberStatus;
 import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRepository;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
+import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListAdminViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderListMemberViewResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionAdminListDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
@@ -84,13 +71,13 @@ import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepos
 import shop.itbook.itbookshop.ordergroup.orderproduct.dummy.OrderProductDummy;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.repository.OrderProductRepository;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.dummy.OrderStatusHistoryDummy;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
-import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatus.dummy.OrderStatusDummy;
 import shop.itbook.itbookshop.ordergroup.orderstatus.entity.OrderStatus;
 import shop.itbook.itbookshop.ordergroup.orderstatus.repository.OrderStatusRepository;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.dummy.OrderStatusHistoryDummy;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
+import shop.itbook.itbookshop.ordergroup.orderstatushistory.repository.OrderStatusHistoryRepository;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.dummy.OrderSubscriptionDummy;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
 import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
@@ -160,8 +147,29 @@ class OrderRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
 
+    OrderStatus dummyOrderStatus;
+
+    Order dummyOrder;
+
+    OrderStatusHistory dummyOrderStatusHistory;
+
+    Member dummyMember;
+
+    Membership dummyMembership;
+
+    MemberStatus dummyMemberStatus;
+
+    OrderProduct dummyOrderProduct;
+
+    Product dummyProduct;
+
+    Delivery dummyDelivery;
+
+    OrderSubscription dummyOrderSubscription;
+
     @BeforeEach
     void setUp() {
+
         testEntityManager.flush();
         testEntityManager.clear();
     }
@@ -213,6 +221,17 @@ class OrderRepositoryTest {
 
         assertThat(orderListOfMemberWithStatus.getContent().get(0).getOrderNo()).isEqualTo(
             order.getOrderNo());
+    }
+
+    @Test
+    void getOrderListOfAdminWithStatus() {
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<OrderListAdminViewResponseDto> page =
+            orderRepository.getOrderListOfAdminWithStatus(pageRequest);
+
+        List<OrderListAdminViewResponseDto> orderList = page.getContent();
+
+        assertThat(orderList.size()).isEqualTo(0);
     }
 
     @DisplayName("주문들을 in절을 통해 잘 가져온다.")
@@ -302,7 +321,7 @@ class OrderRepositoryTest {
 
         // when
         Page<OrderSubscriptionAdminListDto> allSubscriptionOrderList =
-            orderRepository.findAllSubscriptionOrderListByAdmin(pageable);
+            orderRepository.findAllSubscriptionOrderListOfAdmin(pageable);
 
         // then
         assertThat(allSubscriptionOrderList.getContent().get(0).getOrderNo())
@@ -351,7 +370,7 @@ class OrderRepositoryTest {
 
         // when
         Page<OrderSubscriptionListDto> allSubscriptionOrderListByMember =
-            orderRepository.findAllSubscriptionOrderListByMember(pageable, member.getMemberNo());
+            orderRepository.findAllSubscriptionOrderListOfMember(pageable, member.getMemberNo());
 
         // then
         OrderSubscriptionListDto orderSubscriptionListDto =
@@ -533,4 +552,10 @@ class OrderRepositoryTest {
         assertThat(orderOfLatestStatus.get().getOrderNo()).isEqualTo(order.getOrderNo());
 
     }
+
+    @Test
+    void findOrderDetailOfNonMember() {
+
+    }
+
 }

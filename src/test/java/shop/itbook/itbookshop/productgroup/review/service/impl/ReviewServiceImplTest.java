@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.membergroup.member.dto.request.MemberRequestDto;
 import shop.itbook.itbookshop.membergroup.member.dummy.MemberDummy;
 import shop.itbook.itbookshop.membergroup.member.entity.Member;
@@ -62,7 +61,6 @@ import shop.itbook.itbookshop.productgroup.review.transfer.ReviewTransfer;
  * @author 노수연
  * @since 1.0
  */
-@Slf4j
 @ExtendWith(SpringExtension.class)
 @Import(ReviewServiceImpl.class)
 class ReviewServiceImplTest {

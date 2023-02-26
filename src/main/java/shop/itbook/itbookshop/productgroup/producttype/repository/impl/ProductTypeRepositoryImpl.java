@@ -196,7 +196,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         JPQLQuery<ProductDetailsResponseDto> productListQuery =
             getPopularity(qProduct, qBook)
                 .where(qProduct.isDeleted.eq(Boolean.FALSE));
-        
+
         List<ProductDetailsResponseDto> productList = productListQuery
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize()).fetch();
@@ -236,6 +236,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         QOrder qOrder = QOrder.order;
 
         return getBestSeller(qProduct, qBook, qOrderProduct, qOrder)
+            .where(qProduct.product.isSubscription.ne(true))
             .fetchFirst().getProductNo();
     }
 
@@ -256,6 +257,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
                         .orderBy(qOrderMember.orderNo.desc())
                 )
             )
+            .where(qOrderProduct.product.isSubscription.ne(true))
             .orderBy(qOrder.orderCreatedAt.desc())
             .fetchFirst();
     }
@@ -271,6 +273,7 @@ public class ProductTypeRepositoryImpl extends QuerydslRepositorySupport
         return from(qMemberRecentlyViewedProduct)
             .select(qMemberRecentlyViewedProduct.product.productNo)
             .where(qMemberRecentlyViewedProduct.member.memberNo.eq(memberNo))
+            .where(qMemberRecentlyViewedProduct.product.isSubscription.ne(true))
             .orderBy(qMemberRecentlyViewedProduct.recentlyViewedCreatedAt.desc())
             .fetchFirst();
     }

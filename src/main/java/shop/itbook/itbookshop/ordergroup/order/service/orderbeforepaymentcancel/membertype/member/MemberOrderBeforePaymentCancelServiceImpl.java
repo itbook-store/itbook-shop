@@ -137,10 +137,10 @@ public class MemberOrderBeforePaymentCancelServiceImpl implements
 
         if (isDecrease) {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelDecrease(
-                orderMember.getMember(), order, order.getIncreasePoint());
+                Objects.requireNonNull(orderMember).getMember(), order, order.getIncreasePoint());
         } else {
             orderCancelIncreasePointHistoryService.savePointHistoryAboutOrderCancelIncrease(
-                orderMember.getMember(), order, order.getDecreasePoint());
+                Objects.requireNonNull(orderMember).getMember(), order, order.getDecreasePoint());
         }
     }
 }

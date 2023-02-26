@@ -35,7 +35,7 @@ import shop.itbook.itbookshop.book.repository.BookRepository;
 import shop.itbook.itbookshop.book.service.AladinApiService;
 import shop.itbook.itbookshop.book.service.BookService;
 import shop.itbook.itbookshop.book.transfer.BookTransfer;
-import shop.itbook.itbookshop.fileservice.FileService;
+import shop.itbook.itbookshop.file.service.FileService;
 import shop.itbook.itbookshop.productgroup.product.dto.request.ProductBookRequestDto;
 import shop.itbook.itbookshop.productgroup.product.dummy.ProductBookRequestDummy;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
@@ -96,42 +96,27 @@ class BookServiceImplTest {
     @Test
     @DisplayName("도서 등록 테스트")
     void addBookTest_success() {
-        Product product = ProductTransfer.dtoToEntityAdd(productBookRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productBookRequestDto);
         Book book = BookTransfer.dtoToEntityAdd(productBookRequestDto, product.getProductNo());
         given(mockProductService.addProduct(
             mockProductService.toProductRequestDto(productBookRequestDto), mockImageFile))
             .willReturn(product.getProductNo());
         given(mockBookRepository.save(any(Book.class)))
             .willReturn(book);
-
-        Long actual = bookService.addBook(productBookRequestDto, mockImageFile, mockPdfFile);
-
-        Assertions.assertThat(actual).isEqualTo(product.getProductNo());
+        Long actualProductNo =
+            bookService.addBook(productBookRequestDto, mockImageFile, mockPdfFile);
+        Assertions.assertThat(actualProductNo).isEqualTo(product.getProductNo());
     }
-
-//    @Test
-//    @DisplayName("잘못된 데이터 입력 시 도서 등록 실패 테스트")
-//    void addBookTest_failure() {
-//        productBookRequestDto.setIsbn(null);
-//        Product product = ProductTransfer.dtoToEntityAdd(productBookRequestDto);
-//        Book book = BookTransfer.dtoToEntityAdd(productBookRequestDto, product.getProductNo());
-//        given(mockProductService.addProduct(
-//            mockProductService.toProductRequestDto(productBookRequestDto), mockImageFile))
-//            .willReturn(product.getProductNo());
-//        given(mockBookRepository.save(BookTransfer.dtoToEntityAdd(productBookRequestDto,
-//            product.getProductNo()))).willThrow(DataIntegrityViolationException.class);
-//
-//        Assertions.assertThatThrownBy(
-//                () -> bookService.addBook(productBookRequestDto, mockImageFile, mockPdfFile))
-//            .isInstanceOf(DataIntegrityViolationException.class)
-//            .hasMessage(InvalidInputException.MESSAGE);
-//    }
 
     @Test
     @DisplayName("도서 수정 테스트")
     void modifyProductTest_success() {
         Product product = mock(Product.class);
         Book book = mock(Book.class);
+
+//        ReflectionTestUtils.setField(modifyBookRequestDto, "fileEbookUrl", "url");
+//        ReflectionTestUtils.setField(modifyBookRequestDto, "isEbook", Boolean.TRUE);
+
 
         given(mockProductService.updateProduct(any(BookModifyRequestDto.class), anyLong()))
             .willReturn(product);
@@ -223,25 +208,37 @@ class BookServiceImplTest {
     @DisplayName("도서 엔티티 단건 조회 테스트")
     void findBookEntityTest_success() {
 
-        Product product = ProductTransfer.dtoToEntityAdd(productBookRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productBookRequestDto);
         Book book = BookTransfer.dtoToEntityAdd(productBookRequestDto, product.getProductNo());
         given(mockProductService.addProduct(
             mockProductService.toProductRequestDto(productBookRequestDto), mockImageFile))
             .willReturn(product.getProductNo());
+        given(mockProductService.findProductEntity(anyLong())).willReturn(product);
         given(mockBookRepository.findById(anyLong())).willReturn(Optional.of(book));
 
+        Product actualProduct = mockProductService.findProductEntity(1L);
         Optional<Book> actualBook = mockBookRepository.findById(1L);
 
+        Assertions.assertThat(actualProduct).isEqualTo(product);
         Assertions.assertThat(actualBook).isPresent();
         Assertions.assertThat(actualBook.get().getProductNo())
             .isEqualTo(product.getProductNo());
+        Assertions.assertThat(actualBook.get().getProduct()).isEqualTo(book.getProduct());
+        Assertions.assertThat(actualBook.get().getPageCount()).isEqualTo(book.getPageCount());
+        Assertions.assertThat(actualBook.get().getBookCreatedAt())
+            .isEqualTo(book.getBookCreatedAt());
+        Assertions.assertThat(actualBook.get().getIsEbook()).isEqualTo(book.getIsEbook());
+        Assertions.assertThat(actualBook.get().getEbookUrl()).isEqualTo(book.getEbookUrl());
+        Assertions.assertThat(actualBook.get().getPublisherName())
+            .isEqualTo(book.getPublisherName());
+        Assertions.assertThat(actualBook.get().getAuthorName()).isEqualTo(book.getAuthorName());
     }
 
     @Test
     @DisplayName("도서 상세정보 단건 조회 테스트")
     void findBookTest_success() {
 
-        Product product = ProductTransfer.dtoToEntityAdd(productBookRequestDto);
+        Product product = ProductTransfer.dtoToEntity(productBookRequestDto);
         BookDetailsResponseDto book = BookDummy.getBookDetailsResponseDto();
         given(mockProductService.addProduct(
             mockProductService.toProductRequestDto(productBookRequestDto), mockImageFile))
@@ -253,6 +250,48 @@ class BookServiceImplTest {
         Assertions.assertThat(actualBook).isPresent();
         Assertions.assertThat(actualBook.get().getProductNo())
             .isEqualTo(product.getProductNo());
+        Assertions.assertThat(actualBook.get().getProductName())
+            .isEqualTo(product.getName());
+        Assertions.assertThat(actualBook.get().getSimpleDescription())
+            .isEqualTo(product.getSimpleDescription());
+        Assertions.assertThat(actualBook.get().getDetailsDescription())
+            .isEqualTo(product.getDetailsDescription());
+        Assertions.assertThat(actualBook.get().getIsSelled())
+            .isEqualTo(product.getIsSelled());
+        Assertions.assertThat(actualBook.get().getIsForceSoldOut())
+            .isEqualTo(product.getIsForceSoldOut());
+        Assertions.assertThat(actualBook.get().getIsPointApplying())
+            .isEqualTo(product.getIsPointApplying());
+        Assertions.assertThat(actualBook.get().getStock())
+            .isEqualTo(product.getStock());
+        Assertions.assertThat(actualBook.get().getIncreasePointPercent())
+            .isEqualTo(product.getIncreasePointPercent());
+        Assertions.assertThat(actualBook.get().getRawPrice())
+            .isEqualTo(product.getRawPrice());
+        Assertions.assertThat(actualBook.get().getFixedPrice())
+            .isEqualTo(product.getFixedPrice());
+        Assertions.assertThat(actualBook.get().getDiscountPercent())
+            .isEqualTo(product.getDiscountPercent());
+        Assertions.assertThat(actualBook.get().getFileThumbnailsUrl())
+            .isEqualTo(product.getThumbnailUrl());
+        Assertions.assertThat(actualBook.get().getIsbn())
+            .isEqualTo(book.getIsbn());
+        Assertions.assertThat(actualBook.get().getPageCount())
+            .isEqualTo(book.getPageCount());
+        Assertions.assertThat(actualBook.get().getBookCreatedAt())
+            .isEqualTo(book.getBookCreatedAt());
+        Assertions.assertThat(actualBook.get().getIsEbook())
+            .isEqualTo(book.getIsEbook());
+        Assertions.assertThat(actualBook.get().getIsSubscription())
+            .isEqualTo(book.getIsSubscription());
+        Assertions.assertThat(actualBook.get().getIsPointApplyingBasedSellingPrice())
+            .isEqualTo(book.getIsPointApplyingBasedSellingPrice());
+        Assertions.assertThat(actualBook.get().getFileEbookUrl())
+            .isEqualTo(book.getFileEbookUrl());
+        Assertions.assertThat(actualBook.get().getPublisherName())
+            .isEqualTo(book.getPublisherName());
+        Assertions.assertThat(actualBook.get().getAuthorName())
+            .isEqualTo(book.getAuthorName());
     }
 
     @Test
