@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum;
+package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -9,7 +9,7 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  * @author 최겸준
  * @since 1.0
  */
-public enum OrderAfterPaymentSuccessFactoryEnum {
+public enum OrderAfterPaymentSuccessEnum {
 
     구독비회원주문("subscriptionOrderAfterPaymentSuccessNonMemberService"),
     구독회원주문("subscriptionOrderAfterPaymentSuccessMemberService"),
@@ -18,10 +18,10 @@ public enum OrderAfterPaymentSuccessFactoryEnum {
 
     private String beanName;
 
-    private static final OrderAfterPaymentSuccessFactoryEnum[]
-        ORDER_AFTER_PAYMENT_SUCCESS_FACTORY_ENUMS = OrderAfterPaymentSuccessFactoryEnum.values();
+    private static final OrderAfterPaymentSuccessEnum[]
+        ORDER_AFTER_PAYMENT_SUCCESS_FACTORY_ENUMS = OrderAfterPaymentSuccessEnum.values();
 
-    OrderAfterPaymentSuccessFactoryEnum(String beanName) {
+    OrderAfterPaymentSuccessEnum(String beanName) {
         this.beanName = beanName;
     }
 
@@ -29,30 +29,30 @@ public enum OrderAfterPaymentSuccessFactoryEnum {
         return this.beanName;
     }
 
-    public static OrderAfterPaymentSuccessFactoryEnum stringToOrderFactoryEnum(String orderType) {
+    public static OrderAfterPaymentSuccessEnum stringToOrderFactoryEnum(String orderType) {
         return Arrays.stream(ORDER_AFTER_PAYMENT_SUCCESS_FACTORY_ENUMS)
             .filter(orderFactoryEnum -> orderFactoryEnum.name().equals(orderType))
             .findFirst().orElseThrow(RuntimeException::new);
     }
 
-    public static OrderAfterPaymentSuccessFactoryEnum getOrderFactoryEnum(
+    public static OrderAfterPaymentSuccessEnum getOrderFactoryEnum(
         Optional<OrderMember> optionalOrderMember,
         Product product) {
-        OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum;
+        OrderAfterPaymentSuccessEnum orderAfterPaymentSuccessEnum;
         if (product.getIsSubscription()) {
             if (optionalOrderMember.isPresent()) {
-                orderAfterPaymentSuccessFactoryEnum = OrderAfterPaymentSuccessFactoryEnum.구독회원주문;
+                orderAfterPaymentSuccessEnum = OrderAfterPaymentSuccessEnum.구독회원주문;
             } else {
-                orderAfterPaymentSuccessFactoryEnum = OrderAfterPaymentSuccessFactoryEnum.구독비회원주문;
+                orderAfterPaymentSuccessEnum = OrderAfterPaymentSuccessEnum.구독비회원주문;
             }
         } else {
             if (optionalOrderMember.isPresent()) {
-                orderAfterPaymentSuccessFactoryEnum = OrderAfterPaymentSuccessFactoryEnum.일반회원주문;
+                orderAfterPaymentSuccessEnum = OrderAfterPaymentSuccessEnum.일반회원주문;
             } else {
-                orderAfterPaymentSuccessFactoryEnum = OrderAfterPaymentSuccessFactoryEnum.일반비회원주문;
+                orderAfterPaymentSuccessEnum = OrderAfterPaymentSuccessEnum.일반비회원주문;
             }
         }
-        return orderAfterPaymentSuccessFactoryEnum;
+        return orderAfterPaymentSuccessEnum;
     }
 
 }

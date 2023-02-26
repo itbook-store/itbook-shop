@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.OrderAfterPaymentSuccessServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.member.MemberOrderAfterPaymentSuccessServiceImpl;
@@ -19,9 +20,12 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordert
 @Component
 public class MemberGeneralOrderBeforePaymentProcessor extends OrderBeforePaymentProcessor {
 
-    private final MemberOrderBeforePaymentServiceImpl memberOrderAfterPaymentSuccessServiceImpl;
+    @Qualifier("memberOrderBeforePaymentServiceImpl")
+    private final OrderBeforePaymentServiceAboutMemberType
+        memberOrderBeforePaymentServiceImpl;
 
-    private final GeneralOrderBeforePaymentServiceImpl generalOrderBeforePaymentServiceImpl;
+    @Qualifier("generalOrderBeforePaymentServiceImpl")
+    private final OrderBeforePaymentServiceAboutOrderType generalOrderBeforePaymentServiceImpl;
 
     @Override
     protected OrderBeforePaymentServiceAboutOrderType createOrderBeforePaymentServiceAboutOrderType() {
@@ -30,6 +34,6 @@ public class MemberGeneralOrderBeforePaymentProcessor extends OrderBeforePayment
 
     @Override
     protected OrderBeforePaymentServiceAboutMemberType createOrderBeforePaymentServiceAboutMemberType() {
-        return memberOrderAfterPaymentSuccessServiceImpl;
+        return memberOrderBeforePaymentServiceImpl;
     }
 }
