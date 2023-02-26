@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.nonmember;
+package shop.itbook.itbookshop.ordergroup.order.service.base.nonmember;
 
 import java.util.List;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;

@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.OrderAfterPaymentSuccessServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.member.MemberOrderAfterPaymentSuccessServiceImpl;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.OrderAfterPaymentSuccessServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.general.GeneralOrderAfterPaymentSuccessServiceImpl;
 
 /**
  * @author 최겸준
@@ -14,19 +12,19 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.
  */
 @Component
 @RequiredArgsConstructor
-public class MemberGeneralOrderAfterPaymentSuccessProcessor
+public class NonMemberGeneralOrderAfterPaymentSuccessProcessor
     extends OrderAfterPaymentSuccessProcessor {
 
-    @Qualifier("memberOrderAfterPaymentSuccessServiceImpl")
+    @Qualifier("nonMemberOrderAfterPaymentSuccessServiceImpl")
     private final OrderAfterPaymentSuccessServiceAboutMemberType
-        memberOrderAfterPaymentSuccessServiceImpl;
+        nonMemberOrderAfterPaymentSuccessServiceImpl;
     @Qualifier("generalOrderAfterPaymentSuccessServiceImpl")
     private final OrderAfterPaymentSuccessServiceAboutOrderType
         generalOrderAfterPaymentSuccessServiceImpl;
 
     @Override
     protected OrderAfterPaymentSuccessServiceAboutMemberType createOrderAfterPaymentSuccessAboutMemberTypeService() {
-        return memberOrderAfterPaymentSuccessServiceImpl;
+        return nonMemberOrderAfterPaymentSuccessServiceImpl;
     }
 
     @Override

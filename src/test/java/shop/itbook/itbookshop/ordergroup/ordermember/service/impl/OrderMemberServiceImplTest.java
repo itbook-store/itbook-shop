@@ -25,7 +25,7 @@ import shop.itbook.itbookshop.membergroup.memberstatus.repository.MemberStatusRe
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.base.OrderService;
 import shop.itbook.itbookshop.ordergroup.ordermember.dummy.OrderMemberDummy;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;

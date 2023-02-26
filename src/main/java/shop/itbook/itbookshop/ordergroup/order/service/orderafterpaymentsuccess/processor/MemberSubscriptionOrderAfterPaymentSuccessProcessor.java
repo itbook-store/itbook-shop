@@ -6,23 +6,23 @@ import org.springframework.stereotype.Component;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.OrderAfterPaymentSuccessServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.member.MemberOrderAfterPaymentSuccessServiceImpl;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.OrderAfterPaymentSuccessServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.general.GeneralOrderAfterPaymentSuccessServiceImpl;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.subscription.SubscriptionOrderAfterPaymentSuccessServiceImpl;
 
 /**
  * @author 최겸준
  * @since 1.0
  */
-@Component
 @RequiredArgsConstructor
-public class MemberGeneralOrderAfterPaymentSuccessProcessor
+@Component
+public class MemberSubscriptionOrderAfterPaymentSuccessProcessor
     extends OrderAfterPaymentSuccessProcessor {
 
     @Qualifier("memberOrderAfterPaymentSuccessServiceImpl")
     private final OrderAfterPaymentSuccessServiceAboutMemberType
         memberOrderAfterPaymentSuccessServiceImpl;
-    @Qualifier("generalOrderAfterPaymentSuccessServiceImpl")
+    @Qualifier("subscriptionOrderAfterPaymentSuccessServiceImpl")
     private final OrderAfterPaymentSuccessServiceAboutOrderType
-        generalOrderAfterPaymentSuccessServiceImpl;
+        subscriptionOrderAfterPaymentSuccessServiceImpl;
 
     @Override
     protected OrderAfterPaymentSuccessServiceAboutMemberType createOrderAfterPaymentSuccessAboutMemberTypeService() {
@@ -31,6 +31,6 @@ public class MemberGeneralOrderAfterPaymentSuccessProcessor
 
     @Override
     protected OrderAfterPaymentSuccessServiceAboutOrderType createOrderAfterPaymentSuccessAboutOrderTypeService() {
-        return generalOrderAfterPaymentSuccessServiceImpl;
+        return subscriptionOrderAfterPaymentSuccessServiceImpl;
     }
 }

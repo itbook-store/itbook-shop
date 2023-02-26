@@ -40,7 +40,7 @@ import shop.itbook.itbookshop.ordergroup.order.exception.MismatchProductNoWhenCo
 import shop.itbook.itbookshop.ordergroup.order.exception.NotOrderTotalCouponException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
 import shop.itbook.itbookshop.ordergroup.order.util.AmountCalculationBeforePaymentUtil;
 import shop.itbook.itbookshop.ordergroup.ordermember.entity.OrderMember;
 import shop.itbook.itbookshop.ordergroup.ordermember.repository.OrderMemberRepository;
@@ -148,7 +148,7 @@ public class MemberOrderBeforePaymentServiceImpl implements
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
                 infoForProcessOrderBeforePayment.getOrder().getOrderNo(),
-                OrderAfterPaymentSuccessFactoryEnum.구독회원주문.name()))
+                OrderAfterPaymentSuccessEnum.구독회원주문.name()))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
 
     }

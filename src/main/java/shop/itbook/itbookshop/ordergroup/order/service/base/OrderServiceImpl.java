@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.impl;
+package shop.itbook.itbookshop.ordergroup.order.service.base;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +12,9 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.processor.OrderAfterPaymentSuccessProcessor;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor.OrderBeforePaymentProcessor;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.processor.OrderBeforePaymentCancelProcessor;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentCancelFactoryEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancelEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
 
 /**
  * OrderAdminService 인터페이스의 기본 구현체 입니다.
@@ -27,6 +27,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.Or
 @Service
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
+
     private final OrderCrudService orderCrudService;
 
     /**
@@ -44,10 +45,10 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderPaymentDto processOrderBeforePayment(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
-        OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum) {
+        OrderBeforePaymentEnum orderBeforePaymentEnum) {
 
         OrderBeforePaymentProcessor orderBeforePaymentProcessor =
-            orderBeforePaymentProcessorMap.get(orderBeforePaymentFactoryEnum.getBeanName());
+            orderBeforePaymentProcessorMap.get(orderBeforePaymentEnum.getBeanName());
 
         return orderBeforePaymentProcessor.processOrderBeforePayment(
             infoForProcessOrderBeforePayment);
@@ -56,12 +57,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order processOrderAfterPaymentSuccess(
-        OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum, Long orderNo) {
+        OrderAfterPaymentSuccessEnum orderAfterPaymentSuccessEnum, Long orderNo) {
 
         Order order = orderCrudService.findOrderEntity(orderNo);
         OrderAfterPaymentSuccessProcessor orderAfterPaymentSuccessProcessor =
             orderAfterPaymentSuccessProcessorMap.get(
-                orderAfterPaymentSuccessFactoryEnum.getBeanName());
+                orderAfterPaymentSuccessEnum.getBeanName());
 
         return orderAfterPaymentSuccessProcessor.processOrderAfterPaymentSuccess(order);
     }
@@ -69,13 +70,13 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void processOrderBeforePaymentCancel(
-        Long orderNo, OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum) {
+        Long orderNo, OrderBeforePaymentCancelEnum orderBeforePaymentCancelEnum) {
 
         Order order = orderCrudService.findOrderEntity(orderNo);
-        OrderBeforePaymentCancelProcessor orderBeforePaymentProcessor =
+        OrderBeforePaymentCancelProcessor orderBeforePaymentCancelProcessor =
             orderBeforePaymentCancelProcessorMap.get(
-                orderBeforePaymentCancelFactoryEnum.getBeanName());
+                orderBeforePaymentCancelEnum.getBeanName());
 
-        orderBeforePaymentProcessor.processOrderBeforePayment(order);
+        orderBeforePaymentCancelProcessor.processOrderBeforePaymentCancel(order);
     }
 }

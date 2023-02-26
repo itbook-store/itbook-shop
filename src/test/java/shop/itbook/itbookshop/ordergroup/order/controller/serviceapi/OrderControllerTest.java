@@ -22,15 +22,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.itbook.itbookshop.ordergroup.order.controller.adminapi.OrderAdminController;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionListDto;
 import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.base.OrderCrudService;
+import shop.itbook.itbookshop.ordergroup.order.service.base.OrderService;
 
 /**
  * @author 이하늬
