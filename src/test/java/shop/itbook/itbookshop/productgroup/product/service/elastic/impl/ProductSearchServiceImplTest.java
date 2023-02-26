@@ -28,6 +28,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.itbook.itbookshop.productgroup.product.dto.response.ProductSearchResponseDto;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.entity.SearchProduct;
 import shop.itbook.itbookshop.productgroup.product.exception.ProductNotFoundException;
@@ -119,6 +120,22 @@ class ProductSearchServiceImplTest {
             productSearchService.searchProductByTitle(Pageable.unpaged(), "test").getContent())
             .usingRecursiveComparison()
             .isEqualTo(List.of(documentToDto(elasticProduct), documentToDto(elasticProduct)));
+
+    }
+
+    @Test
+    @DisplayName("상품 이름 검색 테스트")
+    void findProductsListTest() {
+
+        List<SearchProduct> productList = List.of(elasticProduct, elasticProduct);
+
+        given(mockProductSearchRepository.findByName(anyString())).willReturn(productList);
+
+        List<ProductSearchResponseDto> results =
+            productSearchService.searchProductsByTitle("test");
+
+        assertThat(results.get(0).getProductNo())
+            .isEqualTo(documentToDto(elasticProduct).getProductNo());
 
     }
 
