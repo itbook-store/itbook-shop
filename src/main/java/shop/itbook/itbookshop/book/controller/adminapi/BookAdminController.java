@@ -47,7 +47,7 @@ public class BookAdminController {
      * @author 이하늬
      */
     @GetMapping(params = "isbn")
-    public ResponseEntity<CommonResponseBody<Item>> bookSearch(
+    public ResponseEntity<CommonResponseBody<Item>> 지(
         @RequestParam String isbn) {
 
         Item bookDetails = aladinApiService.getBookDetails(isbn);

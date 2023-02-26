@@ -167,11 +167,11 @@ public class BookServiceImpl implements BookService {
         book.setIsbn(requestDto.getIsbn());
         book.setPageCount(requestDto.getPageCount());
         book.setBookCreatedAt(date);
-        if (!Objects.isNull(requestDto.getFileEbookUrl()) &&
-            Objects.equals(requestDto.getIsEbook(), Boolean.TRUE)) {
-            book.setIsEbook(Boolean.TRUE);
-            book.setEbookUrl(requestDto.getFileEbookUrl());
-        }
+//        if (Objects.nonNull(requestDto.getFileEbookUrl()) &&
+//            Objects.equals(requestDto.getIsEbook(), Boolean.TRUE)) {
+//            book.setIsEbook(Boolean.TRUE);
+//            book.setEbookUrl(requestDto.getFileEbookUrl());
+//        }
         book.setPublisherName(requestDto.getPublisherName());
         book.setAuthorName(requestDto.getAuthorName());
         bookRepository.save(book);
