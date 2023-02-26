@@ -102,22 +102,7 @@ public class OrderController {
         InfoForProcessOrderBeforePayment
             infoForProcessOrderBeforePayment = new InfoForProcessOrderBeforePayment(memberNo);
         infoForProcessOrderBeforePayment.setOrderAddRequestDto(orderAddRequestDto);
-
-        Optional<Long> optMemberNo = Optional.empty();
-
-        if (Objects.nonNull(memberNo)) {
-            optMemberNo = Optional.of(memberNo);
-        }
-
-//        orderService.addOrderBeforePayment(orderBeforePayment,
-//            new InfoForPrePaymentProcess(orderAddRequestDto, memberNo));
-
-//        CommonResponseBody<OrderPaymentDto> commonResponseBody =
-//            new CommonResponseBody<>(
-//                new CommonResponseBody.CommonHeader(
-//                    OrderResultMessageEnum.ORDER_ADD_SUCCESS_MESSAGE.getResultMessage()
-//                ), orderService.addOrderBeforePayment(orderAddRequestDto, optMemberNo)
-//            );
+        
 
         CommonResponseBody<OrderPaymentDto> commonResponseBody =
             new CommonResponseBody<>(

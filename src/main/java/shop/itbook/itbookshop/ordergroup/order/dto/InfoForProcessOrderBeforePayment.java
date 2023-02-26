@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
 
 /**
  * @author 최겸준
@@ -22,6 +23,8 @@ public class InfoForProcessOrderBeforePayment {
     private Order order;
 
     private Long memberNo;
+
+    private String orderType;
 
     public InfoForProcessOrderBeforePayment(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
         this.orderAddRequestDto = orderAddRequestDto;

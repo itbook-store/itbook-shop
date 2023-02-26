@@ -50,8 +50,10 @@ public class OrderServiceImpl implements OrderService {
         OrderBeforePaymentProcessor orderBeforePaymentProcessor =
             orderBeforePaymentProcessorMap.get(orderBeforePaymentEnum.getBeanName());
 
-        return orderBeforePaymentProcessor.processOrderBeforePayment(
+        OrderPaymentDto orderPaymentDto = orderBeforePaymentProcessor.processOrderBeforePayment(
             infoForProcessOrderBeforePayment);
+
+        return orderPaymentDto;
     }
 
     @Override

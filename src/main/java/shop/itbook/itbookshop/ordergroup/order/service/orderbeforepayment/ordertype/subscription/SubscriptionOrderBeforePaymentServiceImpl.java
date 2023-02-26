@@ -9,6 +9,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.ProductDetailsDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
@@ -33,13 +34,20 @@ public class SubscriptionOrderBeforePaymentServiceImpl implements
     private final OrderStatusHistoryService orderStatusHistoryService;
     private final OrderProductService orderProductService;
     private final ProductService productService;
-    
+
     @Override
     @Transactional
     public void processAboutOrderType(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
         this.saveOrder(infoForProcessOrderBeforePayment);
         this.saveOrderSubscription(infoForProcessOrderBeforePayment);
+
+        OrderAddRequestDto orderAddRequestDto =
+            infoForProcessOrderBeforePayment.getOrderAddRequestDto();
+        orderAddRequestDto.getProductDetailsDtoList().get(0)
+            .setProductCnt(orderAddRequestDto.getSubscriptionPeriod());
+
+        infoForProcessOrderBeforePayment.setOrderType("구독");
     }
 
     private void saveOrder(InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
