@@ -1,7 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.controller.serviceapi.nonmember;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -17,20 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import shop.itbook.itbookshop.ordergroup.order.controller.serviceapi.OrderController;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
-import shop.itbook.itbookshop.ordergroup.order.dummy.OrderDummy;
-import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.resultemessageenum.OrderResultMessageEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
-import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.base.nonmember.OrderNonMemberService;
 
 /**
  * @author 이하늬

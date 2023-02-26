@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudService;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.base.OrderCrudService;
 
 /**
  * @author 강명관

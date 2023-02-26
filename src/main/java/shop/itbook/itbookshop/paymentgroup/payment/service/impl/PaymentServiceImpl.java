@@ -8,9 +8,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.impl.OrderService;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentCancelFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.base.OrderService;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancelEnum;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
 import shop.itbook.itbookshop.paymentgroup.easypay.entity.Easypay;
@@ -90,12 +90,12 @@ public class PaymentServiceImpl implements PaymentService {
             paymentStatusService.findPaymentStatusEntity(PaymentStatusEnum.DONE);
         payment.setPaymentStatus(paymentStatus);
 
-        OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum
-            = OrderAfterPaymentSuccessFactoryEnum.stringToOrderFactoryEnum(orderType);
+        OrderAfterPaymentSuccessEnum orderAfterPaymentSuccessEnum
+            = OrderAfterPaymentSuccessEnum.stringToOrderFactoryEnum(orderType);
 
         Order order =
-            orderService.processAfterOrderPaymentSuccessRefactor(
-                orderAfterPaymentSuccessFactoryEnum, orderNo);
+            orderService.processOrderAfterPaymentSuccess(
+                orderAfterPaymentSuccessEnum, orderNo);
 //        Order order = orderService.processAfterOrderPaymentSuccess(orderNo);
         payment.setOrder(order);
 
@@ -124,14 +124,14 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentResponseDto.PaymentDataResponseDto response;
         Payment payment;
 
-        OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum
-            = OrderBeforePaymentCancelFactoryEnum.stringToOrderFactoryEnum(orderType);
+        OrderBeforePaymentCancelEnum orderBeforePaymentCancelEnum
+            = OrderBeforePaymentCancelEnum.stringToOrderFactoryEnum(orderType);
 
         // 주문 취소 처리
 //        orderService.processBeforeOrderCancelPayment(
 //            paymentCanceledRequestDto.getOrderNo());
-        orderService.processBeforeOrderCancelPaymentRefactor(
-            paymentCanceledRequestDto.getOrderNo(), orderBeforePaymentCancelFactoryEnum);
+        orderService.processOrderBeforePaymentCancel(
+            paymentCanceledRequestDto.getOrderNo(), orderBeforePaymentCancelEnum);
 
         response = tossPayService.requestCanceledPayment(paymentCanceledRequestDto, paymentKey);
 
