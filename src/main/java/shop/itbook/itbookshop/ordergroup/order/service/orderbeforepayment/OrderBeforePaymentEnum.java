@@ -11,10 +11,10 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  */
 public enum OrderBeforePaymentEnum {
 
-    구독비회원주문("subscriptionOrderBeforePaymentNonMemberService"),
-    구독회원주문("subscriptionOrderBeforePaymentMemberService"),
-    일반비회원주문("generalOrderBeforePaymentNonMemberService"),
-    일반회원주문("generalOrderBeforePaymentMemberService");
+    구독비회원주문("nonMemberSubscriptionOrderBeforePaymentProcessor"),
+    구독회원주문("memberSubscriptionOrderBeforePaymentProcessor"),
+    일반비회원주문("nonMemberGeneralOrderBeforePaymentProcessor"),
+    일반회원주문("memberGeneralOrderBeforePaymentProcessor");
 
     private String beanName;
 

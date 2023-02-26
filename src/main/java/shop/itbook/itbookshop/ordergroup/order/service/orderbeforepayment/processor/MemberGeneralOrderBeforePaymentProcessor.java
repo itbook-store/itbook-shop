@@ -20,11 +20,13 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordert
 @Component
 public class MemberGeneralOrderBeforePaymentProcessor extends OrderBeforePaymentProcessor {
 
+
     @Qualifier("memberOrderBeforePaymentServiceImpl")
-    private final MemberOrderBeforePaymentServiceImpl memberOrderBeforePaymentServiceImpl;
+    private final OrderBeforePaymentServiceAboutMemberType
+        memberOrderBeforePaymentServiceImpl;
 
     @Qualifier("generalOrderBeforePaymentServiceImpl")
-    private final GeneralOrderBeforePaymentServiceImpl generalOrderBeforePaymentServiceImpl;
+    private final OrderBeforePaymentServiceAboutOrderType generalOrderBeforePaymentServiceImpl;
 
     @Override
     protected OrderBeforePaymentServiceAboutOrderType createOrderBeforePaymentServiceAboutOrderType() {

@@ -11,10 +11,10 @@ import shop.itbook.itbookshop.productgroup.product.entity.Product;
  */
 public enum OrderBeforePaymentCancelEnum {
 
-    구독비회원주문("subscriptionOrderBeforePaymentCancelNonMemberService"),
+    구독비회원주문("nonMemberSubscriptionOrderBeforePaymentCancelProcessor"),
     구독회원주문("memberSubscriptionOrderBeforePaymentCancelProcessor"),
     일반비회원주문("nonMemberGeneralOrderBeforePaymentCancelProcessor"),
-    일반회원주문("generalOrderBeforePaymentCancelMemberService");
+    일반회원주문("memberGeneralOrderBeforePaymentCancelProcessor");
 
     private String beanName;
 
@@ -35,24 +35,5 @@ public enum OrderBeforePaymentCancelEnum {
             .findFirst().orElseThrow(RuntimeException::new);
     }
 
-    public static OrderBeforePaymentCancelEnum getOrderFactoryEnum(
-        Optional<OrderMember> optionalOrderMember,
-        Product product) {
-        OrderBeforePaymentCancelEnum orderAferPaymentSuccessFactoryEnum;
-        if (product.getIsSubscription()) {
-            if (optionalOrderMember.isPresent()) {
-                orderAferPaymentSuccessFactoryEnum = OrderBeforePaymentCancelEnum.구독회원주문;
-            } else {
-                orderAferPaymentSuccessFactoryEnum = OrderBeforePaymentCancelEnum.구독비회원주문;
-            }
-        } else {
-            if (optionalOrderMember.isPresent()) {
-                orderAferPaymentSuccessFactoryEnum = OrderBeforePaymentCancelEnum.일반회원주문;
-            } else {
-                orderAferPaymentSuccessFactoryEnum = OrderBeforePaymentCancelEnum.일반비회원주문;
-            }
-        }
-        return orderAferPaymentSuccessFactoryEnum;
-    }
 
 }
