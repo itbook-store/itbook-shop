@@ -32,4 +32,6 @@ public class UserCouponIssueListResponseDto {
     private Integer categoryNo;
     private String categoryName;
     private String parentCategoryName;
+
+
 }

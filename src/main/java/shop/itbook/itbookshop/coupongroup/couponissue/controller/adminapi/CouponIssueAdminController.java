@@ -13,7 +13,6 @@ import shop.itbook.itbookshop.common.response.CommonResponseBody;
 import shop.itbook.itbookshop.common.response.PageResponse;
 import shop.itbook.itbookshop.coupongroup.coupon.resultmessageenum.CouponResultMessageEnum;
 import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.AdminCouponIssueListResponseDto;
-import shop.itbook.itbookshop.coupongroup.couponissue.dto.response.CouponIssueListByGroupResponseDto;
 import shop.itbook.itbookshop.coupongroup.couponissue.service.CouponIssueService;
 
 /**
@@ -42,19 +41,6 @@ public class CouponIssueAdminController {
                 new CommonResponseBody.CommonHeader(
                     CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 pageResponse);
-
-        return ResponseEntity.ok().body(commonResponseBody);
-    }
-
-    @GetMapping("/{memberNo}/available")
-    public ResponseEntity<CommonResponseBody<CouponIssueListByGroupResponseDto>> findAvailableCouponIssuesByMemberId(
-        @PathVariable Long memberNo) {
-
-        CommonResponseBody<CouponIssueListByGroupResponseDto> commonResponseBody =
-            new CommonResponseBody<>(
-                new CommonResponseBody.CommonHeader(
-                    CouponResultMessageEnum.COUPON_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
-                couponIssueService.findMemberAvailableCouponIssuesList(memberNo));
 
         return ResponseEntity.ok().body(commonResponseBody);
     }

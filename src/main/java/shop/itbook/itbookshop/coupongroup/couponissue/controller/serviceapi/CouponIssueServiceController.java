@@ -68,7 +68,7 @@ public class CouponIssueServiceController {
                     CouponIssueResultMessageEnum.COUPON_ISSUE_LIST_SUCCESS_MESSAGE.getSuccessMessage()),
                 couponIssueNoRequest);
 
-        return ResponseEntity.status(HttpStatus.OK.value()).body(commonResponseBody);
+        return ResponseEntity.status(HttpStatus.CREATED.value()).body(commonResponseBody);
     }
 
     @PutMapping("/{couponIssueNo}/point-coupon-use")
@@ -103,7 +103,7 @@ public class CouponIssueServiceController {
     }
 
     @GetMapping("/{memberNo}/order/total")
-    public ResponseEntity<CommonResponseBody<List<OrderCouponSimpleListResponseDto>>> findAvailableProductCategoryCouponByMemberNoAndProductNo(
+    public ResponseEntity<CommonResponseBody<List<OrderCouponSimpleListResponseDto>>> findAvailableProductCategoryCouponByMemberNo(
         @PathVariable Long memberNo) {
 
         List<OrderCouponSimpleListResponseDto> orderCouponList =
