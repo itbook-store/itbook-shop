@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import shop.itbook.itbookshop.ordergroup.order.dto.request.OrderAddRequestDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
 
 /**
  * @author 최겸준
@@ -17,7 +16,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderB
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InfoForProcessOrderBeforePayment {
+public class 결제전처리전반에필요한정보클래스 {
     private OrderAddRequestDto orderAddRequestDto;
     private Long sequence;
     private Order order;
@@ -26,12 +25,12 @@ public class InfoForProcessOrderBeforePayment {
 
     private String orderType;
 
-    public InfoForProcessOrderBeforePayment(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
+    public 결제전처리전반에필요한정보클래스(OrderAddRequestDto orderAddRequestDto, Long memberNo) {
         this.orderAddRequestDto = orderAddRequestDto;
         this.memberNo = memberNo;
     }
 
-    public InfoForProcessOrderBeforePayment(Long memberNo) {
+    public 결제전처리전반에필요한정보클래스(Long memberNo) {
         this.memberNo = memberNo;
     }
 }
