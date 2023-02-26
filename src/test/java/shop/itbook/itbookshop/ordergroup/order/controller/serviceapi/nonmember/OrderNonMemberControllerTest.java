@@ -54,7 +54,8 @@ class OrderNonMemberControllerTest {
         given(mockOrderNonmemberService.findNonMemberOrderDetails(anyLong(), anyString()))
             .willReturn(orderDetailsResponseDto);
 
-        mockMvc.perform(get("/api/orders/details/1/non-member?orderCode=123"))
+        mockMvc.perform(get("/api/orders/details/1/non-member")
+                .param("orderCode", "123"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(

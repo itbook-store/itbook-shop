@@ -175,7 +175,8 @@ class ProductAdminControllerTest {
         given(mockProductCategoryService.findProductList(any(Pageable.class), anyInt()))
             .willReturn(page);
 
-        mockMvc.perform(get("/api/admin/products?categoryNo=2"))
+        mockMvc.perform(get("/api/admin/products")
+                .param("categoryNo", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
@@ -193,7 +194,8 @@ class ProductAdminControllerTest {
         given(mockProductCategoryService.findCategoryList(any(Pageable.class), anyLong()))
             .willReturn(page);
 
-        mockMvc.perform(get("/api/admin/products?productNo=2"))
+        mockMvc.perform(get("/api/admin/products")
+                .param("productNo", "2"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
@@ -208,7 +210,8 @@ class ProductAdminControllerTest {
 
         mockProductService.changeBooleanField(productNo, "delete");
 
-        mockMvc.perform(put("/api/admin/products/modify/1?fieldName=delete"))
+        mockMvc.perform(put("/api/admin/products/modify/1")
+                .param("fieldName", "delete"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
@@ -223,7 +226,8 @@ class ProductAdminControllerTest {
 
         mockProductService.changeBooleanField(productNo, "isForceSoldOut");
 
-        mockMvc.perform(put("/api/admin/products/modify/1?fieldName=isForceSoldOut"))
+        mockMvc.perform(put("/api/admin/products/modify/1")
+                .param("fieldName", "isForceSoldOut"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
@@ -238,7 +242,8 @@ class ProductAdminControllerTest {
 
         mockProductService.changeBooleanField(productNo, "isSelled");
 
-        mockMvc.perform(put("/api/admin/products/modify/1?fieldName=isSelled"))
+        mockMvc.perform(put("/api/admin/products/modify/1?fieldName=isSelled")
+                .param("fieldName", "isSelled"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(
