@@ -50,8 +50,9 @@ public class PaymentRepositoryImpl extends QuerydslRepositorySupport
             .innerJoin(qPayment.order, qOrder)
             .where(qOrder.orderNo.eq(orderNo))
             .select(Projections.constructor(PaymentCardResponseDto.class,
+                qCard.cardSerialNo.as("cardSerialNo"),
                 qCard.type.as("cardType"),
-                qCard.cardSerialNo, qCard.totalAmount,
+                qCard.totalAmount,
                 qPayment.paymentStatus.paymentStatusEnum.stringValue().as("paymentStatus")))
             .fetchOne();
     }

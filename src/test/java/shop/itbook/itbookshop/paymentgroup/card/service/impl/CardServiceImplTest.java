@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shop.itbook.itbookshop.paymentgroup.PaymentDummy;
 import shop.itbook.itbookshop.paymentgroup.card.entity.Card;
 import shop.itbook.itbookshop.paymentgroup.card.repository.CardRepository;
 import shop.itbook.itbookshop.paymentgroup.card.service.CardService;
@@ -35,19 +36,7 @@ class CardServiceImplTest {
 
     @Test
     void addCard() {
-        Card card = Card.builder()
-            .cardSerialNo("serialNo")
-            .totalAmount(15000L)
-            .issuerCode("issuer")
-            .acquireCode("sdlkj")
-            .installmentPlanMonths(3)
-            .approveNumber("2134")
-            .isUseCardPoint(false)
-            .type("신용")
-            .ownerType("owner")
-            .acquireStatus("acquireStatus")
-            .isInterestFree(false)
-            .build();
+        Card card = PaymentDummy.getCard();
 
         PaymentResponseDto.PaymentDataResponseDto paymentResponseDto =
             new PaymentResponseDto.PaymentDataResponseDto();

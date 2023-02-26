@@ -36,7 +36,7 @@ public class Delivery {
     @JoinColumn(name = "order_no", nullable = false)
     private Order order;
 
-    @Column(name = "tracking_no", columnDefinition = "varchar(255)",
+    @Column(name = "tracking_no",
         unique = true)
     private String trackingNo;
 
