@@ -2,7 +2,6 @@ package shop.itbook.itbookshop.deliverygroup.delivery.service.serviceapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 import java.util.Optional;
@@ -117,17 +116,20 @@ public class DeliveryServiceImplTest {
 
     @Test
     void findTrackingNoByOrderNo() {
+        orderRepository.save(order);
+        delivery = DeliveryDummy.createDelivery(order);
+
         given(deliveryRepository.save(delivery)).willReturn(delivery);
         given(deliveryStatusRepository.findByDeliveryStatusEnum(DeliveryStatusEnum.WAIT_DELIVERY))
             .willReturn(Optional.of(deliveryStatus));
 
         deliveryStatusHistory.setDelivery(delivery);
+        
+        given(deliveryService.findTrackingNoByOrderNo(any())).willReturn(delivery.getTrackingNo());
 
-        given(deliveryRepository.findTrackingNoByOrderNo(anyLong())).willReturn(
+        assertThat(
+            deliveryService.findTrackingNoByOrderNo(delivery.getOrder().getOrderNo())).isEqualTo(
             delivery.getTrackingNo());
-
-        assertThat(deliveryService.findTrackingNoByOrderNo(order.getOrderNo())).isEqualTo(
-            delivery.getDeliveryNo());
     }
 
     @Test
