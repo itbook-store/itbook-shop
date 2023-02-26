@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import shop.itbook.itbookshop.paymentgroup.PaymentDummy;
 import shop.itbook.itbookshop.paymentgroup.easypay.entity.Easypay;
 import shop.itbook.itbookshop.paymentgroup.easypay.service.EasypayService;
 import shop.itbook.itbookshop.pointgroup.pointhistorychild.gift.entity.GiftIncreaseDecreasePointHistory;
@@ -29,8 +30,7 @@ class EasypayRepositoryTest {
     @Test
     @DisplayName("easypay 객체 저장 성공 테스트")
     void save() {
-        Easypay easypay = new Easypay(1L, "간편결제", 15000L, 0L);
-
+        Easypay easypay = PaymentDummy.getEasypay();
         easypayRepository.save(easypay);
 
         entityManager.flush();
