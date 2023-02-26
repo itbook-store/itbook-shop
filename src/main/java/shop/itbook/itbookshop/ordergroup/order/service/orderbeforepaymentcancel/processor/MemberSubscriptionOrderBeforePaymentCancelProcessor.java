@@ -3,32 +3,26 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.processor.OrderBeforePaymentProcessor;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.OrderBeforePaymentCancelServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.member.MemberOrderBeforePaymentCancelServiceImpl;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.OrderBeforePaymentCancelServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.general.GeneralOrderBeforePaymentCancelServiceImpl;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.subscription.SubscriptionOrderBeforePaymentCancelServiceImpl;
 
 /**
  * @author 최겸준
  * @since 1.0
  */
-@RequiredArgsConstructor
 @Component
-public class MemberGeneralOrderBeforePaymentCancelProcessor
+@RequiredArgsConstructor
+public class MemberSubscriptionOrderBeforePaymentCancelProcessor
     extends OrderBeforePaymentCancelProcessor {
 
     @Qualifier("memberOrderBeforePaymentCancelServiceImpl")
-    private final OrderBeforePaymentCancelServiceAboutMemberType
+    private OrderBeforePaymentCancelServiceAboutMemberType
         memberOrderBeforePaymentCancelServiceImpl;
-
-    @Qualifier("generalOrderBeforePaymentCancelServiceImpl")
-    private final OrderBeforePaymentCancelServiceAboutOrderType
-        generalOrderBeforePaymentCancelServiceImpl;
-
+    @Qualifier("subscriptionOrderBeforePaymentCancelServiceImpl")
+    private OrderBeforePaymentCancelServiceAboutOrderType
+        subscriptionOrderBeforePaymentCancelServiceImpl;
 
     @Override
     protected OrderBeforePaymentCancelServiceAboutMemberType createOrderBeforePaymentCancelServiceAboutMemberType() {
@@ -37,6 +31,6 @@ public class MemberGeneralOrderBeforePaymentCancelProcessor
 
     @Override
     protected OrderBeforePaymentCancelServiceAboutOrderType createOrderBeforePaymentCancelServiceAboutOrderType() {
-        return generalOrderBeforePaymentCancelServiceImpl;
+        return subscriptionOrderBeforePaymentCancelServiceImpl;
     }
 }

@@ -14,7 +14,7 @@ import shop.itbook.itbookshop.paymentgroup.paymentstatus.paymentstatusenum.Payme
  */
 @Service
 @RequiredArgsConstructor
-public class PaymentStatusImpl implements PaymentStatusService {
+public class PaymentStatusServiceImpl implements PaymentStatusService {
     private final PaymentStatusRepository paymentStatusRepository;
 
     @Override

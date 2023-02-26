@@ -49,6 +49,8 @@ class PaymentCancelServiceImplTest {
                 ZoneId.of("Asia/Seoul")));
 
         PaymentCancel paymentCancel = new PaymentCancel(canceledAt, 15000L, "단순변심");
+        paymentCancel.setPayment(payment);
+        paymentCancel.setPaymentCancelCreatedAt(canceledAt);
         PaymentResponseDto.Cancels[] cancels =
             {new PaymentResponseDto.Cancels("2022-01-01T11:32:04+09:00",
                 paymentCancel.getAmount(), paymentCancel.getCancelReason())};

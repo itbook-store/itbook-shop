@@ -4,33 +4,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.OrderAfterPaymentSuccessServiceAboutMemberType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.member.MemberOrderAfterPaymentSuccessServiceImpl;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.nonmember.NonMemberOrderAfterPaymentSuccessServiceImpl;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.OrderAfterPaymentSuccessServiceAboutOrderType;
-import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.general.GeneralOrderAfterPaymentSuccessServiceImpl;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.ordertype.subscription.SubscriptionOrderAfterPaymentSuccessServiceImpl;
 
 /**
  * @author 최겸준
  * @since 1.0
  */
-@Component
 @RequiredArgsConstructor
-public class MemberGeneralOrderAfterPaymentSuccessProcessor
+@Component
+public class NonMemberSubscriptionOrderAfterPaymentSuccessProcessor
     extends OrderAfterPaymentSuccessProcessor {
 
-    @Qualifier("memberOrderAfterPaymentSuccessServiceImpl")
+    @Qualifier("nonMemberOrderAfterPaymentSuccessServiceImpl")
     private final OrderAfterPaymentSuccessServiceAboutMemberType
-        memberOrderAfterPaymentSuccessServiceImpl;
-    @Qualifier("generalOrderAfterPaymentSuccessServiceImpl")
+        nonMemberOrderAfterPaymentSuccessServiceImpl;
+
+    @Qualifier("subscriptionOrderAfterPaymentSuccessServiceImpl")
     private final OrderAfterPaymentSuccessServiceAboutOrderType
-        generalOrderAfterPaymentSuccessServiceImpl;
+        subscriptionOrderAfterPaymentSuccessServiceImpl;
 
     @Override
     protected OrderAfterPaymentSuccessServiceAboutMemberType createOrderAfterPaymentSuccessAboutMemberTypeService() {
-        return memberOrderAfterPaymentSuccessServiceImpl;
+        return nonMemberOrderAfterPaymentSuccessServiceImpl;
     }
 
     @Override
     protected OrderAfterPaymentSuccessServiceAboutOrderType createOrderAfterPaymentSuccessAboutOrderTypeService() {
-        return generalOrderAfterPaymentSuccessServiceImpl;
+        return subscriptionOrderAfterPaymentSuccessServiceImpl;
     }
 }
