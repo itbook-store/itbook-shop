@@ -1,7 +1,5 @@
 package shop.itbook.itbookshop.deliverygroup.deliverystatus.repository;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +18,6 @@ class DeliveryStatusRepositoryTest {
     @Test
     @DisplayName("Enum 을 이용해서 배송 상태 테이블에서 배송 상태 엔티티 정보 가져오기 성공")
     void findByDeliveryStatusEnumSuccessTest() {
-        
+
     }
 }
