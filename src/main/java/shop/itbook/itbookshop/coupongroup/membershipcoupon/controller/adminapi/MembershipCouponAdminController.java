@@ -20,7 +20,7 @@ import shop.itbook.itbookshop.coupongroup.membershipcoupon.service.MembershipCou
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/membership-coupons")
-public class MembershipAdminController {
+public class MembershipCouponAdminController {
 
     private final MembershipCouponService membershipCouponService;
 
