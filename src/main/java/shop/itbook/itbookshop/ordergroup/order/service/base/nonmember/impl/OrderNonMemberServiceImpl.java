@@ -1,6 +1,6 @@
-package shop.itbook.itbookshop.ordergroup.order.service.nonmember.impl;
+package shop.itbook.itbookshop.ordergroup.order.service.base.nonmember.impl;
 
-import static shop.itbook.itbookshop.ordergroup.order.service.impl.OrderCrudServiceImpl.setSellingPriceOfDetailsDto;
+import static shop.itbook.itbookshop.ordergroup.order.service.base.OrderCrudServiceImpl.setSellingPriceOfDetailsDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +11,7 @@ import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderDetailsResponse
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderSubscriptionDetailsResponseDto;
 import shop.itbook.itbookshop.ordergroup.order.exception.InvalidOrderCodeException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
-import shop.itbook.itbookshop.ordergroup.order.service.nonmember.OrderNonMemberService;
+import shop.itbook.itbookshop.ordergroup.order.service.base.nonmember.OrderNonMemberService;
 
 /**
  * @author 최겸준

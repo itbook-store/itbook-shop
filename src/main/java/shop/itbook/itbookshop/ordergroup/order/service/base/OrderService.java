@@ -1,12 +1,12 @@
-package shop.itbook.itbookshop.ordergroup.order.service.impl;
+package shop.itbook.itbookshop.ordergroup.order.service.base;
 
 import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderAfterPaymentSuccessFactoryEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentCancelFactoryEnum;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentenum.OrderBeforePaymentFactoryEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.OrderBeforePaymentCancelEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
 
 /**
  * 주문 관련 비즈니스 로직을 담당합니다.
@@ -18,13 +18,13 @@ public interface OrderService {
 
     OrderPaymentDto processOrderBeforePayment(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment,
-        OrderBeforePaymentFactoryEnum orderBeforePaymentFactoryEnum);
+        OrderBeforePaymentEnum orderBeforePaymentEnum);
 
     @Transactional
     Order processOrderAfterPaymentSuccess(
-        OrderAfterPaymentSuccessFactoryEnum orderAfterPaymentSuccessFactoryEnum, Long orderNo);
+        OrderAfterPaymentSuccessEnum orderAfterPaymentSuccessEnum, Long orderNo);
 
     @Transactional
     void processOrderBeforePaymentCancel(Long orderNo,
-                                         OrderBeforePaymentCancelFactoryEnum orderBeforePaymentCancelFactoryEnum);
+                                         OrderBeforePaymentCancelEnum orderBeforePaymentCancelEnum);
 }

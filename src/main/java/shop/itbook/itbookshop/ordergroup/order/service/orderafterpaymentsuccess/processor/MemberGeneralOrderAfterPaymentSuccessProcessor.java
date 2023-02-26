@@ -1,6 +1,7 @@
 package shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.processor;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.OrderAfterPaymentSuccessServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.membertype.member.MemberOrderAfterPaymentSuccessServiceImpl;
@@ -16,8 +17,10 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.
 public class MemberGeneralOrderAfterPaymentSuccessProcessor
     extends OrderAfterPaymentSuccessProcessor {
 
+    @Qualifier("memberOrderAfterPaymentSuccessServiceImpl")
     private final MemberOrderAfterPaymentSuccessServiceImpl
         memberOrderAfterPaymentSuccessServiceImpl;
+    @Qualifier("generalOrderAfterPaymentSuccessServiceImpl")
     private final GeneralOrderAfterPaymentSuccessServiceImpl
         generalOrderAfterPaymentSuccessServiceImpl;
 

@@ -1,4 +1,4 @@
-package shop.itbook.itbookshop.ordergroup.order.service.impl;
+package shop.itbook.itbookshop.ordergroup.order.service.base;
 
 import java.util.List;
 import java.util.Optional;

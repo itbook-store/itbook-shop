@@ -1,8 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.processor;
 
-import shop.itbook.itbookshop.ordergroup.order.dto.response.OrderPaymentDto;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
-import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.membertype.OrderBeforePaymentServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.OrderBeforePaymentCancelServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.OrderBeforePaymentCancelServiceAboutOrderType;
 
@@ -12,7 +10,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.
  */
 public abstract class OrderBeforePaymentCancelProcessor {
 
-    public void processOrderBeforePayment(Order order) {
+    public void processOrderBeforePaymentCancel(Order order) {
 
         OrderBeforePaymentCancelServiceAboutMemberType
             orderBeforePaymentCancelServiceAboutMemberType =
