@@ -38,7 +38,7 @@ public class Role {
 
 
     @Convert(converter = RoleEnumConverter.class)
-    @Column(name = "role_type", columnDefinition = "varchar(255)", unique = true, nullable = false)
+    @Column(name = "role_type", unique = true, nullable = false)
     private RoleEnum roleType;
 
     public Role(RoleEnum roleType) {
