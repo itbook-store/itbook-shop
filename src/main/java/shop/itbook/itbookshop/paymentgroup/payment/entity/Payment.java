@@ -64,16 +64,16 @@ public class Payment {
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
-    @Column(name = "payment_key", nullable = false, columnDefinition = "varchar(255)")
+    @Column(name = "payment_key", nullable = false)
     private String paymentKey;
 
-    @Column(name = "order_id", nullable = false, columnDefinition = "varchar(100)")
+    @Column(name = "order_id", nullable = false)
     private String orderId;
 
-    @Column(name = "order_name", nullable = false, columnDefinition = "varchar(20)")
+    @Column(name = "order_name", nullable = false)
     private String orderName;
 
-    @Column(name = "receipt_url", nullable = false, columnDefinition = "test")
+    @Column(name = "receipt_url", nullable = false)
     private String receiptUrl;
     @Column(name = "requested_at", nullable = false)
     private LocalDateTime requestedAt;
@@ -81,10 +81,10 @@ public class Payment {
     @Column(name = "approved_at", nullable = false)
     private LocalDateTime approvedAt;
 
-    @Column(name = "country", nullable = false, columnDefinition = "varchar(100)")
+    @Column(name = "country", nullable = false)
     private String country;
 
-    @Column(name = "checkout_url", nullable = false, columnDefinition = "test")
+    @Column(name = "checkout_url", nullable = false)
     private String checkoutUrl;
 
     @Column(name = "vat", nullable = false)
