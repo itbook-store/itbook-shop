@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.itbook.itbookshop.ordergroup.order.dto.InfoForProcessOrderBeforePayment;
 import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.service.orderafterpaymentsuccess.OrderAfterPaymentSuccessEnum;
+import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.OrderBeforePaymentEnum;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepayment.ordertype.OrderBeforePaymentServiceAboutOrderType;
 import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
@@ -30,6 +32,8 @@ public class GeneralOrderBeforePaymentServiceImpl
     public void processAboutOrderType(
         InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {
         this.saveOrder(infoForProcessOrderBeforePayment);
+
+        infoForProcessOrderBeforePayment.setOrderType("일반");
     }
 
     private void saveOrder(InfoForProcessOrderBeforePayment infoForProcessOrderBeforePayment) {

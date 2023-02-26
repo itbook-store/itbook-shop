@@ -113,9 +113,6 @@ public class MemberOrderBeforePaymentServiceImpl implements
         OrderAddRequestDto orderAddRequestDto =
             infoForProcessOrderBeforePayment.getOrderAddRequestDto();
 
-        orderAddRequestDto.getProductDetailsDtoList().get(0)
-            .setProductCnt(orderAddRequestDto.getSubscriptionPeriod());
-
 
         Order order = infoForProcessOrderBeforePayment.getOrder();
 
@@ -148,7 +145,7 @@ public class MemberOrderBeforePaymentServiceImpl implements
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
                 infoForProcessOrderBeforePayment.getOrder().getOrderNo(),
-                OrderAfterPaymentSuccessEnum.구독회원주문.name()))
+                infoForProcessOrderBeforePayment.getOrderType() + "회원주문"))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
 
     }

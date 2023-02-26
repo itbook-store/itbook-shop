@@ -95,7 +95,7 @@ public class NonMemberOrderBeforePaymentServiceImpl implements
             .orderId(this.createOrderUUID(order)).orderName(stringBuilder.toString()).amount(amount)
             .successUrl(String.format(ORIGIN_URL + "orders/success/%d?orderType=%s",
                 infoForProcessOrderBeforePayment.getOrder().getOrderNo(),
-                OrderAfterPaymentSuccessEnum.일반비회원주문.name()))
+                infoForProcessOrderBeforePayment.getOrderType() + "비회원주문"))
             .failUrl(ORIGIN_URL + "orders/fail" + order.getOrderNo()).build();
     }
 
