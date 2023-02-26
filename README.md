@@ -24,7 +24,7 @@
 <img width="878" alt="스크린샷 2023-02-24 오전 11 34 03" src="https://user-images.githubusercontent.com/45487307/221078047-288ca762-775b-4f41-9f07-04ef8729b023.png">
 
 ## 테스트 커버리지
-<img width="1016" alt="ReadMe테스트커버리지" src="https://user-images.githubusercontent.com/45487307/221078627-dc701497-ab4c-4c0c-b5e8-c468771e2edc.png">
+<img width="993" alt="스크린샷 2023-02-26 오후 9 15 54" src="https://user-images.githubusercontent.com/45487307/221409924-8b4015f3-c0ba-497a-8641-8979856aad16.png">
 
 
 # 주요기능
