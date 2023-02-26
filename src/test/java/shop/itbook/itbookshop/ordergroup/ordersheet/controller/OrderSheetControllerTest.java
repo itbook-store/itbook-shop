@@ -95,9 +95,7 @@ class OrderSheetControllerTest {
     void orderSheetFindSuccess() throws Exception {
 
         // given
-        Long testProductNo = productDetailsResponseDto.getProductNo();
-
-        String productNoList = String.valueOf(testProductNo);
+        String productNoList = String.valueOf(productDetailsResponseDto.getProductNo());
         String productCntList = "2";
 
         willDoNothing().given(productService).checkSellProductList(anyList(), anyList());
@@ -122,8 +120,7 @@ class OrderSheetControllerTest {
     void orderSheetMemberFindSuccess() throws Exception {
 
         // given
-        Long testProductNo = 9999L;
-        String productNoList = String.valueOf(testProductNo);
+        String productNoList = String.valueOf(productDetailsResponseDto.getProductNo());
         String productCntList = "2";
         Long testMemberNo = 999L;
 
@@ -166,8 +163,7 @@ class OrderSheetControllerTest {
     void orderSheetDeliveryFee() throws Exception {
 
         // given
-        Long testProductNo = 9999L;
-        String productNoList = String.valueOf(testProductNo);
+        String productNoList = String.valueOf(productDetailsResponseDto.getProductNo());
         String productCntList = "2";
 
         productDetailsResponseDto.setSelledPrice(19999L);
