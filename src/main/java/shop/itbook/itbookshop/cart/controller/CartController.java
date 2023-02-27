@@ -90,8 +90,6 @@ public class CartController {
                 productList
             );
 
-        cartService.deleteAllProduct(memberNo);
-
         return ResponseEntity.ok().body(commonResponseBody);
     }
 
