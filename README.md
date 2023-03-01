@@ -42,11 +42,10 @@
 * 담당자: 노수연
 * 회원 조회
 * 회원 수정, 삭제
-* id / password 찾기
 * 자사 회원가입
 * 소셜 회원가입
 * 배송지
-* 유저 API 웨원 정보 조회 및 수정
+* 유저 API 회원 정보 조회 및 수정
 * 관리자 조회 및 상태 수정
 
 ## 카테고리
@@ -147,6 +146,7 @@
 * 담당자: 노수연
 * 상품 문의 등록, 수정, 삭제
 * 상품 문의 조회
+* 작가와 어드민은 상품 문의 답글 등록
 
 # 사용 기술
 <img src="https://img.shields.io/badge/Apache Maven-C71A36?style=for-the-badge&logo=Apache Maven&logoColor=white">
