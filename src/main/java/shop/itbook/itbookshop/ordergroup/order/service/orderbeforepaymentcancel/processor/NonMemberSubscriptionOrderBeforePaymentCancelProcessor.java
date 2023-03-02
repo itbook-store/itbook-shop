@@ -15,7 +15,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.
 public class NonMemberSubscriptionOrderBeforePaymentCancelProcessor
     extends OrderBeforePaymentCancelProcessor {
 
-    @Qualifier("nonMemberOrderBeforePaymentCancelServiceServiceImpl")
+    @Qualifier("nonMemberOrderBeforePaymentCancelServiceImpl")
     private final OrderBeforePaymentCancelServiceAboutMemberType
         nonMemberOrderBeforePaymentCancelServiceServiceImpl;
     @Qualifier("subscriptionOrderBeforePaymentCancelServiceImpl")

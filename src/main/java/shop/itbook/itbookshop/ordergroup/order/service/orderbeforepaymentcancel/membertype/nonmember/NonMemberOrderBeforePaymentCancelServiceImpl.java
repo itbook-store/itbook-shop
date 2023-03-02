@@ -12,7 +12,7 @@ import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.
  */
 @RequiredArgsConstructor
 @Service
-public class NonMemberOrderBeforePaymentCancelServiceServiceImpl
+public class NonMemberOrderBeforePaymentCancelServiceImpl
     implements OrderBeforePaymentCancelServiceAboutMemberType {
 
     @Override
