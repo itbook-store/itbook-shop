@@ -60,6 +60,13 @@ public class OrderNonMemberServiceImpl implements OrderNonMemberService {
             throw new InvalidOrderCodeException();
         }
 
+        OrderSubscriptionDetailsResponseDto responseDto =
+            orderSubscriptionDetailsListOfNonMember.get(0);
+
+        responseDto.setSellingAmount((responseDto.getFixedPrice() -
+            (long) (responseDto.getFixedPrice() * responseDto.getDiscountPercent() * 0.01) *
+                responseDto.getCount()));
+
         return orderSubscriptionDetailsListOfNonMember;
     }
 }
