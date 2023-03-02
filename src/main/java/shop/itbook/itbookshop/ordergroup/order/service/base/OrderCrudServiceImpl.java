@@ -83,6 +83,7 @@ public class OrderCrudServiceImpl implements OrderCrudService {
         orderDetailsResponseDto.setSellingAmount(sellingAmount);
     }
 
+
     private static long getDiscountedPrice(Long priceToApply, Double discountPercent) {
         return (long) (priceToApply * (discountPercent / 100));
     }

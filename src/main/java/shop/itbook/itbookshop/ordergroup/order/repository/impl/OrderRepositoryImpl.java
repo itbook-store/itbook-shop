@@ -666,6 +666,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
             orderDetailsResponseDto.setOrderProductDetailResponseDtoList(productDetailList);
 
+
             return orderDetailsResponseDto;
         } catch (Exception e) {
             throw new InvalidOrderCodeException();
@@ -703,7 +704,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
             .fetchOne();
 
         try {
-            return from(qOrderStatusHistory)
+            List<OrderSubscriptionDetailsResponseDto> fetch = from(qOrderStatusHistory)
                 .leftJoin(qOrderStatusHistory2)
                 .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
                     .and(qOrderStatusHistory.orderStatusHistoryNo
@@ -714,12 +715,12 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .on(qOrder.orderNo.eq(qDelivery.order.orderNo))
                 .innerJoin(qOrderSubscription)
                 .on(qOrderSubscription.orderNo.eq(qOrder.orderNo))
-                .innerJoin(qOrderNonMember)
+                .leftJoin(qOrderNonMember)
                 .on(qOrderNonMember.order.eq(qOrder))
                 .innerJoin(qOrderProduct)
                 .on(qOrderProduct.order.eq(qOrder))
                 .where(
-                    qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod)
+                    qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod - 1)
                         .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
                 .select(Projections.fields(OrderSubscriptionDetailsResponseDto.class,
                     Projections.fields(OrderDestinationDto.class,
@@ -746,6 +747,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qOrderProduct.productPrice,
                     qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl")
                 )).fetch();
+
+            return fetch;
         } catch (Exception e) {
             throw new InvalidOrderException();
         }

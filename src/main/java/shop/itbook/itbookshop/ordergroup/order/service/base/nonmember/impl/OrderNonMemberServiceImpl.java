@@ -46,6 +46,14 @@ public class OrderNonMemberServiceImpl implements OrderNonMemberService {
         List<OrderSubscriptionDetailsResponseDto> orderSubscriptionDetailsListOfNonMember =
             orderRepository.findOrderSubscriptionDetailsOfNonMember(orderNo);
 
+        OrderDetailsResponseDto orderDetailsResponseDto =
+            orderRepository.findOrderDetailOfNonMember(orderNo);
+
+        setSellingPriceOfDetailsDto(orderDetailsResponseDto);
+
+        orderSubscriptionDetailsListOfNonMember.get(0).setSellingAmount(
+            orderDetailsResponseDto.getSellingAmount());
+
         if (orderSubscriptionDetailsListOfNonMember.isEmpty()
             || !orderSubscriptionDetailsListOfNonMember.get(0).getNonMemberOrderCode()
             .equals(orderCode)) {
