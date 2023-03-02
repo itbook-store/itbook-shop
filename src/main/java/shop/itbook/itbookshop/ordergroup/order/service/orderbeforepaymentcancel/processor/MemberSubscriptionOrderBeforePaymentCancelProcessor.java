@@ -3,6 +3,7 @@ package shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.OrderBeforePaymentCancelServiceAboutMemberType;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.membertype.member.MemberOrderBeforePaymentCancelServiceImpl;
 import shop.itbook.itbookshop.ordergroup.order.service.orderbeforepaymentcancel.ordertype.OrderBeforePaymentCancelServiceAboutOrderType;
@@ -18,10 +19,10 @@ public class MemberSubscriptionOrderBeforePaymentCancelProcessor
     extends OrderBeforePaymentCancelProcessor {
 
     @Qualifier("memberOrderBeforePaymentCancelServiceImpl")
-    private OrderBeforePaymentCancelServiceAboutMemberType
+    private final OrderBeforePaymentCancelServiceAboutMemberType
         memberOrderBeforePaymentCancelServiceImpl;
     @Qualifier("subscriptionOrderBeforePaymentCancelServiceImpl")
-    private OrderBeforePaymentCancelServiceAboutOrderType
+    private final OrderBeforePaymentCancelServiceAboutOrderType
         subscriptionOrderBeforePaymentCancelServiceImpl;
 
     @Override

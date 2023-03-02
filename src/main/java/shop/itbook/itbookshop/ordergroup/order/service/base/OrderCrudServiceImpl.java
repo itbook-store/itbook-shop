@@ -1,5 +1,6 @@
 package shop.itbook.itbookshop.ordergroup.order.service.base;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +20,15 @@ import shop.itbook.itbookshop.ordergroup.order.entity.Order;
 import shop.itbook.itbookshop.ordergroup.order.exception.NotAllowedPurchaseComplete;
 import shop.itbook.itbookshop.ordergroup.order.exception.OrderNotFoundException;
 import shop.itbook.itbookshop.ordergroup.order.repository.OrderRepository;
+import shop.itbook.itbookshop.ordergroup.order.transfer.OrderTransfer;
 import shop.itbook.itbookshop.ordergroup.orderproduct.dto.OrderProductDetailResponseDto;
 import shop.itbook.itbookshop.ordergroup.orderproduct.entity.OrderProduct;
 import shop.itbook.itbookshop.ordergroup.orderproduct.service.OrderProductService;
 import shop.itbook.itbookshop.ordergroup.orderstatusenum.OrderStatusEnum;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.entity.OrderStatusHistory;
 import shop.itbook.itbookshop.ordergroup.orderstatushistory.service.OrderStatusHistoryService;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.entity.OrderSubscription;
+import shop.itbook.itbookshop.ordergroup.ordersubscription.repository.OrderSubscriptionRepository;
 import shop.itbook.itbookshop.productgroup.product.entity.Product;
 import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 
@@ -40,10 +44,13 @@ import shop.itbook.itbookshop.productgroup.product.service.ProductService;
 @Transactional(readOnly = true)
 public class OrderCrudServiceImpl implements OrderCrudService {
 
+
     private final OrderRepository orderRepository;
     private final OrderProductService orderProductService;
     private final OrderStatusHistoryService orderStatusHistoryService;
     private final ProductService productService;
+
+    private final OrderSubscriptionRepository orderSubscriptionRepository;
 
     /**
      * The Origin url.
@@ -189,18 +196,27 @@ public class OrderCrudServiceImpl implements OrderCrudService {
         List<OrderProduct> orderProductList =
             orderProductService.findOrderProductsEntityByOrderNo(orderNo);
 
-        if (orderProductList.isEmpty()) {
-            if (!orderRepository.existsById(orderNo)) {
-                throw new OrderNotFoundException();
-            }
-        }
 
         for (OrderProduct orderProduct : orderProductList) {
             Product product =
                 productService.findProductEntity(orderProduct.getProduct().getProductNo());
 
             if (product.getIsSubscription()) {
-                break;
+
+                OrderSubscription orderSubscription =
+                    orderSubscriptionRepository.findByOrder_OrderNo(orderNo).orElseThrow();
+
+                Integer subscriptionPeriod = orderSubscription.getSubscriptionPeriod();
+
+                orderSubscriptionRepository.deleteById(orderNo);
+//                orderRepository.deleteById(orderNo);
+
+                for (long i = 1L; i < subscriptionPeriod; i++) {
+
+                    orderSubscriptionRepository.deleteById(orderNo + i);
+//                    orderRepository.deleteById(orderNo + i);
+                }
+                return;
             }
         }
 
