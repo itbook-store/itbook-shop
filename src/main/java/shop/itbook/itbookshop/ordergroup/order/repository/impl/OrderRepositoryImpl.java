@@ -517,6 +517,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
 
         QOrderProduct qOrderProduct = QOrderProduct.orderProduct;
 
+        QOrderNonMember qOrderNonMember = QOrderNonMember.orderNonMember;
+
         Integer subscriptionPeriod = from(qOrderStatusHistory)
             .leftJoin(qOrderStatusHistory2)
             .on(qOrderStatusHistory.order.orderNo.eq(qOrderStatusHistory2.order.orderNo)
@@ -564,6 +566,8 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 .or(qCouponIssueNotTotal.couponIssueNo.eq(qCategoryCouponApply.couponIssueNo)))
             .leftJoin(qCouponNotTotal)
             .on(qCouponNotTotal.couponNo.eq(qCouponIssueNotTotal.coupon.couponNo))
+            .leftJoin(qOrderNonMember)
+            .on(qOrderNonMember.order.eq(qOrder))
             .where(
                 qOrder.orderNo.between(orderNo, orderNo + subscriptionPeriod - 1)
                     .and(qOrderStatusHistory2.orderStatusHistoryNo.isNull()))
@@ -584,6 +588,7 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                 qDelivery.deliveryNo,
                 qDelivery.trackingNo,
                 qOrder.selectedDeliveryDate,
+                qOrderNonMember.nonMemberOrderCode,
                 // 주문 총액 쿠폰
                 qCouponTotal.name.as("totalCouponName"),
                 qCouponTotal.amount.as("totalCouponAmount"),
@@ -740,12 +745,13 @@ public class OrderRepositoryImpl extends QuerydslRepositorySupport implements
                     qDelivery.trackingNo,
                     qOrder.selectedDeliveryDate,
                     qOrderNonMember.nonMemberOrderCode,
-
                     qOrderProduct.orderProductNo,
                     qOrderProduct.product.name.as("productName"),
                     qOrderProduct.count,
                     qOrderProduct.productPrice,
-                    qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl")
+                    qOrderProduct.product.thumbnailUrl.as("fileThumbnailsUrl"),
+                    qOrderProduct.product.fixedPrice,
+                    qOrderProduct.product.discountPercent
                 )).fetch();
 
             return fetch;
